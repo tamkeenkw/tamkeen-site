@@ -286,7 +286,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
         <input type="text" id="leadName" placeholder="أدخل اسمك الكامل">
       </div>
       <div class="field">
-        <label>رقم الواتساب</label>
+        <label>رقم الهاتف</label>
         <input type="tel" id="leadPhone" placeholder="XXXXXXXX">
       </div>
 
@@ -397,6 +397,13 @@ let scores = [];
 let selectedOption = null;
 let userName = '';
 let userPhone = '';
+
+function showMyResult() {
+  userName = document.getElementById('leadName').value.trim();
+  userPhone = document.getElementById('leadPhone').value.trim();
+  document.getElementById('step-lead').style.display = 'none';
+  showResult();
+}
 
 function startQuizDirect() {
   document.getElementById('step-intro').style.display = 'none';
