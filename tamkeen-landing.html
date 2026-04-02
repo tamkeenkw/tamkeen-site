@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معهد تمكين — أول حاضنة للمدربين في الكويت</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:   #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream:     #FAF7F2;
+  --cream-2:   #F2EDE5;
+  --white:     #FFFFFF;
+  --text:      #1A0808;
+  --muted:     #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+/* ─── HERO ─── */
+.hero {
+  background:var(--crimson); min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 24px; text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.hero-inner { position:relative; z-index:2; max-width:680px; }
+.logo-wrap { margin-bottom:32px; animation:fadeDown .7s ease both; }
+.logo-wrap img { height:96px; width:auto; filter:brightness(0) invert(1); opacity:.88; }
+.logo-fallback { font-size:46px; font-weight:900; color:#fff; letter-spacing:4px; }
+.hero-tag {
+  display:inline-block; border:1.5px solid rgba(255,255,255,.28); color:rgba(255,255,255,.82);
+  padding:6px 22px; border-radius:100px; font-size:13px; font-weight:600;
+  margin-bottom:28px; animation:fadeDown .7s .1s ease both;
+}
+.hero h1 { font-size:clamp(42px,8vw,74px); font-weight:900; color:#fff; line-height:1.18; margin-bottom:8px; animation:fadeDown .7s .15s ease both; }
+.hero h1 em { font-style:normal; opacity:.65; display:block; font-size:.72em; font-weight:700; }
+.hero-divider { width:48px; height:2px; background:rgba(255,255,255,.3); margin:22px auto; animation:fadeDown .7s .2s ease both; }
+.hero p { font-size:clamp(16px,2.4vw,19px); color:rgba(255,255,255,.65); line-height:1.85; margin-bottom:44px; animation:fadeDown .7s .25s ease both; }
+
+/* ─── DUAL CTA BUTTONS ─── */
+.cta-group {
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  animation:fadeUp .7s .35s ease both;
+}
+.btn-form {
+  display:inline-flex; align-items:center; gap:10px;
+  background:transparent; color:rgba(255,255,255,.82);
+  font-family:'Tajawal',sans-serif;
+  font-size:16px; font-weight:700; padding:14px 36px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+  border:1.5px solid rgba(255,255,255,.28);
+}
+.btn-form:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.5); transform:translateY(-2px); }
+
+.hero-note { margin-top:20px; font-size:14px; color:rgba(255,255,255,.38); animation:fadeUp .7s .45s ease both; }
+.hero-note strong { color:rgba(255,255,255,.72); }
+
+/* ─── STATS ─── */
+.stats {
+  background:var(--crimson-2); padding:36px 24px;
+  display:flex; justify-content:center; gap:clamp(24px,7vw,80px); flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-n { font-size:clamp(30px,6vw,48px); font-weight:900; color:#fff; line-height:1; margin-bottom:6px; }
+.stat-l { font-size:13px; color:rgba(255,255,255,.42); font-weight:500; }
+
+/* ─── SHARED ─── */
+.sec { padding:clamp(64px,9vw,108px) 24px; max-width:960px; margin:0 auto; }
+.sec-tag { text-align:center; font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.sec-title { font-size:clamp(26px,5vw,42px); font-weight:900; text-align:center; color:var(--text); margin-bottom:12px; line-height:1.3; }
+.sec-sub { text-align:center; font-size:16px; color:var(--muted); margin-bottom:48px; line-height:1.7; }
+
+/* ─── BENEFITS ─── */
+.benefits-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+.benefit-item {
+  background:#fff; border-radius:16px; padding:22px;
+  display:flex; align-items:flex-start; gap:16px;
+  border:1.5px solid rgba(92,15,15,.07); transition:all .28s;
+  opacity:0; transform:translateY(18px);
+}
+.benefit-item.on { opacity:1; transform:translateY(0); transition:opacity .5s ease,transform .5s ease; }
+.benefit-item:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(92,15,15,.09); border-color:rgba(92,15,15,.18); }
+.b-icon { font-size:26px; min-width:36px; text-align:center; margin-top:2px; }
+.b-title { font-size:15px; font-weight:800; color:var(--text); margin-bottom:4px; line-height:1.4; }
+.b-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+.b-extra { display:inline-block; margin-top:6px; background:rgba(92,15,15,.07); color:var(--crimson); font-size:12px; font-weight:700; padding:3px 10px; border-radius:100px; }
+
+/* ─── DARK BAND ─── */
+.band { background:var(--crimson); padding:clamp(64px,9vw,108px) 24px; position:relative; overflow:hidden; }
+.band::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.band-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; }
+.band .sec-tag { color:rgba(255,255,255,.5); }
+.band .sec-title { color:#fff; }
+.band .sec-sub { color:rgba(255,255,255,.5); }
+.list-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.list-item {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  border-radius:14px; padding:18px 20px; display:flex; align-items:flex-start; gap:12px;
+  opacity:0; transform:translateY(14px);
+}
+.list-item.on { opacity:1; transform:translateY(0); transition:opacity .5s ease,transform .5s ease; }
+.list-item:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); }
+.dot { width:6px; height:6px; min-width:6px; background:#fff; opacity:.45; border-radius:50%; margin-top:8px; }
+.list-text { font-size:15px; font-weight:600; color:rgba(255,255,255,.84); line-height:1.5; }
+
+/* ─── PARTNERS ─── */
+.partners-bg { background:var(--cream-2); padding:clamp(64px,9vw,108px) 24px; }
+.partners-inner { max-width:860px; margin:0 auto; }
+.partner-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.partner-card {
+  background:#fff; border-radius:14px; padding:20px 22px;
+  display:flex; align-items:center; gap:14px;
+  border:1.5px solid rgba(92,15,15,.07); font-size:14px; font-weight:700; color:var(--text); line-height:1.5;
+  transition:all .28s; opacity:0; transform:translateY(14px);
+}
+.partner-card.on { opacity:1; transform:translateY(0); transition:opacity .5s ease,transform .5s ease; }
+.partner-card:hover { border-color:rgba(92,15,15,.22); box-shadow:0 8px 24px rgba(92,15,15,.08); transform:translateY(-2px); }
+.p-icon { width:38px; height:38px; min-width:38px; background:var(--crimson); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+
+/* ─── PRICING ─── */
+.pricing-wrap { padding:clamp(64px,9vw,108px) 24px; max-width:580px; margin:0 auto; text-align:center; }
+.price-card {
+  background:var(--crimson); border-radius:26px;
+  padding:clamp(40px,6vw,60px) clamp(26px,5vw,52px);
+  text-align:center; position:relative; overflow:hidden;
+  box-shadow:0 28px 72px rgba(92,15,15,.28);
+}
+.price-card::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
+}
+.price-card>* { position:relative; z-index:1; }
+.price-badge { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.88); font-size:12px; font-weight:800; padding:5px 20px; border-radius:100px; margin-bottom:24px; }
+.price-label { font-size:16px; font-weight:600; color:rgba(255,255,255,.6); margin-bottom:16px; }
+.price-num { font-size:clamp(58px,12vw,88px); font-weight:900; color:#fff; line-height:1; margin-bottom:4px; }
+.price-currency { display:block; font-size:18px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:4px; }
+.price-period { font-size:14px; color:rgba(255,255,255,.35); margin-bottom:32px; }
+.install-box { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:18px 22px; margin-bottom:28px; }
+.install-box p { font-size:16px; color:rgba(255,255,255,.78); line-height:1.7; }
+.install-box strong { color:#fff; font-size:20px; }
+
+/* Dual CTA inside price card */
+.price-cta-group { display:flex; flex-direction:column; gap:12px; }
+.btn-price-form {
+  display:block; background:#fff; color:var(--crimson);
+  font-size:16px; font-weight:800; padding:14px 32px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+}
+.btn-price-form:hover { background:var(--cream); transform:translateY(-2px); }
+
+/* ─── FINAL ─── */
+.final { background:var(--crimson-2); padding:clamp(72px,10vw,116px) 24px; text-align:center; position:relative; overflow:hidden; }
+.final::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.final-inner { position:relative; z-index:1; max-width:600px; margin:0 auto; }
+.final h2 { font-size:clamp(30px,6vw,52px); font-weight:900; color:#fff; line-height:1.25; margin-bottom:14px; }
+.final h2 span { opacity:.6; }
+.final p { font-size:17px; color:rgba(255,255,255,.46); margin-bottom:36px; line-height:1.75; }
+.final-btns { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.btn-final-form {
+  display:inline-block; color:rgba(255,255,255,.6);
+  font-size:15px; font-weight:700; padding:12px 32px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+  border:1.5px solid rgba(255,255,255,.2);
+}
+.btn-final-form:hover { color:#fff; border-color:rgba(255,255,255,.5); }
+
+/* ─── FOOTER ─── */
+footer { background:#3A0808; padding:26px 24px; text-align:center; }
+footer p { font-size:13px; color:rgba(255,255,255,.28); }
+footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+footer a:hover { color:#fff; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:600px){
+  .stats{gap:20px;}
+  .price-card{padding:36px 20px;}
+  .benefits-grid{grid-template-columns:1fr;}
+  .btn-wa,.btn-final-wa{padding:16px 32px; font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="logo-wrap">
+      <img src="Untitled_design__2_.png" alt="تمكين"
+        onerror="this.outerHTML='<div class=\'logo-fallback\'>تمكين</div>'">
+    </div>
+    <div class="hero-tag">🇰🇼 أول حاضنة للمدربين في الكويت</div>
+    <h1>أنت مدرب<em>وتستاهل أكثر من هذا</em></h1>
+    <div class="hero-divider"></div>
+    <p>انضم لمجتمع المدربين المحترفين في الكويت<br>اعتماد رسمي، شبكة علاقات، ومسار واضح نحو الاحتراف</p>
+
+    <div class="cta-group">
+      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" target="_blank" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 56px;border-radius:100px;text-decoration:none;box-shadow:0 8px 32px rgba(0,0,0,.18);">سجّل بياناتك الحين ←</a>
+    </div>
+
+    <p class="hero-note">العضوية السنوية <strong>١٣٠ د.ك</strong> — قابلة للتقسيط على <strong>٤ دفعات</strong></p>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">+٩٠</div><div class="stat-l">مدرب محترف</div></div>
+  <div class="stat"><div class="stat-n">١٤</div><div class="stat-l">ميزة بعضوية واحدة</div></div>
+  <div class="stat"><div class="stat-n">٥</div><div class="stat-l">جهات اعتماد رسمية</div></div>
+</div>
+
+<!-- BENEFITS -->
+<section class="sec">
+  <p class="sec-tag">مميزات العضوية</p>
+  <h2 class="sec-title">١٤ ميزة بعضوية واحدة</h2>
+  <p class="sec-sub">كل شي تحتاجه كمدرب محترف — في مكان واحد</p>
+  <div class="benefits-grid">
+    <div class="benefit-item"><div class="b-icon">✅</div><div><div class="b-title">اعتماد تدريبي رسمي لدوراتك</div><div class="b-desc">دوراتك تصير معتمدة رسمياً تحت مظلة تمكين من اليوم الأول</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🎓</div><div><div class="b-title">إصدار شهادات باسمك</div><div class="b-desc">أصدر شهادات للمتدربين باسمك وتحت مظلة تمكين</div><span class="b-extra">١٠ د.ك للشهادة فقط</span></div></div>
+    <div class="benefit-item"><div class="b-icon">🏢</div><div><div class="b-title">قاعات تدريبية مجهزة</div><div class="b-desc">مرة كاملة كل شهر — بشرط لا يقل عدد المشتركين عن ١٠ أشخاص</div></div></div>
+    <div class="benefit-item"><div class="b-icon">📈</div><div><div class="b-title">جلسات تطوير مستمرة</div><div class="b-desc">جلسات دورية لرفع كفاءتك ومواكبة أحدث أساليب التدريب</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🤝</div><div><div class="b-title">مجتمع مدربي تمكين</div><div class="b-desc">انضم لنخبة من المدربين الكويتيين — تعاون، فرص، ودعم متبادل</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🧠</div><div><div class="b-title">خطة تدريبية متكاملة</div><div class="b-desc">خطة مخصصة لك حسب تخصصك وأهدافك التدريبية</div></div></div>
+    <div class="benefit-item"><div class="b-icon">📣</div><div><div class="b-title">خطة تسويقية شخصية</div><div class="b-desc">نساعدك تبني علامتك التدريبية وتوصل لجمهورك الصح</div></div></div>
+    <div class="benefit-item"><div class="b-icon">📷</div><div><div class="b-title">تصوير احترافي</div><div class="b-desc">تصوير دورتك ومحتواك التسويقي باحترافية — لدورة واحدة</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🖨️</div><div><div class="b-title">طباعة احترافية مخفضة</div><div class="b-desc">طباعة المذكرات والنماذج التدريبية بأسعار مخفضة للأعضاء</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🏅</div><div><div class="b-title">اعتماد رسمي ضمن قائمة مدربي تمكين</div><div class="b-desc">اسمك ضمن قائمة المدربين المعتمدين رسمياً في تمكين</div></div></div>
+    <div class="benefit-item"><div class="b-icon">📜</div><div><div class="b-title">اعتماد دورتك بشعار تمكين</div><div class="b-desc">دورتك تحمل شعار تمكين — مصداقية فورية عند الجمهور</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🗣️</div><div><div class="b-title">ترشيح للجهات والمؤسسات</div><div class="b-desc">نرشحك للجهات والمؤسسات التدريبية اللي تبحث عن مدربين</div></div></div>
+    <div class="benefit-item"><div class="b-icon">💡</div><div><div class="b-title">دعم شخصي مستمر</div><div class="b-desc">فريق تمكين يدعمك في كل خطوة من مسيرتك التدريبية</div></div></div>
+    <div class="benefit-item"><div class="b-icon">🧳</div><div><div class="b-title">إعداد وتطوير حقيبتك التدريبية</div><div class="b-desc">نساعدك تجهّز حقيبة تدريبية احترافية جاهزة للتقديم</div></div></div>
+  </div>
+</section>
+
+<!-- ACCREDITATIONS -->
+<section class="band">
+  <div class="band-inner">
+    <p class="sec-tag">الاعتمادات الرسمية</p>
+    <h2 class="sec-title">معتمدون ومسجلون في</h2>
+    <p class="sec-sub">مصداقية لا يملكها كثير من المنافسين</p>
+    <div class="list-grid">
+      <div class="list-item"><div class="dot"></div><div class="list-text">وزارة التجارة الكويتية</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">غرفة التجارة والصناعة</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">الهيئة العامة للتعليم والتدريب التطبيقي</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">ديوان الخدمة المدنية</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">الجهاز المركزي للمناقصات</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners-bg">
+  <div class="partners-inner">
+    <p class="sec-tag" style="text-align:center">من شركاءنا</p>
+    <h2 class="sec-title">نعمل مع جهات تثق فيها</h2>
+    <div class="partner-grid">
+      <div class="partner-card"><div class="p-icon">🎓</div>رابطة أعضاء هيئة التدريب لكليات التطبيقي</div>
+      <div class="partner-card"><div class="p-icon">📚</div>رابطة أعضاء هيئة التدريس لكليات التطبيقي</div>
+      <div class="partner-card"><div class="p-icon">🏫</div>نقابة العاملين في وزارة التربية</div>
+      <div class="partner-card"><div class="p-icon">⭐</div>الهيئة العامة للشباب</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<div class="pricing-wrap">
+  <p class="sec-tag">الاشتراك</p>
+  <h2 class="sec-title">العضوية السنوية</h2>
+  <div class="price-card">
+    <div class="price-badge">١٤ ميزة — عضوية واحدة</div>
+    <p class="price-label">كل شي تحتاجه كمدرب محترف</p>
+    <div class="price-num">١٣٠</div>
+    <span class="price-currency">دينار كويتي</span>
+    <p class="price-period">للسنة الواحدة</p>
+    <div class="install-box">
+      <p>تقدر تقسّطها على <strong>٤ دفعات</strong><br>بدون فوائد — بدون تعقيدات</p>
+    </div>
+    <div class="price-cta-group">
+      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" class="btn-price" target="_blank">سجّل بياناتك الحين 👇</a>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="final-inner">
+    <h2>الوقت المناسب<br><span>هو الحين</span></h2>
+    <p>المدربون اللي يبدأون اليوم<br>هم اللي يقودون السوق بكره</p>
+    
+      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" class="btn-final" target="_blank">انضم لتمكين الحين</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>معهد تمكين — إيديو كلاود للتدريب الأهلي &nbsp;|&nbsp; <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('on'), (e.target.dataset.i || 0) * 75);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.benefit-item, .list-item, .partner-card').forEach((el, i) => {
+  el.dataset.i = i % 4;
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
