@@ -23,7 +23,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   background:var(--crimson);
   padding:16px 32px;
   display:flex; align-items:center; justify-content:space-between;
-  position:relative; z-index:10;
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
@@ -35,56 +34,59 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 }
 .nav-back:hover { color:#fff; }
 
-/* HERO — TWO COLUMN */
+/* HERO */
 .hero {
   background:var(--crimson);
-  min-height:90vh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  padding:72px 24px 96px;
+  text-align:center;
   position:relative;
   overflow:hidden;
 }
-
 .hero::before {
   content:''; position:absolute; inset:0;
   background-image:
-    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
-    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
-    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
   background-size:52px 52px;
   background-position:0 0,0 26px,26px -26px,-26px 0;
 }
 
-/* RIGHT — PHOTO */
-.hero-photo-side {
+.hero-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
+
+/* BIG PHOTO */
+.trainer-photo-wrap {
+  margin-bottom:36px;
+  display:inline-block;
   position:relative;
-  overflow:hidden;
 }
 
-.hero-photo-side img {
-  width:100%;
-  height:100%;
+.trainer-photo-wrap::before {
+  content:'';
+  position:absolute;
+  inset:-6px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.15);
+}
+
+.trainer-photo-wrap::after {
+  content:'';
+  position:absolute;
+  inset:-14px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.trainer-photo {
+  width:240px;
+  height:240px;
+  border-radius:50%;
   object-fit:cover;
   object-position:top center;
   display:block;
-}
-
-.hero-photo-side::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to left, transparent 60%, var(--crimson) 100%);
-}
-
-/* LEFT — INFO */
-.hero-info-side {
-  position:relative;
-  z-index:2;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:60px 48px 60px 32px;
+  border:5px solid rgba(255,255,255,.18);
+  box-shadow:0 24px 72px rgba(0,0,0,.3);
 }
 
 .trainer-badge {
@@ -93,13 +95,12 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   border:1px solid rgba(255,255,255,.22);
   color:rgba(255,255,255,.85);
   font-size:13px; font-weight:700;
-  padding:6px 20px; border-radius:100px;
-  margin-bottom:24px;
-  width:fit-content;
+  padding:6px 22px; border-radius:100px;
+  margin-bottom:20px;
 }
 
 .trainer-name {
-  font-size:clamp(32px,4vw,56px);
+  font-size:clamp(36px,7vw,64px);
   font-weight:900;
   color:#fff;
   line-height:1.15;
@@ -107,64 +108,40 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 }
 
 .trainer-title {
-  font-size:clamp(15px,2vw,18px);
+  font-size:clamp(16px,2.5vw,20px);
   color:rgba(255,255,255,.6);
-  margin-bottom:40px;
-  line-height:1.6;
+  margin-bottom:48px;
 }
 
-.divider {
-  width:48px; height:2px;
-  background:rgba(255,255,255,.25);
-  margin-bottom:40px;
-}
-
-.stats-col {
+/* STATS ROW */
+.stats-row {
   display:flex;
-  flex-direction:column;
-  gap:24px;
+  justify-content:center;
+  gap:clamp(24px,6vw,72px);
+  flex-wrap:wrap;
 }
 
-.stat-row {
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
+.stat { text-align:center; }
 
 .stat-n {
-  font-size:clamp(28px,3.5vw,44px);
+  font-size:clamp(32px,6vw,52px);
   font-weight:900;
   color:#fff;
   line-height:1;
-  min-width:90px;
+  margin-bottom:6px;
 }
 
 .stat-l {
-  font-size:14px;
-  color:rgba(255,255,255,.55);
+  font-size:13px;
+  color:rgba(255,255,255,.5);
   line-height:1.4;
 }
 
-/* MOBILE */
-@media(max-width:768px){
-  .hero {
-    grid-template-columns:1fr;
-    grid-template-rows:400px auto;
-    min-height:auto;
-  }
-  .hero-photo-side { order:1; height:400px; }
-  .hero-photo-side::after {
-    background:linear-gradient(to top, var(--crimson) 5%, transparent 60%);
-  }
-  .hero-info-side { order:2; padding:32px 24px 48px; }
-  .trainer-name { font-size:32px; }
-}
-
 /* CONTENT */
-.content { max-width:960px; margin:0 auto; padding:clamp(56px,8vw,96px) 24px; }
+.content { max-width:900px; margin:0 auto; padding:clamp(56px,8vw,96px) 24px; }
 .section { margin-bottom:64px; }
 .section-label { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
-.section-title { font-size:clamp(22px,4vw,34px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
+.section-title { font-size:clamp(24px,4vw,36px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
 .bio-text { font-size:17px; color:var(--muted); line-height:1.9; }
 
 /* ORGS */
@@ -232,6 +209,11 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 footer { background:var(--crimson-2); padding:28px; text-align:center; margin-top:clamp(48px,8vw,80px); }
 footer p { font-size:13px; color:rgba(255,255,255,.3); }
 footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+
+@media(max-width:600px){
+  .trainer-photo { width:190px; height:190px; }
+  .stats-row { gap:24px; }
+}
 </style>
 </head>
 <body>
@@ -247,35 +229,34 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-inner">
 
-  <!-- INFO -->
-  <div class="hero-info-side">
+    <div class="trainer-photo-wrap">
+      <img src="trainer-ateiq.jpg" alt="عتيق العتيق" class="trainer-photo"
+        onerror="this.style.background='rgba(255,255,255,.08)'">
+    </div>
+
     <div class="trainer-badge">مدرب معتمد — معهد تمكين</div>
-    <h1 class="trainer-name">عتيق خالد<br>العتيق</h1>
+
+    <h1 class="trainer-name">عتيق خالد العتيق</h1>
     <p class="trainer-title">متخصص في تأهيل وتدريب المدربين</p>
-    <div class="divider"></div>
-    <div class="stats-col">
-      <div class="stat-row">
+
+    <div class="stats-row">
+      <div class="stat">
         <div class="stat-n">+١١٠</div>
-        <div class="stat-l">دفعة تدريبية مقدّمة</div>
+        <div class="stat-l">دفعة تدريبية</div>
       </div>
-      <div class="stat-row">
+      <div class="stat">
         <div class="stat-n">+٦٧٠٠</div>
-        <div class="stat-l">مدرب ومدربة مخرّجين<br>لسوق العمل</div>
+        <div class="stat-l">مدرب ومدربة مخرّجين</div>
       </div>
-      <div class="stat-row">
+      <div class="stat">
         <div class="stat-n">٤+</div>
         <div class="stat-l">جهات حكومية</div>
       </div>
     </div>
-  </div>
 
-  <!-- PHOTO -->
-  <div class="hero-photo-side">
-    <img src="trainer-ateiq.jpg" alt="عتيق العتيق"
-      onerror="this.style.background='rgba(255,255,255,.05)'">
   </div>
-
 </section>
 
 <!-- CONTENT -->
@@ -295,28 +276,24 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     <p class="section-label">الجهات</p>
     <h2 class="section-title">الجهات التي تعامل معها</h2>
     <div class="orgs-grid">
-
       <div class="org-item">
         <div class="org-icon">
           <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
         </div>
         الهيئة العامة للتعليم والتدريب التطبيقي — مركز القياس والتقويم
       </div>
-
       <div class="org-item">
         <div class="org-icon">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
         </div>
         جامعة الكويت — جمعية كلية التربية
       </div>
-
       <div class="org-item">
         <div class="org-icon">
           <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
         </div>
         جمعية المعلمين الكويتية
       </div>
-
     </div>
   </div>
 
@@ -325,7 +302,6 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     <p class="section-label">الدورات</p>
     <h2 class="section-title">الدورات المقدّمة</h2>
     <div class="courses-grid">
-
       <div class="course-card">
         <div class="course-icon">
           <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
@@ -333,7 +309,6 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
         <div class="course-title">إعداد مدرب معتمد</div>
         <div class="course-desc">الدورة الأشمل لتأهيل المدربين وإعدادهم للحصول على الاعتماد الرسمي في سوق العمل التدريبي</div>
       </div>
-
       <div class="course-card">
         <div class="course-icon">
           <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
@@ -341,7 +316,6 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
         <div class="course-title">كيف تبني دورة رابحة</div>
         <div class="course-desc">دورة متخصصة في بناء وتصميم الدورات التدريبية الناجحة التي تحقق نتائج حقيقية</div>
       </div>
-
     </div>
   </div>
 
