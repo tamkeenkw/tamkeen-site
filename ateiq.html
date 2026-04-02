@@ -21,8 +21,9 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 /* NAV */
 .nav {
   background:var(--crimson);
-  padding:16px 24px;
+  padding:16px 32px;
   display:flex; align-items:center; justify-content:space-between;
+  position:relative; z-index:10;
 }
 .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
@@ -34,80 +35,173 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 }
 .nav-back:hover { color:#fff; }
 
-/* HERO */
+/* HERO — TWO COLUMN */
 .hero {
-  background:var(--crimson); padding:60px 24px 80px;
-  text-align:center; position:relative; overflow:hidden;
+  background:var(--crimson);
+  min-height:90vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
 }
+
 .hero::before {
   content:''; position:absolute; inset:0;
   background-image:
-    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
-    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
-  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:52px 52px;
+  background-position:0 0,0 26px,26px -26px,-26px 0;
 }
-.hero-inner { position:relative; z-index:1; max-width:700px; margin:0 auto; }
-.trainer-photo {
-  width:160px; height:160px; border-radius:50%; object-fit:cover;
-  border:4px solid rgba(255,255,255,.2); margin-bottom:24px;
-  box-shadow:0 16px 48px rgba(0,0,0,.25);
+
+/* RIGHT — PHOTO */
+.hero-photo-side {
+  position:relative;
+  overflow:hidden;
 }
+
+.hero-photo-side img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:top center;
+  display:block;
+}
+
+.hero-photo-side::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to left, transparent 60%, var(--crimson) 100%);
+}
+
+/* LEFT — INFO */
+.hero-info-side {
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px 48px 60px 32px;
+}
+
 .trainer-badge {
-  display:inline-block; background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.85);
-  font-size:13px; font-weight:700; padding:5px 18px; border-radius:100px; margin-bottom:16px;
+  display:inline-block;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.85);
+  font-size:13px; font-weight:700;
+  padding:6px 20px; border-radius:100px;
+  margin-bottom:24px;
+  width:fit-content;
 }
-.trainer-name { font-size:clamp(28px,6vw,48px); font-weight:900; color:#fff; margin-bottom:8px; line-height:1.2; }
-.trainer-title { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:32px; }
-.stats-row { display:flex; justify-content:center; gap:clamp(20px,5vw,56px); flex-wrap:wrap; margin-top:8px; }
-.stat { text-align:center; }
-.stat-n { font-size:clamp(26px,5vw,40px); font-weight:900; color:#fff; line-height:1; margin-bottom:4px; }
-.stat-l { font-size:13px; color:rgba(255,255,255,.5); }
+
+.trainer-name {
+  font-size:clamp(32px,4vw,56px);
+  font-weight:900;
+  color:#fff;
+  line-height:1.15;
+  margin-bottom:12px;
+}
+
+.trainer-title {
+  font-size:clamp(15px,2vw,18px);
+  color:rgba(255,255,255,.6);
+  margin-bottom:40px;
+  line-height:1.6;
+}
+
+.divider {
+  width:48px; height:2px;
+  background:rgba(255,255,255,.25);
+  margin-bottom:40px;
+}
+
+.stats-col {
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+.stat-row {
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.stat-n {
+  font-size:clamp(28px,3.5vw,44px);
+  font-weight:900;
+  color:#fff;
+  line-height:1;
+  min-width:90px;
+}
+
+.stat-l {
+  font-size:14px;
+  color:rgba(255,255,255,.55);
+  line-height:1.4;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .hero {
+    grid-template-columns:1fr;
+    grid-template-rows:400px auto;
+    min-height:auto;
+  }
+  .hero-photo-side { order:1; height:400px; }
+  .hero-photo-side::after {
+    background:linear-gradient(to top, var(--crimson) 5%, transparent 60%);
+  }
+  .hero-info-side { order:2; padding:32px 24px 48px; }
+  .trainer-name { font-size:32px; }
+}
 
 /* CONTENT */
-.content { max-width:800px; margin:0 auto; padding:clamp(48px,8vw,80px) 24px; }
-.section { margin-bottom:56px; }
+.content { max-width:960px; margin:0 auto; padding:clamp(56px,8vw,96px) 24px; }
+.section { margin-bottom:64px; }
 .section-label { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
-.section-title { font-size:clamp(22px,4vw,32px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
-.bio-text { font-size:17px; color:var(--muted); line-height:1.85; }
+.section-title { font-size:clamp(22px,4vw,34px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
+.bio-text { font-size:17px; color:var(--muted); line-height:1.9; }
 
 /* ORGS */
-.orgs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.orgs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
 .org-item {
-  background:#fff; border-radius:14px; padding:18px 20px;
+  background:#fff; border-radius:16px; padding:20px 22px;
   display:flex; align-items:center; gap:14px;
   border:1.5px solid rgba(92,15,15,.08);
-  font-size:14px; font-weight:700; color:var(--text); line-height:1.5;
+  font-size:15px; font-weight:700; color:var(--text); line-height:1.5;
   transition:all .25s;
 }
-.org-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 6px 20px rgba(92,15,15,.08); transform:translateY(-2px); }
-.org-icon { width:36px; height:36px; min-width:36px; display:flex; align-items:center; justify-content:center; }
-.org-icon svg { width:24px; height:24px; fill:var(--crimson); }
+.org-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 8px 24px rgba(92,15,15,.08); transform:translateY(-2px); }
+.org-icon { width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; }
+.org-icon svg { width:26px; height:26px; fill:var(--crimson); }
 
 /* COURSES */
-.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
 .course-card {
-  background:#fff; border-radius:18px; padding:28px 24px;
+  background:#fff; border-radius:20px; padding:32px 28px;
   border:1.5px solid rgba(92,15,15,.08); transition:all .25s;
   position:relative; overflow:hidden;
 }
 .course-card::before {
   content:''; position:absolute; top:0; right:0;
-  width:80px; height:80px; background:var(--crimson); opacity:.04;
-  border-radius:0 18px 0 80px;
+  width:90px; height:90px; background:var(--crimson); opacity:.04;
+  border-radius:0 20px 0 90px;
 }
-.course-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(92,15,15,.1); border-color:rgba(92,15,15,.18); }
-.course-icon { width:40px; height:40px; margin-bottom:14px; }
-.course-icon svg { width:36px; height:36px; fill:var(--crimson); }
-.course-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:6px; }
-.course-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+.course-card:hover { transform:translateY(-4px); box-shadow:0 20px 48px rgba(92,15,15,.1); border-color:rgba(92,15,15,.18); }
+.course-icon { width:44px; height:44px; margin-bottom:16px; }
+.course-icon svg { width:40px; height:40px; fill:var(--crimson); }
+.course-title { font-size:17px; font-weight:800; color:var(--text); margin-bottom:8px; }
+.course-desc { font-size:14px; color:var(--muted); line-height:1.7; }
 
 /* CTA */
 .cta-section {
-  background:var(--crimson); border-radius:24px;
-  padding:clamp(36px,6vw,56px) clamp(24px,5vw,48px);
+  background:var(--crimson); border-radius:28px;
+  padding:clamp(40px,6vw,64px) clamp(28px,5vw,56px);
   text-align:center; position:relative; overflow:hidden;
 }
 .cta-section::before {
@@ -120,29 +214,24 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
 }
 .cta-section>* { position:relative; z-index:1; }
-.cta-section h2 { font-size:clamp(22px,4vw,34px); font-weight:900; color:#fff; margin-bottom:12px; }
-.cta-section p { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:32px; }
+.cta-section h2 { font-size:clamp(24px,4vw,38px); font-weight:900; color:#fff; margin-bottom:12px; }
+.cta-section p { font-size:16px; color:rgba(255,255,255,.6); margin-bottom:36px; }
 .btn-contact {
-  display:inline-flex; align-items:center; gap:10px;
+  display:inline-flex; align-items:center; gap:12px;
   background:#fff; color:var(--crimson);
   font-family:'Tajawal',sans-serif;
   font-size:18px; font-weight:900;
-  padding:16px 48px; border-radius:100px;
+  padding:18px 52px; border-radius:100px;
   text-decoration:none; transition:all .28s;
   box-shadow:0 8px 28px rgba(0,0,0,.15);
 }
-.btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); }
+.btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.2); }
 .btn-contact svg { width:22px; height:22px; fill:var(--crimson); }
 
 /* FOOTER */
-footer { background:var(--crimson-2); padding:24px; text-align:center; margin-top:clamp(48px,8vw,80px); }
+footer { background:var(--crimson-2); padding:28px; text-align:center; margin-top:clamp(48px,8vw,80px); }
 footer p { font-size:13px; color:rgba(255,255,255,.3); }
 footer a { color:rgba(255,255,255,.55); text-decoration:none; }
-
-@media(max-width:600px){
-  .stats-row{gap:20px;}
-  .trainer-photo{width:130px;height:130px;}
-}
 </style>
 </head>
 <body>
@@ -158,18 +247,35 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <img src="trainer-ateiq.jpg" alt="عتيق العتيق" class="trainer-photo"
-      onerror="this.style.background='rgba(255,255,255,.1)'">
+
+  <!-- INFO -->
+  <div class="hero-info-side">
     <div class="trainer-badge">مدرب معتمد — معهد تمكين</div>
-    <h1 class="trainer-name">عتيق خالد العتيق</h1>
+    <h1 class="trainer-name">عتيق خالد<br>العتيق</h1>
     <p class="trainer-title">متخصص في تأهيل وتدريب المدربين</p>
-    <div class="stats-row">
-      <div class="stat"><div class="stat-n">+١١٠</div><div class="stat-l">دفعة تدريبية</div></div>
-      <div class="stat"><div class="stat-n">+٦٧٠٠</div><div class="stat-l">مدرب ومدربة مخرّجين</div></div>
-      <div class="stat"><div class="stat-n">٤+</div><div class="stat-l">جهات حكومية</div></div>
+    <div class="divider"></div>
+    <div class="stats-col">
+      <div class="stat-row">
+        <div class="stat-n">+١١٠</div>
+        <div class="stat-l">دفعة تدريبية مقدّمة</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-n">+٦٧٠٠</div>
+        <div class="stat-l">مدرب ومدربة مخرّجين<br>لسوق العمل</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-n">٤+</div>
+        <div class="stat-l">جهات حكومية</div>
+      </div>
     </div>
   </div>
+
+  <!-- PHOTO -->
+  <div class="hero-photo-side">
+    <img src="trainer-ateiq.jpg" alt="عتيق العتيق"
+      onerror="this.style.background='rgba(255,255,255,.05)'">
+  </div>
+
 </section>
 
 <!-- CONTENT -->
@@ -180,7 +286,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     <p class="section-label">نبذة</p>
     <h2 class="section-title">من هو عتيق العتيق؟</h2>
     <p class="bio-text">
-      مدرب معتمد متخصص في تأهيل وتدريب المدربين، قدّم أكثر من ١١٠ دفعة من دورة إعداد مدرب معتمد، وأسهم في تخريج أكثر من ٦٧٠٠ مدرب ومدربة لسوق العمل التدريبي في الكويت.
+      مدرب معتمد متخصص في تأهيل وتدريب المدربين، قدّم أكثر من ١١٠ دفعة من دورة إعداد مدرب معتمد، وأسهم في تخريج أكثر من ٦٧٠٠ مدرب ومدربة لسوق العمل التدريبي في الكويت. له تجربة واسعة مع كبرى الجهات الحكومية والتعليمية.
     </p>
   </div>
 
@@ -192,14 +298,14 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 
       <div class="org-item">
         <div class="org-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L23 9 12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
         </div>
         الهيئة العامة للتعليم والتدريب التطبيقي — مركز القياس والتقويم
       </div>
 
       <div class="org-item">
         <div class="org-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
         </div>
         جامعة الكويت — جمعية كلية التربية
       </div>
@@ -225,7 +331,15 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
           <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
         </div>
         <div class="course-title">إعداد مدرب معتمد</div>
-        <div class="course-desc">الدورة الأشمل لتأهيل المدربين وإعدادهم للحصول على الاعتماد الرسمي في سوق العمل</div>
+        <div class="course-desc">الدورة الأشمل لتأهيل المدربين وإعدادهم للحصول على الاعتماد الرسمي في سوق العمل التدريبي</div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        <div class="course-title">كيف تبني دورة رابحة</div>
+        <div class="course-desc">دورة متخصصة في بناء وتصميم الدورات التدريبية الناجحة التي تحقق نتائج حقيقية</div>
       </div>
 
     </div>
