@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقييم دورتك التدريبية | تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F5NXSHGNE6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-F5NXSHGNE6");
+</script>
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --white: #FFFFFF;
+  --text: #1A0808;
+  --muted: #7A6060;
+  --green: #1A7A3A;
+  --orange: #B85C00;
+  --red: #8B1A1A;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; min-height:100vh; }
+
+/* NAV */
+.nav {
+  background:var(--crimson); padding:16px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
+.nav-logo span { font-size:20px; font-weight:900; color:#fff; }
+
+/* WRAPPER */
+.wrapper {
+  max-width:680px; margin:0 auto;
+  padding:clamp(40px,6vw,72px) 24px;
+}
+
+/* PROGRESS */
+.progress-wrap {
+  margin-bottom:40px;
+}
+.progress-label {
+  display:flex; justify-content:space-between;
+  font-size:13px; font-weight:700; color:var(--muted);
+  margin-bottom:10px;
+}
+.progress-bar {
+  height:6px; background:rgba(92,15,15,.1); border-radius:100px; overflow:hidden;
+}
+.progress-fill {
+  height:100%; background:var(--crimson); border-radius:100px;
+  transition:width .4s ease;
+}
+
+/* CARD */
+.card {
+  background:#fff; border-radius:24px;
+  padding:clamp(32px,5vw,48px);
+  box-shadow:0 8px 40px rgba(92,15,15,.07);
+  border:1.5px solid rgba(92,15,15,.06);
+}
+
+/* STEP — INTRO */
+.step-icon {
+  width:64px; height:64px;
+  background:rgba(92,15,15,.06);
+  border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:24px;
+}
+.step-icon svg { width:32px; height:32px; fill:var(--crimson); }
+
+.step-tag {
+  font-size:12px; font-weight:800; letter-spacing:2px;
+  color:var(--crimson); text-transform:uppercase; margin-bottom:10px;
+}
+.step-title {
+  font-size:clamp(22px,4vw,32px); font-weight:900;
+  color:var(--text); line-height:1.3; margin-bottom:12px;
+}
+.step-desc {
+  font-size:16px; color:var(--muted); line-height:1.8; margin-bottom:32px;
+}
+
+/* FORM — LEAD */
+.field { margin-bottom:20px; }
+.field label { display:block; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px; }
+.field input {
+  width:100%; background:var(--cream); border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px; padding:14px 18px;
+  font-family:'Tajawal',sans-serif; font-size:16px; color:var(--text);
+  outline:none; transition:all .25s; text-align:right;
+}
+.field input:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.07); background:#fff; }
+.field input::placeholder { color:rgba(122,96,96,.45); }
+
+/* OPTIONS */
+.options { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+.option {
+  background:var(--cream); border:1.5px solid rgba(92,15,15,.08);
+  border-radius:14px; padding:16px 20px;
+  cursor:pointer; transition:all .25s;
+  display:flex; align-items:center; gap:14px;
+  font-size:15px; font-weight:600; color:var(--text);
+  user-select:none;
+}
+.option:hover { border-color:rgba(92,15,15,.2); background:#fff; }
+.option.selected {
+  border-color:var(--crimson);
+  background:rgba(92,15,15,.04);
+  color:var(--crimson);
+}
+.option-dot {
+  width:20px; height:20px; min-width:20px;
+  border-radius:50%; border:2px solid rgba(92,15,15,.2);
+  transition:all .25s; display:flex; align-items:center; justify-content:center;
+}
+.option.selected .option-dot {
+  background:var(--crimson); border-color:var(--crimson);
+}
+.option.selected .option-dot::after {
+  content:''; width:8px; height:8px; background:#fff; border-radius:50%;
+}
+
+/* BTN */
+.btn-next {
+  width:100%; background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif; font-size:18px; font-weight:900;
+  padding:16px; border-radius:100px; border:none; cursor:pointer;
+  transition:all .28s; box-shadow:0 8px 24px rgba(92,15,15,.25);
+}
+.btn-next:hover { background:var(--crimson-2); transform:translateY(-2px); box-shadow:0 14px 36px rgba(92,15,15,.3); }
+.btn-next:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* QUESTION NUMBER */
+.q-num {
+  font-size:12px; font-weight:800; letter-spacing:2px;
+  color:var(--muted); text-transform:uppercase; margin-bottom:10px;
+}
+.q-text {
+  font-size:clamp(18px,3vw,24px); font-weight:800;
+  color:var(--text); line-height:1.4; margin-bottom:28px;
+}
+
+/* RESULT */
+.result-header {
+  text-align:center; margin-bottom:36px;
+}
+.result-score-wrap {
+  width:140px; height:140px; margin:0 auto 24px;
+  border-radius:50%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  position:relative;
+}
+.result-score-wrap.high { background:rgba(26,122,58,.08); border:3px solid rgba(26,122,58,.3); }
+.result-score-wrap.mid  { background:rgba(184,92,0,.08); border:3px solid rgba(184,92,0,.3); }
+.result-score-wrap.low  { background:rgba(139,26,26,.08); border:3px solid rgba(139,26,26,.3); }
+
+.result-pct {
+  font-size:44px; font-weight:900; line-height:1;
+}
+.result-score-wrap.high .result-pct { color:var(--green); }
+.result-score-wrap.mid  .result-pct { color:var(--orange); }
+.result-score-wrap.low  .result-pct { color:var(--red); }
+
+.result-pct-label { font-size:13px; font-weight:600; color:var(--muted); }
+
+.result-level {
+  font-size:clamp(22px,4vw,30px); font-weight:900; margin-bottom:8px;
+}
+.result-level.high { color:var(--green); }
+.result-level.mid  { color:var(--orange); }
+.result-level.low  { color:var(--red); }
+
+.result-subtitle { font-size:16px; color:var(--muted); line-height:1.7; }
+
+/* FEEDBACK ITEMS */
+.feedback-list { margin-bottom:32px; }
+.feedback-title {
+  font-size:14px; font-weight:800; letter-spacing:2px;
+  color:var(--crimson); text-transform:uppercase; margin-bottom:16px;
+}
+.feedback-item {
+  background:var(--cream); border-radius:14px; padding:16px 20px;
+  display:flex; align-items:flex-start; gap:12px;
+  margin-bottom:10px; border:1.5px solid rgba(92,15,15,.06);
+}
+.feedback-dot {
+  width:8px; height:8px; min-width:8px; border-radius:50%; margin-top:6px;
+}
+.feedback-dot.good { background:var(--green); }
+.feedback-dot.warn { background:var(--orange); }
+.feedback-dot.bad  { background:var(--red); }
+.feedback-text { font-size:14px; color:var(--text); line-height:1.6; font-weight:600; }
+
+/* CTA RESULT */
+.cta-result {
+  background:var(--crimson); border-radius:20px;
+  padding:28px 28px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.cta-result::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:44px 44px;
+}
+.cta-result>* { position:relative; z-index:1; }
+.cta-result h3 { font-size:20px; font-weight:900; color:#fff; margin-bottom:8px; }
+.cta-result p { font-size:14px; color:rgba(255,255,255,.65); margin-bottom:20px; }
+.btn-wa {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif;
+  font-size:16px; font-weight:900;
+  padding:14px 36px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+}
+.btn-wa:hover { background:var(--cream-2); transform:translateY(-2px); }
+.btn-wa svg { width:20px; height:20px; fill:var(--crimson); }
+
+/* FOOTER */
+footer { background:var(--crimson-2); padding:24px; text-align:center; margin-top:48px; }
+footer p { font-size:13px; color:rgba(255,255,255,.3); }
+footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+
+@media(max-width:500px){ .card { padding:24px 20px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="Untitled_design__2_.png" alt="تمكين" onerror="this.style.display='none'">
+    <span>تمكين</span>
+  </a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-label">
+      <span id="progressText">السؤال ١ من ٨</span>
+      <span id="progressPct">١٢٪</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:12%"></div>
+    </div>
+  </div>
+
+  <div class="card" id="mainCard">
+    <!-- STEP 0: INTRO -->
+    <div id="step-intro">
+      <div class="step-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+      </div>
+      <div class="step-tag">معهد تمكين</div>
+      <h1 class="step-title">هل دورتك التدريبية جاهزة للنجاح؟</h1>
+      <p class="step-desc">
+        أجب على ٨ أسئلة سريعة واحصل على تقرير فوري يكشف نقاط القوة في دورتك وما يحتاج تطوير.
+      </p>
+      <button class="btn-next" onclick="showLead()">ابدأ التقييم ←</button>
+    </div>
+
+    <!-- STEP 1: LEAD CAPTURE -->
+    <div id="step-lead" style="display:none">
+      <div class="step-tag">خطوة أولى</div>
+      <h2 class="step-title">أدخل بياناتك للحصول على تقريرك</h2>
+      <p class="step-desc">تقريرك سيكون جاهزاً فوراً بعد إكمال التقييم</p>
+
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="leadName" placeholder="أدخل اسمك الكامل">
+      </div>
+      <div class="field">
+        <label>رقم الواتساب</label>
+        <input type="tel" id="leadPhone" placeholder="XXXXXXXX">
+      </div>
+
+      <button class="btn-next" id="leadBtn" onclick="startQuiz()" disabled>
+        ابدأ التقييم ←
+      </button>
+    </div>
+
+    <!-- STEP 2: QUESTIONS -->
+    <div id="step-quiz" style="display:none">
+      <div class="q-num" id="qNum">السؤال ١ من ٨</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsWrap"></div>
+      <button class="btn-next" id="nextBtn" onclick="nextQuestion()" disabled>التالي ←</button>
+    </div>
+
+    <!-- STEP 3: RESULT -->
+    <div id="step-result" style="display:none"></div>
+  </div>
+
+</div>
+
+<footer>
+  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a></p>
+</footer>
+
+<script>
+const questions = [
+  {
+    text: "هل لديك هدف تعليمي واضح لدورتك؟",
+    options: [
+      { text: "نعم، محدد وقابل للقياس", score: 3 },
+      { text: "نعم، لكنه عام", score: 2 },
+      { text: "لا يوجد هدف واضح", score: 0 }
+    ]
+  },
+  {
+    text: "هل محتوى دورتك مقسّم إلى وحدات أو مراحل؟",
+    options: [
+      { text: "نعم، مقسّم بشكل منظم", score: 3 },
+      { text: "مقسّم جزئياً", score: 1 },
+      { text: "لا، المحتوى غير مقسّم", score: 0 }
+    ]
+  },
+  {
+    text: "هل تستخدم أساليب تدريب متنوعة؟",
+    options: [
+      { text: "نعم، أكثر من ٣ أساليب", score: 3 },
+      { text: "أسلوبين فقط", score: 1 },
+      { text: "أسلوب واحد فقط", score: 0 }
+    ]
+  },
+  {
+    text: "هل لديك آلية لقياس نتائج المتدربين؟",
+    options: [
+      { text: "نعم، اختبارات أو تقييم عملي", score: 3 },
+      { text: "تقييم غير رسمي فقط", score: 1 },
+      { text: "لا يوجد تقييم", score: 0 }
+    ]
+  },
+  {
+    text: "هل دورتك تحتوي على أنشطة تفاعلية؟",
+    options: [
+      { text: "نعم، أنشطة متعددة", score: 3 },
+      { text: "نشاط واحد فقط", score: 1 },
+      { text: "لا يوجد", score: 0 }
+    ]
+  },
+  {
+    text: "هل لديك مواد داعمة للمتدربين؟",
+    options: [
+      { text: "نعم، مذكرات وملفات كاملة", score: 3 },
+      { text: "مواد جزئية", score: 1 },
+      { text: "لا يوجد", score: 0 }
+    ]
+  },
+  {
+    text: "هل دورتك معتمدة من جهة رسمية؟",
+    options: [
+      { text: "نعم، معتمدة", score: 3 },
+      { text: "قيد الاعتماد", score: 1 },
+      { text: "غير معتمدة", score: 0 }
+    ]
+  },
+  {
+    text: "هل قدّمت دورتك من قبل وجمعت تغذية راجعة؟",
+    options: [
+      { text: "نعم، وطوّرتها بناءً عليها", score: 3 },
+      { text: "قدّمتها لكن بدون تغذية راجعة", score: 1 },
+      { text: "لم أقدمها بعد", score: 0 }
+    ]
+  }
+];
+
+const feedback = [
+  { q: 0, good: "هدفك التعليمي واضح ومحدد — هذا أساس كل دورة ناجحة", warn: "هدفك العام يحتاج تحديد أكثر — حدّد ماذا سيتعلم المتدرب بالضبط", bad: "غياب الهدف يضعف دورتك — ابدأ بتحديد هدف SMART واضح" },
+  { q: 1, good: "تقسيم المحتوى ممتاز — يسهّل الفهم ويرفع الاحتراف", warn: "تقسيم المحتوى جزئي — أكمل تنظيمه في وحدات واضحة", bad: "محتوى غير مقسّم = تجربة فوضوية للمتدرب" },
+  { q: 2, good: "تنوع الأساليب يرفع مستوى التفاعل والاستيعاب", warn: "أضف أسلوباً ثالثاً على الأقل لتجنب الرتابة", bad: "أسلوب واحد يضعف الانتباه — نوّع بين المحاضرة والنقاش والتطبيق" },
+  { q: 3, good: "وجود التقييم يثبت قيمة دورتك ويزيد مصداقيتها", warn: "حوّل تقييمك غير الرسمي لأداة قياس واضحة", bad: "بدون تقييم لا تعرف هل المتدرب استفاد أم لا" },
+  { q: 4, good: "الأنشطة التفاعلية تضاعف الاستيعاب والرضا", warn: "أضف أنشطة أكثر — حتى ورقة عمل بسيطة تفرق", bad: "دورة بدون تفاعل = محاضرة — المتدربون يحتاجون التطبيق" },
+  { q: 5, good: "المواد الداعمة تعطي المتدرب قيمة تستمر بعد الدورة", warn: "أكمل مواد الدورة — المذكرة الجيدة تفرق كثيراً", bad: "المواد الداعمة أساسية — ابدأ بمذكرة بسيطة على الأقل" },
+  { q: 6, good: "الاعتماد الرسمي يفتح لك أبواباً كثيرة", warn: "الاعتماد قيد التنفيذ — أكمله قريباً", bad: "الاعتماد يرفع قيمتك وقيمة دورتك — معهد تمكين يساعدك في ذلك" },
+  { q: 7, good: "التطوير المستمر بناءً على الملاحظات يميزك عن غيرك", warn: "استخدم تجربتك السابقة لجمع ملاحظات وطوّر دورتك", bad: "أول تقديم للدورة مهم — خطّط له جيداً وجمّع ملاحظات بعده" }
+];
+
+let currentQ = 0;
+let scores = [];
+let selectedOption = null;
+let userName = '';
+let userPhone = '';
+
+function showLead() {
+  document.getElementById('step-intro').style.display = 'none';
+  document.getElementById('step-lead').style.display = 'block';
+
+  // Enable button when fields filled
+  ['leadName','leadPhone'].forEach(id => {
+    document.getElementById(id).addEventListener('input', checkLead);
+  });
+}
+
+function checkLead() {
+  const n = document.getElementById('leadName').value.trim();
+  const p = document.getElementById('leadPhone').value.trim();
+  document.getElementById('leadBtn').disabled = !(n.length > 2 && p.length > 6);
+}
+
+function startQuiz() {
+  userName = document.getElementById('leadName').value.trim();
+  userPhone = document.getElementById('leadPhone').value.trim();
+
+  // Send to WhatsApp (store lead)
+  const msg = encodeURIComponent('مدرب جديد بدأ تقييم دورته 📋\n\nالاسم: ' + userName + '\nرقم التواصل: ' + userPhone);
+  // Silent fetch - just open in background
+  const waLink = 'https://wa.me/96597999768?text=' + msg;
+
+  document.getElementById('step-lead').style.display = 'none';
+  document.getElementById('step-quiz').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'block';
+
+  loadQuestion(0);
+}
+
+function loadQuestion(idx) {
+  selectedOption = null;
+  document.getElementById('nextBtn').disabled = true;
+
+  const q = questions[idx];
+  const total = questions.length;
+  const pct = Math.round(((idx) / total) * 100);
+
+  document.getElementById('qNum').textContent = 'السؤال ' + toArabic(idx+1) + ' من ' + toArabic(total);
+  document.getElementById('progressText').textContent = 'السؤال ' + toArabic(idx+1) + ' من ' + toArabic(total);
+  document.getElementById('progressPct').textContent = toArabic(pct) + '٪';
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('qText').textContent = q.text;
+
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = '<div class="option-dot"></div><span>' + opt.text + '</span>';
+    div.onclick = () => selectOption(i, div);
+    wrap.appendChild(div);
+  });
+}
+
+function selectOption(idx, el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOption = idx;
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  scores.push(questions[currentQ].options[selectedOption].score);
+  currentQ++;
+
+  if (currentQ < questions.length) {
+    loadQuestion(currentQ);
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('step-quiz').style.display = 'none';
+
+  const total = questions.length * 3;
+  const score = scores.reduce((a,b) => a+b, 0);
+  const pct = Math.round((score/total)*100);
+
+  let level, levelClass, emoji, subtitle;
+  if (pct >= 70) {
+    level = 'دورتك جاهزة للإطلاق ✅';
+    levelClass = 'high';
+    emoji = '🎉';
+    subtitle = 'دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية';
+  } else if (pct >= 40) {
+    level = 'دورتك تحتاج تطوير ⚠️';
+    levelClass = 'mid';
+    emoji = '💡';
+    subtitle = 'عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق';
+  } else {
+    level = 'دورتك تحتاج إعادة بناء 🔧';
+    levelClass = 'low';
+    emoji = '🛠️';
+    subtitle = 'لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن';
+  }
+
+  // Build feedback
+  let goodItems = [], warnItems = [];
+  scores.forEach((s, i) => {
+    const f = feedback[i];
+    if (s === 3) goodItems.push({ text: f.good, type: 'good' });
+    else if (s === 1) warnItems.push({ text: f.warn, type: 'warn' });
+    else warnItems.push({ text: f.bad, type: 'bad' });
+  });
+
+  let feedbackHTML = '';
+  if (goodItems.length) {
+    feedbackHTML += '<div class="feedback-list"><div class="feedback-title">نقاط قوتك</div>';
+    goodItems.forEach(f => {
+      feedbackHTML += '<div class="feedback-item"><div class="feedback-dot good"></div><div class="feedback-text">' + f.text + '</div></div>';
+    });
+    feedbackHTML += '</div>';
+  }
+  if (warnItems.length) {
+    feedbackHTML += '<div class="feedback-list"><div class="feedback-title">ما يحتاج تطوير</div>';
+    warnItems.slice(0,4).forEach(f => {
+      feedbackHTML += '<div class="feedback-item"><div class="feedback-dot ' + f.type + '"></div><div class="feedback-text">' + f.text + '</div></div>';
+    });
+    feedbackHTML += '</div>';
+  }
+
+  const waMsg = encodeURIComponent('السلام عليكم، أنا ' + userName + ' — أكملت تقييم دورتي في تمكين وحصلت على ' + pct + '٪. أبي أعرف كيف أطور دورتي 🎯');
+
+  document.getElementById('step-result').innerHTML = `
+    <div class="result-header">
+      <div class="result-score-wrap ${levelClass}">
+        <div class="result-pct">${toArabic(pct)}٪</div>
+        <div class="result-pct-label">النتيجة</div>
+      </div>
+      <div class="result-level ${levelClass}">${level}</div>
+      <p class="result-subtitle">${subtitle}</p>
+    </div>
+
+    ${feedbackHTML}
+
+    <div class="cta-result">
+      <h3>تبي تطور دورتك مع تمكين؟</h3>
+      <p>فريقنا جاهز يساعدك تبني دورة احترافية معتمدة</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" class="btn-wa" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>
+  `;
+
+  document.getElementById('step-result').style.display = 'block';
+
+  // Update progress to 100%
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = 'اكتمل التقييم';
+  document.getElementById('progressPct').textContent = '١٠٠٪';
+}
+
+function toArabic(n) {
+  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+// Lead form validation
+document.addEventListener('DOMContentLoaded', () => {
+  const inputs = document.querySelectorAll('#step-lead input');
+  inputs.forEach(inp => inp.addEventListener('input', checkLead));
+});
+</script>
+
+</body>
+</html>
