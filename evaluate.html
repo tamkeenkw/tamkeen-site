@@ -398,6 +398,17 @@ let selectedOption = null;
 let userName = '';
 let userPhone = '';
 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
+
+function saveToSheets(name, phone, score, level) {
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, phone: phone, score: score, level: level })
+  }).catch(err => console.log('Sheets error:', err));
+}
+
 function showMyResult() {
   userName = document.getElementById('leadName').value.trim();
   userPhone = document.getElementById('leadPhone').value.trim();
@@ -504,6 +515,8 @@ function showLeadGate() {
 function showResult() {
   document.getElementById('progressWrap').style.display = 'none';
   document.getElementById('step-quiz').style.display = 'none';
+  document.getElementById('step-lead').style.display = 'none';
+  document.getElementById('step-intro').style.display = 'none';
 
   const total = questions.length * 3;
   const score = scores.reduce((a,b) => a+b, 0);
