@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عتيق العتيق — مدرب معتمد | تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --white: #FFFFFF;
+  --text: #1A0808;
+  --muted: #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+/* NAV */
+.nav {
+  background:var(--crimson);
+  padding:16px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
+.nav-logo span { font-size:20px; font-weight:900; color:#fff; }
+.nav-back {
+  color:rgba(255,255,255,.7); text-decoration:none;
+  font-size:14px; font-weight:600;
+  display:flex; align-items:center; gap:6px; transition:color .2s;
+}
+.nav-back:hover { color:#fff; }
+
+/* HERO */
+.hero {
+  background:var(--crimson); padding:60px 24px 80px;
+  text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.hero-inner { position:relative; z-index:1; max-width:700px; margin:0 auto; }
+.trainer-photo {
+  width:160px; height:160px; border-radius:50%; object-fit:cover;
+  border:4px solid rgba(255,255,255,.2); margin-bottom:24px;
+  box-shadow:0 16px 48px rgba(0,0,0,.25);
+}
+.trainer-badge {
+  display:inline-block; background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.85);
+  font-size:13px; font-weight:700; padding:5px 18px; border-radius:100px; margin-bottom:16px;
+}
+.trainer-name { font-size:clamp(28px,6vw,48px); font-weight:900; color:#fff; margin-bottom:8px; line-height:1.2; }
+.trainer-title { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:32px; }
+.stats-row { display:flex; justify-content:center; gap:clamp(20px,5vw,56px); flex-wrap:wrap; margin-top:8px; }
+.stat { text-align:center; }
+.stat-n { font-size:clamp(26px,5vw,40px); font-weight:900; color:#fff; line-height:1; margin-bottom:4px; }
+.stat-l { font-size:13px; color:rgba(255,255,255,.5); }
+
+/* CONTENT */
+.content { max-width:800px; margin:0 auto; padding:clamp(48px,8vw,80px) 24px; }
+.section { margin-bottom:56px; }
+.section-label { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.section-title { font-size:clamp(22px,4vw,32px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
+.bio-text { font-size:17px; color:var(--muted); line-height:1.85; }
+
+/* ORGS */
+.orgs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.org-item {
+  background:#fff; border-radius:14px; padding:18px 20px;
+  display:flex; align-items:center; gap:14px;
+  border:1.5px solid rgba(92,15,15,.08);
+  font-size:14px; font-weight:700; color:var(--text); line-height:1.5;
+  transition:all .25s;
+}
+.org-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 6px 20px rgba(92,15,15,.08); transform:translateY(-2px); }
+.org-icon { width:36px; height:36px; min-width:36px; display:flex; align-items:center; justify-content:center; }
+.org-icon svg { width:24px; height:24px; fill:var(--crimson); }
+
+/* COURSES */
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.course-card {
+  background:#fff; border-radius:18px; padding:28px 24px;
+  border:1.5px solid rgba(92,15,15,.08); transition:all .25s;
+  position:relative; overflow:hidden;
+}
+.course-card::before {
+  content:''; position:absolute; top:0; right:0;
+  width:80px; height:80px; background:var(--crimson); opacity:.04;
+  border-radius:0 18px 0 80px;
+}
+.course-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(92,15,15,.1); border-color:rgba(92,15,15,.18); }
+.course-icon { width:40px; height:40px; margin-bottom:14px; }
+.course-icon svg { width:36px; height:36px; fill:var(--crimson); }
+.course-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:6px; }
+.course-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+
+/* CTA */
+.cta-section {
+  background:var(--crimson); border-radius:24px;
+  padding:clamp(36px,6vw,56px) clamp(24px,5vw,48px);
+  text-align:center; position:relative; overflow:hidden;
+}
+.cta-section::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
+}
+.cta-section>* { position:relative; z-index:1; }
+.cta-section h2 { font-size:clamp(22px,4vw,34px); font-weight:900; color:#fff; margin-bottom:12px; }
+.cta-section p { font-size:16px; color:rgba(255,255,255,.65); margin-bottom:32px; }
+.btn-contact {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif;
+  font-size:18px; font-weight:900;
+  padding:16px 48px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+  box-shadow:0 8px 28px rgba(0,0,0,.15);
+}
+.btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); }
+.btn-contact svg { width:22px; height:22px; fill:var(--crimson); }
+
+/* FOOTER */
+footer { background:var(--crimson-2); padding:24px; text-align:center; margin-top:clamp(48px,8vw,80px); }
+footer p { font-size:13px; color:rgba(255,255,255,.3); }
+footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+
+@media(max-width:600px){
+  .stats-row{gap:20px;}
+  .trainer-photo{width:130px;height:130px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="Untitled_design__2_.png" alt="تمكين" onerror="this.style.display='none'">
+    <span>تمكين</span>
+  </a>
+  <a href="/" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <img src="trainer-ateiq.jpg" alt="عتيق العتيق" class="trainer-photo"
+      onerror="this.style.background='rgba(255,255,255,.1)'">
+    <div class="trainer-badge">مدرب معتمد — معهد تمكين</div>
+    <h1 class="trainer-name">عتيق خالد العتيق</h1>
+    <p class="trainer-title">متخصص في تأهيل وتدريب المدربين</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">+١١٠</div><div class="stat-l">دفعة تدريبية</div></div>
+      <div class="stat"><div class="stat-n">+٦٧٠٠</div><div class="stat-l">مدرب ومدربة مخرّجين</div></div>
+      <div class="stat"><div class="stat-n">٤+</div><div class="stat-l">جهات حكومية</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- BIO -->
+  <div class="section">
+    <p class="section-label">نبذة</p>
+    <h2 class="section-title">من هو عتيق العتيق؟</h2>
+    <p class="bio-text">
+      مدرب معتمد متخصص في تأهيل وتدريب المدربين، قدّم أكثر من ١١٠ دفعة من دورة إعداد مدرب معتمد، وأسهم في تخريج أكثر من ٦٧٠٠ مدرب ومدربة لسوق العمل التدريبي في الكويت.
+    </p>
+  </div>
+
+  <!-- ORGS -->
+  <div class="section">
+    <p class="section-label">الجهات</p>
+    <h2 class="section-title">الجهات التي تعامل معها</h2>
+    <div class="orgs-grid">
+
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6L23 9 12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+        </div>
+        الهيئة العامة للتعليم والتدريب التطبيقي — مركز القياس والتقويم
+      </div>
+
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        جامعة الكويت — جمعية كلية التربية
+      </div>
+
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        جمعية المعلمين الكويتية
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="section">
+    <p class="section-label">الدورات</p>
+    <h2 class="section-title">الدورات المقدّمة</h2>
+    <div class="courses-grid">
+
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        <div class="course-title">إعداد مدرب معتمد</div>
+        <div class="course-desc">الدورة الأشمل لتأهيل المدربين وإعدادهم للحصول على الاعتماد الرسمي في سوق العمل</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="section">
+    <div class="cta-section">
+      <h2>تواصل مع عتيق مباشرة</h2>
+      <p>للاستفسار عن الدورات والتسجيل</p>
+      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أستفسر عن دورات المدرب عتيق العتيق" class="btn-contact" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل على واتساب
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
+</footer>
+
+</body>
+</html>
