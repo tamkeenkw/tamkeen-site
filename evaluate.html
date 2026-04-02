@@ -398,6 +398,13 @@ let selectedOption = null;
 let userName = '';
 let userPhone = '';
 
+function startQuizDirect() {
+  document.getElementById('step-intro').style.display = 'none';
+  document.getElementById('step-quiz').style.display = 'block';
+  document.getElementById('progressWrap').style.display = 'block';
+  loadQuestion(0);
+}
+
 function showLead() {
   document.getElementById('step-intro').style.display = 'none';
   document.getElementById('step-lead').style.display = 'block';
