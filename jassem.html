@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>د. جاسم الجزاع — مدرب معتمد | تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --white: #FFFFFF;
+  --text: #1A0808;
+  --muted: #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+/* NAV */
+.nav {
+  background:var(--crimson);
+  padding:16px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
+.nav-logo span { font-size:20px; font-weight:900; color:#fff; }
+.nav-back {
+  color:rgba(255,255,255,.7); text-decoration:none;
+  font-size:14px; font-weight:600;
+  display:flex; align-items:center; gap:6px; transition:color .2s;
+}
+.nav-back:hover { color:#fff; }
+
+/* HERO */
+.hero {
+  background:var(--crimson);
+  padding:72px 24px 96px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;
+  background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.hero-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
+
+.trainer-photo-wrap {
+  margin-bottom:36px;
+  display:inline-block;
+  position:relative;
+}
+.trainer-photo-wrap::before {
+  content:''; position:absolute; inset:-6px;
+  border-radius:50%; border:2px solid rgba(255,255,255,.15);
+}
+.trainer-photo-wrap::after {
+  content:''; position:absolute; inset:-14px;
+  border-radius:50%; border:1px solid rgba(255,255,255,.07);
+}
+.trainer-photo {
+  width:240px; height:240px; border-radius:50%;
+  object-fit:cover; object-position:top center; display:block;
+  border:5px solid rgba(255,255,255,.18);
+  box-shadow:0 24px 72px rgba(0,0,0,.3);
+}
+
+.trainer-badge {
+  display:inline-block;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.85);
+  font-size:13px; font-weight:700;
+  padding:6px 22px; border-radius:100px; margin-bottom:20px;
+}
+
+.trainer-name {
+  font-size:clamp(36px,7vw,64px);
+  font-weight:900; color:#fff; line-height:1.15; margin-bottom:12px;
+}
+
+.trainer-title {
+  font-size:clamp(16px,2.5vw,20px);
+  color:rgba(255,255,255,.6); margin-bottom:48px;
+}
+
+.stats-row {
+  display:flex; justify-content:center;
+  gap:clamp(24px,6vw,72px); flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-n { font-size:clamp(32px,6vw,52px); font-weight:900; color:#fff; line-height:1; margin-bottom:6px; }
+.stat-l { font-size:13px; color:rgba(255,255,255,.5); line-height:1.4; }
+
+/* CONTENT */
+.content { max-width:900px; margin:0 auto; padding:clamp(56px,8vw,96px) 24px; }
+.section { margin-bottom:64px; }
+.section-label { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.section-title { font-size:clamp(24px,4vw,36px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
+.bio-text { font-size:17px; color:var(--muted); line-height:1.9; }
+
+/* ORGS */
+.orgs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+.org-item {
+  background:#fff; border-radius:16px; padding:20px 22px;
+  display:flex; align-items:center; gap:14px;
+  border:1.5px solid rgba(92,15,15,.08);
+  font-size:14px; font-weight:700; color:var(--text); line-height:1.5;
+  transition:all .25s;
+}
+.org-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 8px 24px rgba(92,15,15,.08); transform:translateY(-2px); }
+.org-icon { width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; }
+.org-icon svg { width:26px; height:26px; fill:var(--crimson); }
+
+/* COURSES */
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+.course-card {
+  background:#fff; border-radius:20px; padding:30px 26px;
+  border:1.5px solid rgba(92,15,15,.08); transition:all .25s;
+  position:relative; overflow:hidden;
+}
+.course-card::before {
+  content:''; position:absolute; top:0; right:0;
+  width:90px; height:90px; background:var(--crimson); opacity:.04;
+  border-radius:0 20px 0 90px;
+}
+.course-card:hover { transform:translateY(-4px); box-shadow:0 20px 48px rgba(92,15,15,.1); border-color:rgba(92,15,15,.18); }
+.course-icon { width:40px; height:40px; margin-bottom:14px; }
+.course-icon svg { width:36px; height:36px; fill:var(--crimson); }
+.course-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:6px; }
+.course-desc { font-size:13px; color:var(--muted); line-height:1.7; }
+
+/* MEDIA */
+.media-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.media-item {
+  background:#fff; border-radius:16px; padding:20px 22px;
+  display:flex; align-items:center; gap:14px;
+  border:1.5px solid rgba(92,15,15,.08);
+  font-size:14px; font-weight:700; color:var(--text); line-height:1.5;
+  transition:all .25s;
+}
+.media-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 8px 24px rgba(92,15,15,.08); transform:translateY(-2px); }
+.media-icon { width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; }
+.media-icon svg { width:26px; height:26px; fill:var(--crimson); }
+
+/* CTA */
+.cta-section {
+  background:var(--crimson); border-radius:28px;
+  padding:clamp(40px,6vw,64px) clamp(28px,5vw,56px);
+  text-align:center; position:relative; overflow:hidden;
+}
+.cta-section::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
+}
+.cta-section>* { position:relative; z-index:1; }
+.cta-section h2 { font-size:clamp(24px,4vw,38px); font-weight:900; color:#fff; margin-bottom:12px; }
+.cta-section p { font-size:16px; color:rgba(255,255,255,.6); margin-bottom:36px; }
+.btn-contact {
+  display:inline-flex; align-items:center; gap:12px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif;
+  font-size:18px; font-weight:900;
+  padding:18px 52px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+  box-shadow:0 8px 28px rgba(0,0,0,.15);
+}
+.btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.2); }
+.btn-contact svg { width:22px; height:22px; fill:var(--crimson); }
+
+/* FOOTER */
+footer { background:var(--crimson-2); padding:28px; text-align:center; margin-top:clamp(48px,8vw,80px); }
+footer p { font-size:13px; color:rgba(255,255,255,.3); }
+footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+
+@media(max-width:600px){
+  .trainer-photo { width:190px; height:190px; }
+  .stats-row { gap:24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="Untitled_design__2_.png" alt="تمكين" onerror="this.style.display='none'">
+    <span>تمكين</span>
+  </a>
+  <a href="/" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="trainer-photo-wrap">
+      <img src="trainer-jassem.jpg" alt="د. جاسم الجزاع" class="trainer-photo"
+        onerror="this.style.background='rgba(255,255,255,.08)'">
+    </div>
+
+    <div class="trainer-badge">دكتوراه إدارة أعمال — مدرب معتمد | تمكين</div>
+    <h1 class="trainer-name">د. جاسم محمد الجزاع</h1>
+    <p class="trainer-title">أستاذ مساعد — متخصص في الإدارة والتطوير المؤسسي</p>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-n">+٥٠٠٠</div>
+        <div class="stat-l">متدرب مخرّج</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">١٠M+</div>
+        <div class="stat-l">مشاهدة يوتيوب</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">٤</div>
+        <div class="stat-l">برامج تلفزيونية</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- BIO -->
+  <div class="section">
+    <p class="section-label">نبذة</p>
+    <h2 class="section-title">من هو د. جاسم الجزاع؟</h2>
+    <p class="bio-text">
+      دكتوراه في إدارة الأعمال، وأستاذ مساعد في كلية إدارة الأعمال بالجامعة الدولية في الكويت. درّب أكثر من ٥٠٠٠ متدرب من القطاع العام والخاص، وله حضور إعلامي واسع من خلال برامج تلفزيونية في قنوات القبس وKTV والصباح وقطر، إضافة إلى قناة يوتيوب تجاوزت ١٠ ملايين مشاهدة.
+    </p>
+  </div>
+
+  <!-- ORGS -->
+  <div class="section">
+    <p class="section-label">الجهات</p>
+    <h2 class="section-title">الجهات التي تعامل معها</h2>
+    <div class="orgs-grid">
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        الجامعة الدولية في الكويت
+      </div>
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        كلية الكويت للتقنية
+      </div>
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        الهيئة العامة للتعليم التطبيقي والتدريب
+      </div>
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        كلية مبارك العبدالله للقيادة — الجيش الكويتي
+      </div>
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        المعهد العربي للتخطيط — الكويت
+      </div>
+      <div class="org-item">
+        <div class="org-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        معهد الإدارة العامة — قطر
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="section">
+    <p class="section-label">الدورات</p>
+    <h2 class="section-title">مجالات التدريب</h2>
+    <div class="courses-grid">
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+        </div>
+        <div class="course-title">القيادة الإدارية</div>
+        <div class="course-desc">تطوير مهارات القيادة والإدارة الفعّالة في بيئات العمل المختلفة</div>
+      </div>
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        <div class="course-title">إدارة الأزمات</div>
+        <div class="course-desc">استراتيجيات التعامل مع الأزمات واتخاذ القرار في الأوقات الحرجة</div>
+      </div>
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <div class="course-title">الإبداع والابتكار</div>
+        <div class="course-desc">بناء ثقافة الإبداع وتطوير مهارات التفكير الابتكاري في المنظمات</div>
+      </div>
+      <div class="course-card">
+        <div class="course-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div class="course-title">إدارة الموارد البشرية</div>
+        <div class="course-desc">تطوير كفاءة الفرق وإدارة الأداء وبناء بيئة عمل منتجة</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDIA -->
+  <div class="section">
+    <p class="section-label">الإعلام</p>
+    <h2 class="section-title">الحضور الإعلامي</h2>
+    <div class="media-grid">
+      <div class="media-item">
+        <div class="media-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+        </div>
+        برنامج خفايا السجل — قناة القبس ٢٠٢١
+      </div>
+      <div class="media-item">
+        <div class="media-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+        </div>
+        برنامج حكايا منسية — قناة الكويت KTV ٢٠٢٣
+      </div>
+      <div class="media-item">
+        <div class="media-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+        </div>
+        برنامج الطريق إلى كاظمة — قناة الصباح ٢٠٢٤
+      </div>
+      <div class="media-item">
+        <div class="media-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
+        </div>
+        برنامج كناشة العرب — تلفزيون قطر ٢٠٢٥
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="section">
+    <div class="cta-section">
+      <h2>تواصل مع د. جاسم مباشرة</h2>
+      <p>للاستفسار عن الدورات والتدريب المؤسسي</p>
+      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أستفسر عن دورات الدكتور جاسم الجزاع" class="btn-contact" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل على واتساب
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
+</footer>
+
+</body>
+</html>
