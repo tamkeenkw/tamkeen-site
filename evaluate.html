@@ -272,14 +272,14 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
       <p class="step-desc">
         أجب على ٨ أسئلة سريعة واحصل على تقرير فوري يكشف نقاط القوة في دورتك وما يحتاج تطوير.
       </p>
-      <button class="btn-next" onclick="showLead()">ابدأ التقييم ←</button>
+      <button class="btn-next" onclick="startQuizDirect()">ابدأ التقييم ←</button>
     </div>
 
     <!-- STEP 1: LEAD CAPTURE -->
     <div id="step-lead" style="display:none">
-      <div class="step-tag">خطوة أولى</div>
-      <h2 class="step-title">أدخل بياناتك للحصول على تقريرك</h2>
-      <p class="step-desc">تقريرك سيكون جاهزاً فوراً بعد إكمال التقييم</p>
+      <div class="step-tag">خطوة أخيرة</div>
+      <h2 class="step-title">تقريرك جاهز! أدخل بياناتك لتشوف نتيجتك</h2>
+      <p class="step-desc">أجبت على كل الأسئلة — تقريرك المفصّل ينتظرك</p>
 
       <div class="field">
         <label>الاسم الكامل</label>
@@ -290,8 +290,8 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
         <input type="tel" id="leadPhone" placeholder="XXXXXXXX">
       </div>
 
-      <button class="btn-next" id="leadBtn" onclick="startQuiz()" disabled>
-        ابدأ التقييم ←
+      <button class="btn-next" id="leadBtn" onclick="showMyResult()" disabled>
+        اعرض نتيجتي ←
       </button>
     </div>
 
@@ -469,8 +469,22 @@ function nextQuestion() {
   if (currentQ < questions.length) {
     loadQuestion(currentQ);
   } else {
-    showResult();
+    showLeadGate();
   }
+}
+
+function showLeadGate() {
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('step-quiz').style.display = 'none';
+  document.getElementById('step-lead').style.display = 'block';
+
+  // Re-attach validation
+  setTimeout(() => {
+    ['leadName','leadPhone'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', checkLead);
+    });
+  }, 100);
 }
 
 function showResult() {
@@ -523,6 +537,9 @@ function showResult() {
     });
     feedbackHTML += '</div>';
   }
+
+  // Save to Google Sheets
+  saveToSheets(userName, userPhone, pct + '%', level);
 
   const waMsg = encodeURIComponent('السلام عليكم، أنا ' + userName + ' — أكملت تقييم دورتي في تمكين وحصلت على ' + pct + '٪. أبي أعرف كيف أطور دورتي 🎯');
 
