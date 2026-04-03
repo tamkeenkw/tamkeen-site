@@ -584,15 +584,7 @@ footer a:hover { color:#fff; }
   </div>
 </div>
 
-<!-- FINAL CTA -->
-<section class="final">
-  <div class="final-inner">
-    <h2>الوقت المناسب<br><span>هو الحين</span></h2>
-    <p>المدربون اللي يبدأون اليوم<br>هم اللي يقودون السوق بكره</p>
-    
-      <button onclick="openModal()" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:19px;font-weight:900;padding:20px 64px;border-radius:100px;border:none;cursor:pointer;">انضم لتمكين الحين</button>
-  </div>
-</section>
+
 
 <!-- FOOTER -->
 <footer>
@@ -782,65 +774,45 @@ function qReset() {
         <div class="s-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
         <h3>تم التسجيل بنجاح! 🎉</h3>
         <p>شكراً لك — تم استلام طلبك وسيتم التواصل معك قريباً</p>
-        <div class="s-ref" id="mRef"></div>
         <button class="s-close" onclick="closeModal()">إغلاق</button>
       </div>
 
       <!-- Form -->
       <form id="mForm" novalidate>
-        <div class="mf-section">المعلومات الشخصية</div>
 
-        <div class="mf-row">
-          <div class="mf" id="mf-name">
-            <label><span class="req">*</span> الاسم الكامل</label>
-            <input type="text" name="fullName" placeholder="محمد عبدالله الأحمد">
-            <div class="err">يرجى إدخال الاسم الكامل</div>
-          </div>
-          <div class="mf" id="mf-id">
-            <label><span class="req">*</span> رقم الهوية</label>
-            <input type="text" name="idNumber" placeholder="1xxxxxxxxx" maxlength="10">
-            <div class="err">رقم هوية غير صحيح</div>
-          </div>
+        <div class="mf" id="mf-name">
+          <label><span class="req">*</span> الاسم الكامل</label>
+          <input type="text" name="fullName" placeholder="محمد عبدالله الأحمد">
+          <div class="err">يرجى إدخال الاسم الكامل</div>
         </div>
 
-        <div class="mf-row">
-          <div class="mf" id="mf-phone">
-            <label><span class="req">*</span> رقم الجوال</label>
-            <input type="tel" name="phone" placeholder="05xxxxxxxx" maxlength="10">
-            <div class="err">رقم جوال غير صحيح</div>
-          </div>
-          <div class="mf" id="mf-email">
-            <label><span class="req">*</span> البريد الإلكتروني</label>
-            <input type="email" name="email" placeholder="name@example.com">
-            <div class="err">بريد إلكتروني غير صحيح</div>
-          </div>
+        <div class="mf" id="mf-phone">
+          <label><span class="req">*</span> رقم الهاتف</label>
+          <input type="tel" name="phone" placeholder="XXXXXXXX" maxlength="12">
+          <div class="err">يرجى إدخال رقم الهاتف</div>
         </div>
 
-        <div class="mf-section">معلومات العضوية</div>
-
-        <div class="mf" id="mf-org">
-          <label><span class="req">*</span> الجهة / المنظمة</label>
-          <input type="text" name="organization" placeholder="اسم جهتك أو منظمتك">
-          <div class="err">يرجى إدخال اسم الجهة</div>
+        <div class="mf" id="mf-specialty">
+          <label><span class="req">*</span> مجال تخصصك التدريبي</label>
+          <input type="text" name="specialty" placeholder="مثال: قيادة، مبيعات، تطوير ذاتي...">
+          <div class="err">يرجى إدخال مجال تخصصك</div>
         </div>
 
-        <div class="mf" id="mf-type">
-          <label><span class="req">*</span> نوع العضوية</label>
-          <div class="mf-select-wrap">
-            <select name="membershipType">
-              <option value="">— اختر نوع العضوية —</option>
-              <option value="individual">عضوية فردية</option>
-              <option value="organizational">عضوية مؤسسية</option>
-              <option value="student">عضوية طلابية</option>
-              <option value="honorary">عضوية شرفية</option>
-              <option value="supporter">عضوية داعمة</option>
-            </select>
+        <div class="mf" id="mf-hasTraining">
+          <label><span class="req">*</span> هل قدّمت دورات تدريبية من قبل؟</label>
+          <div style="display:flex;gap:12px;margin-top:4px;">
+            <label style="flex:1;display:flex;align-items:center;gap:10px;background:var(--cream,#FAF7F2);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 16px;cursor:pointer;font-size:15px;font-weight:700;transition:all .2s;" id="lbl-yes">
+              <input type="radio" name="hasTraining" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightRadio()"> نعم
+            </label>
+            <label style="flex:1;display:flex;align-items:center;gap:10px;background:var(--cream,#FAF7F2);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 16px;cursor:pointer;font-size:15px;font-weight:700;transition:all .2s;" id="lbl-no">
+              <input type="radio" name="hasTraining" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightRadio()"> لا
+            </label>
           </div>
-          <div class="err">يرجى اختيار نوع العضوية</div>
+          <div class="err">يرجى اختيار إجابة</div>
         </div>
 
         <button type="submit" class="modal-submit" id="mBtn">
-          <span id="mBtnTxt">تقديم طلب العضوية</span>
+          <span id="mBtnTxt">سجّل بياناتك</span>
           <div class="modal-spinner" id="mSpinner"></div>
         </button>
       </form>
@@ -863,11 +835,17 @@ document.getElementById('regModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
+function mHighlightRadio() {
+  const val = document.querySelector('#mForm input[name="hasTraining"]:checked')?.value;
+  document.getElementById('lbl-yes').style.borderColor = val==='نعم' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-yes').style.background  = val==='نعم' ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('lbl-no').style.borderColor  = val==='لا'  ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-no').style.background   = val==='لا'  ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('mf-hasTraining').classList.remove('invalid');
+}
+
 function mValidate(name, value) {
   if (!value.trim()) return false;
-  if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  if (name === 'phone') return /^05\d{8}$/.test(value.trim());
-  if (name === 'idNumber') return /^\d{10}$/.test(value.trim());
   return true;
 }
 function mSetField(id, valid) {
@@ -877,20 +855,19 @@ function mSetField(id, valid) {
 document.getElementById('mForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const f = this;
+  const hasTraining = document.querySelector('#mForm input[name="hasTraining"]:checked')?.value || '';
   const data = {
     fullName: f.fullName.value,
-    idNumber: f.idNumber.value,
     phone: f.phone.value,
-    email: f.email.value,
-    organization: f.organization.value,
-    membershipType: f.membershipType.value,
+    specialty: f.specialty.value,
+    hasTraining: hasTraining,
   };
   const checks = [
-    ['fullName','mf-name'],['idNumber','mf-id'],['phone','mf-phone'],
-    ['email','mf-email'],['organization','mf-org'],['membershipType','mf-type']
+    ['fullName','mf-name'],['phone','mf-phone'],['specialty','mf-specialty']
   ];
   let ok = true;
   checks.forEach(([n,id]) => { const v = mValidate(n, data[n]); mSetField(id, v); if (!v) ok = false; });
+  if (!hasTraining) { document.getElementById('mf-hasTraining').classList.add('invalid'); ok = false; }
   if (!ok) return;
 
   const btn = document.getElementById('mBtn');
@@ -906,7 +883,6 @@ document.getElementById('mForm').addEventListener('submit', async function(e) {
     });
     f.style.display = 'none';
     document.getElementById('mSuccess').style.display = 'block';
-    document.getElementById('mRef').textContent = 'رقم المرجع: TM-' + Date.now().toString().slice(-6);
   } catch(err) {
     btn.disabled = false; txt.style.display = 'block'; sp.style.display = 'none';
     alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً');
@@ -914,8 +890,8 @@ document.getElementById('mForm').addEventListener('submit', async function(e) {
 });
 
 // Live validation
-document.querySelectorAll('#mForm input, #mForm select').forEach(el => {
-  const map = {fullName:'mf-name',idNumber:'mf-id',phone:'mf-phone',email:'mf-email',organization:'mf-org',membershipType:'mf-type'};
+document.querySelectorAll('#mForm input').forEach(el => {
+  const map = {fullName:'mf-name', phone:'mf-phone', specialty:'mf-specialty'};
   el.addEventListener('blur', () => { if(map[el.name]) mSetField(map[el.name], mValidate(el.name, el.value)); });
   el.addEventListener('input', () => { if(map[el.name] && document.getElementById(map[el.name])?.classList.contains('invalid')) mSetField(map[el.name], mValidate(el.name, el.value)); });
 });
