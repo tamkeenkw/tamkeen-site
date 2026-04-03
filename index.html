@@ -904,7 +904,15 @@ document.getElementById('mForm').addEventListener('submit', async function(e) {
     await fetch(SCRIPT_URL, {
       method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({...data, timestamp: new Date().toLocaleString('ar-SA')})
+      body: JSON.stringify({
+        type: 'عضوية',
+        name: data.fullName,
+        phone: data.phone,
+        field: data.specialty,
+        courses: data.hasTraining,
+        payment: data.payment,
+        timestamp: new Date().toLocaleString('ar-SA')
+      })
     });
     f.style.display = 'none';
     document.getElementById('mSuccess').style.display = 'block';
