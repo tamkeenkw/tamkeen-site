@@ -201,9 +201,210 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
 footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 footer a:hover { color:#fff; }
 
+/* ─── QUIZ SECTION ─── */
+.quiz-section { background:var(--cream-2); padding:clamp(64px,9vw,108px) 24px; }
+.quiz-inner { max-width:680px; margin:0 auto; }
+
+.quiz-progress-wrap { margin-bottom:32px; display:none; }
+.quiz-progress-label { display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--muted); margin-bottom:10px; }
+.quiz-progress-bar { height:6px; background:rgba(92,15,15,.1); border-radius:100px; overflow:hidden; }
+.quiz-progress-fill { height:100%; background:var(--crimson); border-radius:100px; transition:width .4s ease; }
+
+.quiz-card {
+  background:#fff; border-radius:24px;
+  padding:clamp(32px,5vw,48px);
+  box-shadow:0 8px 40px rgba(92,15,15,.07);
+  border:1.5px solid rgba(92,15,15,.06);
+}
+
+.quiz-step-icon {
+  width:64px; height:64px; background:rgba(92,15,15,.06);
+  border-radius:18px; display:flex; align-items:center; justify-content:center; margin-bottom:24px;
+}
+.quiz-step-icon svg { width:32px; height:32px; fill:var(--crimson); }
+.quiz-step-tag { font-size:12px; font-weight:800; letter-spacing:2px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.quiz-step-title { font-size:clamp(22px,4vw,32px); font-weight:900; color:var(--text); line-height:1.3; margin-bottom:12px; }
+.quiz-step-desc { font-size:16px; color:var(--muted); line-height:1.8; margin-bottom:32px; }
+
+.quiz-field { margin-bottom:20px; }
+.quiz-field label { display:block; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px; }
+.quiz-field input {
+  width:100%; background:var(--cream); border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px; padding:14px 18px;
+  font-family:'Tajawal',sans-serif; font-size:16px; color:var(--text);
+  outline:none; transition:all .25s; text-align:right;
+}
+.quiz-field input:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.07); background:#fff; }
+.quiz-field input::placeholder { color:rgba(122,96,96,.45); }
+
+.quiz-options { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+.quiz-option {
+  background:var(--cream); border:1.5px solid rgba(92,15,15,.08);
+  border-radius:14px; padding:16px 20px; cursor:pointer; transition:all .25s;
+  display:flex; align-items:center; gap:14px;
+  font-size:15px; font-weight:600; color:var(--text); user-select:none;
+}
+.quiz-option:hover { border-color:rgba(92,15,15,.2); background:#fff; }
+.quiz-option.selected { border-color:var(--crimson); background:rgba(92,15,15,.04); color:var(--crimson); }
+.quiz-option-dot {
+  width:20px; height:20px; min-width:20px; border-radius:50%;
+  border:2px solid rgba(92,15,15,.2); transition:all .25s;
+  display:flex; align-items:center; justify-content:center;
+}
+.quiz-option.selected .quiz-option-dot { background:var(--crimson); border-color:var(--crimson); }
+.quiz-option.selected .quiz-option-dot::after { content:''; width:8px; height:8px; background:#fff; border-radius:50%; }
+
+.quiz-btn {
+  width:100%; background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif; font-size:18px; font-weight:900;
+  padding:16px; border-radius:100px; border:none; cursor:pointer;
+  transition:all .28s; box-shadow:0 8px 24px rgba(92,15,15,.25);
+}
+.quiz-btn:hover { background:var(--crimson-2); transform:translateY(-2px); box-shadow:0 14px 36px rgba(92,15,15,.3); }
+.quiz-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.quiz-q-num { font-size:12px; font-weight:800; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:10px; }
+.quiz-q-text { font-size:clamp(18px,3vw,24px); font-weight:800; color:var(--text); line-height:1.4; margin-bottom:28px; }
+
+/* Result inside quiz */
+.qresult-header { text-align:center; margin-bottom:36px; }
+.qresult-score-wrap {
+  width:140px; height:140px; margin:0 auto 24px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.qresult-score-wrap.high { background:rgba(26,122,58,.08); border:3px solid rgba(26,122,58,.3); }
+.qresult-score-wrap.mid  { background:rgba(184,92,0,.08);  border:3px solid rgba(184,92,0,.3); }
+.qresult-score-wrap.low  { background:rgba(139,26,26,.08); border:3px solid rgba(139,26,26,.3); }
+.qresult-pct { font-size:44px; font-weight:900; line-height:1; }
+.qresult-score-wrap.high .qresult-pct { color:#1A7A3A; }
+.qresult-score-wrap.mid  .qresult-pct { color:#B85C00; }
+.qresult-score-wrap.low  .qresult-pct { color:#8B1A1A; }
+.qresult-pct-label { font-size:13px; font-weight:600; color:var(--muted); }
+.qresult-level { font-size:clamp(20px,4vw,28px); font-weight:900; margin-bottom:8px; }
+.qresult-level.high { color:#1A7A3A; }
+.qresult-level.mid  { color:#B85C00; }
+.qresult-level.low  { color:#8B1A1A; }
+.qresult-subtitle { font-size:16px; color:var(--muted); line-height:1.7; }
+.qfeedback-list { margin-bottom:24px; }
+.qfeedback-title { font-size:13px; font-weight:800; letter-spacing:2px; color:var(--crimson); text-transform:uppercase; margin-bottom:14px; }
+.qfeedback-item {
+  background:var(--cream); border-radius:14px; padding:14px 18px;
+  display:flex; align-items:flex-start; gap:12px;
+  margin-bottom:10px; border:1.5px solid rgba(92,15,15,.06);
+}
+.qfeedback-dot { width:8px; height:8px; min-width:8px; border-radius:50%; margin-top:6px; }
+.qfeedback-dot.good { background:#1A7A3A; }
+.qfeedback-dot.warn { background:#B85C00; }
+.qfeedback-dot.bad  { background:#8B1A1A; }
+.qfeedback-text { font-size:14px; color:var(--text); line-height:1.6; font-weight:600; }
+.qcta-result {
+  background:var(--crimson); border-radius:20px; padding:28px;
+  text-align:center; position:relative; overflow:hidden;
+}
+.qcta-result>* { position:relative; z-index:1; }
+.qcta-result h3 { font-size:20px; font-weight:900; color:#fff; margin-bottom:8px; }
+.qcta-result p  { font-size:14px; color:rgba(255,255,255,.65); margin-bottom:20px; }
+.qbtn-wa {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif; font-size:16px; font-weight:900;
+  padding:14px 36px; border-radius:100px; text-decoration:none; transition:all .28s;
+}
+.qbtn-wa:hover { background:var(--cream-2); transform:translateY(-2px); }
+.qbtn-wa svg { width:20px; height:20px; fill:var(--crimson); }
+
 /* ─── ANIMATIONS ─── */
 @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+
+/* ─── MODAL OVERLAY ─── */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:1000;
+  background:rgba(26,4,4,0.72); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:16px;
+}
+.modal-overlay.open { display:flex; animation:fadeUp .3s ease both; }
+.modal-box {
+  background:#FAF7F2; border-radius:24px; width:100%; max-width:560px;
+  max-height:90vh; overflow-y:auto; position:relative;
+  box-shadow:0 32px 80px rgba(92,15,15,.35);
+  animation:fadeUp .35s ease both;
+}
+.modal-head {
+  background:var(--crimson); padding:28px 32px 22px; border-radius:24px 24px 0 0;
+  text-align:center; position:sticky; top:0; z-index:2;
+}
+.modal-head h3 { font-size:22px; font-weight:900; color:#fff; margin-bottom:4px; }
+.modal-head p  { font-size:13px; color:rgba(255,255,255,.58); }
+.modal-close {
+  position:absolute; top:16px; left:16px; width:34px; height:34px;
+  background:rgba(255,255,255,.15); border:none; border-radius:50%; cursor:pointer;
+  color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center;
+  transition:background .2s;
+}
+.modal-close:hover { background:rgba(255,255,255,.28); }
+.modal-body { padding:28px 32px 32px; }
+
+/* Form fields inside modal */
+.mf-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.mf { margin-bottom:16px; }
+.mf label { display:block; font-size:13px; font-weight:700; color:#1A0808; margin-bottom:6px; }
+.mf label .req { color:var(--crimson); }
+.mf input, .mf select {
+  width:100%; padding:12px 14px; border:1.5px solid #DDD6C8;
+  border-radius:12px; font-family:'Tajawal',sans-serif; font-size:14px;
+  color:#1A0808; background:#fff; outline:none; transition:all .2s;
+  appearance:none; -webkit-appearance:none;
+}
+.mf input:focus, .mf select:focus {
+  border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.1);
+}
+.mf input::placeholder { color:#b0aaa0; }
+.mf-select-wrap { position:relative; }
+.mf-select-wrap::after {
+  content:'▾'; position:absolute; left:14px; top:50%;
+  transform:translateY(-50%); color:var(--crimson); pointer-events:none;
+}
+.mf.invalid input, .mf.invalid select { border-color:#dc2626; }
+.mf .err { font-size:11px; color:#dc2626; margin-top:4px; display:none; }
+.mf.invalid .err { display:block; }
+
+.mf-section { font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--crimson); margin:20px 0 14px; display:flex; align-items:center; gap:8px; }
+.mf-section::after { content:''; flex:1; height:1px; background:rgba(92,15,15,.12); }
+
+.modal-submit {
+  width:100%; padding:16px; background:var(--crimson); color:#fff; border:none;
+  border-radius:14px; font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  cursor:pointer; transition:all .28s; margin-top:8px;
+}
+.modal-submit:hover { background:var(--crimson-2); box-shadow:0 8px 24px rgba(92,15,15,.3); transform:translateY(-1px); }
+.modal-submit:disabled { opacity:.65; cursor:not-allowed; transform:none; }
+.modal-spinner {
+  display:none; width:22px; height:22px; border:2.5px solid rgba(255,255,255,.3);
+  border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; margin:0 auto;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Success inside modal */
+.modal-success { display:none; text-align:center; padding:40px 24px; }
+.modal-success .s-icon {
+  width:72px; height:72px; background:linear-gradient(135deg,#2d6a4f,#40916c);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  margin:0 auto 20px; box-shadow:0 8px 24px rgba(45,106,79,.3);
+}
+.modal-success .s-icon svg { width:36px; height:36px; stroke:#fff; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+.modal-success h3 { font-size:22px; font-weight:900; color:#2d6a4f; margin-bottom:8px; }
+.modal-success p { font-size:14px; color:#7A6060; line-height:1.7; }
+.modal-success .s-ref { margin-top:16px; padding:10px 20px; background:#f0faf5; border:1px solid #b7e4c7; border-radius:10px; font-size:13px; color:#2d6a4f; font-weight:700; }
+.modal-success .s-close { margin-top:20px; padding:12px 32px; background:var(--crimson); color:#fff; border:none; border-radius:100px; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:800; cursor:pointer; transition:all .28s; }
+.modal-success .s-close:hover { background:var(--crimson-2); }
+
+@media(max-width:500px){
+  .mf-row { grid-template-columns:1fr; }
+  .modal-body { padding:20px 18px 24px; }
+  .modal-head { padding:22px 20px 18px; }
+}
 
 @media(max-width:600px){
   .stats{gap:20px;}
@@ -236,7 +437,7 @@ footer a:hover { color:#fff; }
     <p>انضم لمجتمع المدربين المحترفين في الكويت<br>اعتماد رسمي، شبكة علاقات، ومسار واضح نحو الاحتراف</p>
 
     <div class="cta-group">
-      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" target="_blank" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 56px;border-radius:100px;text-decoration:none;box-shadow:0 8px 32px rgba(0,0,0,.18);">سجّل بياناتك الحين ←</a>
+      <button onclick="openModal()" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 56px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.18);">سجّل بياناتك الحين ←</button>
     </div>
 
     <p class="hero-note">العضوية السنوية <strong>١٣٠ د.ك</strong> — قابلة للتقسيط على <strong>٤ دفعات</strong></p>
@@ -303,6 +504,67 @@ footer a:hover { color:#fff; }
   </div>
 </section>
 
+<!-- QUIZ SECTION -->
+<section class="quiz-section">
+  <div class="quiz-inner">
+    <p class="sec-tag" style="text-align:center">أداة مجانية</p>
+    <h2 class="sec-title" style="margin-bottom:12px">هل دورتك التدريبية جاهزة للنجاح؟</h2>
+    <p class="sec-sub">أجب على ٨ أسئلة واحصل على تقرير فوري يكشف نقاط القوة وما يحتاج تطوير</p>
+
+    <!-- Progress -->
+    <div class="quiz-progress-wrap" id="qProgressWrap">
+      <div class="quiz-progress-label">
+        <span id="qProgressText">السؤال ١ من ٨</span>
+        <span id="qProgressPct">١٢٪</span>
+      </div>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="qProgressFill" style="width:12%"></div>
+      </div>
+    </div>
+
+    <div class="quiz-card" id="qMainCard">
+
+      <!-- INTRO -->
+      <div id="qStepIntro">
+        <div class="quiz-step-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        <div class="quiz-step-tag">معهد تمكين</div>
+        <h3 class="quiz-step-title">قيّم دورتك التدريبية مجاناً</h3>
+        <p class="quiz-step-desc">أجب على ٨ أسئلة سريعة واحصل على تقرير فوري يكشف نقاط القوة في دورتك وما يحتاج تطوير.</p>
+        <button class="quiz-btn" onclick="qStartDirect()">ابدأ التقييم ←</button>
+      </div>
+
+      <!-- LEAD GATE -->
+      <div id="qStepLead" style="display:none">
+        <div class="quiz-step-tag">خطوة أخيرة</div>
+        <h3 class="quiz-step-title">تقريرك جاهز! أدخل بياناتك لتشوف نتيجتك</h3>
+        <p class="quiz-step-desc">أجبت على كل الأسئلة — تقريرك المفصّل ينتظرك</p>
+        <div class="quiz-field">
+          <label>الاسم الكامل</label>
+          <input type="text" id="qLeadName" placeholder="أدخل اسمك الكامل">
+        </div>
+        <div class="quiz-field">
+          <label>رقم الهاتف</label>
+          <input type="tel" id="qLeadPhone" placeholder="XXXXXXXX">
+        </div>
+        <button class="quiz-btn" id="qLeadBtn" onclick="qShowResult()" disabled>اعرض نتيجتي ←</button>
+      </div>
+
+      <!-- QUESTIONS -->
+      <div id="qStepQuiz" style="display:none">
+        <div class="quiz-q-num" id="qNum">السؤال ١ من ٨</div>
+        <div class="quiz-q-text" id="qText"></div>
+        <div class="quiz-options" id="qOptionsWrap"></div>
+        <button class="quiz-btn" id="qNextBtn" onclick="qNextQuestion()" disabled>التالي ←</button>
+      </div>
+
+      <!-- RESULT -->
+      <div id="qStepResult" style="display:none"></div>
+    </div>
+  </div>
+</section>
+
 <!-- PRICING -->
 <div class="pricing-wrap">
   <p class="sec-tag">الاشتراك</p>
@@ -317,7 +579,7 @@ footer a:hover { color:#fff; }
       <p>تقدر تقسّطها على <strong>٤ دفعات</strong><br>بدون فوائد — بدون تعقيدات</p>
     </div>
     <div class="price-cta-group">
-      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" target="_blank" style="display:block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 40px;border-radius:100px;text-decoration:none;text-align:center;">سجّل بياناتك الحين 👇</a>
+      <button onclick="openModal()" style="display:block;width:100%;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 40px;border-radius:100px;border:none;cursor:pointer;text-align:center;">سجّل بياناتك الحين 👇</button>
     </div>
   </div>
 </div>
@@ -328,7 +590,7 @@ footer a:hover { color:#fff; }
     <h2>الوقت المناسب<br><span>هو الحين</span></h2>
     <p>المدربون اللي يبدأون اليوم<br>هم اللي يقودون السوق بكره</p>
     
-      <a href="https://forms.gle/5Z4BSTBeC8FsUBtx6" target="_blank" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:19px;font-weight:900;padding:20px 64px;border-radius:100px;text-decoration:none;">انضم لتمكين الحين</a>
+      <button onclick="openModal()" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:19px;font-weight:900;padding:20px 64px;border-radius:100px;border:none;cursor:pointer;">انضم لتمكين الحين</button>
   </div>
 </section>
 
@@ -336,6 +598,328 @@ footer a:hover { color:#fff; }
 <footer>
   <p>معهد تمكين — إيديو كلاود للتدريب الأهلي &nbsp;|&nbsp; <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
 </footer>
+
+<!-- QUIZ JS -->
+<script>
+const qQuestions = [
+  { text:"هل لديك هدف تعليمي واضح لدورتك؟", options:[{text:"نعم، محدد وقابل للقياس",score:3},{text:"نعم، لكنه عام",score:2},{text:"لا يوجد هدف واضح",score:0}] },
+  { text:"هل محتوى دورتك مقسّم إلى وحدات أو مراحل؟", options:[{text:"نعم، مقسّم بشكل منظم",score:3},{text:"مقسّم جزئياً",score:1},{text:"لا، المحتوى غير مقسّم",score:0}] },
+  { text:"هل تستخدم أساليب تدريب متنوعة؟", options:[{text:"نعم، أكثر من ٣ أساليب",score:3},{text:"أسلوبين فقط",score:1},{text:"أسلوب واحد فقط",score:0}] },
+  { text:"هل لديك آلية لقياس نتائج المتدربين؟", options:[{text:"نعم، اختبارات أو تقييم عملي",score:3},{text:"تقييم غير رسمي فقط",score:1},{text:"لا يوجد تقييم",score:0}] },
+  { text:"هل دورتك تحتوي على أنشطة تفاعلية؟", options:[{text:"نعم، أنشطة متعددة",score:3},{text:"نشاط واحد فقط",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل لديك مواد داعمة للمتدربين؟", options:[{text:"نعم، مذكرات وملفات كاملة",score:3},{text:"مواد جزئية",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل دورتك معتمدة من جهة رسمية؟", options:[{text:"نعم، معتمدة",score:3},{text:"قيد الاعتماد",score:1},{text:"غير معتمدة",score:0}] },
+  { text:"هل قدّمت دورتك من قبل وجمعت تغذية راجعة؟", options:[{text:"نعم، وطوّرتها بناءً عليها",score:3},{text:"قدّمتها لكن بدون تغذية راجعة",score:1},{text:"لم أقدمها بعد",score:0}] }
+];
+const qFeedback = [
+  {good:"هدفك التعليمي واضح ومحدد — هذا أساس كل دورة ناجحة",warn:"هدفك العام يحتاج تحديد أكثر — حدّد ماذا سيتعلم المتدرب بالضبط",bad:"غياب الهدف يضعف دورتك — ابدأ بتحديد هدف SMART واضح"},
+  {good:"تقسيم المحتوى ممتاز — يسهّل الفهم ويرفع الاحتراف",warn:"تقسيم المحتوى جزئي — أكمل تنظيمه في وحدات واضحة",bad:"محتوى غير مقسّم = تجربة فوضوية للمتدرب"},
+  {good:"تنوع الأساليب يرفع مستوى التفاعل والاستيعاب",warn:"أضف أسلوباً ثالثاً على الأقل لتجنب الرتابة",bad:"أسلوب واحد يضعف الانتباه — نوّع بين المحاضرة والنقاش والتطبيق"},
+  {good:"وجود التقييم يثبت قيمة دورتك ويزيد مصداقيتها",warn:"حوّل تقييمك غير الرسمي لأداة قياس واضحة",bad:"بدون تقييم لا تعرف هل المتدرب استفاد أم لا"},
+  {good:"الأنشطة التفاعلية تضاعف الاستيعاب والرضا",warn:"أضف أنشطة أكثر — حتى ورقة عمل بسيطة تفرق",bad:"دورة بدون تفاعل = محاضرة — المتدربون يحتاجون التطبيق"},
+  {good:"المواد الداعمة تعطي المتدرب قيمة تستمر بعد الدورة",warn:"أكمل مواد الدورة — المذكرة الجيدة تفرق كثيراً",bad:"المواد الداعمة أساسية — ابدأ بمذكرة بسيطة على الأقل"},
+  {good:"الاعتماد الرسمي يفتح لك أبواباً كثيرة",warn:"الاعتماد قيد التنفيذ — أكمله قريباً",bad:"الاعتماد يرفع قيمتك وقيمة دورتك — معهد تمكين يساعدك في ذلك"},
+  {good:"التطوير المستمر بناءً على الملاحظات يميزك عن غيرك",warn:"استخدم تجربتك السابقة لجمع ملاحظات وطوّر دورتك",bad:"أول تقديم للدورة مهم — خطّط له جيداً وجمّع ملاحظات بعده"}
+];
+
+let qCurrentQ = 0, qScores = [], qSelectedOpt = null, qUserName = '', qUserPhone = '';
+
+function qToArabic(n) { return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+
+function qStartDirect() {
+  document.getElementById('qStepIntro').style.display = 'none';
+  document.getElementById('qStepQuiz').style.display = 'block';
+  document.getElementById('qProgressWrap').style.display = 'block';
+  qLoadQuestion(0);
+}
+
+function qLoadQuestion(idx) {
+  qSelectedOpt = null;
+  document.getElementById('qNextBtn').disabled = true;
+  const q = qQuestions[idx];
+  const pct = Math.round((idx / qQuestions.length) * 100);
+  document.getElementById('qNum').textContent = 'السؤال ' + qToArabic(idx+1) + ' من ' + qToArabic(qQuestions.length);
+  document.getElementById('qProgressText').textContent = 'السؤال ' + qToArabic(idx+1) + ' من ' + qToArabic(qQuestions.length);
+  document.getElementById('qProgressPct').textContent = qToArabic(pct) + '٪';
+  document.getElementById('qProgressFill').style.width = pct + '%';
+  document.getElementById('qText').textContent = q.text;
+  const wrap = document.getElementById('qOptionsWrap');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option';
+    div.innerHTML = '<div class="quiz-option-dot"></div><span>' + opt.text + '</span>';
+    div.onclick = () => {
+      document.querySelectorAll('#qOptionsWrap .quiz-option').forEach(o => o.classList.remove('selected'));
+      div.classList.add('selected');
+      qSelectedOpt = i;
+      document.getElementById('qNextBtn').disabled = false;
+    };
+    wrap.appendChild(div);
+  });
+}
+
+function qNextQuestion() {
+  qScores.push(qQuestions[qCurrentQ].options[qSelectedOpt].score);
+  qCurrentQ++;
+  if (qCurrentQ < qQuestions.length) {
+    qLoadQuestion(qCurrentQ);
+  } else {
+    document.getElementById('qProgressWrap').style.display = 'none';
+    document.getElementById('qStepQuiz').style.display = 'none';
+    document.getElementById('qStepLead').style.display = 'block';
+    setTimeout(() => {
+      ['qLeadName','qLeadPhone'].forEach(id => {
+        document.getElementById(id).addEventListener('input', qCheckLead);
+      });
+    }, 100);
+  }
+}
+
+function qCheckLead() {
+  const n = document.getElementById('qLeadName').value.trim();
+  const p = document.getElementById('qLeadPhone').value.trim();
+  document.getElementById('qLeadBtn').disabled = !(n.length > 2 && p.length > 6);
+}
+
+function qShowResult() {
+  qUserName = document.getElementById('qLeadName').value.trim();
+  qUserPhone = document.getElementById('qLeadPhone').value.trim();
+  document.getElementById('qStepLead').style.display = 'none';
+
+  const total = qQuestions.length * 3;
+  const score = qScores.reduce((a,b) => a+b, 0);
+  const pct = Math.round((score/total)*100);
+
+  let level, cls, subtitle;
+  if (pct >= 70) { level='دورتك جاهزة للإطلاق ✅'; cls='high'; subtitle='دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية'; }
+  else if (pct >= 40) { level='دورتك تحتاج تطوير ⚠️'; cls='mid'; subtitle='عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق'; }
+  else { level='دورتك تحتاج إعادة بناء 🔧'; cls='low'; subtitle='لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن'; }
+
+  let goodItems=[], warnItems=[];
+  qScores.forEach((s,i) => {
+    const f = qFeedback[i];
+    if (s===3) goodItems.push({text:f.good,type:'good'});
+    else if (s===1) warnItems.push({text:f.warn,type:'warn'});
+    else warnItems.push({text:f.bad,type:'bad'});
+  });
+
+  let feedHTML = '';
+  if (goodItems.length) {
+    feedHTML += '<div class="qfeedback-list"><div class="qfeedback-title">نقاط قوتك</div>';
+    goodItems.forEach(f => { feedHTML += '<div class="qfeedback-item"><div class="qfeedback-dot good"></div><div class="qfeedback-text">'+f.text+'</div></div>'; });
+    feedHTML += '</div>';
+  }
+  if (warnItems.length) {
+    feedHTML += '<div class="qfeedback-list"><div class="qfeedback-title">ما يحتاج تطوير</div>';
+    warnItems.slice(0,4).forEach(f => { feedHTML += '<div class="qfeedback-item"><div class="qfeedback-dot '+f.type+'"></div><div class="qfeedback-text">'+f.text+'</div></div>'; });
+    feedHTML += '</div>';
+  }
+
+  // Save to sheets
+  fetch('https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec', {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name:qUserName, phone:qUserPhone, score:pct+'%', level:level})
+  }).catch(()=>{});
+
+  const waMsg = encodeURIComponent('السلام عليكم، أنا '+qUserName+' — أكملت تقييم دورتي في تمكين وحصلت على '+pct+'٪. أبي أعرف كيف أطور دورتي 🎯');
+
+  document.getElementById('qStepResult').innerHTML = `
+    <div class="qresult-header">
+      <div class="qresult-score-wrap ${cls}">
+        <div class="qresult-pct">${qToArabic(pct)}٪</div>
+        <div class="qresult-pct-label">النتيجة</div>
+      </div>
+      <div class="qresult-level ${cls}">${level}</div>
+      <p class="qresult-subtitle">${subtitle}</p>
+    </div>
+    ${feedHTML}
+    <div class="qcta-result">
+      <h3>تبي تطور دورتك مع تمكين؟</h3>
+      <p>فريقنا جاهز يساعدك تبني دورة احترافية معتمدة</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" class="qbtn-wa" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button onclick="qReset()" style="background:none;border:none;color:var(--muted);font-family:Tajawal,sans-serif;font-size:14px;cursor:pointer;text-decoration:underline;">أعد التقييم من جديد</button>
+    </div>
+  `;
+  document.getElementById('qStepResult').style.display = 'block';
+  document.getElementById('qProgressWrap').style.display = 'block';
+  document.getElementById('qProgressFill').style.width = '100%';
+  document.getElementById('qProgressText').textContent = 'اكتمل التقييم';
+  document.getElementById('qProgressPct').textContent = '١٠٠٪';
+}
+
+function qReset() {
+  qCurrentQ=0; qScores=[]; qSelectedOpt=null; qUserName=''; qUserPhone='';
+  document.getElementById('qStepResult').style.display='none';
+  document.getElementById('qStepResult').innerHTML='';
+  document.getElementById('qStepLead').style.display='none';
+  document.getElementById('qStepQuiz').style.display='none';
+  document.getElementById('qProgressWrap').style.display='none';
+  document.getElementById('qLeadName').value='';
+  document.getElementById('qLeadPhone').value='';
+  document.getElementById('qLeadBtn').disabled=true;
+  document.getElementById('qStepIntro').style.display='block';
+}
+</script>
+
+<!-- REGISTRATION MODAL -->
+<div class="modal-overlay" id="regModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3>سجّل عضويتك في تمكين</h3>
+      <p>أول حاضنة للمدربين في الكويت</p>
+    </div>
+    <div class="modal-body">
+
+      <!-- Success -->
+      <div class="modal-success" id="mSuccess">
+        <div class="s-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h3>تم التسجيل بنجاح! 🎉</h3>
+        <p>شكراً لك — تم استلام طلبك وسيتم التواصل معك قريباً</p>
+        <div class="s-ref" id="mRef"></div>
+        <button class="s-close" onclick="closeModal()">إغلاق</button>
+      </div>
+
+      <!-- Form -->
+      <form id="mForm" novalidate>
+        <div class="mf-section">المعلومات الشخصية</div>
+
+        <div class="mf-row">
+          <div class="mf" id="mf-name">
+            <label><span class="req">*</span> الاسم الكامل</label>
+            <input type="text" name="fullName" placeholder="محمد عبدالله الأحمد">
+            <div class="err">يرجى إدخال الاسم الكامل</div>
+          </div>
+          <div class="mf" id="mf-id">
+            <label><span class="req">*</span> رقم الهوية</label>
+            <input type="text" name="idNumber" placeholder="1xxxxxxxxx" maxlength="10">
+            <div class="err">رقم هوية غير صحيح</div>
+          </div>
+        </div>
+
+        <div class="mf-row">
+          <div class="mf" id="mf-phone">
+            <label><span class="req">*</span> رقم الجوال</label>
+            <input type="tel" name="phone" placeholder="05xxxxxxxx" maxlength="10">
+            <div class="err">رقم جوال غير صحيح</div>
+          </div>
+          <div class="mf" id="mf-email">
+            <label><span class="req">*</span> البريد الإلكتروني</label>
+            <input type="email" name="email" placeholder="name@example.com">
+            <div class="err">بريد إلكتروني غير صحيح</div>
+          </div>
+        </div>
+
+        <div class="mf-section">معلومات العضوية</div>
+
+        <div class="mf" id="mf-org">
+          <label><span class="req">*</span> الجهة / المنظمة</label>
+          <input type="text" name="organization" placeholder="اسم جهتك أو منظمتك">
+          <div class="err">يرجى إدخال اسم الجهة</div>
+        </div>
+
+        <div class="mf" id="mf-type">
+          <label><span class="req">*</span> نوع العضوية</label>
+          <div class="mf-select-wrap">
+            <select name="membershipType">
+              <option value="">— اختر نوع العضوية —</option>
+              <option value="individual">عضوية فردية</option>
+              <option value="organizational">عضوية مؤسسية</option>
+              <option value="student">عضوية طلابية</option>
+              <option value="honorary">عضوية شرفية</option>
+              <option value="supporter">عضوية داعمة</option>
+            </select>
+          </div>
+          <div class="err">يرجى اختيار نوع العضوية</div>
+        </div>
+
+        <button type="submit" class="modal-submit" id="mBtn">
+          <span id="mBtnTxt">تقديم طلب العضوية</span>
+          <div class="modal-spinner" id="mSpinner"></div>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
+
+function openModal() {
+  document.getElementById('regModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('regModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('regModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function mValidate(name, value) {
+  if (!value.trim()) return false;
+  if (name === 'email') return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  if (name === 'phone') return /^05\d{8}$/.test(value.trim());
+  if (name === 'idNumber') return /^\d{10}$/.test(value.trim());
+  return true;
+}
+function mSetField(id, valid) {
+  document.getElementById(id)?.classList.toggle('invalid', !valid);
+}
+
+document.getElementById('mForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = this;
+  const data = {
+    fullName: f.fullName.value,
+    idNumber: f.idNumber.value,
+    phone: f.phone.value,
+    email: f.email.value,
+    organization: f.organization.value,
+    membershipType: f.membershipType.value,
+  };
+  const checks = [
+    ['fullName','mf-name'],['idNumber','mf-id'],['phone','mf-phone'],
+    ['email','mf-email'],['organization','mf-org'],['membershipType','mf-type']
+  ];
+  let ok = true;
+  checks.forEach(([n,id]) => { const v = mValidate(n, data[n]); mSetField(id, v); if (!v) ok = false; });
+  if (!ok) return;
+
+  const btn = document.getElementById('mBtn');
+  const txt = document.getElementById('mBtnTxt');
+  const sp  = document.getElementById('mSpinner');
+  btn.disabled = true; txt.style.display = 'none'; sp.style.display = 'block';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({...data, timestamp: new Date().toLocaleString('ar-SA')})
+    });
+    f.style.display = 'none';
+    document.getElementById('mSuccess').style.display = 'block';
+    document.getElementById('mRef').textContent = 'رقم المرجع: TM-' + Date.now().toString().slice(-6);
+  } catch(err) {
+    btn.disabled = false; txt.style.display = 'block'; sp.style.display = 'none';
+    alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً');
+  }
+});
+
+// Live validation
+document.querySelectorAll('#mForm input, #mForm select').forEach(el => {
+  const map = {fullName:'mf-name',idNumber:'mf-id',phone:'mf-phone',email:'mf-email',organization:'mf-org',membershipType:'mf-type'};
+  el.addEventListener('blur', () => { if(map[el.name]) mSetField(map[el.name], mValidate(el.name, el.value)); });
+  el.addEventListener('input', () => { if(map[el.name] && document.getElementById(map[el.name])?.classList.contains('invalid')) mSetField(map[el.name], mValidate(el.name, el.value)); });
+});
+</script>
 
 <script>
 const obs = new IntersectionObserver((entries) => {
