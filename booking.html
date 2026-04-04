@@ -307,6 +307,9 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
+const SHEET_ID   = '1ORUcqzkBKPKWkEuKT0cOdoV_qtbCD-d1XdslQILXx2g';
+const API_KEY    = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
+const SHEET_NAME = 'حجز الدورات';
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -324,22 +327,32 @@ currentMonth = today.getMonth();
 fetchBookings();
 
 function fetchBookings() {
-  fetch(SCRIPT_URL, { method: 'GET', mode: 'cors' })
+  var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID +
+    '/values/' + encodeURIComponent(SHEET_NAME) + '!A:J?key=' + API_KEY;
+
+  fetch(url)
     .then(function(res) { return res.json(); })
     .then(function(data) {
       bookedSlots = {};
-      if (data.bookings) {
-        data.bookings.forEach(function(b) {
-          if (b.dateStart && b.status !== 'مرفوض') {
-            var d   = new Date(b.dateStart + 'T00:00:00');
-            var end = new Date((b.dateEnd || b.dateStart) + 'T00:00:00');
-            while (d <= end) {
-              var k = toStr(d) + '|' + (b.system||'') + '|' + (b.time||'');
-              bookedSlots[k] = (bookedSlots[k] || 0) + 1;
-              d.setDate(d.getDate() + 1);
-            }
+      var rows = data.values || [];
+      // نتخطى السطر الأول (رؤوس الأعمدة)
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var dateStart = row[7] || '';
+        var dateEnd   = row[8] || '';
+        var system    = row[5] || '';
+        var time      = row[6] || '';
+        var status    = row[9] || '';
+
+        if (dateStart && status !== 'مرفوض') {
+          var d   = new Date(dateStart + 'T00:00:00');
+          var end = new Date((dateEnd || dateStart) + 'T00:00:00');
+          while (d <= end) {
+            var k = toStr(d) + '|' + system + '|' + time;
+            bookedSlots[k] = (bookedSlots[k] || 0) + 1;
+            d.setDate(d.getDate() + 1);
           }
-        });
+        }
       }
       renderCalendar();
     })

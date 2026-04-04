@@ -405,7 +405,7 @@ function saveToSheets(name, phone, score, level) {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, phone: phone, score: score, level: level })
+    body: JSON.stringify({ type: 'اختبار', name: name, phone: phone, score: score, level: level })
   }).catch(err => console.log('Sheets error:', err));
 }
 
