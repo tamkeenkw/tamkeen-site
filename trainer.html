@@ -237,7 +237,7 @@ footer a:hover { color:#fff; }
             <input type="file" id="fileInput" name="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.mp4,.zip">
             <div class="file-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
             <p><strong>اضغط لرفع الملف</strong> أو اسحب وأفلت هنا<br>
-            <small style="color:#b0aaa0;">PDF، PPT، Word، MP4، ZIP — حجم أقصى 50MB</small></p>
+            <small style="color:#b0aaa0;">PDF، PPT، Word، MP4، ZIP — حجم أقصى 10MB</small></p>
           </div>
           <div class="file-name" id="fileName"></div>
           <div class="err">يرجى رفع ملف المادة</div>
@@ -289,7 +289,14 @@ fileZone.addEventListener('drop', e => {
   }
 });
 fileInput.addEventListener('change', () => {
-  if (fileInput.files[0]) showFileName(fileInput.files[0].name);
+  if (fileInput.files[0]) {
+    if (fileInput.files[0].size > 10 * 1024 * 1024) {
+      alert('حجم الملف كبير — الحد الأقصى 10MB');
+      fileInput.value = '';
+      return;
+    }
+    showFileName(fileInput.files[0].name);
+  }
 });
 function showFileName(name) {
   fileNameEl.textContent = '📎 ' + name;
