@@ -324,31 +324,26 @@ currentMonth = today.getMonth();
 fetchBookings();
 
 function fetchBookings() {
-  const cbName = 'cb_' + Date.now();
-  window[cbName] = function(data) {
-    bookedSlots = {};
-    if (data.bookings) {
-      data.bookings.forEach(function(b) {
-        if (b.dateStart && b.status !== 'مرفوض') {
-          var d   = new Date(b.dateStart + 'T00:00:00');
-          var end = new Date((b.dateEnd || b.dateStart) + 'T00:00:00');
-          while (d <= end) {
-            var k = toStr(d) + '|' + (b.system||'') + '|' + (b.time||'');
-            bookedSlots[k] = (bookedSlots[k] || 0) + 1;
-            d.setDate(d.getDate() + 1);
+  fetch(SCRIPT_URL, { method: 'GET', mode: 'cors' })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      bookedSlots = {};
+      if (data.bookings) {
+        data.bookings.forEach(function(b) {
+          if (b.dateStart && b.status !== 'مرفوض') {
+            var d   = new Date(b.dateStart + 'T00:00:00');
+            var end = new Date((b.dateEnd || b.dateStart) + 'T00:00:00');
+            while (d <= end) {
+              var k = toStr(d) + '|' + (b.system||'') + '|' + (b.time||'');
+              bookedSlots[k] = (bookedSlots[k] || 0) + 1;
+              d.setDate(d.getDate() + 1);
+            }
           }
-        }
-      });
-    }
-    delete window[cbName];
-    document.getElementById('jsonp-script') && document.getElementById('jsonp-script').remove();
-    renderCalendar();
-  };
-  var s = document.createElement('script');
-  s.id  = 'jsonp-script';
-  s.src = SCRIPT_URL + '?callback=' + cbName;
-  s.onerror = function() { delete window[cbName]; renderCalendar(); };
-  document.body.appendChild(s);
+        });
+      }
+      renderCalendar();
+    })
+    .catch(function() { renderCalendar(); });
 }
 
 function toStr(d) {
