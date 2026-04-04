@@ -60,6 +60,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .mf-section { font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--crimson); margin:26px 0 16px; display:flex; align-items:center; gap:8px; }
 .mf-section::after { content:''; flex:1; height:1px; background:rgba(92,15,15,.12); }
 
+/* Cards */
 .type-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .type-card { border:2px solid rgba(92,15,15,.1); border-radius:14px; padding:18px 16px; cursor:pointer; transition:all .25s; text-align:center; background:var(--cream); }
 .type-card:hover { border-color:rgba(92,15,15,.3); background:#fff; }
@@ -79,6 +80,25 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .sys-title { font-size:15px; font-weight:800; color:var(--text); }
 .sys-card.selected .sys-title { color:var(--crimson); }
 
+/* Time slots */
+.time-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.time-card {
+  border:2px solid rgba(92,15,15,.1); border-radius:14px; padding:16px 18px;
+  cursor:pointer; transition:all .25s; background:var(--cream);
+  display:flex; align-items:center; gap:12px;
+}
+.time-card:hover { border-color:rgba(92,15,15,.3); background:#fff; }
+.time-card.selected { border-color:var(--crimson); background:rgba(92,15,15,.04); }
+.time-card.disabled { opacity:.4; cursor:not-allowed; background:#f5f5f5; border-color:#e0e0e0; }
+.time-card input { display:none; }
+.time-icon svg { width:22px; height:22px; stroke:var(--crimson); stroke-width:1.8; fill:none; }
+.time-title { font-size:16px; font-weight:900; color:var(--text); }
+.time-sub { font-size:11px; color:var(--muted); font-weight:600; margin-top:2px; }
+.time-card.selected .time-title { color:var(--crimson); }
+.time-card.disabled .time-icon svg { stroke:#bbb; }
+.time-full-badge { font-size:11px; font-weight:800; color:#dc2626; margin-top:2px; }
+
+/* CALENDAR */
 .cal-hint { font-size:12px; color:var(--muted); margin-bottom:14px; font-weight:600; background:rgba(92,15,15,.04); border-radius:10px; padding:10px 14px; border:1px solid rgba(92,15,15,.08); line-height:1.7; }
 .cal-wrap { margin-top:4px; }
 .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
@@ -87,33 +107,41 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .cal-nav:hover { background:rgba(92,15,15,.06); border-color:var(--crimson); }
 .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
 .cal-day-name { text-align:center; font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; padding:6px 0; }
-.cal-day { aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; transition:all .18s; border:1.5px solid transparent; position:relative; background:var(--cream); }
-.cal-day:hover:not(.empty):not(.past):not(.full) { background:#fff; border-color:rgba(92,15,15,.2); }
+.cal-day {
+  aspect-ratio:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; border-radius:10px; font-size:14px; font-weight:700;
+  cursor:pointer; transition:all .18s; border:1.5px solid transparent;
+  position:relative; background:var(--cream);
+}
+.cal-day:hover:not(.empty):not(.past):not(.full-slot) { background:#fff; border-color:rgba(92,15,15,.2); }
 .cal-day.empty { background:transparent; cursor:default; }
 .cal-day.past { color:#ccc; cursor:not-allowed; background:transparent; }
 .cal-day.today { border-color:rgba(92,15,15,.35); font-weight:900; }
 .cal-day.range-start, .cal-day.range-end { background:var(--crimson) !important; color:#fff !important; border-color:var(--crimson) !important; box-shadow:0 4px 14px rgba(92,15,15,.3); }
 .cal-day.in-range { background:rgba(92,15,15,.1); color:var(--crimson); border-color:rgba(92,15,15,.15); border-radius:0; }
 .cal-day.range-start { border-radius:10px 0 0 10px; }
-.cal-day.range-end   { border-radius:0 10px 10px 0; }
+.cal-day.range-end { border-radius:0 10px 10px 0; }
 .cal-day.range-start.range-end { border-radius:10px; }
-.cal-day.full { background:#f5f5f5; color:#bbb; cursor:not-allowed; }
-.cal-day.has-booking { background:rgba(92,15,15,.06); border-color:rgba(92,15,15,.15); }
+.cal-day.full-slot { background:#f5f5f5; color:#bbb; cursor:not-allowed; }
+.cal-day.partial { background:rgba(92,15,15,.06); border-color:rgba(92,15,15,.15); }
 .full-badge { font-size:8px; font-weight:800; color:#dc2626; position:absolute; bottom:3px; }
-.booked-dot { width:5px; height:5px; background:var(--crimson); border-radius:50%; position:absolute; bottom:4px; }
+.partial-dot { width:5px; height:5px; background:var(--crimson); border-radius:50%; position:absolute; bottom:4px; }
 
 .cal-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:12px; color:var(--muted); font-weight:600; }
 .cal-legend span { display:flex; align-items:center; gap:6px; }
 .leg-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
 .leg-start { background:var(--crimson); }
 .leg-range { background:rgba(92,15,15,.1); border:1.5px solid rgba(92,15,15,.15); }
-.leg-one   { background:rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.15); }
-.leg-full  { background:#f5f5f5; border:1.5px solid #e0e0e0; }
+.leg-partial { background:rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.15); }
+.leg-full { background:#f5f5f5; border:1.5px solid #e0e0e0; }
 
 .selected-date-box { margin-top:14px; padding:14px 18px; background:rgba(92,15,15,.05); border:1.5px solid rgba(92,15,15,.12); border-radius:12px; font-size:14px; font-weight:700; color:var(--crimson); display:none; line-height:2; }
 .selected-date-box.show { display:block; }
 .reset-link { font-size:12px; color:var(--muted); font-weight:600; cursor:pointer; text-decoration:underline; }
 .reset-link:hover { color:var(--crimson); }
+
+/* slot picker message */
+.slot-msg { font-size:13px; color:var(--muted); padding:14px; background:rgba(92,15,15,.03); border-radius:10px; text-align:center; font-weight:600; border:1px dashed rgba(92,15,15,.15); }
 
 .submit-btn { width:100%; padding:16px; background:var(--crimson); color:#fff; border:none; border-radius:14px; font-family:'Tajawal',sans-serif; font-size:18px; font-weight:900; cursor:pointer; transition:all .28s; margin-top:8px; box-shadow:0 8px 24px rgba(92,15,15,.22); display:flex; align-items:center; justify-content:center; gap:10px; }
 .submit-btn:hover { background:var(--crimson-2); transform:translateY(-2px); }
@@ -218,6 +246,15 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
           <div class="err" style="display:none;margin-top:6px;" id="err-system">يرجى اختيار نظام الدورة</div>
         </div>
 
+        <!-- TIME SLOT -->
+        <div class="mf" id="mf-time">
+          <label><span class="req">*</span> الوقت</label>
+          <div id="timeSlotArea">
+            <div class="slot-msg">اختر نظام الدورة أولاً لعرض الأوقات المتاحة</div>
+          </div>
+          <div class="err" style="display:none;margin-top:6px;" id="err-time">يرجى اختيار الوقت</div>
+        </div>
+
         <div class="mf-section">اختيار التاريخ</div>
 
         <div class="mf" id="mf-date">
@@ -235,7 +272,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
             <div class="cal-legend">
               <span><div class="leg-dot leg-start"></div> بداية / نهاية</span>
               <span><div class="leg-dot leg-range"></div> أيام الدورة</span>
-              <span><div class="leg-dot leg-one"></div> مدرب واحد</span>
+              <span><div class="leg-dot leg-partial"></div> slot متاح</span>
               <span><div class="leg-dot leg-full"></div> محجوز</span>
             </div>
             <div class="selected-date-box" id="selectedDateBox">
@@ -243,7 +280,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
               <span class="reset-link" onclick="resetDates()">إعادة الاختيار</span>
             </div>
           </div>
-          <div class="err" style="margin-top:8px;" id="err-date">يرجى اختيار تاريخ البداية على الأقل</div>
+          <div class="err" style="margin-top:8px;" id="err-date">يرجى اختيار تاريخ البداية</div>
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">
@@ -273,10 +310,12 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+// slots: key = "dateStr|system|time" → count
+let bookedSlots = {};
+
 let rangeStart = null, rangeEnd = null;
 let currentYear, currentMonth;
-let bookedDates = {};
-let selectedType = null, selectedSystem = null;
+let selectedType = null, selectedSystem = null, selectedTime = null;
 
 const today = new Date();
 currentYear  = today.getFullYear();
@@ -284,26 +323,32 @@ currentMonth = today.getMonth();
 
 fetchBookings();
 
-async function fetchBookings() {
-  try {
-    const res = await fetch(SCRIPT_URL + '?action=getBookings');
-    const data = await res.json();
+function fetchBookings() {
+  const cbName = 'cb_' + Date.now();
+  window[cbName] = function(data) {
+    bookedSlots = {};
     if (data.bookings) {
-      bookedDates = {};
-      data.bookings.forEach(b => {
+      data.bookings.forEach(function(b) {
         if (b.dateStart && b.status !== 'مرفوض') {
-          let d = new Date(b.dateStart + 'T00:00:00');
-          const e = new Date((b.dateEnd || b.dateStart) + 'T00:00:00');
-          while (d <= e) {
-            const k = toStr(d);
-            bookedDates[k] = (bookedDates[k] || 0) + 1;
+          var d   = new Date(b.dateStart + 'T00:00:00');
+          var end = new Date((b.dateEnd || b.dateStart) + 'T00:00:00');
+          while (d <= end) {
+            var k = toStr(d) + '|' + (b.system||'') + '|' + (b.time||'');
+            bookedSlots[k] = (bookedSlots[k] || 0) + 1;
             d.setDate(d.getDate() + 1);
           }
         }
       });
     }
-  } catch(err) {}
-  renderCalendar();
+    delete window[cbName];
+    document.getElementById('jsonp-script') && document.getElementById('jsonp-script').remove();
+    renderCalendar();
+  };
+  var s = document.createElement('script');
+  s.id  = 'jsonp-script';
+  s.src = SCRIPT_URL + '?callback=' + cbName;
+  s.onerror = function() { delete window[cbName]; renderCalendar(); };
+  document.body.appendChild(s);
 }
 
 function toStr(d) {
@@ -313,43 +358,79 @@ function dsp(y, m, d) {
   return y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
 }
 
+// هل الـ slot ممتلئ في تاريخ معين؟
+function isSlotFull(dateStr) {
+  if (!selectedSystem || !selectedTime) return false;
+  var sysKey = selectedSystem === 'inperson' ? 'حضوري' : 'أونلاين';
+  var k = dateStr + '|' + sysKey + '|' + selectedTime;
+  return (bookedSlots[k] || 0) >= 1;
+}
+
+// هل اليوم كامل المحجوز (كل slots)؟
+function isDayFullyBooked(dateStr) {
+  var times = ['5-7', '7-9'];
+  var systems = ['حضوري', 'أونلاين'];
+  // اليوم محجوز كلياً إذا كل الـ 4 slots ممتلئة
+  var total = 0;
+  times.forEach(function(t) {
+    systems.forEach(function(s) {
+      if ((bookedSlots[dateStr + '|' + s + '|' + t] || 0) >= 1) total++;
+    });
+  });
+  return total >= 4;
+}
+
+// هل اليوم فيه بعض slots محجوزة؟
+function isDayPartial(dateStr) {
+  var times = ['5-7', '7-9'];
+  var systems = ['حضوري', 'أونلاين'];
+  var total = 0;
+  times.forEach(function(t) {
+    systems.forEach(function(s) {
+      if ((bookedSlots[dateStr + '|' + s + '|' + t] || 0) >= 1) total++;
+    });
+  });
+  return total > 0 && total < 4;
+}
+
 function renderCalendar() {
-  const grid = document.getElementById('calGrid');
-  const todayStr = toStr(today);
+  var grid = document.getElementById('calGrid');
+  var todayStr = toStr(today);
   document.getElementById('calMonth').textContent = MONTHS[currentMonth] + ' ' + currentYear;
 
-  let html = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
-  const firstDay    = new Date(currentYear, currentMonth, 1).getDay();
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  var html = DAYS.map(function(d) { return '<div class="cal-day-name">' + d + '</div>'; }).join('');
+  var firstDay    = new Date(currentYear, currentMonth, 1).getDay();
+  var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+  for (var i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
 
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds      = dsp(currentYear, currentMonth, d);
-    const isPast  = ds < todayStr;
-    const count   = bookedDates[ds] || 0;
-    const isFull  = count >= 2;
-    const isOne   = count === 1;
-    const isStart = rangeStart === ds;
-    const isEnd   = rangeEnd   === ds;
-    const inRange = rangeStart && rangeEnd && ds > rangeStart && ds < rangeEnd;
-    const isToday = ds === todayStr;
+  for (var d = 1; d <= daysInMonth; d++) {
+    var ds      = dsp(currentYear, currentMonth, d);
+    var isPast  = ds < todayStr;
+    var isSlotBookedForMe = selectedSystem && selectedTime && isSlotFull(ds);
+    var isDayFull = isDayFullyBooked(ds);
+    var isPartial = isDayPartial(ds);
+    var isStart = rangeStart === ds;
+    var isEnd   = rangeEnd   === ds;
+    var inRange = rangeStart && rangeEnd && ds > rangeStart && ds < rangeEnd;
+    var isToday = ds === todayStr;
 
-    let cls = 'cal-day';
-    if (isPast)      cls += ' past';
-    else if (isFull) cls += ' full';
-    else if (isOne)  cls += ' has-booking';
-    if (isStart)     cls += ' range-start';
-    if (isEnd)       cls += ' range-end';
-    if (inRange)     cls += ' in-range';
+    var cls = 'cal-day';
+    if (isPast)                cls += ' past';
+    else if (isSlotBookedForMe) cls += ' full-slot';
+    else if (isDayFull)        cls += ' full-slot';
+    else if (isPartial)        cls += ' partial';
+    if (isStart)  cls += ' range-start';
+    if (isEnd)    cls += ' range-end';
+    if (inRange)  cls += ' in-range';
     if (isToday && !isStart && !isEnd) cls += ' today';
 
-    let inner = `${d}`;
-    if (isFull && !isPast) inner += `<span class="full-badge">FULL</span>`;
-    else if (isOne && !isPast && !isStart && !isEnd) inner += `<span class="booked-dot"></span>`;
+    var inner = '' + d;
+    if (!isPast && (isSlotBookedForMe || isDayFull)) inner += '<span class="full-badge">FULL</span>';
+    else if (!isPast && isPartial && !isStart && !isEnd) inner += '<span class="partial-dot"></span>';
 
-    const clickable = !isPast && !isFull;
-    html += `<div class="${cls}" ${clickable ? `onclick="selectDay('${ds}')"` : ''}>${inner}</div>`;
+    var clickable = !isPast && !isSlotBookedForMe && !isDayFull;
+    html += '<div class="' + cls + '" ' + (clickable ? 'onclick="selectDay(\'' + ds + '\')"' : '') + '>' + inner + '</div>';
   }
 
   grid.innerHTML = html;
@@ -380,25 +461,25 @@ function resetDates() {
 }
 
 function fmtDate(ds) {
-  const d = new Date(ds + 'T00:00:00');
+  var d = new Date(ds + 'T00:00:00');
   return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
 }
 
 function updateDateBox() {
-  const box = document.getElementById('selectedDateBox');
+  var box = document.getElementById('selectedDateBox');
   if (!rangeStart) { box.classList.remove('show'); return; }
 
-  let content = '';
+  var content = '';
   if (!rangeEnd || rangeEnd === rangeStart) {
-    content = `📅 تاريخ البداية: <strong>${fmtDate(rangeStart)}</strong><br>
-    <span style="font-size:12px;color:var(--muted);font-weight:600;">اضغط يوماً آخر لتحديد نهاية الدورة — أو نفس اليوم إذا يوم واحد</span>`;
+    content = '📅 تاريخ البداية: <strong>' + fmtDate(rangeStart) + '</strong><br>' +
+      '<span style="font-size:12px;color:var(--muted);font-weight:600;">اضغط يوماً آخر لتحديد نهاية الدورة</span>';
   } else {
-    const sd = new Date(rangeStart + 'T00:00:00');
-    const ed = new Date(rangeEnd   + 'T00:00:00');
-    const days = Math.round((ed - sd) / (1000*60*60*24)) + 1;
-    content = `📅 من: <strong>${fmtDate(rangeStart)}</strong><br>
-    📅 إلى: <strong>${fmtDate(rangeEnd)}</strong><br>
-    <span style="font-size:12px;font-weight:700;color:var(--muted);">🌙 مسائي &nbsp;•&nbsp; ${days} ${days===1?'يوم':'أيام'}</span>`;
+    var sd   = new Date(rangeStart + 'T00:00:00');
+    var ed   = new Date(rangeEnd   + 'T00:00:00');
+    var days = Math.round((ed - sd) / (1000*60*60*24)) + 1;
+    content = '📅 من: <strong>' + fmtDate(rangeStart) + '</strong><br>' +
+      '📅 إلى: <strong>' + fmtDate(rangeEnd) + '</strong><br>' +
+      '<span style="font-size:12px;font-weight:700;color:var(--muted);">🌙 مسائي &nbsp;•&nbsp; ' + days + ' ' + (days===1?'يوم':'أيام') + '</span>';
   }
   document.getElementById('dateBoxContent').innerHTML = content;
   box.classList.add('show');
@@ -422,41 +503,88 @@ function selectType(t) {
 
 function selectSystem(s) {
   selectedSystem = s;
+  selectedTime   = null;
   document.getElementById('sc-inperson').classList.toggle('selected', s === 'inperson');
   document.getElementById('sc-online').classList.toggle('selected',   s === 'online');
   document.querySelector('#sc-inperson input').checked = (s === 'inperson');
   document.querySelector('#sc-online input').checked   = (s === 'online');
   document.getElementById('err-system').style.display = 'none';
+  renderTimeSlots();
+  renderCalendar();
+}
+
+function renderTimeSlots() {
+  var area   = document.getElementById('timeSlotArea');
+  var sysKey = selectedSystem === 'inperson' ? 'حضوري' : 'أونلاين';
+
+  // نحسب أيام مشغولة لكل slot (نأخذ اليوم الحالي كمرجع)
+  // نعرض فقط الحالة العامة — التفصيل في الكالندر
+  var t1Full = false, t2Full = false;
+  // نفحص إذا كان اليوم المختار (إذا موجود) مشغول أو لا
+  if (rangeStart) {
+    t1Full = (bookedSlots[rangeStart + '|' + sysKey + '|5-7'] || 0) >= 1;
+    t2Full = (bookedSlots[rangeStart + '|' + sysKey + '|7-9'] || 0) >= 1;
+  }
+
+  area.innerHTML =
+    '<div class="time-grid">' +
+      '<div class="time-card' + (selectedTime==='5-7'?' selected':'') + (t1Full?' disabled':'') + '" id="tc-t1" onclick="' + (t1Full?'':'selectTime(\'5-7\')') + '">' +
+        '<input type="radio" name="time" value="5-7">' +
+        '<div class="time-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>' +
+        '<div>' +
+          '<div class="time-title">5 – 7</div>' +
+          '<div class="time-sub">مسائي</div>' +
+          (t1Full ? '<div class="time-full-badge">محجوز</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="time-card' + (selectedTime==='7-9'?' selected':'') + (t2Full?' disabled':'') + '" id="tc-t2" onclick="' + (t2Full?'':'selectTime(\'7-9\')') + '">' +
+        '<input type="radio" name="time" value="7-9">' +
+        '<div class="time-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>' +
+        '<div>' +
+          '<div class="time-title">7 – 9</div>' +
+          '<div class="time-sub">مسائي</div>' +
+          (t2Full ? '<div class="time-full-badge">محجوز</div>' : '') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function selectTime(t) {
+  selectedTime = t;
+  document.getElementById('err-time').style.display = 'none';
+  renderTimeSlots();
+  renderCalendar();
 }
 
 function validateField(id, value) {
-  const valid = value && value.toString().trim() !== '';
-  document.getElementById(id)?.classList.toggle('invalid', !valid);
+  var valid = value && value.toString().trim() !== '';
+  document.getElementById(id) && document.getElementById(id).classList.toggle('invalid', !valid);
   return valid;
 }
 
 document.getElementById('bookingForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const f = this;
-  const memberId    = f.memberId.value.trim();
-  const trainerName = f.trainerName.value.trim();
-  const courseTitle = f.courseTitle.value.trim();
+  var f = this;
+  var memberId    = f.memberId.value.trim();
+  var trainerName = f.trainerName.value.trim();
+  var courseTitle = f.courseTitle.value.trim();
 
-  let ok = true;
+  var ok = true;
   if (!validateField('mf-memberId',    memberId))    ok = false;
   if (!validateField('mf-trainerName', trainerName)) ok = false;
   if (!validateField('mf-courseTitle', courseTitle)) ok = false;
   if (!selectedType)   { document.getElementById('err-type').style.display   = 'block'; ok = false; }
   if (!selectedSystem) { document.getElementById('err-system').style.display = 'block'; ok = false; }
+  if (!selectedTime)   { document.getElementById('err-time').style.display   = 'block'; ok = false; }
   if (!rangeStart) {
     document.getElementById('mf-date').classList.add('invalid');
     document.getElementById('err-date').style.display = 'block'; ok = false;
   }
   if (!ok) return;
 
-  const btn = document.getElementById('submitBtn');
-  const txt = document.getElementById('btnTxt');
-  const sp  = document.getElementById('spinner');
+  var btn = document.getElementById('submitBtn');
+  var txt = document.getElementById('btnTxt');
+  var sp  = document.getElementById('spinner');
   btn.disabled = true; txt.style.display = 'none'; sp.style.display = 'block';
 
   try {
@@ -470,6 +598,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
         courseTitle,
         courseType: selectedType === 'private' ? 'خاصة' : 'وفق الجدول',
         system:     selectedSystem === 'online' ? 'أونلاين' : 'حضوري',
+        time:       selectedTime,
         dateStart:  rangeStart,
         dateEnd:    rangeEnd || rangeStart,
         status:     'قيد المراجعة'
@@ -477,13 +606,14 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     });
 
     f.style.display = 'none';
-    const sd = new Date(rangeStart + 'T00:00:00');
-    let refTxt = DAYS[sd.getDay()] + ' ' + sd.getDate() + ' ' + MONTHS[sd.getMonth()];
+    var sd = new Date(rangeStart + 'T00:00:00');
+    var refTxt = DAYS[sd.getDay()] + ' ' + sd.getDate() + ' ' + MONTHS[sd.getMonth()];
     if (rangeEnd && rangeEnd !== rangeStart) {
-      const ed = new Date(rangeEnd + 'T00:00:00');
+      var ed = new Date(rangeEnd + 'T00:00:00');
       refTxt += ' ← ' + DAYS[ed.getDay()] + ' ' + ed.getDate() + ' ' + MONTHS[ed.getMonth()];
     }
-    document.getElementById('bookingRef').textContent = refTxt + ' — ' + trainerName;
+    refTxt += ' | ' + selectedTime + ' مسائي — ' + trainerName;
+    document.getElementById('bookingRef').textContent = refTxt;
     document.getElementById('successState').style.display = 'block';
 
   } catch(err) {
@@ -497,10 +627,12 @@ function resetForm() {
   document.getElementById('bookingForm').style.display = 'block';
   document.getElementById('successState').style.display = 'none';
   rangeStart = null; rangeEnd = null;
-  selectedType = null; selectedSystem = null;
+  selectedType = null; selectedSystem = null; selectedTime = null;
   document.getElementById('selectedDateBox').classList.remove('show');
-  ['tc-schedule','tc-private','sc-inperson','sc-online'].forEach(id =>
-    document.getElementById(id).classList.remove('selected'));
+  document.getElementById('timeSlotArea').innerHTML = '<div class="slot-msg">اختر نظام الدورة أولاً لعرض الأوقات المتاحة</div>';
+  ['tc-schedule','tc-private','sc-inperson','sc-online'].forEach(function(id) {
+    document.getElementById(id) && document.getElementById(id).classList.remove('selected');
+  });
   document.getElementById('submitBtn').disabled = false;
   document.getElementById('btnTxt').style.display = 'block';
   document.getElementById('spinner').style.display = 'none';
