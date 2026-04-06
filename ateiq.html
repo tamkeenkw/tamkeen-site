@@ -52,7 +52,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   background-size:52px 52px;
   background-position:0 0,0 26px,26px -26px,-26px 0;
 }
-
 .hero-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
 
 /* BIG PHOTO */
@@ -61,7 +60,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   display:inline-block;
   position:relative;
 }
-
 .trainer-photo-wrap::before {
   content:'';
   position:absolute;
@@ -69,7 +67,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   border-radius:50%;
   border:2px solid rgba(255,255,255,.15);
 }
-
 .trainer-photo-wrap::after {
   content:'';
   position:absolute;
@@ -77,7 +74,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   border-radius:50%;
   border:1px solid rgba(255,255,255,.07);
 }
-
 .trainer-photo {
   width:240px;
   height:240px;
@@ -88,7 +84,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   border:5px solid rgba(255,255,255,.18);
   box-shadow:0 24px 72px rgba(0,0,0,.3);
 }
-
 .trainer-badge {
   display:inline-block;
   background:rgba(255,255,255,.12);
@@ -98,7 +93,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   padding:6px 22px; border-radius:100px;
   margin-bottom:20px;
 }
-
 .trainer-name {
   font-size:clamp(36px,7vw,64px);
   font-weight:900;
@@ -106,7 +100,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   line-height:1.15;
   margin-bottom:12px;
 }
-
 .trainer-title {
   font-size:clamp(16px,2.5vw,20px);
   color:rgba(255,255,255,.6);
@@ -120,9 +113,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   gap:clamp(24px,6vw,72px);
   flex-wrap:wrap;
 }
-
 .stat { text-align:center; }
-
 .stat-n {
   font-size:clamp(32px,6vw,52px);
   font-weight:900;
@@ -130,7 +121,6 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   line-height:1;
   margin-bottom:6px;
 }
-
 .stat-l {
   font-size:13px;
   color:rgba(255,255,255,.5);
@@ -205,6 +195,255 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.2); }
 .btn-contact svg { width:22px; height:22px; fill:var(--crimson); }
 
+/* =====================================================
+   قسم البحث عن المتدربين — جديد
+   ===================================================== */
+.search-section {
+  background:#fff;
+  border-radius:28px;
+  padding:clamp(40px,6vw,56px) clamp(28px,5vw,48px);
+  border:1.5px solid rgba(92,15,15,.08);
+  position:relative;
+  overflow:hidden;
+}
+.search-section::before {
+  content:'';
+  position:absolute;
+  top:0; left:0;
+  width:200px; height:200px;
+  background:var(--crimson);
+  opacity:.025;
+  border-radius:0 0 200px 0;
+}
+.search-bar {
+  display:flex;
+  gap:10px;
+  margin-top:24px;
+}
+.search-bar input {
+  flex:1;
+  padding:14px 20px;
+  font-family:'Tajawal',sans-serif;
+  font-size:16px;
+  border:1.5px solid rgba(92,15,15,.15);
+  border-radius:14px;
+  background:var(--cream);
+  color:var(--text);
+  direction:rtl;
+  outline:none;
+  transition:border-color .2s;
+}
+.search-bar input:focus { border-color:var(--crimson); }
+.search-bar input::placeholder { color:var(--muted); }
+.search-btn {
+  padding:14px 28px;
+  background:var(--crimson);
+  color:#fff;
+  font-family:'Tajawal',sans-serif;
+  font-size:16px;
+  font-weight:800;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.search-btn:hover { background:var(--crimson-2); transform:translateY(-1px); }
+.search-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+.search-btn svg { width:18px; height:18px; fill:#fff; }
+
+/* نتيجة البحث */
+.search-result { margin-top:32px; display:none; }
+.search-result.show { display:block; }
+
+/* بطاقة المتدرب */
+.trainee-card {
+  background:var(--crimson);
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+}
+.trainee-card::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.03) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.03) 75%);
+  background-size:40px 40px;
+  background-position:0 0,0 20px,20px -20px,-20px 0;
+}
+.trainee-card-top {
+  position:relative; z-index:1;
+  padding:36px 32px 28px;
+  text-align:center;
+}
+.trainee-avatar {
+  width:80px; height:80px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  border:3px solid rgba(255,255,255,.25);
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; font-weight:900; color:#fff;
+  margin:0 auto 16px;
+}
+.trainee-name {
+  font-size:clamp(20px,4vw,28px);
+  font-weight:900; color:#fff;
+  margin-bottom:8px; line-height:1.2;
+}
+.trainee-institute {
+  font-size:13px; color:rgba(255,255,255,.55);
+  margin-bottom:20px;
+}
+.trainee-status-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 24px; border-radius:100px;
+  font-size:15px; font-weight:800;
+}
+.status-pass {
+  background:rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.3);
+  color:#fff;
+}
+.status-progress {
+  background:rgba(255,255,255,.1);
+  border:1.5px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.8);
+}
+.status-dot {
+  width:8px; height:8px; border-radius:50%;
+}
+.dot-pass     { background:#4caf50; box-shadow:0 0 6px rgba(76,175,80,.6); }
+.dot-progress { background:#ffc107; box-shadow:0 0 6px rgba(255,193,7,.5); }
+
+/* الشريط السفلي من البطاقة */
+.trainee-card-bottom {
+  position:relative; z-index:1;
+  background:rgba(0,0,0,.18);
+  padding:20px 32px;
+  display:flex;
+  justify-content:center;
+  gap:clamp(24px,8vw,64px);
+  flex-wrap:wrap;
+}
+.tc-stat { text-align:center; }
+.tc-stat-n {
+  font-size:22px; font-weight:900; color:#fff;
+  line-height:1; margin-bottom:4px;
+}
+.tc-stat-l {
+  font-size:12px; color:rgba(255,255,255,.5);
+}
+
+/* مسار التدريب */
+.trainee-path {
+  margin-top:16px;
+  background:#fff;
+  border-radius:20px;
+  border:1.5px solid rgba(92,15,15,.08);
+  overflow:hidden;
+}
+.tp-header {
+  padding:18px 24px;
+  border-bottom:1.5px solid rgba(92,15,15,.06);
+  font-size:12px; font-weight:800;
+  letter-spacing:2px; color:var(--crimson);
+  text-transform:uppercase;
+}
+.tp-body { padding:24px; }
+.tp-step {
+  display:flex; align-items:flex-start; gap:16px;
+  position:relative;
+}
+.tp-left {
+  display:flex; flex-direction:column;
+  align-items:center; flex-shrink:0; width:36px;
+}
+.tp-circle {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:800; flex-shrink:0; position:relative; z-index:1;
+}
+.tp-circle.done    { background:#2e7d32; color:#fff; }
+.tp-circle.current { background:var(--crimson); color:#fff; outline:3px solid rgba(92,15,15,.18); outline-offset:2px; }
+.tp-circle.pending { background:var(--cream-2); color:var(--muted); border:1.5px solid rgba(92,15,15,.1); }
+.tp-line {
+  width:2px; flex:1; min-height:24px; margin:3px 0;
+}
+.tp-line.done    { background:#2e7d32; }
+.tp-line.pending { background:rgba(92,15,15,.08); }
+.tp-content { flex:1; padding-bottom:24px; }
+.tp-step:last-child .tp-content { padding-bottom:0; }
+.tp-name { font-size:15px; font-weight:800; color:var(--text); margin-bottom:3px; line-height:1.3; }
+.tp-name.muted { color:var(--muted); font-weight:600; }
+.tp-sub  { font-size:13px; color:var(--muted); }
+.tp-tag  {
+  display:inline-block; margin-top:7px;
+  font-size:12px; font-weight:800;
+  padding:4px 12px; border-radius:100px;
+}
+.tag-done    { background:#e8f5e9; color:#2e7d32; }
+.tag-current { background:rgba(92,15,15,.08); color:var(--crimson); }
+.tag-pending { background:var(--cream-2); color:var(--muted); }
+
+/* رسالة الخطأ */
+.result-notfound {
+  text-align:center; padding:40px 24px;
+  background:#fff; border-radius:20px;
+  border:1.5px dashed rgba(92,15,15,.15);
+}
+.result-notfound svg { width:44px; height:44px; fill:rgba(92,15,15,.18); margin-bottom:14px; display:block; margin-inline:auto; }
+.result-notfound p { font-size:16px; color:var(--muted); line-height:1.7; }
+
+/* حالة التحميل */
+.search-loading {
+  text-align:center;
+  padding:36px;
+  display:none;
+}
+.search-loading.show { display:block; }
+.spinner {
+  width:36px; height:36px;
+  border:3px solid rgba(92,15,15,.12);
+  border-top-color:var(--crimson);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin:0 auto 12px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* خط المسار الزمني */
+.tl-wrap { padding:20px 24px; }
+.tl-step { display:flex; align-items:flex-start; gap:14px; }
+.tl-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:36px; }
+.tl-circle {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:800; flex-shrink:0; position:relative; z-index:1;
+}
+.tl-done    { background:#2e7d32; color:#fff; }
+.tl-current { background:var(--crimson); color:#fff; box-shadow:0 0 0 4px rgba(92,15,15,.12); }
+.tl-pending { background:var(--cream-2); color:var(--muted); border:1.5px solid rgba(92,15,15,.1); }
+.tl-line { width:2px; flex:1; min-height:24px; margin:3px 0; }
+.tl-line-done    { background:#2e7d32; }
+.tl-line-pending { background:rgba(92,15,15,.1); }
+.tl-body { flex:1; padding-bottom:22px; }
+.tl-body-last { padding-bottom:0; }
+.tl-name { font-size:15px; font-weight:800; color:var(--text); margin-bottom:3px; line-height:1.3; }
+.tl-name-muted { color:var(--muted); font-weight:600; }
+.tl-date { font-size:12px; color:var(--muted); margin-bottom:4px; }
+.tl-tag {
+  display:inline-block; font-size:11px; font-weight:800;
+  padding:3px 12px; border-radius:100px; margin-top:4px;
+}
+.tl-tag-done    { background:#e8f5e9; color:#2e7d32; }
+.tl-tag-current { background:rgba(92,15,15,.08); color:var(--crimson); }
+.tl-tag-pending { background:var(--cream-2); color:var(--muted); }
+
 /* FOOTER */
 footer { background:var(--crimson-2); padding:28px; text-align:center; margin-top:clamp(48px,8vw,80px); }
 footer p { font-size:13px; color:rgba(255,255,255,.3); }
@@ -213,6 +452,8 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 @media(max-width:600px){
   .trainer-photo { width:190px; height:190px; }
   .stats-row { gap:24px; }
+  .search-bar { flex-direction:column; }
+  .search-btn { justify-content:center; }
 }
 </style>
 <!-- Google Analytics -->
@@ -327,6 +568,40 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     </div>
   </div>
 
+  <!-- =====================================================
+       قسم البحث عن المتدربين — جديد
+       ===================================================== -->
+  <div class="section">
+    <div class="search-section">
+      <p class="section-label">بوابة المتدربين</p>
+      <h2 class="section-title">تحقق من شهادتك وخطتك التدريبية</h2>
+      <p class="bio-text" style="margin-bottom:0">ابحث باسمك أو رقمك المدني لتعرف دفعتك وحالة دوراتك</p>
+
+      <div class="search-bar">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="اكتب اسمك أو رقمك المدني..."
+          maxlength="60"
+          autocomplete="off"
+        />
+        <button class="search-btn" id="searchBtn" onclick="doSearch()">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          بحث
+        </button>
+      </div>
+
+      <!-- حالة التحميل -->
+      <div class="search-loading" id="searchLoading">
+        <div class="spinner"></div>
+        <p style="color:var(--muted);font-size:14px">جاري البحث...</p>
+      </div>
+
+      <!-- النتيجة -->
+      <div class="search-result" id="searchResult"></div>
+    </div>
+  </div>
+
   <!-- CTA -->
   <div class="section">
     <div class="cta-section">
@@ -345,6 +620,157 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 <footer>
   <p>معهد تمكين — <a href="/">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
 </footer>
+
+<!-- =====================================================
+     سكريبت البحث — يتصل بـ Apps Script
+     ===================================================== -->
+<script>
+// ⬇️ ضع هنا رابط الـ Web App بعد النشر على Apps Script
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJHov9fh6xnwSVJYO6iYTetW2h9OesSwZES69DhcpUzqcmiQ0uOIXJYZe7dB78XBUd/exec";
+
+const statusMap = {
+  "مكتملة":     { label:"مكتملة ✓",       cls:"s-done"    },
+  "متبقية":     { label:"متبقية",          cls:"s-pending" },
+  "قيد التسجيل":{ label:"قيد التسجيل",    cls:"s-reg"     },
+};
+
+function getInitials(name) {
+  return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('');
+}
+
+async function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { document.getElementById('searchInput').focus(); return; }
+
+  const btn     = document.getElementById('searchBtn');
+  const loading = document.getElementById('searchLoading');
+  const result  = document.getElementById('searchResult');
+
+  btn.disabled = true;
+  loading.classList.add('show');
+  result.classList.remove('show');
+  result.innerHTML = '';
+
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    renderResult(data);
+  } catch (err) {
+    renderResult({ found: false, message: "تعذّر الاتصال بالخادم — حاول مجدداً" });
+  } finally {
+    btn.disabled = false;
+    loading.classList.remove('show');
+  }
+}
+
+function renderResult(data) {
+  const el = document.getElementById('searchResult');
+
+  if (!data.found) {
+    el.innerHTML = `
+      <div class="result-notfound">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <p>${data.message || "لم يُعثر على نتائج — تواصل مع المعهد للمساعدة"}</p>
+      </div>`;
+    el.classList.add('show');
+    return;
+  }
+
+  const initials = getInitials(data.name);
+  const courses  = data.courses || [];
+  const done     = courses.filter(c => c.status === "تم الانجاز").length;
+  const total    = courses.length;
+  const pct      = total ? Math.round((done / total) * 100) : 0;
+
+  /* أول دورة غير مكتملة = "أنت هنا" — تلقائي بدون أي إعداد */
+  const currentIdx = courses.findIndex(c => c.status !== "تم الانجاز");
+
+  const isPassed   = data.passed;
+  const statusPill = isPassed
+    ? `<span class="trainee-status-pill status-pass"><span class="status-dot dot-pass"></span>اجتاز البرنامج</span>`
+    : `<span class="trainee-status-pill status-progress"><span class="status-dot dot-progress"></span>قيد التدريب</span>`;
+
+  const batchStat = data.batch ? `
+    <div class="tc-stat"><div class="tc-stat-n">${data.batch}</div><div class="tc-stat-l">الدفعة</div></div>` : '';
+
+  const progressStat = total ? `
+    <div class="tc-stat"><div class="tc-stat-n">${pct}%</div><div class="tc-stat-l">نسبة الإنجاز</div></div>
+    <div class="tc-stat"><div class="tc-stat-n">${done}/${total}</div><div class="tc-stat-l">الدورات المكتملة</div></div>` : '';
+
+  /* خط المسار — يقرأ كل الدورات من الشيت تلقائياً */
+  const steps = courses.map((c, i) => {
+    const isDone    = c.status === "تم الانجاز";
+    const isCurrent = i === currentIdx;
+    const isLast    = i === courses.length - 1;
+    const nextDone  = !isLast && courses[i + 1]?.status === "تم الانجاز";
+
+    const circleClass = isDone ? 'tp-done' : isCurrent ? 'tp-current' : 'tp-pending';
+    const circleInner = isDone
+      ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
+      : (i + 1);
+
+    const lineColor = isDone && nextDone ? '#2e7d32' : 'rgba(92,15,15,.1)';
+    const lineHtml  = isLast ? '' : `<div style="width:2px;flex:1;min-height:24px;margin:3px 0;background:${lineColor}"></div>`;
+
+    const nameStyle  = (!isDone && !isCurrent) ? 'color:var(--muted);font-weight:600' : 'font-weight:800;color:var(--text)';
+    const tagStyle   = isDone
+      ? 'background:#e8f5e9;color:#2e7d32'
+      : isCurrent
+        ? 'background:rgba(92,15,15,.08);color:var(--crimson)'
+        : 'background:var(--cream-2);color:var(--muted)';
+    const tagLabel   = isDone ? 'تم الانجاز ✓' : isCurrent ? 'أنت هنا' : 'متبقية';
+    const subLabel   = isDone && c.date ? c.date : isCurrent ? 'الدورة الحالية' : 'لم تبدأ بعد';
+
+    const circleStyle = isDone
+      ? 'background:#2e7d32;color:#fff'
+      : isCurrent
+        ? 'background:var(--crimson);color:#fff;outline:3px solid rgba(92,15,15,.2);outline-offset:2px'
+        : 'background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.12)';
+
+    return `
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px">
+          <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Tajawal',sans-serif;${circleStyle}">${circleInner}</div>
+          ${lineHtml}
+        </div>
+        <div style="flex:1;padding-bottom:${isLast ? '0' : '22px'}">
+          <div style="font-size:15px;line-height:1.3;margin-bottom:3px;${nameStyle}">${c.name}</div>
+          <div style="font-size:13px;color:var(--muted)">${subLabel}</div>
+          <span style="display:inline-block;margin-top:7px;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;padding:4px 12px;border-radius:100px;${tagStyle}">${tagLabel}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  const pathBlock = steps ? `
+    <div style="margin-top:16px;background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden">
+      <div style="padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase">مسار التدريب</div>
+      <div style="padding:24px">${steps}</div>
+    </div>` : '';
+
+  el.innerHTML = `
+    <div class="trainee-card">
+      <div class="trainee-card-top">
+        <div class="trainee-avatar">${initials}</div>
+        <div class="trainee-name">${data.name}</div>
+        <div class="trainee-institute">معهد تمكين — برنامج إعداد المدربين</div>
+        ${statusPill}
+      </div>
+      <div class="trainee-card-bottom">
+        ${batchStat}
+        ${progressStat}
+      </div>
+    </div>
+    ${pathBlock}`;
+
+  el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Enter للبحث
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
 
 </body>
 </html>
