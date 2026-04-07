@@ -817,8 +817,7 @@ function renderResult(data) {
     ? `<span class="trainee-status-pill status-pass"><span class="status-dot dot-pass"></span>اجتاز البرنامج</span>`
     : `<span class="trainee-status-pill status-progress"><span class="status-dot dot-progress"></span>قيد التدريب</span>`;
 
-  const batchStat = data.date ? `
-    <div class="tc-stat"><div class="tc-stat-n" style="font-size:18px">${data.date}</div><div class="tc-stat-l">تاريخ الاجتياز</div></div>` : '';
+  const batchStat = '';
 
   const progressStat = total ? `
     <div class="tc-stat"><div class="tc-stat-n">${pct}%</div><div class="tc-stat-l">نسبة الإنجاز</div></div>
