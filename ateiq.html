@@ -1037,7 +1037,8 @@ function mqLoadQuestion(idx) {
   const total = mqQuestions.length;
   const pct = Math.round((idx / total) * 100);
 
-  document.getElementById('mqNum').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total) + ' — ' + q['محور'];
+  document.getElementById('mqMahwar').textContent = q['محور'];
+  document.getElementById('mqNum').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total);
   document.getElementById('mqProgressText').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total);
   document.getElementById('mqProgressPct').textContent = toAr(pct) + '٪';
   document.getElementById('mqProgressFill').style.width = pct + '%';
@@ -1176,6 +1177,127 @@ function mqShowResult() {
 
   document.getElementById('mqStepResult').style.display = 'block';
   document.getElementById('mqStepResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+</script>
+
+<!-- سكريبت اختبار الدورة -->
+<script>
+const qQuestions = [
+  { text:"هل لديك هدف تعليمي واضح لدورتك؟", options:[{text:"نعم، محدد وقابل للقياس",score:3},{text:"نعم، لكنه عام",score:2},{text:"لا يوجد هدف واضح",score:0}] },
+  { text:"هل محتوى دورتك مقسّم إلى وحدات أو مراحل؟", options:[{text:"نعم، مقسّم بشكل منظم",score:3},{text:"مقسّم جزئياً",score:1},{text:"لا، المحتوى غير مقسّم",score:0}] },
+  { text:"هل تستخدم أساليب تدريب متنوعة؟", options:[{text:"نعم، أكثر من ٣ أساليب",score:3},{text:"أسلوبين فقط",score:1},{text:"أسلوب واحد فقط",score:0}] },
+  { text:"هل لديك آلية لقياس نتائج المتدربين؟", options:[{text:"نعم، اختبارات أو تقييم عملي",score:3},{text:"تقييم غير رسمي فقط",score:1},{text:"لا يوجد تقييم",score:0}] },
+  { text:"هل دورتك تحتوي على أنشطة تفاعلية؟", options:[{text:"نعم، أنشطة متعددة",score:3},{text:"نشاط واحد فقط",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل لديك مواد داعمة للمتدربين؟", options:[{text:"نعم، مذكرات وملفات كاملة",score:3},{text:"مواد جزئية",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل دورتك معتمدة من جهة رسمية؟", options:[{text:"نعم، معتمدة",score:3},{text:"قيد الاعتماد",score:1},{text:"غير معتمدة",score:0}] },
+  { text:"هل قدّمت دورتك من قبل وجمعت تغذية راجعة؟", options:[{text:"نعم، وطوّرتها بناءً عليها",score:3},{text:"قدّمتها لكن بدون تغذية راجعة",score:1},{text:"لم أقدمها بعد",score:0}] }
+];
+const qFeedback = [
+  { good:"هدفك التعليمي واضح ومحدد — هذا أساس كل دورة ناجحة", warn:"هدفك العام يحتاج تحديد أكثر", bad:"غياب الهدف يضعف دورتك — ابدأ بتحديد هدف SMART واضح" },
+  { good:"تقسيم المحتوى ممتاز — يسهّل الفهم ويرفع الاحتراف", warn:"تقسيم المحتوى جزئي — أكمل تنظيمه في وحدات واضحة", bad:"محتوى غير مقسّم = تجربة فوضوية للمتدرب" },
+  { good:"تنوع الأساليب يرفع مستوى التفاعل والاستيعاب", warn:"أضف أسلوباً ثالثاً على الأقل لتجنب الرتابة", bad:"أسلوب واحد يضعف الانتباه — نوّع بين المحاضرة والنقاش والتطبيق" },
+  { good:"وجود التقييم يثبت قيمة دورتك ويزيد مصداقيتها", warn:"حوّل تقييمك غير الرسمي لأداة قياس واضحة", bad:"بدون تقييم لا تعرف هل المتدرب استفاد أم لا" },
+  { good:"الأنشطة التفاعلية تضاعف الاستيعاب والرضا", warn:"أضف أنشطة أكثر — حتى ورقة عمل بسيطة تفرق", bad:"دورة بدون تفاعل = محاضرة — المتدربون يحتاجون التطبيق" },
+  { good:"المواد الداعمة تعطي المتدرب قيمة تستمر بعد الدورة", warn:"أكمل مواد الدورة — المذكرة الجيدة تفرق كثيراً", bad:"المواد الداعمة أساسية — ابدأ بمذكرة بسيطة على الأقل" },
+  { good:"الاعتماد الرسمي يفتح لك أبواباً كثيرة", warn:"الاعتماد قيد التنفيذ — أكمله قريباً", bad:"الاعتماد يرفع قيمتك — معهد تمكين يساعدك في ذلك" },
+  { good:"التطوير المستمر بناءً على الملاحظات يميزك عن غيرك", warn:"استخدم تجربتك السابقة لجمع ملاحظات وطوّر دورتك", bad:"أول تقديم مهم — خطّط له جيداً وجمّع ملاحظات بعده" }
+];
+
+let qCurrent=0, qScores=[], qSelected=null, qName='', qPhone='';
+
+function quizInit(){
+  document.getElementById('quizStart').style.display='none';
+  document.getElementById('quizBody').style.display='block';
+  qLoadQuestion(0);
+}
+
+function qLoadQuestion(idx){
+  qSelected=null;
+  document.getElementById('qNextBtn').disabled=true;
+  const q=qQuestions[idx], total=qQuestions.length, pct=Math.round((idx/total)*100);
+  document.getElementById('qNum').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
+  document.getElementById('qProgressText').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
+  document.getElementById('qProgressPct').textContent=toAr(pct)+'٪';
+  document.getElementById('qProgressFill').style.width=pct+'%';
+  document.getElementById('qText').textContent=q.text;
+  const wrap=document.getElementById('qOptions'); wrap.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;color:var(--text);transition:all .2s';
+    div.innerHTML='<div style="width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);display:flex;align-items:center;justify-content:center" id="qdot'+i+'"></div><span>'+opt.text+'</span>';
+    div.onclick=()=>qSelectOption(i); div.id='qopt'+i; wrap.appendChild(div);
+  });
+}
+
+function qSelectOption(idx){
+  qQuestions[qCurrent].options.forEach((_,i)=>{
+    const el=document.getElementById('qopt'+i), dot=document.getElementById('qdot'+i);
+    el.style.borderColor='rgba(92,15,15,.08)'; el.style.background='var(--cream)'; el.style.color='var(--text)';
+    dot.innerHTML=''; dot.style.background='';
+  });
+  const sel=document.getElementById('qopt'+idx), dot=document.getElementById('qdot'+idx);
+  sel.style.borderColor='var(--crimson)'; sel.style.background='rgba(92,15,15,.04)'; sel.style.color='var(--crimson)';
+  dot.style.background='var(--crimson)'; dot.innerHTML='<div style="width:8px;height:8px;background:#fff;border-radius:50%"></div>';
+  qSelected=idx; document.getElementById('qNextBtn').disabled=false;
+}
+
+function qNext(){
+  qScores.push(qQuestions[qCurrent].options[qSelected].score);
+  qCurrent++;
+  if(qCurrent<qQuestions.length){ qLoadQuestion(qCurrent); }
+  else {
+    document.getElementById('qProgressFill').style.width='100%';
+    document.getElementById('qProgressPct').textContent='١٠٠٪';
+    document.getElementById('qStepQuiz').style.display='none';
+    document.getElementById('qStepLead').style.display='block';
+    ['qLeadName','qLeadPhone'].forEach(id=>{ document.getElementById(id).addEventListener('input',qCheckLead); });
+  }
+}
+
+function qCheckLead(){
+  const n=document.getElementById('qLeadName').value.trim(), p=document.getElementById('qLeadPhone').value.trim();
+  document.getElementById('qLeadBtn').disabled=!(n.length>2&&p.length>6);
+}
+
+function qShowResult(){
+  qName=document.getElementById('qLeadName').value.trim();
+  document.getElementById('qStepLead').style.display='none';
+  document.getElementById('qProgressWrap').style.display='none';
+  const total=qQuestions.length*3, score=qScores.reduce((a,b)=>a+b,0), pct=Math.round((score/total)*100);
+  let level,color,subtitle;
+  if(pct>=70){ level='دورتك جاهزة للإطلاق ✅'; color='#1A7A3A'; subtitle='دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية'; }
+  else if(pct>=40){ level='دورتك تحتاج تطوير ⚠️'; color='#B85C00'; subtitle='عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق'; }
+  else { level='دورتك تحتاج إعادة بناء 🔧'; color='#8B1A1A'; subtitle='لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن'; }
+  let goodHTML='', warnHTML='';
+  qScores.forEach((s,i)=>{
+    const f=qFeedback[i];
+    const txt=s===3?f.good:s===1?f.warn:f.bad;
+    const dc=s===3?'#1A7A3A':s===1?'#B85C00':'#8B1A1A';
+    const item=`<div style="background:var(--cream);border-radius:14px;padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.06)"><div style="width:8px;height:8px;min-width:8px;border-radius:50%;background:${dc};margin-top:5px"></div><div style="font-size:14px;color:var(--text);font-weight:600">${txt}</div></div>`;
+    if(s===3) goodHTML+=item; else warnHTML+=item;
+  });
+  const waMsg=encodeURIComponent('السلام عليكم، أنا '+qName+' — أكملت تقييم دورتي في تمكين وحصلت على '+pct+'٪. أبي أعرف كيف أطور دورتي');
+  document.getElementById('qStepResult').innerHTML=`
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="width:130px;height:130px;border-radius:50%;border:3px solid ${color};background:${color}18;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px">
+        <div style="font-size:42px;font-weight:900;color:${color};line-height:1">${toAr(pct)}٪</div>
+        <div style="font-size:12px;color:var(--muted)">النتيجة</div>
+      </div>
+      <div style="font-size:clamp(20px,4vw,28px);font-weight:900;color:${color};margin-bottom:8px">${level}</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.7">${subtitle}</p>
+    </div>
+    ${goodHTML?`<div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">نقاط قوتك</div>${goodHTML}`:''}
+    ${warnHTML?`<div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin:20px 0 12px">ما يحتاج تطوير</div>${warnHTML}`:''}
+    <div style="background:var(--crimson);border-radius:20px;padding:28px;text-align:center;margin-top:24px">
+      <h3 style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">تبي تطور دورتك مع تمكين؟</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,.65);margin-bottom:20px">عتيق جاهز يساعدك تبني دورة احترافية معتمدة</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:14px 36px;border-radius:100px;text-decoration:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>`;
+  document.getElementById('qStepResult').style.display='block';
+  document.getElementById('qStepResult').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 </script>
 
