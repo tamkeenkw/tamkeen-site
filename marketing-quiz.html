@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قيّم خطتك التسويقية | معهد تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F5NXSHGNE6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-F5NXSHGNE6");
+</script>
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --text: #1A0808;
+  --muted: #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; min-height:100vh; }
+
+.nav {
+  background:var(--crimson); padding:16px 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
+.nav-logo span { font-size:20px; font-weight:900; color:#fff; }
+.nav-back {
+  color:rgba(255,255,255,.7); text-decoration:none;
+  font-size:14px; font-weight:600;
+  display:flex; align-items:center; gap:6px; transition:color .2s;
+}
+.nav-back:hover { color:#fff; }
+
+.wrapper { max-width:680px; margin:0 auto; padding:clamp(40px,6vw,72px) 24px; }
+
+/* HERO */
+.quiz-hero {
+  text-align:center; margin-bottom:48px;
+}
+.quiz-hero-icon {
+  width:72px; height:72px;
+  background:rgba(92,15,15,.07);
+  border-radius:20px;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 20px;
+}
+.quiz-hero-icon svg { width:36px; height:36px; fill:var(--crimson); }
+.quiz-tag { font-size:12px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:12px; }
+.quiz-title { font-size:clamp(26px,5vw,40px); font-weight:900; color:var(--text); line-height:1.25; margin-bottom:14px; }
+.quiz-desc { font-size:16px; color:var(--muted); line-height:1.8; max-width:520px; margin:0 auto 32px; }
+
+.pillars {
+  display:flex; flex-wrap:wrap; justify-content:center;
+  gap:10px; margin-bottom:36px;
+}
+.pillar {
+  display:inline-flex; align-items:center; gap:7px;
+  background:#fff; border:1.5px solid rgba(92,15,15,.1);
+  border-radius:100px; padding:8px 16px;
+  font-size:13px; font-weight:700; color:var(--text);
+}
+.pillar-dot { width:8px; height:8px; border-radius:50%; background:var(--crimson); }
+
+.btn-start {
+  display:inline-flex; align-items:center; gap:12px;
+  background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif;
+  font-size:18px; font-weight:900;
+  padding:18px 52px; border-radius:100px;
+  border:none; cursor:pointer; transition:all .28s;
+  box-shadow:0 8px 28px rgba(92,15,15,.25);
+}
+.btn-start:hover { background:var(--crimson-2); transform:translateY(-2px); }
+
+/* CARD */
+.card {
+  background:#fff; border-radius:24px;
+  padding:clamp(28px,5vw,44px);
+  border:1.5px solid rgba(92,15,15,.07);
+  box-shadow:0 8px 40px rgba(92,15,15,.06);
+}
+
+/* PROGRESS */
+.progress-wrap { margin-bottom:32px; }
+.progress-label {
+  display:flex; justify-content:space-between;
+  font-size:13px; font-weight:700; color:var(--muted); margin-bottom:10px;
+}
+.progress-bar { height:6px; background:rgba(92,15,15,.1); border-radius:100px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--crimson); border-radius:100px; transition:width .4s ease; }
+
+/* QUESTION */
+.q-محور { font-size:11px; font-weight:800; letter-spacing:2px; color:var(--crimson); text-transform:uppercase; margin-bottom:8px; }
+.q-num  { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:12px; }
+.q-text { font-size:clamp(18px,3vw,23px); font-weight:800; color:var(--text); line-height:1.4; margin-bottom:24px; }
+
+.options { display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
+.option {
+  background:var(--cream); border:1.5px solid rgba(92,15,15,.08);
+  border-radius:14px; padding:16px 20px;
+  cursor:pointer; display:flex; align-items:center; gap:14px;
+  font-size:15px; font-weight:600; color:var(--text);
+  transition:all .2s; user-select:none;
+}
+.option:hover { border-color:rgba(92,15,15,.22); background:#fff; }
+.option.selected { border-color:var(--crimson); background:rgba(92,15,15,.04); color:var(--crimson); }
+.opt-dot {
+  width:20px; height:20px; min-width:20px; border-radius:50%;
+  border:2px solid rgba(92,15,15,.2);
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s;
+}
+.option.selected .opt-dot { background:var(--crimson); border-color:var(--crimson); }
+.option.selected .opt-dot::after { content:''; width:8px; height:8px; background:#fff; border-radius:50%; display:block; }
+
+.btn-next {
+  width:100%; background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  padding:16px; border-radius:100px; border:none; cursor:pointer;
+  transition:all .28s; box-shadow:0 6px 20px rgba(92,15,15,.2);
+}
+.btn-next:hover { background:var(--crimson-2); transform:translateY(-2px); }
+.btn-next:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* LEAD */
+.lead-tag { font-size:12px; font-weight:800; letter-spacing:2px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.lead-title { font-size:clamp(20px,4vw,26px); font-weight:900; color:var(--text); margin-bottom:8px; }
+.lead-sub { font-size:15px; color:var(--muted); margin-bottom:28px; line-height:1.7; }
+.field { margin-bottom:18px; }
+.field label { display:block; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px; }
+.field input {
+  width:100%; background:var(--cream); border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px; padding:14px 18px;
+  font-family:'Tajawal',sans-serif; font-size:16px; color:var(--text);
+  outline:none; transition:all .25s; direction:rtl;
+}
+.field input:focus { border-color:var(--crimson); background:#fff; }
+.field input::placeholder { color:rgba(122,96,96,.4); }
+
+/* RESULT */
+.result-top { text-align:center; margin-bottom:32px; }
+.score-circle {
+  width:140px; height:140px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  margin:0 auto 20px;
+}
+.score-n { font-size:46px; font-weight:900; line-height:1; }
+.score-l { font-size:12px; color:var(--muted); }
+.result-level { font-size:clamp(22px,4vw,30px); font-weight:900; margin-bottom:8px; }
+.result-sub { font-size:15px; color:var(--muted); line-height:1.8; }
+
+.recs-title { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin:28px 0 14px; }
+.rec-item {
+  background:var(--cream); border-radius:14px; padding:16px 18px;
+  display:flex; align-items:flex-start; gap:12px;
+  margin-bottom:10px; border:1.5px solid rgba(92,15,15,.06);
+}
+.rec-dot { width:8px; height:8px; min-width:8px; border-radius:50%; margin-top:5px; }
+.rec-محور { font-size:11px; font-weight:800; letter-spacing:1px; color:var(--crimson); text-transform:uppercase; margin-bottom:5px; }
+.rec-text { font-size:14px; color:var(--text); font-weight:600; line-height:1.6; }
+
+.cta-result {
+  background:var(--crimson); border-radius:20px;
+  padding:32px 28px; text-align:center; margin-top:28px;
+  position:relative; overflow:hidden;
+}
+.cta-result::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:40px 40px;
+}
+.cta-result > * { position:relative; z-index:1; }
+.cta-result h3 { font-size:21px; font-weight:900; color:#fff; margin-bottom:8px; }
+.cta-result p { font-size:14px; color:rgba(255,255,255,.65); margin-bottom:22px; }
+.btn-wa {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif;
+  font-size:16px; font-weight:900;
+  padding:14px 36px; border-radius:100px;
+  text-decoration:none; transition:all .28s;
+}
+.btn-wa:hover { background:var(--cream-2); transform:translateY(-2px); }
+.btn-wa svg { width:20px; height:20px; fill:var(--crimson); }
+
+footer { background:var(--crimson-2); padding:24px; text-align:center; margin-top:clamp(40px,6vw,72px); }
+footer p { font-size:13px; color:rgba(255,255,255,.3); }
+footer a { color:rgba(255,255,255,.55); text-decoration:none; }
+
+@media(max-width:500px) { .card { padding:22px 18px; } .pillars { gap:8px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/ateiq.html" class="nav-logo">
+    <img src="Untitled_design__2_.png" alt="تمكين" onerror="this.style.display='none'">
+    <span>تمكين</span>
+  </a>
+  <a href="/ateiq.html" class="nav-back">← العودة لصفحة عتيق</a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="quiz-hero" id="heroSection">
+    <div class="quiz-hero-icon">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    </div>
+    <p class="quiz-tag">أداة مجانية — معهد تمكين</p>
+    <h1 class="quiz-title">ما مستوى خطتك التسويقية كمدرب؟</h1>
+    <p class="quiz-desc">أجب على ١٠ أسئلة سريعة واحصل على تقرير مفصّل بتوصيات مخصصة لكل محور من محاور تسويقك</p>
+
+    <div class="pillars">
+      <div class="pillar"><div class="pillar-dot"></div>نوع المحتوى</div>
+      <div class="pillar"><div class="pillar-dot"></div>الجمهور المستهدف</div>
+      <div class="pillar"><div class="pillar-dot"></div>الأدوات</div>
+      <div class="pillar"><div class="pillar-dot"></div>قنوات البيع</div>
+      <div class="pillar"><div class="pillar-dot"></div>ثيم الحساب</div>
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+      ابدأ التقييم المجاني
+    </button>
+  </div>
+
+  <!-- QUIZ CARD -->
+  <div class="card" id="quizCard" style="display:none">
+
+    <!-- شريط التقدم -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span id="progressText">السؤال ١ من ١٠</span>
+        <span id="progressPct">٠٪</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- الأسئلة -->
+    <div id="stepQuiz">
+      <div id="qMahwar" class="q-محور"></div>
+      <div id="qNum" class="q-num"></div>
+      <div id="qText" class="q-text"></div>
+      <div id="optionsWrap" class="options"></div>
+      <button class="btn-next" id="nextBtn" onclick="nextQ()" disabled>التالي ←</button>
+    </div>
+
+    <!-- نموذج البيانات -->
+    <div id="stepLead" style="display:none">
+      <div class="lead-tag">خطوة أخيرة</div>
+      <div class="lead-title">تقريرك جاهز! 🎯</div>
+      <p class="lead-sub">أدخل بياناتك لتشوف توصياتك التسويقية المفصّلة</p>
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="leadName" placeholder="أدخل اسمك الكامل">
+      </div>
+      <div class="field">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="leadPhone" placeholder="XXXXXXXX">
+      </div>
+      <button class="btn-next" id="leadBtn" onclick="showResult()" disabled>اعرض توصياتي ←</button>
+    </div>
+
+    <!-- النتيجة -->
+    <div id="stepResult" style="display:none"></div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
+</footer>
+
+<script>
+const questions = [
+  { محور:"نوع المحتوى", text:"شنو نوع المحتوى اللي تنشره بشكل أساسي؟", options:[{text:"محتوى تعليمي متنوع (فيديو + نص + انفوجرافيك)",score:3,tag:"content"},{text:"نوع أو نوعين بس",score:1,tag:"content"},{text:"ما عندي محتوى منتظم",score:0,tag:"content"}] },
+  { محور:"نوع المحتوى", text:"كم مرة تنشر في الأسبوع؟", options:[{text:"٣ مرات أو أكثر",score:3,tag:"content"},{text:"مرة أو مرتين",score:1,tag:"content"},{text:"بشكل عشوائي أو نادراً",score:0,tag:"content"}] },
+  { محور:"الجمهور المستهدف", text:"هل تعرف جمهورك المستهدف بدقة؟", options:[{text:"نعم، محدد بالعمر والمجال والاهتمام",score:3,tag:"audience"},{text:"عندي فكرة عامة عنهم",score:1,tag:"audience"},{text:"لا، أنشر للجميع",score:0,tag:"audience"}] },
+  { محور:"الجمهور المستهدف", text:"هل محتواك يتكلم بلغة جمهورك ومشاكلهم؟", options:[{text:"نعم، أتكلم عن مشاكلهم وأحتياجاتهم مباشرة",score:3,tag:"audience"},{text:"أحياناً",score:1,tag:"audience"},{text:"لا، أتكلم عن نفسي ودوراتي بشكل مباشر",score:0,tag:"audience"}] },
+  { محور:"الأدوات المستخدمة", text:"شنو الأدوات اللي تستخدمها في التسويق؟", options:[{text:"أدوات متعددة (جدولة + تصميم + تحليل)",score:3,tag:"tools"},{text:"أداة أو أداتين فقط",score:1,tag:"tools"},{text:"ما أستخدم أدوات — كل شيء يدوي",score:0,tag:"tools"}] },
+  { محور:"الأدوات المستخدمة", text:"هل تتابع إحصائيات منشوراتك وتحللها؟", options:[{text:"نعم، بشكل منتظم وأعدّل استراتيجيتي",score:3,tag:"tools"},{text:"أشوفها أحياناً",score:1,tag:"tools"},{text:"لا أتابع الإحصائيات",score:0,tag:"tools"}] },
+  { محور:"قنوات البيع", text:"من أين يأتيك معظم التسجيلات؟", options:[{text:"قنوات متعددة (سوشيال + واتساب + موقع)",score:3,tag:"channels"},{text:"قناة واحدة بشكل أساسي",score:1,tag:"channels"},{text:"عن طريق المعارف فقط",score:0,tag:"channels"}] },
+  { محور:"قنوات البيع", text:"هل عندك آلية واضحة لتحويل المتابع إلى مشترك؟", options:[{text:"نعم، رحلة واضحة من المتابعة للتسجيل",score:3,tag:"channels"},{text:"عندي فكرة لكنها غير واضحة",score:1,tag:"channels"},{text:"لا، الناس تتواصل معي عشوائياً",score:0,tag:"channels"}] },
+  { محور:"ثيم الحساب", text:"هل هوية حسابك موحدة (ألوان + خطوط + أسلوب)؟", options:[{text:"نعم، هوية بصرية واضحة ومتسقة",score:3,tag:"brand"},{text:"موحدة نسبياً",score:1,tag:"brand"},{text:"لا، كل منشور بشكل مختلف",score:0,tag:"brand"}] },
+  { محور:"ثيم الحساب", text:"هل البايو والبروفايل يعكسان تخصصك بوضوح؟", options:[{text:"نعم، واضح ومقنع ويبين قيمتي",score:3,tag:"brand"},{text:"موجود لكن يحتاج تطوير",score:1,tag:"brand"},{text:"لا، البايو عام أو فارغ",score:0,tag:"brand"}] }
+];
+
+const tips = {
+  content:  { good:"محتواك قوي ومتنوع — استمر وركز على الجودة مع الكمية", warn:"تنوع المحتوى ضروري — جرب تضيف نوع جديد كل شهر", bad:"المحتوى المنتظم هو أساس التسويق — ابدأ بخطة نشر أسبوعية بسيطة" },
+  audience: { good:"تعرف جمهورك جيداً — هذا يجعل كل رسالة تصل بدقة", warn:"حدد جمهورك أكثر — كلما كان أدق كلما كان تأثيرك أقوى", bad:"الجمهور المحدد = تسويق أرخص وأفضل — لا تتكلم للجميع" },
+  tools:    { good:"استخدامك للأدوات يوفر وقتك ويرفع جودة عملك", warn:"جرب أداة جدولة واحدة على الأقل — ستغير حياتك", bad:"الأدوات المجانية كافية للبدء — Canva وBuffer يكفيان" },
+  channels: { good:"تنوع قنوات البيع يحميك من الاعتماد على مصدر واحد", warn:"ابدأ بتطوير قناة ثانية للبيع — ولا تعتمد على قناة واحدة", bad:"المعارف مصدر جيد للبداية لكن لا يكفي — ابنِ قناة تسويقية واضحة" },
+  brand:    { good:"هويتك البصرية قوية — الناس يتعرفون عليك من أول نظرة", warn:"ثبّت ألوانك وخطوطك — الاتساق يبني الثقة", bad:"الهوية البصرية تضاعف مصداقيتك — ابدأ بتحديد لونين وخط واحد" }
+};
+
+const tagNames = { content:'نوع المحتوى', audience:'الجمهور المستهدف', tools:'الأدوات', channels:'قنوات البيع', brand:'ثيم الحساب' };
+
+let current=0, scores=[], tagData={content:[],audience:[],tools:[],channels:[],brand:[]}, selected=null, uName='', uPhone='';
+
+function toAr(n){ return n.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+
+function startQuiz(){
+  document.getElementById('heroSection').style.display='none';
+  document.getElementById('quizCard').style.display='block';
+  loadQ(0);
+}
+
+function loadQ(idx){
+  selected=null;
+  document.getElementById('nextBtn').disabled=true;
+  const q=questions[idx], total=questions.length;
+  const pct=Math.round((idx/total)*100);
+  document.getElementById('qMahwar').textContent=q['محور'];
+  document.getElementById('qNum').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
+  document.getElementById('progressText').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
+  document.getElementById('progressPct').textContent=toAr(pct)+'٪';
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('qText').textContent=q.text;
+  const wrap=document.getElementById('optionsWrap');
+  wrap.innerHTML='';
+  q.options.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option';
+    div.innerHTML='<div class="opt-dot" id="dot'+i+'"></div><span>'+opt.text+'</span>';
+    div.onclick=()=>selectOpt(i,div);
+    div.id='opt'+i;
+    wrap.appendChild(div);
+  });
+}
+
+function selectOpt(idx,el){
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selected=idx;
+  document.getElementById('nextBtn').disabled=false;
+}
+
+function nextQ(){
+  const q=questions[current], opt=q.options[selected];
+  scores.push(opt.score);
+  tagData[opt.tag].push(opt.score);
+  current++;
+  if(current<questions.length){
+    loadQ(current);
+  } else {
+    document.getElementById('progressFill').style.width='100%';
+    document.getElementById('progressPct').textContent='١٠٠٪';
+    document.getElementById('stepQuiz').style.display='none';
+    document.getElementById('stepLead').style.display='block';
+    ['leadName','leadPhone'].forEach(id=>{
+      document.getElementById(id).addEventListener('input',checkLead);
+    });
+  }
+}
+
+function checkLead(){
+  const n=document.getElementById('leadName').value.trim();
+  const p=document.getElementById('leadPhone').value.trim();
+  document.getElementById('leadBtn').disabled=!(n.length>2&&p.length>6);
+}
+
+function showResult(){
+  uName=document.getElementById('leadName').value.trim();
+  uPhone=document.getElementById('leadPhone').value.trim();
+  document.getElementById('stepLead').style.display='none';
+  document.getElementById('progressWrap').style.display='none';
+
+  const total=questions.length*3;
+  const score=scores.reduce((a,b)=>a+b,0);
+  const pct=Math.round((score/total)*100);
+
+  let level,color,subtitle;
+  if(pct>=70){ level='خطتك التسويقية قوية ✅'; color='#1A7A3A'; subtitle='أنت على الطريق الصح — بعض التحسينات تأخذك لمستوى أعلى'; }
+  else if(pct>=40){ level='خطتك تحتاج تطوير ⚠️'; color='#B85C00'; subtitle='عندك أساس جيد — ركز على المحاور الضعيفة وسترى فرقاً كبيراً'; }
+  else { level='خطتك تحتاج بناء من جديد 🔧'; color='#8B1A1A'; subtitle='البداية دائماً صعبة — مع خطة واضحة ستتحول النتائج سريعاً'; }
+
+  let recsHTML='';
+  ['content','audience','tools','channels','brand'].forEach(tag=>{
+    const arr=tagData[tag];
+    const avg=arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;
+    const t=tips[tag];
+    const txt=avg>=2.5?t.good:avg>=1?t.warn:t.bad;
+    const dc=avg>=2.5?'#1A7A3A':avg>=1?'#B85C00':'#8B1A1A';
+    recsHTML+=`<div class="rec-item"><div class="rec-dot" style="background:${dc}"></div><div><div class="rec-محور">${tagNames[tag]}</div><div class="rec-text">${txt}</div></div></div>`;
+  });
+
+  const waMsg=encodeURIComponent('السلام عليكم، أنا '+uName+' — أكملت تقييم خطتي التسويقية في تمكين وحصلت على '+pct+'٪. أبي أطور خطتي التسويقية');
+
+  document.getElementById('stepResult').innerHTML=`
+    <div class="result-top">
+      <div class="score-circle" style="border:3px solid ${color};background:${color}18">
+        <div class="score-n" style="color:${color}">${toAr(pct)}٪</div>
+        <div class="score-l">النتيجة</div>
+      </div>
+      <div class="result-level" style="color:${color}">${level}</div>
+      <p class="result-sub">${subtitle}</p>
+    </div>
+    <div class="recs-title">توصياتك المخصصة</div>
+    ${recsHTML}
+    <div class="cta-result">
+      <h3>تبي تبني خطة تسويقية احترافية؟</h3>
+      <p>عتيق يساعدك تبني حضوراً تسويقياً قوياً كمدرب معتمد</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" class="btn-wa" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>`;
+
+  document.getElementById('stepResult').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
