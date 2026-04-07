@@ -602,6 +602,92 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     </div>
   </div>
 
+  <!-- قسم الفيديو -->
+  <div class="section">
+    <p class="section-label">تعرف على عتيق</p>
+    <h2 class="section-title">شاهد عتيق في التدريب</h2>
+    <div style="max-width:360px;margin:0 auto;border-radius:20px;overflow:hidden;border:1.5px solid rgba(92,15,15,.08)">
+      <div style="position:relative;padding-bottom:177.77%;height:0;overflow:hidden">
+        <iframe
+          src="https://www.youtube.com/embed/EQPFodebnmM"
+          style="position:absolute;top:0;right:0;width:100%;height:100%;border:none"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- قسم الاختبار -->
+  <div class="section">
+    <div class="search-section" id="quizSection">
+      <p class="section-label">أداة مجانية</p>
+      <h2 class="section-title">هل دورتك التدريبية جاهزة للنجاح؟</h2>
+      <p class="bio-text" style="margin-bottom:28px">أجب على ٨ أسئلة سريعة واحصل على تقرير فوري يكشف نقاط قوة دورتك وما يحتاج تطوير</p>
+
+      <!-- زر البدء -->
+      <div id="quizStart">
+        <button class="search-btn" style="width:100%;justify-content:center;padding:16px;font-size:17px;border-radius:14px" onclick="quizInit()">
+          ابدأ التقييم المجاني ←
+        </button>
+      </div>
+
+      <!-- محتوى الاختبار -->
+      <div id="quizBody" style="display:none">
+
+        <!-- شريط التقدم -->
+        <div id="qProgressWrap" style="margin-bottom:28px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px">
+            <span id="qProgressText">السؤال ١ من ٨</span>
+            <span id="qProgressPct">٠٪</span>
+          </div>
+          <div style="height:6px;background:rgba(92,15,15,.1);border-radius:100px;overflow:hidden">
+            <div id="qProgressFill" style="height:100%;background:var(--crimson);border-radius:100px;transition:width .4s ease;width:0%"></div>
+          </div>
+        </div>
+
+        <!-- الأسئلة -->
+        <div id="qStepQuiz">
+          <div id="qNum" style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px"></div>
+          <div id="qText" style="font-size:clamp(18px,3vw,22px);font-weight:800;color:var(--text);line-height:1.4;margin-bottom:24px"></div>
+          <div id="qOptions" style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px"></div>
+          <button class="search-btn" id="qNextBtn" onclick="qNext()" disabled style="width:100%;justify-content:center;padding:14px;font-size:16px;border-radius:14px">التالي ←</button>
+        </div>
+
+        <!-- نموذج البيانات -->
+        <div id="qStepLead" style="display:none">
+          <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px">خطوة أخيرة</div>
+          <div style="font-size:clamp(18px,3vw,22px);font-weight:800;color:var(--text);margin-bottom:8px">تقريرك جاهز!</div>
+          <p style="font-size:15px;color:var(--muted);margin-bottom:24px">أدخل بياناتك لتشوف نتيجتك</p>
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">الاسم الكامل</label>
+            <input type="text" id="qLeadName" placeholder="أدخل اسمك الكامل" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:16px;color:var(--text);outline:none;direction:rtl">
+          </div>
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">رقم الهاتف</label>
+            <input type="tel" id="qLeadPhone" placeholder="XXXXXXXX" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:16px;color:var(--text);outline:none;direction:rtl">
+          </div>
+          <button class="search-btn" id="qLeadBtn" onclick="qShowResult()" disabled style="width:100%;justify-content:center;padding:14px;font-size:16px;border-radius:14px">اعرض نتيجتي ←</button>
+        </div>
+
+        <!-- النتيجة -->
+        <div id="qStepResult" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- قسم الاختبار التسويقي — رابط للصفحة المستقلة -->
+  <div class="section">
+    <div class="cta-section">
+      <h2>ما مستوى خطتك التسويقية؟</h2>
+      <p>أجب على ١٠ أسئلة واحصل على تقرير مفصّل بتوصيات مخصصة لك</p>
+      <a href="/marketing-quiz.html" class="btn-contact">
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:var(--crimson)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        ابدأ التقييم المجاني
+      </a>
+    </div>
+  </div>
+
   <!-- CTA -->
   <div class="section">
     <div class="cta-section">
@@ -770,6 +856,450 @@ function renderResult(data) {
 document.getElementById('searchInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
+</script>
+
+<!-- سكريبت الاختبار التسويقي -->
+<script>
+const mqQuestions = [
+  {
+    محور: "نوع المحتوى",
+    text: "شنو نوع المحتوى اللي تنشره بشكل أساسي؟",
+    options: [
+      { text: "محتوى تعليمي متنوع (فيديو + نص + انفوجرافيك)", score: 3, tag: "content" },
+      { text: "نوع أو نوعين بس", score: 1, tag: "content" },
+      { text: "ما عندي محتوى منتظم", score: 0, tag: "content" }
+    ]
+  },
+  {
+    محور: "نوع المحتوى",
+    text: "كم مرة تنشر في الأسبوع؟",
+    options: [
+      { text: "٣ مرات أو أكثر", score: 3, tag: "content" },
+      { text: "مرة أو مرتين", score: 1, tag: "content" },
+      { text: "بشكل عشوائي أو نادراً", score: 0, tag: "content" }
+    ]
+  },
+  {
+    محور: "الجمهور المستهدف",
+    text: "هل تعرف جمهورك المستهدف بدقة؟",
+    options: [
+      { text: "نعم، محدد بالعمر والمجال والاهتمام", score: 3, tag: "audience" },
+      { text: "عندي فكرة عامة عنهم", score: 1, tag: "audience" },
+      { text: "لا، أنشر للجميع", score: 0, tag: "audience" }
+    ]
+  },
+  {
+    محور: "الجمهور المستهدف",
+    text: "هل محتواك يتكلم بلغة جمهورك ومشاكلهم؟",
+    options: [
+      { text: "نعم، أتكلم عن مشاكلهم وأحتياجاتهم مباشرة", score: 3, tag: "audience" },
+      { text: "أحياناً", score: 1, tag: "audience" },
+      { text: "لا، أتكلم عن نفسي ودوراتي بشكل مباشر", score: 0, tag: "audience" }
+    ]
+  },
+  {
+    محور: "الأدوات المستخدمة",
+    text: "شنو الأدوات اللي تستخدمها في التسويق؟",
+    options: [
+      { text: "أدوات متعددة (جدولة + تصميم + تحليل)", score: 3, tag: "tools" },
+      { text: "أداة أو أداتين فقط", score: 1, tag: "tools" },
+      { text: "ما أستخدم أدوات — كل شيء يدوي", score: 0, tag: "tools" }
+    ]
+  },
+  {
+    محور: "الأدوات المستخدمة",
+    text: "هل تتابع إحصائيات منشوراتك وتحللها؟",
+    options: [
+      { text: "نعم، بشكل منتظم وأعدّل استراتيجيتي", score: 3, tag: "tools" },
+      { text: "أشوفها أحياناً", score: 1, tag: "tools" },
+      { text: "لا أتابع الإحصائيات", score: 0, tag: "tools" }
+    ]
+  },
+  {
+    محور: "قنوات البيع",
+    text: "من أين يأتيك معظم التسجيلات؟",
+    options: [
+      { text: "قنوات متعددة (سوشيال + واتساب + موقع)", score: 3, tag: "channels" },
+      { text: "قناة واحدة بشكل أساسي", score: 1, tag: "channels" },
+      { text: "عن طريق المعارف فقط", score: 0, tag: "channels" }
+    ]
+  },
+  {
+    محور: "قنوات البيع",
+    text: "هل عندك آلية واضحة لتحويل المتابع إلى مشترك؟",
+    options: [
+      { text: "نعم، رحلة واضحة من المتابعة للتسجيل", score: 3, tag: "channels" },
+      { text: "عندي فكرة لكنها غير واضحة", score: 1, tag: "channels" },
+      { text: "لا، الناس تتواصل معي عشوائياً", score: 0, tag: "channels" }
+    ]
+  },
+  {
+    محور: "ثيم الحساب",
+    text: "هل هوية حسابك موحدة (ألوان + خطوط + أسلوب)؟",
+    options: [
+      { text: "نعم، هوية بصرية واضحة ومتسقة", score: 3, tag: "brand" },
+      { text: "موحدة نسبياً", score: 1, tag: "brand" },
+      { text: "لا، كل منشور بشكل مختلف", score: 0, tag: "brand" }
+    ]
+  },
+  {
+    محور: "ثيم الحساب",
+    text: "هل البايو والبروفايل يعكسان تخصصك بوضوح؟",
+    options: [
+      { text: "نعم، واضح ومقنع ويبين قيمتي", score: 3, tag: "brand" },
+      { text: "موجود لكن يحتاج تطوير", score: 1, tag: "brand" },
+      { text: "لا، البايو عام أو فارغ", score: 0, tag: "brand" }
+    ]
+  }
+];
+
+const mqTips = {
+  content: {
+    good: "محتواك قوي ومتنوع — استمر وركز على الجودة مع الكمية",
+    warn: "تنوع المحتوى ضروري — جرب تضيف نوع جديد كل شهر",
+    bad: "المحتوى المنتظم هو أساس التسويق — ابدأ بخطة نشر أسبوعية بسيطة"
+  },
+  audience: {
+    good: "تعرف جمهورك جيداً — هذا يجعل كل رسالة تصل بدقة",
+    warn: "حدد جمهورك أكثر — كلما كان أدق كلما كان تأثيرك أقوى",
+    bad: "الجمهور المحدد = تسويق أرخص وأفضل — لا تتكلم للجميع"
+  },
+  tools: {
+    good: "استخدامك للأدوات يوفر وقتك ويرفع جودة عملك",
+    warn: "جرب أداة جدولة واحدة على الأقل — ستغير حياتك",
+    bad: "الأدوات المجانية كافية للبدء — Canva وBuffer يكفيان"
+  },
+  channels: {
+    good: "تنوع قنوات البيع يحميك من الاعتماد على مصدر واحد",
+    warn: "ابدأ بتطوير قناة ثانية للبيع — ولا تعتمد على قناة واحدة",
+    bad: "المعارف مصدر جيد للبداية لكن لا يكفي — ابنِ قناة تسويقية واضحة"
+  },
+  brand: {
+    good: "هويتك البصرية قوية — الناس يتعرفون عليك من أول نظرة",
+    warn: "ثبّت ألوانك وخطوطك — الاتساق يبني الثقة",
+    bad: "الهوية البصرية الموحدة تضاعف مصداقيتك — ابدأ بتحديد لونين وخط واحد"
+  }
+};
+
+let mqCurrent = 0, mqScores = [], mqSelected = null, mqName = '', mqPhone = '';
+let mqTagScores = { content: [], audience: [], tools: [], channels: [], brand: [] };
+
+function mquizInit() {
+  document.getElementById('mquizStart').style.display = 'none';
+  document.getElementById('mquizBody').style.display = 'block';
+  mqLoadQuestion(0);
+}
+
+function mqLoadQuestion(idx) {
+  mqSelected = null;
+  document.getElementById('mqNextBtn').disabled = true;
+  const q = mqQuestions[idx];
+  const total = mqQuestions.length;
+  const pct = Math.round((idx / total) * 100);
+
+  document.getElementById('mqNum').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total) + ' — ' + q['محور'];
+  document.getElementById('mqProgressText').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total);
+  document.getElementById('mqProgressPct').textContent = toAr(pct) + '٪';
+  document.getElementById('mqProgressFill').style.width = pct + '%';
+  document.getElementById('mqText').textContent = q.text;
+
+  const wrap = document.getElementById('mqOptions');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;color:var(--text);transition:all .2s';
+    div.innerHTML = '<div style="width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);display:flex;align-items:center;justify-content:center" id="mqdot'+i+'"></div><span>'+opt.text+'</span>';
+    div.onclick = () => mqSelectOption(i);
+    div.id = 'mqopt'+i;
+    wrap.appendChild(div);
+  });
+}
+
+function mqSelectOption(idx) {
+  mqQuestions[mqCurrent].options.forEach((_, i) => {
+    const el = document.getElementById('mqopt'+i);
+    const dot = document.getElementById('mqdot'+i);
+    el.style.borderColor = 'rgba(92,15,15,.08)';
+    el.style.background = 'var(--cream)';
+    el.style.color = 'var(--text)';
+    dot.innerHTML = '';
+    dot.style.background = '';
+  });
+  const sel = document.getElementById('mqopt'+idx);
+  const dot = document.getElementById('mqdot'+idx);
+  sel.style.borderColor = 'var(--crimson)';
+  sel.style.background = 'rgba(92,15,15,.04)';
+  sel.style.color = 'var(--crimson)';
+  dot.style.background = 'var(--crimson)';
+  dot.innerHTML = '<div style="width:8px;height:8px;background:#fff;border-radius:50%"></div>';
+  mqSelected = idx;
+  document.getElementById('mqNextBtn').disabled = false;
+}
+
+function mqNext() {
+  const q = mqQuestions[mqCurrent];
+  const opt = q.options[mqSelected];
+  mqScores.push(opt.score);
+  mqTagScores[opt.tag].push(opt.score);
+  mqCurrent++;
+
+  if (mqCurrent < mqQuestions.length) {
+    mqLoadQuestion(mqCurrent);
+  } else {
+    document.getElementById('mqProgressFill').style.width = '100%';
+    document.getElementById('mqProgressPct').textContent = '١٠٠٪';
+    document.getElementById('mqStepQuiz').style.display = 'none';
+    document.getElementById('mqStepLead').style.display = 'block';
+    ['mqLeadName','mqLeadPhone'].forEach(id => {
+      document.getElementById(id).addEventListener('input', mqCheckLead);
+    });
+  }
+}
+
+function mqCheckLead() {
+  const n = document.getElementById('mqLeadName').value.trim();
+  const p = document.getElementById('mqLeadPhone').value.trim();
+  document.getElementById('mqLeadBtn').disabled = !(n.length > 2 && p.length > 6);
+}
+
+function mqShowResult() {
+  mqName  = document.getElementById('mqLeadName').value.trim();
+  mqPhone = document.getElementById('mqLeadPhone').value.trim();
+  document.getElementById('mqStepLead').style.display = 'none';
+  document.getElementById('mqProgressWrap').style.display = 'none';
+
+  const total = mqQuestions.length * 3;
+  const score = mqScores.reduce((a,b) => a+b, 0);
+  const pct   = Math.round((score / total) * 100);
+
+  let level, color, subtitle;
+  if (pct >= 70) {
+    level = 'خطتك التسويقية قوية ✅';
+    color = '#1A7A3A';
+    subtitle = 'أنت على الطريق الصح — بعض التحسينات تأخذك لمستوى أعلى';
+  } else if (pct >= 40) {
+    level = 'خطتك تحتاج تطوير ⚠️';
+    color = '#B85C00';
+    subtitle = 'عندك أساس جيد — ركز على تطوير المحاور الضعيفة وسترى فرقاً كبيراً';
+  } else {
+    level = 'خطتك التسويقية تحتاج بناء من جديد 🔧';
+    color = '#8B1A1A';
+    subtitle = 'البداية دائماً صعبة — لكن مع خطة واضحة ستتحول النتائج سريعاً';
+  }
+
+  /* توصيات مخصصة لكل محور */
+  const tags = ['content','audience','tools','channels','brand'];
+  const tagNames = { content:'نوع المحتوى', audience:'الجمهور المستهدف', tools:'الأدوات', channels:'قنوات البيع', brand:'ثيم الحساب' };
+
+  let recsHTML = '';
+  tags.forEach(tag => {
+    const tagS = mqQuestions
+      .filter(q => q.options[0].tag === tag)
+      .map((q,i) => {
+        const globalIdx = mqQuestions.findIndex(qq => qq.text === q.text);
+        return mqScores[globalIdx] || 0;
+      });
+    const avg = tagS.length ? tagS.reduce((a,b)=>a+b,0)/tagS.length : 0;
+    const tip = mqTips[tag];
+    const txt = avg >= 2.5 ? tip.good : avg >= 1 ? tip.warn : tip.bad;
+    const dotColor = avg >= 2.5 ? '#1A7A3A' : avg >= 1 ? '#B85C00' : '#8B1A1A';
+    recsHTML += `<div style="background:var(--cream);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.06)">
+      <div style="width:8px;height:8px;min-width:8px;border-radius:50%;background:${dotColor};margin-top:6px"></div>
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:4px">${tagNames[tag]}</div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;line-height:1.6">${txt}</div>
+      </div>
+    </div>`;
+  });
+
+  const waMsg = encodeURIComponent('السلام عليكم، أنا ' + mqName + ' — أكملت تقييم خطتي التسويقية في تمكين وحصلت على ' + pct + '٪. أبي أطور خطتي التسويقية');
+
+  document.getElementById('mqStepResult').innerHTML = `
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="width:130px;height:130px;border-radius:50%;border:3px solid ${color};background:${color}18;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px">
+        <div style="font-size:42px;font-weight:900;color:${color};line-height:1">${toAr(pct)}٪</div>
+        <div style="font-size:12px;color:var(--muted)">النتيجة</div>
+      </div>
+      <div style="font-size:clamp(20px,4vw,26px);font-weight:900;color:${color};margin-bottom:8px">${level}</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.7">${subtitle}</p>
+    </div>
+    <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:14px">توصياتك المخصصة</div>
+    ${recsHTML}
+    <div style="background:var(--crimson);border-radius:20px;padding:28px;text-align:center;margin-top:24px">
+      <h3 style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">تبي تبني خطة تسويقية احترافية؟</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,.65);margin-bottom:20px">عتيق يساعدك تبني حضوراً تسويقياً قوياً كمدرب معتمد</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:14px 36px;border-radius:100px;text-decoration:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>`;
+
+  document.getElementById('mqStepResult').style.display = 'block';
+  document.getElementById('mqStepResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+</script>
+
+</body>
+</html>
+const qQuestions = [
+  { text:"هل لديك هدف تعليمي واضح لدورتك؟", options:[{text:"نعم، محدد وقابل للقياس",score:3},{text:"نعم، لكنه عام",score:2},{text:"لا يوجد هدف واضح",score:0}] },
+  { text:"هل محتوى دورتك مقسّم إلى وحدات أو مراحل؟", options:[{text:"نعم، مقسّم بشكل منظم",score:3},{text:"مقسّم جزئياً",score:1},{text:"لا، المحتوى غير مقسّم",score:0}] },
+  { text:"هل تستخدم أساليب تدريب متنوعة؟", options:[{text:"نعم، أكثر من ٣ أساليب",score:3},{text:"أسلوبين فقط",score:1},{text:"أسلوب واحد فقط",score:0}] },
+  { text:"هل لديك آلية لقياس نتائج المتدربين؟", options:[{text:"نعم، اختبارات أو تقييم عملي",score:3},{text:"تقييم غير رسمي فقط",score:1},{text:"لا يوجد تقييم",score:0}] },
+  { text:"هل دورتك تحتوي على أنشطة تفاعلية؟", options:[{text:"نعم، أنشطة متعددة",score:3},{text:"نشاط واحد فقط",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل لديك مواد داعمة للمتدربين؟", options:[{text:"نعم، مذكرات وملفات كاملة",score:3},{text:"مواد جزئية",score:1},{text:"لا يوجد",score:0}] },
+  { text:"هل دورتك معتمدة من جهة رسمية؟", options:[{text:"نعم، معتمدة",score:3},{text:"قيد الاعتماد",score:1},{text:"غير معتمدة",score:0}] },
+  { text:"هل قدّمت دورتك من قبل وجمعت تغذية راجعة؟", options:[{text:"نعم، وطوّرتها بناءً عليها",score:3},{text:"قدّمتها لكن بدون تغذية راجعة",score:1},{text:"لم أقدمها بعد",score:0}] }
+];
+
+const qFeedback = [
+  { good:"هدفك التعليمي واضح ومحدد — هذا أساس كل دورة ناجحة", warn:"هدفك العام يحتاج تحديد أكثر", bad:"غياب الهدف يضعف دورتك — ابدأ بتحديد هدف SMART واضح" },
+  { good:"تقسيم المحتوى ممتاز — يسهّل الفهم ويرفع الاحتراف", warn:"تقسيم المحتوى جزئي — أكمل تنظيمه في وحدات واضحة", bad:"محتوى غير مقسّم = تجربة فوضوية للمتدرب" },
+  { good:"تنوع الأساليب يرفع مستوى التفاعل والاستيعاب", warn:"أضف أسلوباً ثالثاً على الأقل لتجنب الرتابة", bad:"أسلوب واحد يضعف الانتباه — نوّع بين المحاضرة والنقاش والتطبيق" },
+  { good:"وجود التقييم يثبت قيمة دورتك ويزيد مصداقيتها", warn:"حوّل تقييمك غير الرسمي لأداة قياس واضحة", bad:"بدون تقييم لا تعرف هل المتدرب استفاد أم لا" },
+  { good:"الأنشطة التفاعلية تضاعف الاستيعاب والرضا", warn:"أضف أنشطة أكثر — حتى ورقة عمل بسيطة تفرق", bad:"دورة بدون تفاعل = محاضرة — المتدربون يحتاجون التطبيق" },
+  { good:"المواد الداعمة تعطي المتدرب قيمة تستمر بعد الدورة", warn:"أكمل مواد الدورة — المذكرة الجيدة تفرق كثيراً", bad:"المواد الداعمة أساسية — ابدأ بمذكرة بسيطة على الأقل" },
+  { good:"الاعتماد الرسمي يفتح لك أبواباً كثيرة", warn:"الاعتماد قيد التنفيذ — أكمله قريباً", bad:"الاعتماد يرفع قيمتك — معهد تمكين يساعدك في ذلك" },
+  { good:"التطوير المستمر بناءً على الملاحظات يميزك عن غيرك", warn:"استخدم تجربتك السابقة لجمع ملاحظات وطوّر دورتك", bad:"أول تقديم مهم — خطّط له جيداً وجمّع ملاحظات بعده" }
+];
+
+let qCurrent = 0, qScores = [], qSelected = null, qName = '', qPhone = '';
+
+function toAr(n) { return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+
+function quizInit() {
+  document.getElementById('quizStart').style.display = 'none';
+  document.getElementById('quizBody').style.display = 'block';
+  qLoadQuestion(0);
+}
+
+function qLoadQuestion(idx) {
+  qSelected = null;
+  document.getElementById('qNextBtn').disabled = true;
+  const q = qQuestions[idx];
+  const total = qQuestions.length;
+  const pct = Math.round((idx / total) * 100);
+
+  document.getElementById('qNum').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total);
+  document.getElementById('qProgressText').textContent = 'السؤال ' + toAr(idx+1) + ' من ' + toAr(total);
+  document.getElementById('qProgressPct').textContent = toAr(pct) + '٪';
+  document.getElementById('qProgressFill').style.width = pct + '%';
+  document.getElementById('qText').textContent = q.text;
+
+  const wrap = document.getElementById('qOptions');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;color:var(--text);transition:all .2s';
+    div.innerHTML = '<div style="width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);display:flex;align-items:center;justify-content:center" id="dot'+i+'"></div><span>'+opt.text+'</span>';
+    div.onclick = () => qSelectOption(i);
+    div.id = 'qopt'+i;
+    wrap.appendChild(div);
+  });
+}
+
+function qSelectOption(idx) {
+  qQuestions[qCurrent].options.forEach((_, i) => {
+    const el = document.getElementById('qopt'+i);
+    const dot = document.getElementById('dot'+i);
+    el.style.borderColor = 'rgba(92,15,15,.08)';
+    el.style.background = 'var(--cream)';
+    el.style.color = 'var(--text)';
+    dot.innerHTML = '';
+    dot.style.background = '';
+  });
+  const sel = document.getElementById('qopt'+idx);
+  const dot = document.getElementById('dot'+idx);
+  sel.style.borderColor = 'var(--crimson)';
+  sel.style.background = 'rgba(92,15,15,.04)';
+  sel.style.color = 'var(--crimson)';
+  dot.style.background = 'var(--crimson)';
+  dot.innerHTML = '<div style="width:8px;height:8px;background:#fff;border-radius:50%"></div>';
+  qSelected = idx;
+  document.getElementById('qNextBtn').disabled = false;
+}
+
+function qNext() {
+  qScores.push(qQuestions[qCurrent].options[qSelected].score);
+  qCurrent++;
+  if (qCurrent < qQuestions.length) {
+    qLoadQuestion(qCurrent);
+  } else {
+    document.getElementById('qProgressFill').style.width = '100%';
+    document.getElementById('qProgressPct').textContent = '١٠٠٪';
+    document.getElementById('qStepQuiz').style.display = 'none';
+    document.getElementById('qStepLead').style.display = 'block';
+    ['qLeadName','qLeadPhone'].forEach(id => {
+      document.getElementById(id).addEventListener('input', qCheckLead);
+    });
+  }
+}
+
+function qCheckLead() {
+  const n = document.getElementById('qLeadName').value.trim();
+  const p = document.getElementById('qLeadPhone').value.trim();
+  document.getElementById('qLeadBtn').disabled = !(n.length > 2 && p.length > 6);
+}
+
+function qShowResult() {
+  qName = document.getElementById('qLeadName').value.trim();
+  qPhone = document.getElementById('qLeadPhone').value.trim();
+  document.getElementById('qStepLead').style.display = 'none';
+  document.getElementById('qProgressWrap').style.display = 'none';
+
+  const total = qQuestions.length * 3;
+  const score = qScores.reduce((a,b) => a+b, 0);
+  const pct   = Math.round((score / total) * 100);
+
+  let level, color, subtitle;
+  if (pct >= 70) {
+    level = 'دورتك جاهزة للإطلاق ✅';
+    color = '#1A7A3A';
+    subtitle = 'دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية';
+  } else if (pct >= 40) {
+    level = 'دورتك تحتاج تطوير ⚠️';
+    color = '#B85C00';
+    subtitle = 'عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق';
+  } else {
+    level = 'دورتك تحتاج إعادة بناء 🔧';
+    color = '#8B1A1A';
+    subtitle = 'لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن';
+  }
+
+  let goodHTML = '', warnHTML = '';
+  qScores.forEach((s, i) => {
+    const f = qFeedback[i];
+    const item = s === 3
+      ? `<div style="background:var(--cream);border-radius:14px;padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.06)"><div style="width:8px;height:8px;min-width:8px;border-radius:50%;background:#1A7A3A;margin-top:5px"></div><div style="font-size:14px;color:var(--text);font-weight:600">${f.good}</div></div>`
+      : `<div style="background:var(--cream);border-radius:14px;padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.06)"><div style="width:8px;height:8px;min-width:8px;border-radius:50%;background:${s===1?'#B85C00':'#8B1A1A'};margin-top:5px"></div><div style="font-size:14px;color:var(--text);font-weight:600">${s===1?f.warn:f.bad}</div></div>`;
+    if (s === 3) goodHTML += item; else warnHTML += item;
+  });
+
+  const waMsg = encodeURIComponent('السلام عليكم، أنا ' + qName + ' — أكملت تقييم دورتي في تمكين وحصلت على ' + pct + '٪. أبي أعرف كيف أطور دورتي');
+
+  document.getElementById('qStepResult').innerHTML = `
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="width:130px;height:130px;border-radius:50%;border:3px solid ${color};background:${color}18;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px">
+        <div style="font-size:42px;font-weight:900;color:${color};line-height:1">${toAr(pct)}٪</div>
+        <div style="font-size:12px;color:var(--muted)">النتيجة</div>
+      </div>
+      <div style="font-size:clamp(20px,4vw,28px);font-weight:900;color:${color};margin-bottom:8px">${level}</div>
+      <p style="font-size:15px;color:var(--muted);line-height:1.7">${subtitle}</p>
+    </div>
+    ${goodHTML ? `<div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">نقاط قوتك</div>${goodHTML}` : ''}
+    ${warnHTML ? `<div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin:20px 0 12px">ما يحتاج تطوير</div>${warnHTML}` : ''}
+    <div style="background:var(--crimson);border-radius:20px;padding:28px;text-align:center;margin-top:24px">
+      <h3 style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">تبي تطور دورتك مع تمكين؟</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,.65);margin-bottom:20px">عتيق جاهز يساعدك تبني دورة احترافية معتمدة</p>
+      <a href="https://wa.me/96597999768?text=${waMsg}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:14px 36px;border-radius:100px;text-decoration:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل مع تمكين
+      </a>
+    </div>`;
+
+  document.getElementById('qStepResult').style.display = 'block';
+  document.getElementById('qStepResult').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
 </script>
 
 </body>
