@@ -900,7 +900,18 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
 
 <!-- سكريبت الاختبار التسويقي -->
 <script>
+const TAMKEEN_SCRIPT = "https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec";
+
 function toAr(n){ return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+
+function saveQuizResult(type, name, phone, score, level) {
+  fetch(TAMKEEN_SCRIPT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, name, phone, score, level })
+  }).catch(err => console.log('save error:', err));
+}
 
 const mqQuestions = [
   {
@@ -1115,6 +1126,8 @@ function mqShowResult() {
   const score = mqScores.reduce((a,b) => a+b, 0);
   const pct   = Math.round((score / total) * 100);
 
+  saveQuizResult('تسويق', mqName, mqPhone, pct + '%', 'خطة تسويقية');
+
   let level, color, subtitle;
   if (pct >= 70) {
     level = 'خطتك التسويقية قوية ✅';
@@ -1263,6 +1276,7 @@ function qCheckLead(){
 
 function qShowResult(){
   qName=document.getElementById('qLeadName').value.trim();
+  const qPhone2=document.getElementById('qLeadPhone').value.trim();
   document.getElementById('qStepLead').style.display='none';
   document.getElementById('qProgressWrap').style.display='none';
   const total=qQuestions.length*3, score=qScores.reduce((a,b)=>a+b,0), pct=Math.round((score/total)*100);
@@ -1270,6 +1284,7 @@ function qShowResult(){
   if(pct>=70){ level='دورتك جاهزة للإطلاق ✅'; color='#1A7A3A'; subtitle='دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية'; }
   else if(pct>=40){ level='دورتك تحتاج تطوير ⚠️'; color='#B85C00'; subtitle='عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق'; }
   else { level='دورتك تحتاج إعادة بناء 🔧'; color='#8B1A1A'; subtitle='لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن'; }
+  saveQuizResult('اختبار', qName, qPhone2, pct + '%', level);
   let goodHTML='', warnHTML='';
   qScores.forEach((s,i)=>{
     const f=qFeedback[i];
