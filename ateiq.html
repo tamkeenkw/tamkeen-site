@@ -900,6 +900,8 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
 
 <!-- سكريبت الاختبار التسويقي -->
 <script>
+function toAr(n){ return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+
 const mqQuestions = [
   {
     محور: "نوع المحتوى",
