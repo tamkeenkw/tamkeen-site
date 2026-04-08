@@ -280,18 +280,12 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
     <div id="step1">
       <p class="step-tag">الخطوة الأولى</p>
       <h1 class="step-title">تحقق من عضويتك</h1>
-      <p class="step-desc">أدخل رقم عضويتك ورقم هاتفك للتحقق من بياناتك</p>
+      <p class="step-desc">أدخل رقم عضويتك للتحقق من بياناتك</p>
 
       <div class="field" id="f-memberid">
         <label>رقم العضوية</label>
         <input type="text" id="memberId" placeholder="مثال: TM256-01" autocomplete="off">
         <div class="error-msg" id="e-memberid">رقم العضوية غير صحيح</div>
-      </div>
-
-      <div class="field" id="f-phone">
-        <label>رقم الهاتف</label>
-        <input type="tel" id="memberPhone" placeholder="XXXXXXXX" autocomplete="off">
-        <div class="error-msg" id="e-phone">رقم الهاتف غير مطابق</div>
       </div>
 
       <button class="btn-primary" id="btn1" onclick="verifyMember()">التحقق من العضوية ←</button>
@@ -413,20 +407,12 @@ function getInitials(name) {
 // =====================
 async function verifyMember() {
   const memberId = document.getElementById('memberId').value.trim().toUpperCase();
-  const phone    = cleanPhone(document.getElementById('memberPhone').value.trim());
 
-  // تنظيف الأخطاء
   document.getElementById('f-memberid').classList.remove('error');
-  document.getElementById('f-phone').classList.remove('error');
 
   if (!memberId) {
     document.getElementById('f-memberid').classList.add('error');
     document.getElementById('e-memberid').textContent = 'أدخل رقم العضوية';
-    return;
-  }
-  if (!phone || phone.length < 7) {
-    document.getElementById('f-phone').classList.add('error');
-    document.getElementById('e-phone').textContent = 'أدخل رقم الهاتف';
     return;
   }
 
@@ -434,8 +420,7 @@ async function verifyMember() {
   document.getElementById('btn1').textContent = 'جاري التحقق...';
 
   try {
-    // نبحث في الشيت عبر Apps Script
-    const url = `${SCRIPT_URL}?action=verify&memberId=${encodeURIComponent(memberId)}&phone=${encodeURIComponent(phone)}`;
+    const url = `${SCRIPT_URL}?action=verify&memberId=${encodeURIComponent(memberId)}`;
     const res  = await fetch(url);
     const data = await res.json();
 
@@ -444,7 +429,7 @@ async function verifyMember() {
       showStep2();
     } else {
       document.getElementById('f-memberid').classList.add('error');
-      document.getElementById('e-memberid').textContent = data.message || 'رقم العضوية أو الهاتف غير صحيح';
+      document.getElementById('e-memberid').textContent = data.message || 'رقم العضوية غير صحيح';
       document.getElementById('btn1').disabled = false;
       document.getElementById('btn1').textContent = 'التحقق من العضوية ←';
     }
@@ -558,10 +543,11 @@ async function submitForm() {
   }
 }
 
-// Enter في حقل الهاتف
-document.getElementById('memberPhone').addEventListener('keydown', e => {
+// Enter في حقل رقم العضوية
+document.getElementById('memberId').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') verifyMember();
 });
+
 </script>
 
 </body>
