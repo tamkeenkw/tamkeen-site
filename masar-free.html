@@ -656,14 +656,21 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     </form>
     <div class="modal-success" id="cSuccess">
       <div class="s-icon">✅</div>
-      <h3>تم التسجيل!</h3>
+      <h3>تم التسجيل بنجاح!</h3>
       <p>تم إرسال لينك زووم على إيميلك<br>نراك في الدورة 🎓</p>
     </div>
     <div class="modal-already" id="cAlready">
-      <div class="s-icon">👋</div>
-      <h3>أهلاً بك مجدداً!</h3>
-      <p>سبق لك الحضور معنا — الدورة المجانية لمرة واحدة فقط.<br>اشترك بـ ١٠ د.ك واحضر جميع الدورات!</p>
-      <a href="#pricing" class="upgrade-btn" onclick="closeModal('courseModal')">شوف باقات الاشتراك</a>
+      <div class="s-icon">📋</div>
+      <h3>تم استلام طلبك!</h3>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:20px;">
+        سيتواصل معك فريق أكاديمية مسار خلال ٢٤ ساعة لتفعيل حسابك<br>
+        أو تواصل معنا مباشرة على الواتساب
+      </p>
+      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أفعّل اشتراكي في أكاديمية مسار" 
+         target="_blank"
+         style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:13px 28px;border-radius:100px;text-decoration:none;margin-bottom:10px;">
+        💬 تواصل على الواتساب
+      </a>
     </div>
   </div>
 </div>
@@ -752,18 +759,30 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   document.getElementById('cBtnTxt').style.display='none';
   document.getElementById('cSpinner').style.display='block';
   try {
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      type:'تسجيل دورة مجانية',
-      name:f.fullName.value, phone:f.phone.value, email:f.email.value,
-      course:f.courseName.value, wantCert:wantCert,
-      courseType:'مجاني',
-      timestamp:new Date().toLocaleString('ar-SA')
-    })});
+    const response = await fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        type:'تسجيل دورة مجانية',
+        name:f.fullName.value, phone:f.phone.value, email:f.email.value,
+        course:f.courseName.value, wantCert:wantCert,
+        courseType:'مجاني',
+        timestamp:new Date().toLocaleString('ar-SA')
+      })
+    });
+    const result = await response.json();
+    f.style.display='none';
+
+    // عرض الرسالة الصحيحة حسب الحالة
+    if(result.status === 'need_subscription' || result.status === 'expired') {
+      document.getElementById('cAlready').style.display='block';
+    } else {
+      document.getElementById('cSuccess').style.display='block';
+    }
+  } catch(err) {
+    // لو ما قدر يقرأ الرد — يعرض النجاح (no-cors fallback)
     f.style.display='none';
     document.getElementById('cSuccess').style.display='block';
-  } catch(err) {
-    btn.disabled=false; document.getElementById('cBtnTxt').style.display='block'; document.getElementById('cSpinner').style.display='none';
-    alert('حدث خطأ، يرجى المحاولة مجدداً');
   }
 });
 
