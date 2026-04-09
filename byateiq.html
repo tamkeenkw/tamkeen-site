@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>كورسيل الدورة — @BYATEIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', sans-serif; background: #1a1a1a; }
+
+  @media print {
+    body { background: white; }
+    .slide { page-break-after: always; page-break-inside: avoid; }
+    .slide:last-child { page-break-after: avoid; }
+  }
+
+  .slide {
+    width: 1080px; height: 1350px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 80px 100px;
+    margin: 0 auto 40px;
+    position: relative; overflow: hidden;
+  }
+
+  .maroon { background: #4a0e1f; }
+  .cream  { background: #f5eded; }
+
+  .slide-badge {
+    position: absolute; top: 40px; right: 50px;
+    font-size: 28px; font-weight: 700; opacity: 0.3;
+  }
+  .maroon .slide-badge { color: #f5eded; }
+  .cream  .slide-badge { color: #4a0e1f; }
+
+  .signature {
+    position: absolute; bottom: 36px; left: 50px;
+    font-family: 'Cairo', sans-serif; font-size: 22px; font-weight: 600;
+    letter-spacing: 1px; opacity: 0.45;
+  }
+  .maroon .signature { color: #e8b4c0; }
+  .cream  .signature { color: #8b2d45; }
+
+  .icon-wrap { margin-bottom: 30px; }
+
+  .label {
+    font-size: 24px; letter-spacing: 5px; font-weight: 600;
+    margin-bottom: 16px; opacity: 0.65;
+  }
+  .maroon .label { color: #e8b4c0; }
+  .cream  .label { color: #8b2d45; }
+
+  .heading {
+    font-size: 100px; font-weight: 900; line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .maroon .heading { color: #f5eded; }
+  .cream  .heading { color: #3a0816; }
+
+  .divider {
+    width: 60px; height: 5px; border-radius: 3px; margin: 20px auto;
+  }
+  .maroon .divider { background: rgba(245,237,237,0.35); }
+  .cream  .divider { background: rgba(74,14,31,0.25); }
+
+  .sub {
+    font-size: 38px; font-weight: 400; line-height: 1.8; opacity: 0.8;
+  }
+  .maroon .sub { color: #f5eded; }
+  .cream  .sub { color: #4a0e1f; }
+
+  .item-list { width: 100%; display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
+  .item {
+    display: flex; align-items: center; gap: 20px;
+    padding: 26px 36px; border-radius: 20px;
+    font-size: 38px; font-weight: 600;
+    direction: rtl; text-align: right;
+  }
+  .item-bad  { background: rgba(255,255,255,0.09); color: #f5eded; }
+  .item-good { background: rgba(74,14,31,0.09); color: #3a0816; }
+
+  .icon-circle {
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 26px; font-weight: 900;
+  }
+  .icon-x   { background: #7a1a2a; color: #f5eded; }
+  .icon-chk { background: #2e6b44; color: #a8f0c4; }
+
+  .q-card {
+    background: rgba(255,255,255,0.1); border-radius: 18px;
+    padding: 26px 36px; width: 100%; margin-bottom: 16px;
+    text-align: right; direction: rtl;
+    border-right: 6px solid rgba(255,255,255,0.4);
+    color: #f5eded; font-size: 38px; font-weight: 600;
+  }
+
+  .cta-pill {
+    margin-top: 36px; background: #4a0e1f; color: #f5eded;
+    font-family: 'Cairo', sans-serif; font-size: 36px; font-weight: 700;
+    padding: 22px 70px; border-radius: 60px; display: inline-block;
+  }
+
+  svg.icon { width: 100px; height: 100px; }
+</style>
+</head>
+<body>
+
+<!-- شريحة 1 -->
+<div class="slide maroon">
+  <div class="slide-badge">01</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="42" stroke="rgba(245,237,237,0.3)" stroke-width="2.5"/>
+      <text x="50" y="66" font-family="Cairo,Arial,sans-serif" font-size="54" font-weight="900" text-anchor="middle" fill="rgba(245,237,237,0.65)">؟</text>
+    </svg>
+  </div>
+  <div class="label">دورتك التدريبية</div>
+  <div class="heading">هل دورتك<br>جاهزة فعلاً؟</div>
+  <div class="divider"></div>
+  <div class="sub">اسأل نفسك قبل ما تضغط نشر</div>
+</div>
+
+<!-- شريحة 2 -->
+<div class="slide cream">
+  <div class="slide-badge">02</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <rect x="20" y="16" width="60" height="68" rx="10" stroke="rgba(74,14,31,0.4)" stroke-width="2.5" fill="rgba(74,14,31,0.06)"/>
+      <line x1="34" y1="38" x2="66" y2="38" stroke="rgba(74,14,31,0.5)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="34" y1="52" x2="62" y2="52" stroke="rgba(74,14,31,0.35)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="34" y1="66" x2="54" y2="66" stroke="rgba(74,14,31,0.2)" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="label">الواقع</div>
+  <div class="heading">كثير مدربين<br>يطلقون دوراتهم</div>
+  <div class="divider"></div>
+  <div class="sub">بدون اختبار حقيقي للمحتوى</div>
+</div>
+
+<!-- شريحة 3 -->
+<div class="slide maroon">
+  <div class="slide-badge">03</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <path d="M50 12 L88 82 H12 Z" stroke="rgba(245,237,237,0.4)" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+      <line x1="50" y1="38" x2="50" y2="60" stroke="rgba(245,237,237,0.7)" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="50" cy="70" r="4" fill="rgba(245,237,237,0.7)"/>
+    </svg>
+  </div>
+  <div class="heading" style="font-size:80px;margin-bottom:30px">والنتيجة؟</div>
+  <div class="item-list">
+    <div class="item item-bad"><div class="icon-circle icon-x">✕</div><span>ضعف التفاعل</span></div>
+    <div class="item item-bad"><div class="icon-circle icon-x">✕</div><span>انسحاب المتدربين</span></div>
+    <div class="item item-bad"><div class="icon-circle icon-x">✕</div><span>تقييمات ضعيفة</span></div>
+  </div>
+</div>
+
+<!-- شريحة 4 -->
+<div class="slide cream">
+  <div class="slide-badge">04</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="42" r="22" stroke="rgba(74,14,31,0.3)" stroke-width="2.5" fill="none"/>
+      <circle cx="50" cy="38" r="9" fill="rgba(74,14,31,0.5)"/>
+      <path d="M32 72 Q50 84 68 72" stroke="rgba(74,14,31,0.4)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="label">الحقيقة</div>
+  <div class="heading">المشكلة مو<br>في خبرتك</div>
+  <div class="divider"></div>
+  <div class="sub">المشكلة في عدم اختبار المادة</div>
+</div>
+
+<!-- شريحة 5 -->
+<div class="slide maroon">
+  <div class="slide-badge">05</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="42" stroke="rgba(245,237,237,0.3)" stroke-width="2.5"/>
+      <text x="50" y="66" font-family="Cairo,Arial,sans-serif" font-size="54" font-weight="900" text-anchor="middle" fill="rgba(245,237,237,0.6)">؟</text>
+    </svg>
+  </div>
+  <div class="label">قبل الإطلاق</div>
+  <div class="heading" style="font-size:80px;margin-bottom:30px">اسأل نفسك:</div>
+  <div class="q-card">هل المحتوى واضح؟</div>
+  <div class="q-card">هل فيه تطبيق عملي؟</div>
+</div>
+
+<!-- شريحة 6 -->
+<div class="slide cream">
+  <div class="slide-badge">06</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <rect x="24" y="18" width="52" height="64" rx="12" stroke="rgba(74,14,31,0.35)" stroke-width="2.5" fill="rgba(74,14,31,0.06)"/>
+      <text x="50" y="66" font-family="Cairo,Arial,sans-serif" font-size="38" font-weight="900" text-anchor="middle" fill="rgba(74,14,31,0.55)">8</text>
+    </svg>
+  </div>
+  <div class="label">لهذا السبب</div>
+  <div class="heading">جهزت لك<br>اختباراً</div>
+  <div class="divider"></div>
+  <div class="sub">من 8 مقومات أساسية</div>
+</div>
+
+<!-- شريحة 7 -->
+<div class="slide maroon">
+  <div class="slide-badge">07</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="42" stroke="rgba(245,237,237,0.3)" stroke-width="2.5"/>
+      <path d="M30 50 L44 64 L70 36" stroke="rgba(245,237,237,0.75)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+  </div>
+  <div class="sub" style="margin-bottom:36px">تقدر من خلاله تعرف:</div>
+  <div class="item-list">
+    <div class="item item-bad"><div class="icon-circle icon-chk">✓</div><span>دورتك جاهزة للإطلاق</span></div>
+    <div class="item item-bad"><div class="icon-circle icon-chk">✓</div><span>أو تحتاج تطوير</span></div>
+  </div>
+</div>
+
+<!-- شريحة 8 -->
+<div class="slide cream">
+  <div class="slide-badge">08</div>
+  <div class="signature">@BYATEIQ</div>
+  <div class="icon-wrap">
+    <svg class="icon" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="42" stroke="rgba(74,14,31,0.25)" stroke-width="2.5"/>
+      <path d="M36 50 H64 M64 50 L52 38 M64 50 L52 62" stroke="rgba(74,14,31,0.6)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+  </div>
+  <div class="label">الخطوة التالية</div>
+  <div class="heading">اكتب<br>"اختبار"</div>
+  <div class="divider"></div>
+  <div class="sub">وبوصلك مباشرة</div>
+  <div class="cta-pill">اكتب اختبار</div>
+</div>
+
+</body>
+</html>
