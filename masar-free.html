@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية مسار — دورات مجانية للمعلمين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:   #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream:     #FAF7F2;
+  --cream-2:   #F2EDE5;
+  --white:     #FFFFFF;
+  --text:      #1A0808;
+  --muted:     #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+/* ─── HERO ─── */
+.hero {
+  background:var(--crimson); min-height:72vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 24px 60px; text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.hero-inner { position:relative; z-index:2; max-width:680px; }
+.logo-wrap { margin-bottom:24px; animation:fadeDown .7s ease both; }
+.logo-text { font-size:44px; font-weight:900; color:#fff; letter-spacing:2px; }
+.logo-sub { font-size:13px; color:rgba(255,255,255,.5); font-weight:600; letter-spacing:5px; margin-top:4px; }
+.hero-tag {
+  display:inline-block; border:1.5px solid rgba(255,255,255,.28); color:rgba(255,255,255,.82);
+  padding:6px 22px; border-radius:100px; font-size:13px; font-weight:600;
+  margin-bottom:24px; animation:fadeDown .7s .1s ease both;
+}
+.hero h1 { font-size:clamp(32px,6vw,58px); font-weight:900; color:#fff; line-height:1.25; margin-bottom:8px; animation:fadeDown .7s .15s ease both; }
+.hero h1 em { font-style:normal; opacity:.58; display:block; font-size:.62em; font-weight:700; margin-top:6px; }
+.hero-divider { width:48px; height:2px; background:rgba(255,255,255,.3); margin:20px auto; animation:fadeDown .7s .2s ease both; }
+.hero p { font-size:clamp(14px,2vw,17px); color:rgba(255,255,255,.62); line-height:1.95; margin-bottom:36px; animation:fadeDown .7s .25s ease both; }
+
+/* ─── OPTIONS ROW ─── */
+.options-row {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:12px;
+  margin-bottom:32px; animation:fadeUp .7s .3s ease both;
+}
+.option-chip {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.2);
+  border-radius:14px; padding:12px 20px;
+}
+.option-chip .oc-icon { font-size:22px; }
+.option-chip .oc-text { text-align:right; }
+.option-chip .oc-title { font-size:14px; font-weight:900; color:#fff; }
+.option-chip .oc-sub { font-size:12px; color:rgba(255,255,255,.5); }
+
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  padding:16px 40px; border-radius:100px;
+  transition:all .28s; border:none; cursor:pointer;
+  box-shadow:0 8px 28px rgba(0,0,0,.2); animation:fadeUp .7s .35s ease both;
+}
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.25); }
+.hero-note { margin-top:16px; font-size:13px; color:rgba(255,255,255,.36); animation:fadeUp .7s .45s ease both; }
+.hero-note strong { color:rgba(255,255,255,.7); }
+
+/* ─── STATS ─── */
+.stats {
+  background:var(--crimson-2); padding:32px 24px;
+  display:flex; justify-content:center; gap:clamp(24px,7vw,80px); flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-n { font-size:clamp(28px,5vw,44px); font-weight:900; color:#fff; line-height:1; margin-bottom:5px; }
+.stat-l { font-size:13px; color:rgba(255,255,255,.42); font-weight:500; }
+
+/* ─── SHARED ─── */
+.sec { padding:clamp(56px,8vw,96px) 24px; max-width:960px; margin:0 auto; }
+.sec-tag { text-align:center; font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.sec-title { font-size:clamp(24px,4.5vw,40px); font-weight:900; text-align:center; color:var(--text); margin-bottom:12px; line-height:1.3; }
+.sec-sub { text-align:center; font-size:15px; color:var(--muted); margin-bottom:44px; line-height:1.75; max-width:580px; margin-left:auto; margin-right:auto; }
+
+/* ─── HOW IT WORKS ─── */
+.how-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+.how-card {
+  background:#fff; border-radius:20px; padding:24px 20px; text-align:center;
+  border:1.5px solid rgba(92,15,15,.07); transition:all .28s;
+  opacity:0; transform:translateY(16px);
+}
+.how-card.on { opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .5s ease; }
+.how-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(92,15,15,.09); }
+.how-num { width:44px; height:44px; background:var(--crimson); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; color:#fff; margin:0 auto 14px; box-shadow:0 6px 16px rgba(92,15,15,.2); }
+.how-title { font-size:16px; font-weight:900; color:var(--text); margin-bottom:6px; }
+.how-desc { font-size:13px; color:var(--muted); line-height:1.65; }
+
+/* ─── CERT OPTIONS SECTION ─── */
+.cert-section { background:var(--cream-2); padding:clamp(56px,8vw,96px) 24px; }
+.cert-inner { max-width:860px; margin:0 auto; }
+.cert-options-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+.cert-option-card {
+  background:#fff; border-radius:22px; padding:28px 24px;
+  border:1.5px solid rgba(92,15,15,.08); transition:all .3s;
+  opacity:0; transform:translateY(16px); text-align:center;
+}
+.cert-option-card.on { opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .5s ease; }
+.cert-option-card:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(92,15,15,.1); }
+.cert-option-card.featured { background:var(--crimson); border-color:transparent; box-shadow:0 14px 40px rgba(92,15,15,.25); }
+.coc-icon { font-size:40px; margin-bottom:14px; }
+.coc-title { font-size:18px; font-weight:900; margin-bottom:6px; }
+.cert-option-card:not(.featured) .coc-title { color:var(--text); }
+.cert-option-card.featured .coc-title { color:#fff; }
+.coc-price { font-size:32px; font-weight:900; margin-bottom:4px; }
+.cert-option-card:not(.featured) .coc-price { color:var(--crimson); }
+.cert-option-card.featured .coc-price { color:#fff; }
+.coc-desc { font-size:13px; line-height:1.65; margin-bottom:18px; }
+.cert-option-card:not(.featured) .coc-desc { color:var(--muted); }
+.cert-option-card.featured .coc-desc { color:rgba(255,255,255,.65); }
+.coc-btn {
+  width:100%; padding:12px; border-radius:12px;
+  font-family:'Tajawal',sans-serif; font-size:14px; font-weight:900;
+  border:none; cursor:pointer; transition:all .25s;
+}
+.cert-option-card:not(.featured) .coc-btn { background:var(--crimson); color:#fff; }
+.cert-option-card:not(.featured) .coc-btn:hover { background:var(--crimson-2); transform:translateY(-1px); }
+.cert-option-card.featured .coc-btn { background:#fff; color:var(--crimson); }
+.cert-option-card.featured .coc-btn:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.15); }
+
+/* ─── COURSES ─── */
+.courses-section { padding:clamp(56px,8vw,96px) 24px; }
+.courses-inner { max-width:960px; margin:0 auto; }
+.month-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; }
+.month-badge { background:var(--crimson); color:#fff; font-size:13px; font-weight:800; padding:6px 18px; border-radius:100px; white-space:nowrap; }
+.month-line { flex:1; height:1.5px; background:rgba(92,15,15,.1); }
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.course-card {
+  background:#fff; border-radius:20px; overflow:hidden;
+  border:1.5px solid rgba(92,15,15,.07); transition:all .28s;
+  opacity:0; transform:translateY(16px); display:flex; flex-direction:column;
+}
+.course-card.on { opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .5s ease; }
+.course-card:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(92,15,15,.1); border-color:rgba(92,15,15,.16); }
+.course-card-top {
+  background:var(--crimson); padding:20px 22px; position:relative; overflow:hidden;
+}
+.course-card-top::before {
+  content:''; position:absolute; inset:0;
+  background-image: linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%), linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%);
+  background-size:30px 30px;
+}
+.course-card-top > * { position:relative; z-index:1; }
+.course-date-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.course-date { font-size:12px; font-weight:800; color:rgba(255,255,255,.7); letter-spacing:1px; }
+.course-free-tag { background:rgba(255,255,255,.15); color:#fff; font-size:11px; font-weight:800; padding:3px 10px; border-radius:100px; }
+.course-name { font-size:17px; font-weight:900; color:#fff; line-height:1.35; }
+.course-card-bottom { padding:18px 22px; display:flex; flex-direction:column; gap:12px; flex:1; }
+.course-trainer { display:flex; align-items:center; gap:10px; }
+.trainer-avatar { width:36px; height:36px; min-width:36px; background:var(--crimson); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; color:#fff; }
+.trainer-name { font-size:14px; font-weight:800; color:var(--text); }
+.trainer-label { font-size:12px; color:var(--muted); }
+.course-meta { display:flex; gap:8px; flex-wrap:wrap; }
+.course-meta-item { display:flex; align-items:center; gap:5px; font-size:12px; font-weight:700; color:var(--muted); background:var(--cream); padding:4px 10px; border-radius:100px; }
+.course-note { font-size:12px; color:var(--muted); background:rgba(92,15,15,.04); border-radius:10px; padding:8px 12px; border:1px solid rgba(92,15,15,.07); line-height:1.55; }
+.course-note strong { color:var(--crimson); }
+.course-register-btn { width:100%; padding:12px; background:var(--crimson); color:#fff; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:900; border:none; border-radius:12px; cursor:pointer; transition:all .25s; margin-top:auto; }
+.course-register-btn:hover { background:var(--crimson-2); transform:translateY(-1px); }
+
+/* ─── DARK BAND ─── */
+.band { background:var(--crimson); padding:clamp(56px,8vw,96px) 24px; position:relative; overflow:hidden; }
+.band::before {
+  content:''; position:absolute; inset:0;
+  background-image: linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%), linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%), linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%), linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:52px 52px;
+}
+.band-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; }
+.band .sec-tag { color:rgba(255,255,255,.5); }
+.band .sec-title { color:#fff; }
+.band .sec-sub { color:rgba(255,255,255,.5); }
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:44px; }
+@media(max-width:720px) { .pricing-grid { grid-template-columns:1fr; max-width:380px; margin-left:auto; margin-right:auto; } }
+.plan-card { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:22px; padding:28px 24px; transition:all .3s; display:flex; flex-direction:column; opacity:0; transform:translateY(16px); }
+.plan-card.on { opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .5s ease; }
+.plan-card:hover { background:rgba(255,255,255,.11); border-color:rgba(255,255,255,.22); transform:translateY(-3px); }
+.plan-card.featured { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.35); transform:scale(1.04); }
+.plan-card.featured:hover { transform:scale(1.04) translateY(-3px); }
+.plan-badge { font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.7); margin-bottom:16px; }
+.plan-card.featured .plan-badge { color:#fff; }
+.plan-price { line-height:1; margin-bottom:5px; }
+.plan-price-num { font-size:clamp(44px,8vw,62px); font-weight:900; color:#fff; }
+.plan-price-cur { font-size:18px; font-weight:700; color:rgba(255,255,255,.6); vertical-align:super; margin-left:3px; }
+.plan-period { font-size:13px; color:rgba(255,255,255,.45); margin-bottom:6px; }
+.plan-saving { font-size:12px; font-weight:800; color:rgba(255,255,255,.7); margin-bottom:20px; }
+.plan-card.featured .plan-saving { color:#fff; }
+.plan-divider { height:1px; background:rgba(255,255,255,.12); margin:16px 0; }
+.plan-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:24px; flex:1; }
+.plan-list li { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; color:rgba(255,255,255,.8); }
+.plan-list li::before { content:'✓'; width:20px; height:20px; min-width:20px; background:rgba(255,255,255,.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:900; color:#fff; }
+.plan-list li.hl { color:#fff; font-weight:800; }
+.plan-btn { width:100%; padding:13px; border-radius:12px; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:900; border:none; cursor:pointer; transition:all .25s; margin-top:auto; background:rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.25); }
+.plan-btn:hover { background:rgba(255,255,255,.25); transform:translateY(-1px); }
+.plan-card.featured .plan-btn { background:#fff; color:var(--crimson); border-color:transparent; box-shadow:0 6px 20px rgba(0,0,0,.15); }
+.plan-card.featured .plan-btn:hover { transform:translateY(-2px); }
+
+/* ─── FOOTER ─── */
+.footer { background:var(--text); padding:44px 24px; text-align:center; }
+.footer-logo { font-size:24px; font-weight:900; color:#fff; margin-bottom:6px; }
+.footer-sub { font-size:13px; color:rgba(255,255,255,.32); margin-bottom:16px; }
+.footer-links { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; }
+.footer-links a { font-size:13px; color:rgba(255,255,255,.42); text-decoration:none; font-weight:600; transition:color .2s; }
+.footer-links a:hover { color:rgba(255,255,255,.82); }
+
+/* ─── MODAL ─── */
+.modal-overlay { position:fixed; inset:0; background:rgba(26,8,8,.78); backdrop-filter:blur(6px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .3s; }
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:#fff; border-radius:24px; padding:clamp(26px,5vw,42px); width:100%; max-width:460px; max-height:92vh; overflow-y:auto; transform:translateY(20px); transition:transform .3s; position:relative; }
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-close { position:absolute; top:16px; left:16px; width:32px; height:32px; background:var(--cream); border:none; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all .2s; }
+.modal-close:hover { background:var(--cream-2); }
+.modal-course-tag { background:rgba(92,15,15,.07); color:var(--crimson); font-size:12px; font-weight:800; padding:4px 14px; border-radius:100px; display:inline-block; margin-bottom:10px; }
+.modal-title { font-size:21px; font-weight:900; color:var(--text); margin-bottom:5px; }
+.modal-sub { font-size:14px; color:var(--muted); margin-bottom:20px; line-height:1.65; }
+.modal-info-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.modal-info-chip { display:flex; align-items:center; gap:6px; background:var(--cream); border-radius:10px; padding:8px 14px; font-size:13px; font-weight:700; color:var(--text); }
+.mf { margin-bottom:16px; }
+.mf label { display:block; font-size:14px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.req { color:var(--crimson); margin-left:3px; }
+.mf input { width:100%; padding:12px 15px; border:1.5px solid rgba(92,15,15,.12); border-radius:12px; font-family:'Tajawal',sans-serif; font-size:15px; color:var(--text); background:var(--cream); outline:none; transition:border .2s; }
+.mf input:focus { border-color:var(--crimson); background:#fff; }
+.mf.invalid input { border-color:#c0392b; }
+.err { font-size:12px; color:#c0392b; margin-top:4px; display:none; }
+.mf.invalid .err { display:block; }
+
+/* cert options in modal */
+.modal-cert-options { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+.mco-option {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--cream); border:1.5px solid rgba(92,15,15,.1);
+  border-radius:13px; padding:14px 16px; cursor:pointer; transition:all .2s;
+}
+.mco-option:hover { border-color:rgba(92,15,15,.3); background:#fff; }
+.mco-option.selected { border-color:var(--crimson); background:rgba(92,15,15,.04); }
+.mco-right { display:flex; flex-direction:column; gap:3px; }
+.mco-title { font-size:15px; font-weight:900; color:var(--text); }
+.mco-sub { font-size:12px; color:var(--muted); }
+.mco-price { font-size:18px; font-weight:900; color:var(--crimson); }
+
+.modal-submit { width:100%; padding:14px; background:var(--crimson); color:#fff; font-family:'Tajawal',sans-serif; font-size:16px; font-weight:900; border:none; border-radius:13px; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:10px; }
+.modal-submit:hover { background:var(--crimson-2); transform:translateY(-1px); }
+.modal-submit:disabled { opacity:.6; cursor:default; transform:none; }
+.modal-spinner { width:18px; height:18px; border:2.5px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; display:none; }
+.modal-success { text-align:center; padding:20px 0; display:none; }
+.modal-success .s-icon { font-size:48px; margin-bottom:14px; }
+.modal-success h3 { font-size:21px; font-weight:900; color:var(--text); margin-bottom:8px; }
+.modal-success p { font-size:14px; color:var(--muted); line-height:1.75; }
+.modal-already { text-align:center; padding:20px 0; display:none; }
+.modal-already .s-icon { font-size:44px; margin-bottom:14px; }
+.modal-already h3 { font-size:19px; font-weight:900; color:var(--text); margin-bottom:8px; }
+.modal-already p { font-size:14px; color:var(--muted); line-height:1.75; margin-bottom:20px; }
+.modal-already .upgrade-btn { display:inline-block; background:var(--crimson); color:#fff; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:900; padding:13px 32px; border-radius:12px; text-decoration:none; transition:all .25s; }
+.modal-already .upgrade-btn:hover { background:var(--crimson-2); }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes spin     { to{transform:rotate(360deg)} }
+@media(max-width:560px) { .courses-grid { grid-template-columns:1fr; } .options-row { flex-direction:column; align-items:center; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="logo-wrap">
+      <div class="logo-text">مسار</div>
+      <div class="logo-sub">MASAR ACADEMY</div>
+    </div>
+    <div class="hero-tag">🎓 معتمدة من معهد تمكين</div>
+    <h1>
+      دورة مجانية لكل معلم
+      <em>جرّب وانضم لمجتمع المعلمين المحترفين</em>
+    </h1>
+    <div class="hero-divider"></div>
+    <p>
+      حضور أول دورة مجاناً — اختر الموضوع اللي يناسبك<br>
+      جميع الدورات أونلاين عبر زووم · مدة ساعتين
+    </p>
+    <div class="options-row">
+      <div class="option-chip">
+        <div class="oc-icon">🎁</div>
+        <div class="oc-text">
+          <div class="oc-title">حضور مجاني</div>
+          <div class="oc-sub">أول دورة لكل معلم — بدون شهادة</div>
+        </div>
+      </div>
+      <div class="option-chip">
+        <div class="oc-icon">📜</div>
+        <div class="oc-text">
+          <div class="oc-title">شهادة فردية — ١٠ د.ك</div>
+          <div class="oc-sub">استخرج شهادة لأي دورة عند الطلب</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})">
+      اختر دورتك المجانية ←
+    </button>
+    <div class="hero-note"><strong>أبريل ٢٠٢٦</strong> — الجدول الشهري متاح الآن</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">+90</div><div class="stat-l">مدرب معتمد</div></div>
+  <div class="stat"><div class="stat-n">6</div><div class="stat-l">دورات هذا الشهر</div></div>
+  <div class="stat"><div class="stat-n">5:00</div><div class="stat-l">م كل دورة</div></div>
+  <div class="stat"><div class="stat-n">مجاني</div><div class="stat-l">أول دورة</div></div>
+</div>
+
+<!-- ACCREDITATION -->
+<div style="background:var(--cream-2);padding:clamp(40px,6vw,64px) 24px;">
+  <div style="max-width:860px;margin:0 auto;text-align:center;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px;">الاعتماد الرسمي</div>
+    <h2 style="font-size:clamp(22px,4vw,34px);font-weight:900;color:var(--text);margin-bottom:12px;line-height:1.3;">شهادات أكاديمية مسار معتمدة رسمياً</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto;">شهاداتنا صادرة من معهد تمكين إيديوكلاود — معتمد ومسجل لدى الجهات الرسمية في الكويت</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;">
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">🎓</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">معهد تمكين إيديوكلاود</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">الجهة المانحة للشهادات</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">✅</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">الهيئة العامة للتعليم والتدريب التطبيقي</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">معتمد ومسجل رسمياً</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">ديوان الخدمة المدنية</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">معتمد ومسجل رسمياً</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="sec">
+  <div class="sec-tag">كيف يشتغل</div>
+  <h2 class="sec-title">٣ خطوات بس</h2>
+  <p class="sec-sub">أبسط طريقة تبدأ فيها تطور نفسك كمعلم محترف</p>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">١</div>
+      <div class="how-title">اختر دورتك</div>
+      <div class="how-desc">تصفح الجدول الشهري واختر الموضوع اللي يناسب احتياجك</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">٢</div>
+      <div class="how-title">سجّل مجاناً</div>
+      <div class="how-desc">أدخل بياناتك — يوصلك لينك زووم على إيميلك مباشرة</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">٣</div>
+      <div class="how-title">احضر وتطور</div>
+      <div class="how-desc">ساعتان مع مدرب معتمد — حضور مجاني</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">🔓</div>
+      <div class="how-title">اشترك للمزيد</div>
+      <div class="how-desc">أعجبتك الدورة؟ اشترك بـ ١٠ د.ك واحضر جميع الدورات لشهر كامل</div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<div class="courses-section" id="courses">
+  <div class="courses-inner">
+    <div class="sec-tag" style="text-align:center">جدول أبريل ٢٠٢٦</div>
+    <h2 class="sec-title">اختر دورتك المجانية</h2>
+    <p class="sec-sub">٦ دورات متخصصة هذا الشهر — جميعها أونلاين عبر زووم الساعة ٥:٠٠ م · حضور مجاني بدون شهادة</p>
+
+    <div class="month-header">
+      <div class="month-badge">أبريل ٢٠٢٦</div>
+      <div class="month-line"></div>
+    </div>
+
+    <div class="courses-grid">
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الأربعاء ١ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">العب وتعلم</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">م</div>
+            <div><div class="trainer-name">أ. محمد مهيني</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('العب وتعلم','أ. محمد مهيني','الأربعاء ١ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الأحد ٦ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">وفر وقتك مع Canva AI</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">ن</div>
+            <div><div class="trainer-name">أ. نوف حسن</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('وفر وقتك مع Canva AI','أ. نوف حسن','الأحد ٦ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الثلاثاء ٨ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">السجل الإنجازي الإلكتروني للموظف</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">و</div>
+            <div><div class="trainer-name">د. وسمية المشعان</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('السجل الإنجازي الإلكتروني للموظف','د. وسمية المشعان','الثلاثاء ٨ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الأحد ١٣ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">اصنع درسك بالذكاء الاصطناعي</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">ع</div>
+            <div><div class="trainer-name">أ. عبدالعزيز راشد فياض</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('اصنع درسك بالذكاء الاصطناعي','أ. عبدالعزيز راشد فياض','الأحد ١٣ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الثلاثاء ١٥ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">إعداد القادة وصناعة النفوذ المؤسسية</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">ج</div>
+            <div><div class="trainer-name">د. جاسم الجزاع</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('إعداد القادة وصناعة النفوذ المؤسسية','د. جاسم الجزاع','الثلاثاء ١٥ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-top">
+          <div class="course-date-row">
+            <span class="course-date">الأحد ٢٠ أبريل</span>
+            <span class="course-free-tag">مجاني</span>
+          </div>
+          <div class="course-name">التفكير الإبداعي لحل التحديات المهنية</div>
+        </div>
+        <div class="course-card-bottom">
+          <div class="course-trainer">
+            <div class="trainer-avatar">م</div>
+            <div><div class="trainer-name">أ. مريم أحمد</div><div class="trainer-label">مدرب معتمد</div></div>
+          </div>
+          <div class="course-meta">
+            <span class="course-meta-item">🕔 ٥:٠٠ م</span>
+            <span class="course-meta-item">⏱ ساعتان</span>
+            <span class="course-meta-item">💻 زووم</span>
+          </div>
+
+          <button class="course-register-btn" onclick="openCourseModal('التفكير الإبداعي لحل التحديات المهنية','أ. مريم أحمد','الأحد ٢٠ أبريل')">سجّل مجاناً</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="band" id="pricing">
+  <div class="band-inner">
+    <div class="sec-tag">اشتراك غير محدود</div>
+    <h2 class="sec-title">احضر كل الدورات بدون قيود</h2>
+    <p class="sec-sub">اشتراك واحد يفتح لك جميع الدورات — حضور بدون شهادة · الشهادة الفردية ١٠ د.ك عند الطلب</p>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-badge">شهر واحد</div>
+        <div class="plan-price"><span class="plan-price-num">١٠</span><span class="plan-price-cur">د.ك</span></div>
+        <div class="plan-period">وصول لمدة شهر كامل</div>
+        <div class="plan-saving">جميع الدورات بلا حدود</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-list">
+          <li class="hl">جميع الدورات الشهرية</li>
+          <li>حضور غير محدود</li>
+          <li>شهادة فردية ١٠ د.ك عند الطلب</li>
+        </ul>
+        <button class="plan-btn" onclick="openPricingModal('اشتراك شهر — ١٠ د.ك')">اشترك الآن</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">⭐ الأكثر اختياراً</div>
+        <div class="plan-price"><span class="plan-price-num">٤٠</span><span class="plan-price-cur">د.ك</span></div>
+        <div class="plan-period">وصول لمدة ٦ أشهر</div>
+        <div class="plan-saving">وفّر ٢٠ د.ك 🎉</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-list">
+          <li class="hl">جميع الدورات لـ ٦ أشهر</li>
+          <li>حضور غير محدود</li>
+          <li>شهادة فردية ١٠ د.ك عند الطلب</li>
+          <li>أولوية في التسجيل</li>
+        </ul>
+        <button class="plan-btn" onclick="openPricingModal('اشتراك ٦ أشهر — ٤٠ د.ك')">اشترك الآن</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-badge">سنة كاملة</div>
+        <div class="plan-price"><span class="plan-price-num">٧٠</span><span class="plan-price-cur">د.ك</span></div>
+        <div class="plan-period">وصول لمدة ١٢ شهر</div>
+        <div class="plan-saving">وفّر ٥٠ د.ك 🎉</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-list">
+          <li class="hl">جميع الدورات لسنة كاملة</li>
+          <li>حضور غير محدود</li>
+          <li>شهادة فردية ١٠ د.ك عند الطلب</li>
+          <li>أولوية دائمة في التسجيل</li>
+        </ul>
+        <button class="plan-btn" onclick="openPricingModal('اشتراك ١٢ شهر — ٧٠ د.ك')">اشترك الآن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">أكاديمية مسار</div>
+  <div class="footer-sub">معتمدة من معهد تمكين — الكويت</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/bymasar/" target="_blank">إنستغرام @bymasar</a>
+    <a href="https://wa.me/96597999768" target="_blank">واتساب</a>
+    <a href="https://tamkeenkuw.com" target="_blank">معهد تمكين</a>
+  </div>
+</footer>
+
+<!-- MODAL تسجيل دورة -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('courseModal')">✕</button>
+    <div class="modal-course-tag" id="modalCourseTag">دورة مجانية</div>
+    <div class="modal-title" id="modalCourseTitle"></div>
+    <div class="modal-sub">أدخل بياناتك ويوصلك لينك زووم على إيميلك مباشرة</div>
+    <div class="modal-info-row">
+      <div class="modal-info-chip">👤 <span id="modalTrainer"></span></div>
+      <div class="modal-info-chip">📅 <span id="modalDate"></span></div>
+      <div class="modal-info-chip">🕔 ٥:٠٠ م</div>
+    </div>
+    <form id="courseForm" novalidate>
+      <input type="hidden" name="courseName" id="courseNameInput">
+      <div class="mf" id="mf-cname">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" name="fullName" placeholder="الاسم الكامل">
+        <div class="err">يرجى إدخال اسمك الكامل</div>
+      </div>
+      <div class="mf" id="mf-cphone">
+        <label><span class="req">*</span> رقم الواتساب</label>
+        <input type="tel" name="phone" placeholder="XXXXXXXX">
+        <div class="err">يرجى إدخال رقم الواتساب</div>
+      </div>
+      <div class="mf" id="mf-cemail">
+        <label><span class="req">*</span> الإيميل — يوصله لينك زووم</label>
+        <input type="email" name="email" placeholder="example@email.com">
+        <div class="err">يرجى إدخال إيميل صحيح</div>
+      </div>
+      <div class="mf" id="mf-ccert">
+        <label><span class="req">*</span> هل تريد شهادة معتمدة بـ ١٠ د.ك؟</label>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <label class="radio-option" id="lbl-cert-yes" style="flex:1;">
+            <input type="radio" name="wantCert" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightCert('yes')">
+            نعم أبي شهادة
+          </label>
+          <label class="radio-option" id="lbl-cert-no" style="flex:1;">
+            <input type="radio" name="wantCert" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightCert('no')">
+            لا، حضور فقط
+          </label>
+        </div>
+        <div class="err">يرجى اختيار إجابة</div>
+      </div>
+      <div style="background:rgba(92,15,15,.05);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px;border:1px solid rgba(92,15,15,.08);">
+        💡 يمكن استخراج شهادة معتمدة لأي دورة تحضرها بـ ١٠ د.ك
+      </div>
+      <button type="submit" class="modal-submit" id="cBtn">
+        <span id="cBtnTxt">سجّل وأرسل لي لينك زووم</span>
+        <div class="modal-spinner" id="cSpinner"></div>
+      </button>
+    </form>
+    <div class="modal-success" id="cSuccess">
+      <div class="s-icon">✅</div>
+      <h3>تم التسجيل!</h3>
+      <p>تم إرسال لينك زووم على إيميلك<br>نراك في الدورة 🎓</p>
+    </div>
+    <div class="modal-already" id="cAlready">
+      <div class="s-icon">👋</div>
+      <h3>أهلاً بك مجدداً!</h3>
+      <p>سبق لك الحضور معنا — الدورة المجانية لمرة واحدة فقط.<br>اشترك بـ ١٠ د.ك واحضر جميع الدورات!</p>
+      <a href="#pricing" class="upgrade-btn" onclick="closeModal('courseModal')">شوف باقات الاشتراك</a>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL اشتراك/شهادة -->
+<div class="modal-overlay" id="pricingModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('pricingModal')">✕</button>
+    <div class="modal-course-tag" id="pModalTag"></div>
+    <div class="modal-title" id="pModalTitle">أرسل طلبك</div>
+    <div class="modal-sub">سيتواصل معك فريقنا خلال ٢٤ ساعة</div>
+    <form id="pricingForm" novalidate>
+      <input type="hidden" name="planType" id="pPlanType">
+      <div class="mf" id="mf-pname">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" name="fullName" placeholder="الاسم الكامل">
+        <div class="err">يرجى إدخال اسمك الكامل</div>
+      </div>
+      <div class="mf" id="mf-pphone">
+        <label><span class="req">*</span> رقم الواتساب</label>
+        <input type="tel" name="phone" placeholder="XXXXXXXX">
+        <div class="err">يرجى إدخال رقم الواتساب</div>
+      </div>
+      <div class="mf" id="mf-pemail">
+        <label><span class="req">*</span> الإيميل</label>
+        <input type="email" name="email" placeholder="example@email.com">
+        <div class="err">يرجى إدخال إيميل صحيح</div>
+      </div>
+      <button type="submit" class="modal-submit" id="pBtn">
+        <span id="pBtnTxt">أرسل الطلب</span>
+        <div class="modal-spinner" id="pSpinner"></div>
+      </button>
+    </form>
+    <div class="modal-success" id="pSuccess">
+      <div class="s-icon">🎉</div>
+      <h3>تم استلام طلبك!</h3>
+      <p>سيتواصل معك فريق مسار خلال ٢٤ ساعة</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
+
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', function(e){ if(e.target===this) closeModal(this.id); }); });
+
+function highlightCert(which) {
+  document.getElementById('lbl-cert-yes').style.borderColor = which==='yes' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-cert-yes').style.background  = which==='yes' ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('lbl-cert-no').style.borderColor  = which==='no'  ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-cert-no').style.background   = which==='no'  ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('mf-ccert').classList.remove('invalid');
+}
+
+function openCourseModal(course, trainer, date) {
+  document.getElementById('modalCourseTag').textContent = 'دورة مجانية — ' + date;
+  document.getElementById('modalCourseTitle').textContent = course;
+  document.getElementById('modalTrainer').textContent = trainer;
+  document.getElementById('modalDate').textContent = date;
+  document.getElementById('courseNameInput').value = course;
+  document.getElementById('courseForm').style.display = '';
+  document.getElementById('cSuccess').style.display = 'none';
+  document.getElementById('cAlready').style.display = 'none';
+  document.getElementById('cBtn').disabled = false;
+  document.getElementById('cBtnTxt').style.display = 'block';
+  document.getElementById('cSpinner').style.display = 'none';
+  // reset cert selection
+  document.querySelectorAll('#courseForm input[name="wantCert"]').forEach(r=>r.checked=false);
+  highlightCert('');
+  openModal('courseModal');
+}
+
+document.getElementById('courseForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = this;
+  const wantCert = document.querySelector('#courseForm input[name="wantCert"]:checked')?.value || '';
+  let ok = true;
+  if(!f.fullName.value.trim()) { document.getElementById('mf-cname').classList.add('invalid'); ok=false; } else document.getElementById('mf-cname').classList.remove('invalid');
+  if(!f.phone.value.trim()) { document.getElementById('mf-cphone').classList.add('invalid'); ok=false; } else document.getElementById('mf-cphone').classList.remove('invalid');
+  if(!f.email.value.trim()||!f.email.value.includes('@')) { document.getElementById('mf-cemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-cemail').classList.remove('invalid');
+  if(!wantCert) { document.getElementById('mf-ccert').classList.add('invalid'); ok=false; }
+  if(!ok) return;
+  const btn=document.getElementById('cBtn'); btn.disabled=true;
+  document.getElementById('cBtnTxt').style.display='none';
+  document.getElementById('cSpinner').style.display='block';
+  try {
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      type:'تسجيل دورة مجانية',
+      name:f.fullName.value, phone:f.phone.value, email:f.email.value,
+      course:f.courseName.value, wantCert:wantCert,
+      courseType:'مجاني',
+      timestamp:new Date().toLocaleString('ar-SA')
+    })});
+    f.style.display='none';
+    document.getElementById('cSuccess').style.display='block';
+  } catch(err) {
+    btn.disabled=false; document.getElementById('cBtnTxt').style.display='block'; document.getElementById('cSpinner').style.display='none';
+    alert('حدث خطأ، يرجى المحاولة مجدداً');
+  }
+});
+
+function openPricingModal(plan) {
+  document.getElementById('pModalTag').textContent = plan;
+  document.getElementById('pPlanType').value = plan;
+  document.getElementById('pModalTitle').textContent = plan.includes('شهادة') ? 'اطلب شهادتك' : 'اشترك الآن';
+  document.getElementById('pricingForm').style.display='';
+  document.getElementById('pSuccess').style.display='none';
+  document.getElementById('pBtn').disabled=false;
+  document.getElementById('pBtnTxt').style.display='block';
+  document.getElementById('pSpinner').style.display='none';
+  openModal('pricingModal');
+}
+
+document.getElementById('pricingForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = this;
+  let ok = true;
+  if(!f.fullName.value.trim()) { document.getElementById('mf-pname').classList.add('invalid'); ok=false; } else document.getElementById('mf-pname').classList.remove('invalid');
+  if(!f.phone.value.trim()) { document.getElementById('mf-pphone').classList.add('invalid'); ok=false; } else document.getElementById('mf-pphone').classList.remove('invalid');
+  if(!f.email.value.trim()||!f.email.value.includes('@')) { document.getElementById('mf-pemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-pemail').classList.remove('invalid');
+  if(!ok) return;
+  const btn=document.getElementById('pBtn'); btn.disabled=true;
+  document.getElementById('pBtnTxt').style.display='none';
+  document.getElementById('pSpinner').style.display='block';
+  try {
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'طلب مسار',name:f.fullName.value,phone:f.phone.value,email:f.email.value,plan:document.getElementById('pPlanType').value,timestamp:new Date().toLocaleString('ar-SA')})});
+    f.style.display='none';
+    document.getElementById('pSuccess').style.display='block';
+  } catch(err) {
+    btn.disabled=false; document.getElementById('pBtnTxt').style.display='block'; document.getElementById('pSpinner').style.display='none';
+    alert('حدث خطأ، يرجى المحاولة مجدداً');
+  }
+});
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('on'),(e.target.dataset.i||0)*80); obs.unobserve(e.target); } });
+},{threshold:0.06});
+document.querySelectorAll('.how-card,.course-card,.plan-card,.cert-option-card').forEach((el,i)=>{ el.dataset.i=i%4; obs.observe(el); });
+</script>
+</body>
+</html>
