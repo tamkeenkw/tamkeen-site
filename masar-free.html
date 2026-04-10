@@ -755,34 +755,51 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   if(!f.email.value.trim()||!f.email.value.includes('@')) { document.getElementById('mf-cemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-cemail').classList.remove('invalid');
   if(!wantCert) { document.getElementById('mf-ccert').classList.add('invalid'); ok=false; }
   if(!ok) return;
+
   const btn=document.getElementById('cBtn'); btn.disabled=true;
   document.getElementById('cBtnTxt').style.display='none';
   document.getElementById('cSpinner').style.display='block';
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        type:'تسجيل دورة مجانية',
-        name:f.fullName.value, phone:f.phone.value, email:f.email.value,
-        course:f.courseName.value, wantCert:wantCert,
-        courseType:'مجاني',
-        timestamp:new Date().toLocaleString('ar-SA')
-      })
-    });
-    const result = await response.json();
-    f.style.display='none';
 
-    // عرض الرسالة الصحيحة حسب الحالة
-    if(result.status === 'need_subscription' || result.status === 'expired') {
-      document.getElementById('cAlready').style.display='block';
+  const payload = {
+    type:'تسجيل دورة مجانية',
+    name:f.fullName.value,
+    phone:f.phone.value,
+    email:f.email.value,
+    course:f.courseName.value,
+    wantCert:wantCert,
+    courseType:'مجاني',
+    timestamp:new Date().toLocaleString('ar-SA')
+  };
+
+  try {
+    // نحاول نقرأ الرد عشان نعرف الحالة
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    const text = await response.text();
+    let result = {};
+    try { result = JSON.parse(text); } catch(e) {}
+
+    f.style.display = 'none';
+    if (result.status === 'need_subscription' || result.status === 'expired') {
+      document.getElementById('cAlready').style.display = 'block';
     } else {
-      document.getElementById('cSuccess').style.display='block';
+      document.getElementById('cSuccess').style.display = 'block';
     }
+
   } catch(err) {
-    // لو ما قدر يقرأ الرد — يعرض النجاح (no-cors fallback)
-    f.style.display='none';
-    document.getElementById('cSuccess').style.display='block';
+    // لو ما قدر يقرأ الرد — نرسل بـ no-cors ونعرض نجاح
+    try {
+      await fetch(SCRIPT_URL, {
+        method:'POST', mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+    } catch(e2) {}
+    f.style.display = 'none';
+    document.getElementById('cSuccess').style.display = 'block';
   }
 });
 
