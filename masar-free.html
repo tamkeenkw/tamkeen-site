@@ -609,24 +609,41 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <button class="modal-close" onclick="closeModal('courseModal')">✕</button>
     <div class="modal-course-tag" id="modalCourseTag">دورة مجانية</div>
     <div class="modal-title" id="modalCourseTitle"></div>
-    <div class="modal-sub">أدخل بياناتك ويوصلك لينك زووم على إيميلك مباشرة</div>
     <div class="modal-info-row">
       <div class="modal-info-chip">👤 <span id="modalTrainer"></span></div>
       <div class="modal-info-chip">📅 <span id="modalDate"></span></div>
       <div class="modal-info-chip">🕔 ٥:٠٠ م</div>
     </div>
-    <form id="courseForm" novalidate>
-      <input type="hidden" name="courseName" id="courseNameInput">
-      <input type="hidden" name="courseDate" id="courseDateInput">
+    <input type="hidden" id="courseNameInput">
+    <input type="hidden" id="courseDateInput">
+
+    <!-- الخطوة ١: رقم الواتساب فقط -->
+    <div id="step1">
+      <div class="modal-sub" style="margin-bottom:18px;">أدخل رقم واتساپك لنتحقق من حالتك</div>
+      <div class="mf" id="mf-step1phone">
+        <label><span class="req">*</span> رقم الواتساب</label>
+        <input type="tel" id="step1Phone" placeholder="XXXXXXXX" style="font-size:18px;text-align:center;letter-spacing:3px;">
+        <div class="err">يرجى إدخال رقم الواتساب</div>
+      </div>
+      <button class="modal-submit" id="step1Btn" onclick="checkPhone()">
+        <span id="step1BtnTxt">تابع</span>
+        <div class="modal-spinner" id="step1Spinner" style="display:none;"></div>
+      </button>
+    </div>
+
+    <!-- الخطوة ٢: فورم التسجيل — أول مرة -->
+    <form id="courseForm" novalidate style="display:none;">
+      <div style="background:#E8F5E9;border-radius:12px;padding:10px 14px;font-size:13px;color:#2E7D32;font-weight:700;margin-bottom:16px;text-align:center;border:1px solid #C8E6C9;">
+        أهلاً بك! هذي دورتك المجانية الأولى
+      </div>
       <div class="mf" id="mf-cname">
         <label><span class="req">*</span> الاسم الكامل</label>
         <input type="text" name="fullName" placeholder="الاسم الكامل">
         <div class="err">يرجى إدخال اسمك الكامل</div>
       </div>
-      <div class="mf" id="mf-cphone">
-        <label><span class="req">*</span> رقم الواتساب</label>
-        <input type="tel" name="phone" placeholder="XXXXXXXX">
-        <div class="err">يرجى إدخال رقم الواتساب</div>
+      <div class="mf">
+        <label>رقم الواتساب</label>
+        <input type="tel" name="phone" id="formPhone" readonly style="background:#f5f5f5;color:#7A6060;">
       </div>
       <div class="mf" id="mf-cemail">
         <label><span class="req">*</span> الإيميل — يوصله لينك زووم</label>
@@ -647,55 +664,101 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         </div>
         <div class="err">يرجى اختيار إجابة</div>
       </div>
-      <div style="background:rgba(92,15,15,.05);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px;border:1px solid rgba(92,15,15,.08);">
-        💡 يمكن استخراج شهادة معتمدة لأي دورة تحضرها بـ ١٠ د.ك
-      </div>
       <button type="submit" class="modal-submit" id="cBtn">
         <span id="cBtnTxt">سجّل وأرسل لي لينك زووم</span>
-        <div class="modal-spinner" id="cSpinner"></div>
+        <div class="modal-spinner" id="cSpinner" style="display:none;"></div>
       </button>
     </form>
-    <div class="modal-success" id="cSuccess">
+
+    <!-- نجاح التسجيل -->
+    <div class="modal-success" id="cSuccess" style="display:none;">
       <div class="s-icon">✅</div>
       <h3>تم التسجيل بنجاح!</h3>
-      <p>تم إرسال لينك زووم على إيميلك<br>نراك في الدورة 🎓</p>
+      <p>تم إرسال لينك زووم على إيميلك<br>نراك في الدورة</p>
     </div>
-    <div class="modal-already" id="cAlready">
+
+    <!-- مشترك فعال -->
+    <div id="cActive" style="display:none;">
+      <div class="s-icon">🎓</div>
+      <h3 style="color:#2E7D32;">اشتراكك فعال!</h3>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:16px;">أدخل إيميلك ونرسل لك لينك زووم فوراً</p>
+      <div class="mf">
+        <label><span class="req">*</span> الإيميل</label>
+        <input type="email" id="activeEmail" placeholder="example@email.com">
+      </div>
+      <button class="modal-submit" id="activeBtn" onclick="sendZoomActive()">
+        <span id="activeBtnTxt">أرسل لي لينك زووم</span>
+        <div class="modal-spinner" id="activeSpinner" style="display:none;"></div>
+      </button>
+    </div>
+
+    <!-- يحتاج اشتراك -->
+    <div id="cAlready" style="display:none;">
       <div class="s-icon">⚠️</div>
       <h3 style="color:var(--crimson);">تعذّر إتمام طلبك</h3>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:20px;">
-        سبق لك التسجيل في دورة مجانية من قبل<br>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:14px;">
+        سبق لك التسجيل في دورة مجانية<br>
         الدورة المجانية متاحة <strong style="color:var(--text);">لمرة واحدة فقط</strong> لكل معلم
       </p>
-
-      <!-- الباقات -->
-      <div style="background:var(--cream);border-radius:16px;padding:16px;margin-bottom:16px;border:1.5px solid rgba(92,15,15,.08);">
-        <div style="font-size:12px;font-weight:800;color:var(--crimson);letter-spacing:1px;margin-bottom:12px;text-align:center;">اشترك وتابع جميع الدورات</div>
+      <!-- اختيار الباقة -->
+      <div style="background:var(--cream);border-radius:16px;padding:14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);">
+        <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:10px;text-align:center;">اشترك وتابع جميع الدورات</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:1px solid rgba(92,15,15,.07);">
+          <div id="plan-1" onclick="selectPlan('شهر',this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:2px solid transparent;cursor:pointer;transition:all .2s;">
             <span style="font-size:13px;font-weight:700;color:var(--text);">شهر واحد</span>
             <span style="font-size:16px;font-weight:900;color:var(--crimson);">١٠ د.ك</span>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:1px solid rgba(92,15,15,.07);">
+          <div id="plan-6" onclick="selectPlan('6 أشهر',this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:2px solid transparent;cursor:pointer;transition:all .2s;">
             <span style="font-size:13px;font-weight:700;color:var(--text);">٦ أشهر</span>
             <span style="font-size:16px;font-weight:900;color:var(--crimson);">٤٠ د.ك</span>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:1.5px solid rgba(92,15,15,.15);">
+          <div id="plan-12" onclick="selectPlan('12 شهر',this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:10px 14px;border:2px solid rgba(92,15,15,.2);cursor:pointer;transition:all .2s;">
             <span style="font-size:13px;font-weight:700;color:var(--text);">١٢ شهر ⭐</span>
             <span style="font-size:16px;font-weight:900;color:var(--crimson);">٧٠ د.ك</span>
           </div>
         </div>
       </div>
-
-      <!-- زر الواتساب -->
+      <!-- فورم الاشتراك -->
+      <div id="subForm" style="display:none;">
+        <div class="mf">
+          <label><span class="req">*</span> الاسم الكامل</label>
+          <input type="text" id="subName" placeholder="الاسم الكامل">
+        </div>
+        <div class="mf">
+          <label><span class="req">*</span> الإيميل</label>
+          <input type="email" id="subEmail" placeholder="example@email.com">
+        </div>
+        <button class="modal-submit" id="subBtn" onclick="submitSub()" style="margin-bottom:10px;">
+          <span id="subBtnTxt">أرسل طلب الاشتراك</span>
+          <div class="modal-spinner" id="subSpinner" style="display:none;"></div>
+        </button>
+      </div>
       <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أشترك في أكاديمية مسار"
-         target="_blank"
-         onclick="saveLead()"
-         style="display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:14px 28px;border-radius:100px;text-decoration:none;transition:all .25s;width:100%;box-sizing:border-box;margin-bottom:10px;">
-        💬 تواصل معنا للاشتراك
+         target="_blank" onclick="saveLead()"
+         style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;padding:10px;border-radius:100px;text-decoration:none;width:100%;box-sizing:border-box;border:1.5px solid rgba(92,15,15,.2);">
+        أو تواصل معنا على الواتساب
       </a>
-      <p style="font-size:12px;color:var(--muted);text-align:center;">سيتواصل معك فريقنا خلال ٢٤ ساعة</p>
     </div>
+
+    <!-- اشتراك منتهي -->
+    <div id="cExpired" style="display:none;">
+      <div class="s-icon">⏳</div>
+      <h3 style="color:var(--crimson);">انتهى اشتراكك</h3>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:16px;">جدّد للاستمرار في حضور الدورات</p>
+      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أجدد اشتراكي في أكاديمية مسار"
+         target="_blank"
+         style="display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:14px 28px;border-radius:100px;text-decoration:none;width:100%;box-sizing:border-box;">
+        جدّد اشتراكك الآن
+      </a>
+    </div>
+
+    <!-- طلب اشتراك مُرسل -->
+    <div id="cSubSent" style="display:none;">
+      <div class="s-icon">✅</div>
+      <h3>تم استلام طلبك!</h3>
+      <p style="color:var(--muted);font-size:14px;">سيتواصل معك فريقنا خلال ٢٤ ساعة لإتمام الاشتراك</p>
+    </div>
+
   </div>
 </div>
 
@@ -741,7 +804,16 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_zi
 
 function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-document.querySelectorAll('.modal-overlay').forEach(el => { el.addEventListener('click', function(e){ if(e.target===this) closeModal(this.id); }); });
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', function(e){ if(e.target===this) closeModal(this.id); });
+});
+
+function showOnly(id) {
+  ['step1','courseForm','cSuccess','cActive','cAlready','cExpired','cSubSent'].forEach(x => {
+    const el = document.getElementById(x);
+    if(el) el.style.display = x===id ? '' : 'none';
+  });
+}
 
 function highlightCert(which) {
   document.getElementById('lbl-cert-yes').style.borderColor = which==='yes' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
@@ -751,6 +823,16 @@ function highlightCert(which) {
   document.getElementById('mf-ccert').classList.remove('invalid');
 }
 
+let selectedPlan = '';
+function selectPlan(plan, el) {
+  selectedPlan = plan;
+  ['plan-1','plan-6','plan-12'].forEach(id => {
+    document.getElementById(id).style.border = '2px solid transparent';
+  });
+  el.style.border = '2px solid #5C0F0F';
+  document.getElementById('subForm').style.display = '';
+}
+
 function openCourseModal(course, trainer, date) {
   document.getElementById('modalCourseTag').textContent = 'دورة مجانية — ' + date;
   document.getElementById('modalCourseTitle').textContent = course;
@@ -758,16 +840,81 @@ function openCourseModal(course, trainer, date) {
   document.getElementById('modalDate').textContent = date;
   document.getElementById('courseNameInput').value = course;
   document.getElementById('courseDateInput').value = date;
-  document.getElementById('courseForm').style.display = '';
-  document.getElementById('cSuccess').style.display = 'none';
-  document.getElementById('cAlready').style.display = 'none';
-  document.getElementById('cBtn').disabled = false;
-  document.getElementById('cBtnTxt').style.display = 'block';
-  document.getElementById('cSpinner').style.display = 'none';
-  // reset cert selection
-  document.querySelectorAll('#courseForm input[name="wantCert"]').forEach(r=>r.checked=false);
-  highlightCert('');
+  document.getElementById('step1Phone').value = '';
+  document.getElementById('subForm').style.display = 'none';
+  selectedPlan = '';
+  showOnly('step1');
   openModal('courseModal');
+}
+
+async function checkPhone() {
+  const phone = document.getElementById('step1Phone').value.trim();
+  if(!phone || phone.length < 7) {
+    document.getElementById('mf-step1phone').classList.add('invalid');
+    return;
+  }
+  document.getElementById('mf-step1phone').classList.remove('invalid');
+  document.getElementById('step1Btn').disabled = true;
+  document.getElementById('step1BtnTxt').style.display = 'none';
+  document.getElementById('step1Spinner').style.display = 'block';
+
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=check&phone=' + encodeURIComponent(phone));
+    const data = await res.json();
+    if(data.status === 'first_time') {
+      document.getElementById('formPhone').value = phone;
+      document.querySelectorAll('#courseForm input[name="wantCert"]').forEach(r=>r.checked=false);
+      highlightCert('');
+      showOnly('courseForm');
+    } else if(data.status === 'active') {
+      showOnly('cActive');
+    } else if(data.status === 'expired') {
+      showOnly('cExpired');
+    } else {
+      showOnly('cAlready');
+    }
+  } catch(err) {
+    document.getElementById('formPhone').value = phone;
+    showOnly('courseForm');
+  } finally {
+    document.getElementById('step1Btn').disabled = false;
+    document.getElementById('step1BtnTxt').style.display = 'block';
+    document.getElementById('step1Spinner').style.display = 'none';
+  }
+}
+
+async function sendZoomActive() {
+  const email = document.getElementById('activeEmail').value.trim();
+  const phone = document.getElementById('step1Phone').value.trim();
+  const course = document.getElementById('courseNameInput').value;
+  if(!email || !email.includes('@')) return;
+  document.getElementById('activeBtn').disabled = true;
+  document.getElementById('activeBtnTxt').style.display = 'none';
+  document.getElementById('activeSpinner').style.display = 'block';
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({ type:'تسجيل دورة مجانية', name:'', phone, email,
+      course, courseType:'مشترك',
+      courseDate: document.getElementById('courseDateInput').value,
+      timestamp: new Date().toLocaleString('ar-SA') })
+  }).catch(()=>{});
+  showOnly('cSuccess');
+}
+
+async function submitSub() {
+  const name  = document.getElementById('subName').value.trim();
+  const email = document.getElementById('subEmail').value.trim();
+  const phone = document.getElementById('step1Phone').value.trim();
+  if(!name || !email || !email.includes('@') || !selectedPlan) return;
+  document.getElementById('subBtn').disabled = true;
+  document.getElementById('subBtnTxt').style.display = 'none';
+  document.getElementById('subSpinner').style.display = 'block';
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({ type:'اشتراك مسار', name, phone, email,
+      plan: selectedPlan, timestamp: new Date().toLocaleString('ar-SA') })
+  }).catch(()=>{});
+  showOnly('cSubSent');
 }
 
 document.getElementById('courseForm').addEventListener('submit', async function(e) {
@@ -776,93 +923,42 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   const wantCert = document.querySelector('#courseForm input[name="wantCert"]:checked')?.value || '';
   let ok = true;
   if(!f.fullName.value.trim()) { document.getElementById('mf-cname').classList.add('invalid'); ok=false; } else document.getElementById('mf-cname').classList.remove('invalid');
-  if(!f.phone.value.trim()) { document.getElementById('mf-cphone').classList.add('invalid'); ok=false; } else document.getElementById('mf-cphone').classList.remove('invalid');
   if(!f.email.value.trim()||!f.email.value.includes('@')) { document.getElementById('mf-cemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-cemail').classList.remove('invalid');
   if(!wantCert) { document.getElementById('mf-ccert').classList.add('invalid'); ok=false; }
   if(!ok) return;
-
-  const btn=document.getElementById('cBtn'); btn.disabled=true;
-  document.getElementById('cBtnTxt').style.display='none';
-  document.getElementById('cSpinner').style.display='block';
-
-  const phone      = f.phone.value.trim();
-  const course     = f.courseName.value;
-  const courseDate = document.getElementById('courseDateInput').value;
-  const storageKey = 'masar_reg_' + phone;
-
-  // تحقق محلياً من localStorage
-  const prevReg = localStorage.getItem(storageKey);
-  const isFirstTime = !prevReg;
-
-  const payload = {
-    type:       'تسجيل دورة مجانية',
-    name:       f.fullName.value,
-    phone:      phone,
-    email:      f.email.value,
-    course:     course,
-    courseDate: courseDate,
-    wantCert:   wantCert,
-    courseType: isFirstTime ? 'مجاني' : 'غير مكتمل',
-    timestamp:  new Date().toLocaleString('ar-SA')
-  };
-
-  try {
-    await fetch(SCRIPT_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(payload)
-    });
-  } catch(err) {}
-
-  f.style.display = 'none';
-
-  if(isFirstTime) {
-    // احفظ التسجيل محلياً
-    localStorage.setItem(storageKey, JSON.stringify({
-      course, courseDate, time: Date.now()
-    }));
-    document.getElementById('cSuccess').style.display = 'block';
-  } else {
-    // سبق له التسجيل
-    document.getElementById('cAlready').style.display = 'block';
-  }
+  document.getElementById('cBtn').disabled = true;
+  document.getElementById('cBtnTxt').style.display = 'none';
+  document.getElementById('cSpinner').style.display = 'block';
+  const phone = document.getElementById('formPhone').value;
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({ type:'تسجيل دورة مجانية',
+      name:f.fullName.value, phone, email:f.email.value,
+      course: document.getElementById('courseNameInput').value,
+      courseDate: document.getElementById('courseDateInput').value,
+      wantCert, courseType:'مجاني',
+      timestamp: new Date().toLocaleString('ar-SA') })
+  }).catch(()=>{});
+  showOnly('cSuccess');
 });
 
-// حفظ بيانات المهتم بالاشتراك عند ضغط زر الواتساب
 function saveLead() {
   try {
-    const storageKey = 'masar_lead_saved';
-    const phone = document.querySelector('#courseForm input[name="phone"]')?.value?.trim() || '';
-    const name  = document.querySelector('#courseForm input[name="fullName"]')?.value?.trim() || '';
-    const email = document.querySelector('#courseForm input[name="email"]')?.value?.trim() || '';
-    const course = document.getElementById('courseNameInput')?.value || '';
-
-    // ما نحفظ لو البيانات فارغة أو سبق حفظناها
-    if (!phone || localStorage.getItem('masar_lead_' + phone)) return;
-
-    fetch(SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify({
-        type:       'تسجيل دورة مجانية',
-        name:       name,
-        phone:      phone,
-        email:      email,
-        course:     course,
-        courseType: 'مهتم بالاشتراك',
-        notes:      'ضغط زر الواتساب — ينتظر المتابعة',
-        timestamp:  new Date().toLocaleString('ar-SA')
-      })
-    });
-
-    localStorage.setItem('masar_lead_' + phone, '1');
-  } catch(e) {}
+    const phone = document.getElementById('step1Phone').value.trim();
+    if(!phone || localStorage.getItem('masar_lead_'+phone)) return;
+    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ type:'تسجيل دورة مجانية', name:'', phone, email:'',
+        course: document.getElementById('courseNameInput').value,
+        courseType:'مهتم بالاشتراك', notes:'ضغط زر الواتساب',
+        timestamp: new Date().toLocaleString('ar-SA') }) }).catch(()=>{});
+    localStorage.setItem('masar_lead_'+phone,'1');
+  } catch(e){}
 }
 
 function openPricingModal(plan) {
   document.getElementById('pModalTag').textContent = plan;
   document.getElementById('pPlanType').value = plan;
-  document.getElementById('pModalTitle').textContent = plan.includes('شهادة') ? 'اطلب شهادتك' : 'اشترك الآن';
+  document.getElementById('pModalTitle').textContent = 'اشترك الآن';
   document.getElementById('pricingForm').style.display='';
   document.getElementById('pSuccess').style.display='none';
   document.getElementById('pBtn').disabled=false;
@@ -879,17 +975,15 @@ document.getElementById('pricingForm').addEventListener('submit', async function
   if(!f.phone.value.trim()) { document.getElementById('mf-pphone').classList.add('invalid'); ok=false; } else document.getElementById('mf-pphone').classList.remove('invalid');
   if(!f.email.value.trim()||!f.email.value.includes('@')) { document.getElementById('mf-pemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-pemail').classList.remove('invalid');
   if(!ok) return;
-  const btn=document.getElementById('pBtn'); btn.disabled=true;
+  document.getElementById('pBtn').disabled=true;
   document.getElementById('pBtnTxt').style.display='none';
   document.getElementById('pSpinner').style.display='block';
-  try {
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'طلب مسار',name:f.fullName.value,phone:f.phone.value,email:f.email.value,plan:document.getElementById('pPlanType').value,timestamp:new Date().toLocaleString('ar-SA')})});
-    f.style.display='none';
-    document.getElementById('pSuccess').style.display='block';
-  } catch(err) {
-    btn.disabled=false; document.getElementById('pBtnTxt').style.display='block'; document.getElementById('pSpinner').style.display='none';
-    alert('حدث خطأ، يرجى المحاولة مجدداً');
-  }
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({type:'طلب مسار',name:f.fullName.value,phone:f.phone.value,
+      email:f.email.value,plan:document.getElementById('pPlanType').value,
+      timestamp:new Date().toLocaleString('ar-SA')})}).catch(()=>{});
+  f.style.display='none';
+  document.getElementById('pSuccess').style.display='block';
 });
 
 const obs = new IntersectionObserver((entries) => {
