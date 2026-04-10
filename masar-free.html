@@ -784,56 +784,47 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   document.getElementById('cBtnTxt').style.display='none';
   document.getElementById('cSpinner').style.display='block';
 
+  const phone      = f.phone.value.trim();
+  const course     = f.courseName.value;
+  const courseDate = document.getElementById('courseDateInput').value;
+  const storageKey = 'masar_reg_' + phone;
+
+  // تحقق محلياً من localStorage
+  const prevReg = localStorage.getItem(storageKey);
+  const isFirstTime = !prevReg;
+
   const payload = {
-    type:'تسجيل دورة مجانية',
-    name:f.fullName.value,
-    phone:f.phone.value,
-    email:f.email.value,
-    course:f.courseName.value,
-    courseDate:document.getElementById('courseDateInput').value,
-    wantCert:wantCert,
-    courseType:'مجاني',
-    timestamp:new Date().toLocaleString('ar-SA')
+    type:       'تسجيل دورة مجانية',
+    name:       f.fullName.value,
+    phone:      phone,
+    email:      f.email.value,
+    course:     course,
+    courseDate: courseDate,
+    wantCert:   wantCert,
+    courseType: isFirstTime ? 'مجاني' : 'غير مكتمل',
+    timestamp:  new Date().toLocaleString('ar-SA')
   };
 
-  // نستخدم JSONP عشان نقرأ الرد من Google Apps Script
-  const callbackName = 'masarCallback_' + Date.now();
-  const timeout = setTimeout(() => {
-    // لو ما جاء رد خلال 10 ثواني — نعرض نجاح
-    cleanup();
-    f.style.display='none';
-    document.getElementById('cSuccess').style.display='block';
-  }, 10000);
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+  } catch(err) {}
 
-  function cleanup() {
-    clearTimeout(timeout);
-    delete window[callbackName];
-    const s = document.getElementById('jsonp-script');
-    if(s) s.remove();
+  f.style.display = 'none';
+
+  if(isFirstTime) {
+    // احفظ التسجيل محلياً
+    localStorage.setItem(storageKey, JSON.stringify({
+      course, courseDate, time: Date.now()
+    }));
+    document.getElementById('cSuccess').style.display = 'block';
+  } else {
+    // سبق له التسجيل
+    document.getElementById('cAlready').style.display = 'block';
   }
-
-  // الرد يجي هنا
-  window[callbackName] = function(result) {
-    cleanup();
-    f.style.display='none';
-    if(result && (result.status === 'need_subscription' || result.status === 'expired')) {
-      document.getElementById('cAlready').style.display='block';
-    } else {
-      document.getElementById('cSuccess').style.display='block';
-    }
-  };
-
-  // نرسل البيانات عبر JSONP
-  const encodedData = encodeURIComponent(JSON.stringify(payload));
-  const script = document.createElement('script');
-  script.id = 'jsonp-script';
-  script.src = SCRIPT_URL + '?callback=' + callbackName + '&data=' + encodedData;
-  document.body.appendChild(script);
-  script.onerror = function() {
-    cleanup();
-    f.style.display='none';
-    document.getElementById('cSuccess').style.display='block';
-  };
 });
 
 function openPricingModal(plan) {
