@@ -736,7 +736,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2iajsrFa2PhsGgl-ucsDPY4TsweGh_XKTNBRyrzWS6YfZOS6QAVm6tRtX63MS0WMo/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
 
 function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
@@ -808,7 +808,7 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   try {
     await fetch(SCRIPT_URL, {
       method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain'},
       body:JSON.stringify(payload)
     });
   } catch(err) {}
