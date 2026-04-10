@@ -690,6 +690,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
       <!-- زر الواتساب -->
       <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أشترك في أكاديمية مسار"
          target="_blank"
+         onclick="saveLead()"
          style="display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:14px 28px;border-radius:100px;text-decoration:none;transition:all .25s;width:100%;box-sizing:border-box;margin-bottom:10px;">
         💬 تواصل معنا للاشتراك
       </a>
@@ -826,6 +827,37 @@ document.getElementById('courseForm').addEventListener('submit', async function(
     document.getElementById('cAlready').style.display = 'block';
   }
 });
+
+// حفظ بيانات المهتم بالاشتراك عند ضغط زر الواتساب
+function saveLead() {
+  try {
+    const storageKey = 'masar_lead_saved';
+    const phone = document.querySelector('#courseForm input[name="phone"]')?.value?.trim() || '';
+    const name  = document.querySelector('#courseForm input[name="fullName"]')?.value?.trim() || '';
+    const email = document.querySelector('#courseForm input[name="email"]')?.value?.trim() || '';
+    const course = document.getElementById('courseNameInput')?.value || '';
+
+    // ما نحفظ لو البيانات فارغة أو سبق حفظناها
+    if (!phone || localStorage.getItem('masar_lead_' + phone)) return;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({
+        type:       'تسجيل دورة مجانية',
+        name:       name,
+        phone:      phone,
+        email:      email,
+        course:     course,
+        courseType: 'مهتم بالاشتراك',
+        notes:      'ضغط زر الواتساب — ينتظر المتابعة',
+        timestamp:  new Date().toLocaleString('ar-SA')
+      })
+    });
+
+    localStorage.setItem('masar_lead_' + phone, '1');
+  } catch(e) {}
+}
 
 function openPricingModal(plan) {
   document.getElementById('pModalTag').textContent = plan;
