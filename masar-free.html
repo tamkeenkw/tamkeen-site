@@ -651,11 +651,28 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         <div class="err">يرجى إدخال إيميل صحيح</div>
       </div>
       <div class="mf" id="mf-ccert">
-        <label><span class="req">*</span> هل تريد شهادة معتمدة بـ ١٠ د.ك؟</label>
+        <div style="background:var(--cream);border-radius:14px;padding:14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);">
+          <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:10px;text-align:center;letter-spacing:1px;">احصل على شهادة معتمدة من</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);font-weight:600;">
+              <span style="width:22px;height:22px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">🎓</span>
+              معهد تمكين إيديوكلاود
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);font-weight:600;">
+              <span style="width:22px;height:22px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">✅</span>
+              الهيئة العامة للتعليم والتدريب التطبيقي
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);font-weight:600;">
+              <span style="width:22px;height:22px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;">📋</span>
+              ديوان الخدمة المدنية
+            </div>
+          </div>
+        </div>
+        <label style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;display:block;"><span class="req">*</span> تبي شهادة معتمدة بـ ١٠ د.ك؟</label>
         <div style="display:flex;gap:10px;margin-top:4px;">
           <label class="radio-option" id="lbl-cert-yes" style="flex:1;">
             <input type="radio" name="wantCert" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightCert('yes')">
-            نعم أبي شهادة
+            نعم، أبي شهادة
           </label>
           <label class="radio-option" id="lbl-cert-no" style="flex:1;">
             <input type="radio" name="wantCert" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightCert('no')">
