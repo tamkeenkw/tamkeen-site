@@ -880,7 +880,7 @@ function qReset() {
 </script>
 
 <!-- PLAN CHOICE MODAL -->
-<div id="planChoiceModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(26,8,8,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+<div id="planChoiceModal" style="position:fixed;inset:0;z-index:1000;background:rgba(26,8,8,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
   <div style="background:#fff;border-radius:26px;max-width:560px;width:100%;padding:clamp(32px,5vw,48px);position:relative;box-shadow:0 32px 80px rgba(92,15,15,.25);">
     <button onclick="closePlanChoice()" style="position:absolute;top:16px;left:16px;background:rgba(92,15,15,.07);border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;font-size:18px;color:var(--crimson);display:flex;align-items:center;justify-content:center;">✕</button>
     <p style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px;text-align:center;">اختر عضويتك</p>
@@ -1002,29 +1002,46 @@ function closePlanChoice() {
 }
 function selectPlanAndOpen(plan) {
   closePlanChoice();
-  setTimeout(() => openModal(plan), 200);
+  setTimeout(function(){ openModal(plan); }, 200);
 }
 
 function openModal(plan) {
+  var selectedPlan = plan || 'ممارسين';
+  document.getElementById('selectedPlan').value = selectedPlan;
+
+  // عرض اسم الباقة
+  var planDisplay = document.getElementById('planDisplay');
+
+  if(selectedPlan === 'مبتدئين') {
+    planDisplay.textContent = '✓ عضوية المبتدئين — ٦٥ د.ك';
+    // تحديث نص خيارات الدفع للمبتدئين
+    document.getElementById('lbl-full').innerHTML =
+      '<input type="radio" name="payment" value="دفعة واحدة — ٦٥ د.ك" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightPayment()"> دفعة واحدة — ٦٥ د.ك';
+    document.getElementById('lbl-install').innerHTML =
+      '<input type="radio" name="payment" value="تقسيط على 4 دفعات — ٦٥ د.ك" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightPayment()"> تقسيط على ٤ دفعات';
+  } else {
+    planDisplay.textContent = '✓ عضوية الممارسين — ١٣٠ د.ك';
+    // تحديث نص خيارات الدفع للممارسين
+    document.getElementById('lbl-full').innerHTML =
+      '<input type="radio" name="payment" value="دفعة واحدة — ١٣٠ د.ك" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightPayment()"> دفعة واحدة — ١٣٠ د.ك';
+    document.getElementById('lbl-install').innerHTML =
+      '<input type="radio" name="payment" value="تقسيط على 4 دفعات — ١٣٠ د.ك" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="mHighlightPayment()"> تقسيط على ٤ دفعات';
+  }
+
+  // التقسيط يظهر للاثنين
+  document.getElementById('lbl-install').style.display = 'flex';
+  planDisplay.style.display = 'block';
+
+  // إعادة تعيين الاختيارات السابقة
+  document.querySelectorAll('#mForm input[name="payment"]').forEach(function(r){ r.checked = false; });
+  document.getElementById('lbl-full').style.borderColor = 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-full').style.background = '';
+  document.getElementById('lbl-install').style.borderColor = 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-install').style.background = '';
+
+  // إظهار الفورم
   document.getElementById('regModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // تخزين الباقة المختارة
-  if(plan) {
-    document.getElementById('selectedPlan').value = plan;
-    const planLabel = plan === 'بيسك' ? 'البيسك — ٦٥ د.ك' : 'البريميوم — ١٣٠ د.ك';
-    document.getElementById('planDisplay').textContent = planLabel;
-    document.getElementById('planDisplay').style.display = 'block';
-    // تحديد خيار الدفع المناسب
-    if(plan === 'بيسك') {
-      document.getElementById('lbl-install').style.display = 'none';
-      document.querySelector('#mForm input[name="payment"][value="دفعة واحدة"]').value = 'دفعة واحدة — ٦٥ د.ك';
-      document.getElementById('lbl-full').querySelector('input').nextSibling.textContent = ' دفعة واحدة — ٦٥ د.ك';
-    } else {
-      document.getElementById('lbl-install').style.display = 'flex';
-      document.querySelector('#mForm input[name="payment"]').value = 'دفعة واحدة';
-      document.getElementById('lbl-full').querySelector('input').nextSibling.textContent = ' دفعة واحدة — ١٣٠ د.ك';
-    }
-  }
 }
 function closeModal() {
   document.getElementById('regModal').classList.remove('open');
