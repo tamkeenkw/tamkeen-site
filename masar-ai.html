@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية مسار — مسارك نحو الاحتراف في التعليم</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:   #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream:     #FAF7F2;
+  --cream-2:   #F2EDE5;
+  --white:     #FFFFFF;
+  --text:      #1A0808;
+  --muted:     #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
+
+/* ─── HERO ─── */
+.hero {
+  background:var(--crimson); min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 24px; text-align:center; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.hero-inner { position:relative; z-index:2; max-width:720px; }
+.logo-wrap { margin-bottom:32px; animation:fadeDown .7s ease both; }
+.logo-text { font-size:52px; font-weight:900; color:#fff; letter-spacing:2px; }
+.logo-sub { font-size:15px; color:rgba(255,255,255,.5); font-weight:600; letter-spacing:5px; margin-top:4px; }
+.hero-tag {
+  display:inline-block; border:1.5px solid rgba(255,255,255,.28); color:rgba(255,255,255,.82);
+  padding:6px 22px; border-radius:100px; font-size:13px; font-weight:600;
+  margin-bottom:28px; animation:fadeDown .7s .1s ease both;
+}
+.hero h1 { font-size:clamp(36px,6.5vw,64px); font-weight:900; color:#fff; line-height:1.22; margin-bottom:8px; animation:fadeDown .7s .15s ease both; }
+.hero h1 em { font-style:normal; opacity:.58; display:block; font-size:.65em; font-weight:700; margin-top:6px; }
+.hero-divider { width:48px; height:2px; background:rgba(255,255,255,.3); margin:22px auto; animation:fadeDown .7s .2s ease both; }
+.hero p { font-size:clamp(15px,2.2vw,18px); color:rgba(255,255,255,.62); line-height:1.95; margin-bottom:44px; animation:fadeDown .7s .25s ease both; }
+.cta-group { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; animation:fadeUp .7s .35s ease both; }
+.btn-primary {
+  display:inline-flex; align-items:center; gap:10px;
+  background:#fff; color:var(--crimson);
+  font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  padding:16px 40px; border-radius:100px; text-decoration:none;
+  transition:all .28s; border:none; cursor:pointer;
+  box-shadow:0 8px 28px rgba(0,0,0,.2);
+}
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 14px 36px rgba(0,0,0,.25); }
+.btn-secondary {
+  display:inline-flex; align-items:center; gap:10px;
+  background:transparent; color:rgba(255,255,255,.82);
+  font-family:'Tajawal',sans-serif; font-size:16px; font-weight:700;
+  padding:14px 36px; border-radius:100px; text-decoration:none;
+  transition:all .28s; border:1.5px solid rgba(255,255,255,.28); cursor:pointer;
+}
+.btn-secondary:hover { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.5); transform:translateY(-2px); }
+.hero-note { margin-top:22px; font-size:14px; color:rgba(255,255,255,.36); animation:fadeUp .7s .45s ease both; }
+.hero-note strong { color:rgba(255,255,255,.7); }
+
+/* ─── STATS ─── */
+.stats {
+  background:var(--crimson-2); padding:36px 24px;
+  display:flex; justify-content:center; gap:clamp(24px,7vw,80px); flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-n { font-size:clamp(30px,6vw,48px); font-weight:900; color:#fff; line-height:1; margin-bottom:6px; }
+.stat-l { font-size:13px; color:rgba(255,255,255,.42); font-weight:500; }
+
+/* ─── SHARED ─── */
+.sec { padding:clamp(64px,9vw,108px) 24px; max-width:1000px; margin:0 auto; }
+.sec-tag { text-align:center; font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
+.sec-title { font-size:clamp(26px,5vw,42px); font-weight:900; text-align:center; color:var(--text); margin-bottom:12px; line-height:1.3; }
+.sec-sub { text-align:center; font-size:16px; color:var(--muted); margin-bottom:52px; line-height:1.75; max-width:620px; margin-left:auto; margin-right:auto; }
+
+/* ─── CERT EXPLAINER ─── */
+.cert-explainer {
+  background:#fff; border-radius:24px; padding:36px 32px;
+  border:1.5px solid rgba(92,15,15,.08);
+  max-width:860px; margin:0 auto 64px;
+  box-shadow:0 8px 32px rgba(92,15,15,.07);
+}
+.cert-explainer-title {
+  font-size:20px; font-weight:900; color:var(--text);
+  text-align:center; margin-bottom:6px;
+}
+.cert-explainer-sub {
+  font-size:14px; color:var(--muted); text-align:center;
+  margin-bottom:28px; line-height:1.7;
+}
+.cert-flow {
+  display:flex; align-items:center; justify-content:center;
+  flex-wrap:wrap; gap:8px;
+}
+.cert-item {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  background:var(--cream); border-radius:16px; padding:16px 18px;
+  border:1.5px solid rgba(92,15,15,.08); min-width:110px; text-align:center;
+}
+.cert-item .ci-icon { font-size:26px; }
+.cert-item .ci-label { font-size:12px; font-weight:800; color:var(--crimson); line-height:1.3; }
+.cert-item .ci-sub { font-size:11px; color:var(--muted); font-weight:600; }
+.cert-arrow { font-size:22px; color:rgba(92,15,15,.25); font-weight:900; }
+.cert-final {
+  background:var(--crimson); border-radius:16px; padding:16px 22px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  min-width:130px; text-align:center;
+}
+.cert-final .ci-icon { font-size:28px; }
+.cert-final .ci-label { font-size:13px; font-weight:900; color:#fff; line-height:1.3; }
+.cert-final .ci-sub { font-size:11px; color:rgba(255,255,255,.6); font-weight:600; }
+
+/* ─── LEVELS ─── */
+.levels-wrap { display:flex; flex-direction:column; gap:24px; }
+.level-block {
+  background:#fff; border-radius:24px;
+  border:1.5px solid rgba(92,15,15,.07);
+  overflow:hidden; transition:box-shadow .3s, border-color .3s;
+  opacity:0; transform:translateY(22px);
+  box-shadow:0 4px 20px rgba(92,15,15,.05);
+}
+.level-block.on { opacity:1; transform:translateY(0); transition:opacity .55s ease, transform .55s ease, box-shadow .3s, border-color .3s; }
+.level-block:hover { box-shadow:0 12px 40px rgba(92,15,15,.1); border-color:rgba(92,15,15,.14); }
+.level-header {
+  display:flex; align-items:center; gap:20px;
+  padding:26px 30px; cursor:pointer; user-select:none;
+}
+.level-num-badge {
+  width:52px; height:52px; min-width:52px;
+  background:var(--crimson); border-radius:16px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; font-weight:900; color:#fff;
+  box-shadow:0 6px 18px rgba(92,15,15,.22);
+}
+.level-header-text { flex:1; }
+.level-month-tag { font-size:11px; font-weight:800; letter-spacing:2.5px; color:var(--crimson); text-transform:uppercase; margin-bottom:5px; opacity:.7; }
+.level-title-main { font-size:clamp(17px,2.8vw,21px); font-weight:900; color:var(--text); line-height:1.3; }
+.level-certs-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.level-cert-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(92,15,15,.07); color:var(--crimson);
+  font-size:11px; font-weight:800; padding:4px 11px; border-radius:100px;
+}
+.level-toggle {
+  width:34px; height:34px; min-width:34px;
+  background:rgba(92,15,15,.07); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:var(--crimson); transition:transform .3s;
+}
+.level-block.open .level-toggle { transform:rotate(180deg); }
+.level-body { display:none; padding:0 30px 28px; }
+.level-block.open .level-body { display:block; }
+.courses-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px; margin-bottom:20px;
+}
+.course-card {
+  background:var(--cream); border-radius:16px; padding:20px;
+  border:1.5px solid rgba(92,15,15,.07); transition:all .25s;
+  display:flex; flex-direction:column; gap:10px;
+}
+.course-card:hover { border-color:rgba(92,15,15,.2); background:#fff; transform:translateY(-2px); box-shadow:0 8px 24px rgba(92,15,15,.08); }
+.course-num {
+  width:28px; height:28px; background:var(--crimson); border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; color:#fff;
+}
+.course-name { font-size:15px; font-weight:800; color:var(--text); line-height:1.4; }
+.course-desc { font-size:13px; color:var(--muted); line-height:1.62; }
+.course-cert {
+  display:inline-flex; align-items:center; gap:5px; margin-top:auto;
+  font-size:11px; font-weight:700; padding:4px 10px; border-radius:100px;
+  background:rgba(92,15,15,.07); color:var(--crimson);
+}
+.level-footer {
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  padding:16px 20px; background:rgba(92,15,15,.03);
+  border-radius:14px; border:1.5px solid rgba(92,15,15,.07);
+}
+.level-footer-text { font-size:13px; font-weight:700; color:var(--muted); }
+.level-footer-cert { font-size:14px; font-weight:900; color:var(--crimson); display:flex; align-items:center; gap:7px; }
+
+/* ─── DARK BAND ─── */
+.band { background:var(--crimson); padding:clamp(64px,9vw,108px) 24px; position:relative; overflow:hidden; }
+.band::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:52px 52px; background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.band-inner { max-width:960px; margin:0 auto; position:relative; z-index:1; }
+.band .sec-tag { color:rgba(255,255,255,.5); }
+.band .sec-title { color:#fff; }
+.band .sec-sub { color:rgba(255,255,255,.5); }
+.list-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.list-item {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  border-radius:14px; padding:18px 20px; display:flex; align-items:flex-start; gap:12px;
+  opacity:0; transform:translateY(14px);
+}
+.list-item.on { opacity:1; transform:translateY(0); transition:opacity .5s ease,transform .5s ease; }
+.list-item:hover { background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); }
+.dot { width:6px; height:6px; min-width:6px; background:#fff; opacity:.45; border-radius:50%; margin-top:8px; }
+.list-text { font-size:15px; font-weight:600; color:rgba(255,255,255,.84); line-height:1.5; }
+
+/* ─── PRICING ─── */
+.pricing-section { background:var(--cream-2); padding:clamp(64px,9vw,108px) 24px; }
+.pricing-inner { max-width:1020px; margin:0 auto; }
+.pricing-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:16px; margin-top:48px;
+}
+@media(max-width:780px) { .pricing-grid { grid-template-columns:1fr; max-width:400px; margin-left:auto; margin-right:auto; } }
+
+.plan-card {
+  background:#fff; border-radius:24px; padding:32px 28px;
+  border:1.5px solid rgba(92,15,15,.08); transition:all .3s;
+  position:relative; overflow:hidden; display:flex; flex-direction:column;
+}
+.plan-card:hover { transform:translateY(-4px); box-shadow:0 20px 50px rgba(92,15,15,.1); }
+.plan-card.featured {
+  background:var(--crimson); border-color:transparent;
+  box-shadow:0 20px 60px rgba(92,15,15,.3);
+  transform:scale(1.03);
+}
+.plan-card.featured:hover { transform:scale(1.03) translateY(-4px); }
+.plan-card.featured::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.02) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
+  background-size:44px 44px;
+}
+.plan-card.featured > * { position:relative; z-index:1; }
+.plan-badge {
+  display:inline-block; font-size:11px; font-weight:800; letter-spacing:2px;
+  padding:5px 16px; border-radius:100px; text-transform:uppercase; margin-bottom:18px; align-self:flex-start;
+}
+.plan-card:not(.featured) .plan-badge { background:rgba(92,15,15,.07); color:var(--crimson); }
+.plan-card.featured .plan-badge { background:rgba(255,255,255,.2); color:#fff; }
+.plan-name { font-size:22px; font-weight:900; margin-bottom:6px; }
+.plan-card:not(.featured) .plan-name { color:var(--text); }
+.plan-card.featured .plan-name { color:#fff; }
+.plan-price { margin-bottom:4px; line-height:1; }
+.plan-price-num { font-size:clamp(48px,8vw,68px); font-weight:900; }
+.plan-price-cur { font-size:18px; font-weight:700; vertical-align:super; margin-left:3px; }
+.plan-card:not(.featured) .plan-price-num { color:var(--text); }
+.plan-card:not(.featured) .plan-price-cur { color:var(--muted); }
+.plan-card.featured .plan-price-num { color:#fff; }
+.plan-card.featured .plan-price-cur { color:rgba(255,255,255,.6); }
+.plan-period { font-size:13px; margin-bottom:6px; }
+.plan-card:not(.featured) .plan-period { color:var(--muted); }
+.plan-card.featured .plan-period { color:rgba(255,255,255,.5); }
+.plan-saving {
+  display:inline-block; font-size:12px; font-weight:800;
+  padding:5px 14px; border-radius:100px; margin-bottom:20px; align-self:flex-start;
+}
+.plan-card.featured .plan-saving { background:rgba(255,255,255,.15); color:#fff; }
+.plan-card:not(.featured) .plan-saving { background:rgba(92,15,15,.07); color:var(--crimson); }
+.plan-divider { height:1px; margin:16px 0; }
+.plan-card:not(.featured) .plan-divider { background:rgba(92,15,15,.07); }
+.plan-card.featured .plan-divider { background:rgba(255,255,255,.12); }
+.plan-list { list-style:none; display:flex; flex-direction:column; gap:11px; margin-bottom:28px; flex:1; }
+.plan-list li { display:flex; align-items:flex-start; gap:10px; font-size:14px; font-weight:600; line-height:1.45; }
+.plan-card:not(.featured) .plan-list li { color:var(--text); }
+.plan-card.featured .plan-list li { color:rgba(255,255,255,.85); }
+.plan-list li::before {
+  content:'✓'; width:20px; height:20px; min-width:20px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:900; margin-top:1px;
+}
+.plan-card:not(.featured) .plan-list li::before { background:rgba(92,15,15,.08); color:var(--crimson); }
+.plan-card.featured .plan-list li::before { background:rgba(255,255,255,.18); color:#fff; }
+.plan-list li.highlight { font-weight:800; }
+.plan-card:not(.featured) .plan-list li.highlight { color:var(--crimson); }
+.plan-card.featured .plan-list li.highlight { color:#fff; }
+.plan-btn {
+  width:100%; padding:14px; border-radius:14px;
+  font-family:'Tajawal',sans-serif; font-size:16px; font-weight:900;
+  border:none; cursor:pointer; transition:all .28s; margin-top:auto;
+}
+.plan-card:not(.featured) .plan-btn { background:var(--crimson); color:#fff; box-shadow:0 6px 20px rgba(92,15,15,.2); }
+.plan-card:not(.featured) .plan-btn:hover { background:var(--crimson-2); transform:translateY(-1px); }
+.plan-card.featured .plan-btn { background:#fff; color:var(--crimson); box-shadow:0 8px 24px rgba(0,0,0,.15); }
+.plan-card.featured .plan-btn:hover { transform:translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,.2); }
+
+/* ─── FOOTER ─── */
+.footer { background:var(--text); padding:48px 24px; text-align:center; }
+.footer-logo { font-size:26px; font-weight:900; color:#fff; margin-bottom:6px; }
+.footer-sub { font-size:13px; color:rgba(255,255,255,.32); margin-bottom:20px; }
+.footer-links { display:flex; justify-content:center; gap:28px; flex-wrap:wrap; }
+.footer-links a { font-size:13px; color:rgba(255,255,255,.42); text-decoration:none; font-weight:600; transition:color .2s; }
+.footer-links a:hover { color:rgba(255,255,255,.82); }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(26,8,8,.75); backdrop-filter:blur(6px);
+  z-index:1000; display:flex; align-items:center; justify-content:center;
+  padding:20px; opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box {
+  background:#fff; border-radius:24px; padding:clamp(28px,5vw,44px);
+  width:100%; max-width:480px; max-height:92vh; overflow-y:auto;
+  transform:translateY(20px); transition:transform .3s; position:relative;
+}
+.modal-overlay.open .modal-box { transform:translateY(0); }
+.modal-close {
+  position:absolute; top:16px; left:16px; width:32px; height:32px;
+  background:var(--cream); border:none; border-radius:50%; cursor:pointer;
+  font-size:16px; display:flex; align-items:center; justify-content:center;
+  color:var(--muted); transition:all .2s;
+}
+.modal-close:hover { background:var(--cream-2); color:var(--text); }
+.modal-plan-tag {
+  display:inline-block; background:rgba(92,15,15,.07); color:var(--crimson);
+  font-size:12px; font-weight:800; padding:4px 14px; border-radius:100px; margin-bottom:12px;
+}
+.modal-title { font-size:22px; font-weight:900; color:var(--text); margin-bottom:6px; }
+.modal-sub { font-size:14px; color:var(--muted); margin-bottom:28px; line-height:1.65; }
+.mf { margin-bottom:18px; }
+.mf label { display:block; font-size:14px; font-weight:700; color:var(--text); margin-bottom:7px; }
+.req { color:var(--crimson); margin-left:3px; }
+.mf input {
+  width:100%; padding:13px 16px; border:1.5px solid rgba(92,15,15,.12);
+  border-radius:12px; font-family:'Tajawal',sans-serif; font-size:15px;
+  color:var(--text); background:var(--cream); outline:none; transition:border .2s;
+}
+.mf input:focus { border-color:var(--crimson); background:#fff; }
+.mf.invalid input { border-color:#c0392b; }
+.err { font-size:12px; color:#c0392b; margin-top:5px; display:none; }
+.mf.invalid .err { display:block; }
+.radio-option {
+  display:flex; align-items:center; gap:10px;
+  background:var(--cream); border:1.5px solid rgba(92,15,15,.1);
+  border-radius:12px; padding:12px 16px; cursor:pointer;
+  font-size:15px; font-weight:700; transition:all .2s;
+}
+.modal-submit {
+  width:100%; padding:15px; background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  border:none; border-radius:14px; cursor:pointer; transition:all .25s;
+  display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px;
+}
+.modal-submit:hover { background:var(--crimson-2); transform:translateY(-1px); }
+.modal-submit:disabled { opacity:.6; cursor:default; transform:none; }
+.modal-spinner {
+  width:20px; height:20px; border:2.5px solid rgba(255,255,255,.3);
+  border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; display:none;
+}
+.modal-success { text-align:center; padding:24px 0; display:none; }
+.modal-success .s-icon { font-size:52px; margin-bottom:16px; }
+.modal-success h3 { font-size:22px; font-weight:900; color:var(--text); margin-bottom:8px; }
+.modal-success p { font-size:15px; color:var(--muted); line-height:1.75; }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes spin     { to{transform:rotate(360deg)} }
+
+@media(max-width:600px) {
+  .level-header { padding:18px; gap:12px; }
+  .level-body { padding:0 18px 22px; }
+  .level-num-badge { width:44px; height:44px; min-width:44px; font-size:18px; }
+  .cert-flow { gap:6px; }
+  .cert-arrow { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="logo-wrap">
+      <div class="logo-text">مسار</div>
+      <div class="logo-sub">MASAR ACADEMY</div>
+    </div>
+    <div class="hero-tag">🎓 معتمدة من معهد تمكين</div>
+    <h1>
+      معلم متمكن في الذكاء الاصطناعي
+      <em>من مبتدئ إلى محترف في توظيف AI بالتعليم</em>
+    </h1>
+    <div class="hero-divider"></div>
+    <p>
+      باقة تدريبية منهجية أونلاين مصممة خصيصاً للمعلمين في الكويت<br>
+      ٤ دورات متخصصة — ٥ شهادات احترافية معتمدة — في شهر واحد فقط
+    </p>
+    <div class="cta-group">
+      <button class="btn-primary" onclick="openModal('full')">سجّل في الباقة</button>
+      <a href="#pricing" class="btn-secondary">شوف الباقات ←</a>
+    </div>
+    <div class="hero-note"><strong>الدفعة القادمة تبدأ السبت ٣ مايو ٢٠٢٦</strong> — أماكن محدودة للتسجيل</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">٤</div><div class="stat-l">دورات متخصصة</div></div>
+  <div class="stat"><div class="stat-n">٥</div><div class="stat-l">شهادات معتمدة</div></div>
+  <div class="stat"><div class="stat-n">٢</div><div class="stat-l">أسبوع فقط</div></div>
+  <div class="stat"><div class="stat-n">AI</div><div class="stat-l">توظيف احترافي</div></div>
+</div>
+
+<!-- ACCREDITATION -->
+<div style="background:var(--cream-2);padding:clamp(40px,6vw,64px) 24px;">
+  <div style="max-width:860px;margin:0 auto;text-align:center;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px;">الاعتماد الرسمي</div>
+    <h2 style="font-size:clamp(22px,4vw,34px);font-weight:900;color:var(--text);margin-bottom:12px;line-height:1.3;">شهادات أكاديمية مسار معتمدة رسمياً</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.75;max-width:580px;margin-left:auto;margin-right:auto;">شهاداتنا صادرة من معهد تمكين إيديوكلاود — معتمد ومسجل لدى الجهات الرسمية في الكويت</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;">
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">🎓</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">معهد تمكين إيديوكلاود</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">الجهة المانحة للشهادات</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">✅</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">الهيئة العامة للتعليم والتدريب التطبيقي</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">معتمد ومسجل رسمياً</div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:18px 24px;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:center;gap:12px;box-shadow:0 4px 16px rgba(92,15,15,.06);">
+        <div style="width:40px;height:40px;min-width:40px;background:var(--crimson);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;">📋</div>
+        <div style="text-align:right;">
+          <div style="font-size:14px;font-weight:900;color:var(--text);">ديوان الخدمة المدنية</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">معتمد ومسجل رسمياً</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERT EXPLAINER -->
+<section class="sec">
+  <div class="sec-tag">نظام الشهادات</div>
+  <h2 class="sec-title">كيف يعمل نظام الشهادات؟</h2>
+  <p class="sec-sub">كل دورة تنتهي بشهادة معتمدة — وبعد إكمال الأربعة تحصل على شهادة المستوى الشاملة</p>
+
+  <div class="cert-explainer">
+    <div class="cert-explainer-title">باقة معلم متمكن في الذكاء الاصطناعي</div>
+    <div class="cert-explainer-sub">٤ شهادات دورات + شهادة المستوى = ٥ شهادات معتمدة في أسبوعين</div>
+    <div class="cert-flow">
+      <div class="cert-item">
+        <div class="ci-icon">📜</div>
+        <div class="ci-label">شهادة دورة ١</div>
+        <div class="ci-sub">استراتيجيات AI</div>
+      </div>
+      <div class="cert-arrow">+</div>
+      <div class="cert-item">
+        <div class="ci-icon">📜</div>
+        <div class="ci-label">شهادة دورة ٢</div>
+        <div class="ci-sub">كانفا AI</div>
+      </div>
+      <div class="cert-arrow">+</div>
+      <div class="cert-item">
+        <div class="ci-icon">📜</div>
+        <div class="ci-label">شهادة دورة ٣</div>
+        <div class="ci-sub">إعداد الدرس</div>
+      </div>
+      <div class="cert-arrow">+</div>
+      <div class="cert-item">
+        <div class="ci-icon">📜</div>
+        <div class="ci-label">شهادة دورة ٤</div>
+        <div class="ci-sub">إدارة المتعلمين</div>
+      </div>
+      <div class="cert-arrow">=</div>
+      <div class="cert-final">
+        <div class="ci-icon">🎓</div>
+        <div class="ci-label">شهادة معلم متمكن في AI</div>
+        <div class="ci-sub">٥ شهادات في أسبوعين</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEVELS -->
+<section class="sec" style="padding-top:0" id="levels">
+  <div class="sec-tag">المسار التدريبي</div>
+  <h2 class="sec-title">٤ دورات — أسبوعان — ٥ شهادات</h2>
+  <p class="sec-sub">دورتان كل أسبوع — السبت والثلاثاء — الساعة ٥:٠٠ م</p>
+
+  <div class="levels-wrap">
+    <div class="level-block open">
+      <div class="level-header" onclick="toggleLevel(this)">
+        <div class="level-num-badge">AI</div>
+        <div class="level-header-text">
+          <div class="level-month-tag">٣ — ١٣ مايو ٢٠٢٦</div>
+          <div class="level-title-main">معلم متمكن في أدوات الذكاء الاصطناعي في التعليم</div>
+          <div class="level-certs-row">
+            <span class="level-cert-badge">📜 ٤ شهادات دورات</span>
+            <span class="level-cert-badge">🎓 شهادة المستوى</span>
+          </div>
+        </div>
+        <div class="level-toggle">▼</div>
+      </div>
+      <div class="level-body">
+        <div class="courses-grid">
+
+          <!-- دورة ١ -->
+          <div class="course-card">
+            <div class="course-num">١</div>
+            <div style="display:inline-block;background:var(--cream-2);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-bottom:8px;">السبت ٣ مايو</div>
+            <div class="course-name">استراتيجيات الذكاء الاصطناعي في التعليم</div>
+            <div class="course-desc">الأساس قبل الأدوات — فهم متى ولماذا وكيف توظّف AI في التعليم</div>
+            <div style="margin:10px 0 8px;">
+              <div style="font-size:11px;font-weight:800;color:var(--crimson);margin-bottom:6px;">المحاور الرئيسية:</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>ما هو الذكاء الاصطناعي وكيف يغير التعليم؟</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>متى تستخدم AI ومتى لا تستخدمه؟</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>أبرز أدوات AI المجانية للمعلم الكويتي</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>كيف توفر ٣ ساعات يومياً بالذكاء الاصطناعي؟</div>
+              </div>
+            </div>
+            <span class="course-cert">📜 شهادة معتمدة</span>
+          </div>
+
+          <!-- دورة ٢ -->
+          <div class="course-card">
+            <div class="course-num">٢</div>
+            <div style="display:inline-block;background:var(--cream-2);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-bottom:8px;">الثلاثاء ٦ مايو</div>
+            <div class="course-name">كانفا AI — تصميم محتوى تعليمي</div>
+            <div class="course-desc">أسهل أداة وأكثرها استخداماً — تصميم احترافي بضغطة واحدة</div>
+            <div style="margin:10px 0 8px;">
+              <div style="font-size:11px;font-weight:800;color:var(--crimson);margin-bottom:6px;">المحاور الرئيسية:</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>تحويل أي نص لعرض احترافي في دقائق</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>توليد صور وأيقونات تعليمية بالذكاء الاصطناعي</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>تصميم أوراق عمل وبطاقات تعليمية تلقائياً</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>قوالب جاهزة لكل مادة ومرحلة دراسية</div>
+              </div>
+            </div>
+            <span class="course-cert">📜 شهادة معتمدة</span>
+          </div>
+
+          <!-- دورة ٣ -->
+          <div class="course-card">
+            <div class="course-num">٣</div>
+            <div style="display:inline-block;background:var(--cream-2);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-bottom:8px;">السبت ١٠ مايو</div>
+            <div class="course-name">إعداد درس متكامل بالذكاء الاصطناعي</div>
+            <div class="course-desc">من الفكرة حتى التنفيذ — درس كامل في أقل من ١٠ دقائق</div>
+            <div style="margin:10px 0 8px;">
+              <div style="font-size:11px;font-weight:800;color:var(--crimson);margin-bottom:6px;">المحاور الرئيسية:</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>بناء خطة درس كاملة بـ ChatGPT في ٥ دقائق</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>توليد أسئلة وأنشطة تفاعلية بالذكاء الاصطناعي</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>تكييف المحتوى لمستويات مختلفة تلقائياً</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>مراجعة وتحسين الدرس بالذكاء الاصطناعي</div>
+              </div>
+            </div>
+            <span class="course-cert">📜 شهادة معتمدة</span>
+          </div>
+
+          <!-- دورة ٤ -->
+          <div class="course-card">
+            <div class="course-num">٤</div>
+            <div style="display:inline-block;background:var(--cream-2);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-bottom:8px;">الثلاثاء ١٣ مايو</div>
+            <div class="course-name">إدارة وتقييم المتعلمين بالذكاء الاصطناعي</div>
+            <div class="course-desc">إدارة الفصل كامل بكفاءة — تقييم ذكي وتغذية راجعة فورية</div>
+            <div style="margin:10px 0 8px;">
+              <div style="font-size:11px;font-weight:800;color:var(--crimson);margin-bottom:6px;">المحاور الرئيسية:</div>
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>تتبع تقدم الطلاب بأدوات AI ذكية</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>توليد تقارير وتغذية راجعة تلقائياً</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>اكتشاف الطلاب المحتاجين للدعم بالذكاء الاصطناعي</div>
+                <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;">·</span>بناء نظام تقييم مرن وموثوق</div>
+              </div>
+            </div>
+            <span class="course-cert">📜 شهادة معتمدة</span>
+          </div>
+
+        </div>
+        <div class="level-footer">
+          <span class="level-footer-text">٤ دورات أونلاين · الساعة ٥:٠٠ م · أسبوعان فقط</span>
+          <span class="level-footer-cert">🎓 + شهادة معلم متمكن في AI = ٥ شهادات</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<div class="band">
+  <div class="band-inner">
+    <div class="sec-tag">ماذا تحصل</div>
+    <h2 class="sec-title">كل ما تحتاجه في شهر واحد</h2>
+    <p class="sec-sub">باقة أونلاين كاملة تقدر تكملها بوقتك وبالسرعة اللي تناسبك</p>
+    <div class="list-grid">
+      <div class="list-item"><div class="dot"></div><div class="list-text">٤ دورات أونلاين متخصصة في الذكاء الاصطناعي مع مدربين معتمدين</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">٤ شهادات دورات + شهادة معلم متمكن في AI = ٥ شهادات معتمدة</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">مسار تصاعدي من الاستراتيجية للتطبيق الكامل</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">متابعة تقدمك عبر منصة تمكين</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">مرونة كاملة — أكمل بوقتك من أي مكان</div></div>
+      <div class="list-item"><div class="dot"></div><div class="list-text">شهادات معتمدة من الهيئة العامة وديوان الخدمة المدنية</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="sec-tag" style="text-align:center">الباقة</div>
+    <h2 class="sec-title">باقة معلم متمكن في الذكاء الاصطناعي</h2>
+    <p class="sec-sub">٤ دورات متخصصة — ٥ شهادات معتمدة — شهر واحد فقط</p>
+
+    <div style="max-width:420px;margin:0 auto;">
+
+      <div class="plan-card featured" style="text-align:center;">
+        <div class="plan-badge">الباقة الكاملة</div>
+        <div class="plan-name">معلم متمكن في AI</div>
+        <div class="plan-price">
+          <span class="plan-price-num">٣٥</span>
+          <span class="plan-price-cur">د.ك</span>
+        </div>
+        <div class="plan-period">شهر واحد — ٤ دورات</div>
+        <div class="plan-saving">٥ شهادات معتمدة</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-list">
+          <li class="highlight">٤ دورات أونلاين متخصصة في AI</li>
+          <li class="highlight">٤ شهادات دورات + شهادة المستوى</li>
+          <li>متابعة عبر منصة تمكين</li>
+          <li>مرونة كاملة بوقتك</li>
+        </ul>
+        <button class="plan-btn" onclick="openModal('basic')" style="margin-bottom:12px;">سجّل الآن — ٣٥ د.ك</button>
+
+        <!-- خيار التقسيط -->
+        <div style="background:rgba(255,255,255,.15);border-radius:14px;padding:14px;margin-top:4px;">
+          <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:8px;letter-spacing:1px;">أو قسّط على ٤ دفعات</div>
+          <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:10px;">٩ د.ك <span style="font-size:14px;font-weight:600;opacity:.7;">/ شهر</span></div>
+          <button class="plan-btn" onclick="openModal('installment')" style="background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);color:#fff;font-size:14px;padding:10px 20px;">سجّل بالتقسيط</button>
+        </div>
+      </div>
+
+      <!-- المستوى القادم -->
+      <div style="margin-top:28px;background:#fff;border-radius:18px;padding:22px 24px;border:2px dashed rgba(92,15,15,.15);text-align:center;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--crimson);margin-bottom:8px;">بعد اكتمال هذا المستوى</div>
+        <div style="font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;">🔒 القيادة في التعليم والتعاون المؤسسي</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;">المستوى المتقدم — يُفتح بعد الحصول على شهادة معلم متمكن في AI</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">أكاديمية مسار</div>
+  <div class="footer-sub">معتمدة من معهد تمكين — الكويت</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/bymasar/" target="_blank">إنستغرام @bymasar</a>
+    <a href="https://wa.me/96597999768" target="_blank">واتساب</a>
+    <a href="https://tamkeenkuw.com" target="_blank">معهد تمكين</a>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="regModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-plan-tag" id="modalPlanTag">الباقة الشاملة — ١٢٠ د.ك</div>
+    <div class="modal-title">سجّل في أكاديمية مسار</div>
+    <div class="modal-sub">سيتواصل معك فريقنا خلال ٢٤ ساعة لتأكيد تسجيلك وإرشادك للخطوات القادمة</div>
+    <form id="mForm" novalidate>
+      <input type="hidden" name="planType" id="planType" value="شاملة — ١٢٠ د.ك">
+      <div class="mf" id="mf-name">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" name="fullName" placeholder="الاسم الكامل">
+        <div class="err">يرجى إدخال اسمك الكامل</div>
+      </div>
+      <div class="mf" id="mf-phone">
+        <label><span class="req">*</span> رقم الواتساب</label>
+        <input type="tel" name="phone" placeholder="XXXXXXXX">
+        <div class="err">يرجى إدخال رقم الواتساب</div>
+      </div>
+      <div class="mf" id="mf-email">
+        <label><span class="req">*</span> الإيميل</label>
+        <input type="email" name="email" placeholder="example@email.com">
+        <div class="err">يرجى إدخال إيميل صحيح</div>
+      </div>
+      <div class="mf" id="mf-batch">
+        <label><span class="req">*</span> طريقة الدفع</label>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+          <label class="radio-option" id="lbl-next">
+            <input type="radio" name="batch" value="دفعة واحدة — ٣٥ د.ك" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightBatch('next')">
+            دفعة واحدة — ٣٥ د.ك
+          </label>
+          <label class="radio-option" id="lbl-notify">
+            <input type="radio" name="batch" value="تقسيط — ٩ د.ك × ٤ أشهر" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightBatch('notify')">
+            تقسيط — ٩ د.ك / شهر
+          </label>
+        </div>
+        <div class="err">يرجى اختيار طريقة الدفع</div>
+      </div>
+      <button type="submit" class="modal-submit" id="mBtn">
+        <span id="mBtnTxt">سجّل الآن</span>
+        <div class="modal-spinner" id="mSpinner"></div>
+      </button>
+    </form>
+    <div class="modal-success" id="mSuccess">
+      <div class="s-icon">🎓</div>
+      <h3>تم التسجيل بنجاح!</h3>
+      <p>سيتواصل معك فريق أكاديمية مسار خلال ٢٤ ساعة<br>لتأكيد تسجيلك وإرشادك لأول خطوة في مسارك</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
+
+function toggleLevel(header) {
+  header.closest('.level-block').classList.toggle('open');
+}
+
+const planLabels = {
+  basic:       'باقة AI — ٣٥ د.ك دفعة واحدة',
+  installment: 'باقة AI — تقسيط ٤ دفعات × ٩ د.ك',
+  pro:         'باقة AI — ٣٥ د.ك دفعة واحدة',
+  full:        'باقة AI — ٣٥ د.ك دفعة واحدة'
+};
+
+function openModal(plan) {
+  document.getElementById('modalPlanTag').textContent = planLabels[plan] || planLabels.full;
+  document.getElementById('planType').value = planLabels[plan] || planLabels.full;
+  document.getElementById('regModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('regModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('regModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function highlightBatch(which) {
+  document.getElementById('lbl-next').style.borderColor   = which==='next'   ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-next').style.background    = which==='next'   ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('lbl-notify').style.borderColor = which==='notify' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-notify').style.background  = which==='notify' ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('mf-batch').classList.remove('invalid');
+}
+
+document.getElementById('mForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const f = this;
+  const batch = document.querySelector('#mForm input[name="batch"]:checked')?.value || '';
+  let ok = true;
+  if (!f.fullName.value.trim()) { document.getElementById('mf-name').classList.add('invalid'); ok = false; }
+  else { document.getElementById('mf-name').classList.remove('invalid'); }
+  if (!f.phone.value.trim()) { document.getElementById('mf-phone').classList.add('invalid'); ok = false; }
+  else { document.getElementById('mf-phone').classList.remove('invalid'); }
+  if (!f.email.value.trim() || !f.email.value.includes('@')) { document.getElementById('mf-email').classList.add('invalid'); ok = false; }
+  else { document.getElementById('mf-email').classList.remove('invalid'); }
+  if (!batch) { document.getElementById('mf-batch').classList.add('invalid'); ok = false; }
+  if (!ok) return;
+
+  const btn = document.getElementById('mBtn');
+  const txt = document.getElementById('mBtnTxt');
+  const sp  = document.getElementById('mSpinner');
+  btn.disabled = true; txt.style.display = 'none'; sp.style.display = 'block';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        type: 'أكاديمية مسار',
+        name: f.fullName.value,
+        phone: f.phone.value,
+        email: f.email.value,
+        plan: document.getElementById('planType').value,
+        batch: batch,
+        timestamp: new Date().toLocaleString('ar-SA')
+      })
+    });
+    f.style.display = 'none';
+    document.getElementById('mSuccess').style.display = 'block';
+  } catch(err) {
+    btn.disabled = false; txt.style.display = 'block'; sp.style.display = 'none';
+    alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً');
+  }
+});
+
+['fullName','phone'].forEach(name => {
+  const el = document.querySelector(`#mForm input[name="${name}"]`);
+  const map = {fullName:'mf-name', phone:'mf-phone'};
+  if(el) el.addEventListener('input', () => { if(el.value.trim()) document.getElementById(map[name])?.classList.remove('invalid'); });
+});
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('on'), (e.target.dataset.i || 0) * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+document.querySelectorAll('.level-block, .list-item').forEach((el, i) => {
+  el.dataset.i = i % 4;
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
