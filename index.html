@@ -15,7 +15,9 @@
   --text:      #1A0808;
   --muted:     #7A6060;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
+#planChoiceModal { display:none; }
+#planChoiceModal.open { display:flex; }
+
 body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
 
 /* ─── HERO ─── */
@@ -136,11 +138,22 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .p-icon { width:38px; height:38px; min-width:38px; background:var(--crimson); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
 
 /* ─── PRICING ─── */
-.pricing-wrap { padding:clamp(64px,9vw,108px) 24px; max-width:580px; margin:0 auto; text-align:center; }
+.pricing-wrap { padding:clamp(64px,9vw,108px) 24px; max-width:960px; margin:0 auto; text-align:center; }
+.pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:48px; }
+@media(max-width:640px){ .pricing-grid { grid-template-columns:1fr; } }
+
 .price-card {
-  background:var(--crimson); border-radius:26px;
-  padding:clamp(40px,6vw,60px) clamp(26px,5vw,52px);
+  border-radius:26px;
+  padding:clamp(36px,5vw,52px) clamp(24px,4vw,44px);
   text-align:center; position:relative; overflow:hidden;
+}
+.price-card.basic {
+  background:#fff;
+  border:2px solid rgba(92,15,15,.12);
+  box-shadow:0 12px 40px rgba(92,15,15,.08);
+}
+.price-card.premium {
+  background:var(--crimson);
   box-shadow:0 28px 72px rgba(92,15,15,.28);
 }
 .price-card::before {
@@ -152,24 +165,65 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.02) 75%);
   background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
 }
+.price-card.basic::before { opacity:0; }
 .price-card>* { position:relative; z-index:1; }
-.price-badge { display:inline-block; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.88); font-size:12px; font-weight:800; padding:5px 20px; border-radius:100px; margin-bottom:24px; }
-.price-label { font-size:16px; font-weight:600; color:rgba(255,255,255,.6); margin-bottom:16px; }
-.price-num { font-size:clamp(58px,12vw,88px); font-weight:900; color:#fff; line-height:1; margin-bottom:4px; }
-.price-currency { display:block; font-size:18px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:4px; }
-.price-period { font-size:14px; color:rgba(255,255,255,.35); margin-bottom:32px; }
-.install-box { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:18px 22px; margin-bottom:28px; }
-.install-box p { font-size:16px; color:rgba(255,255,255,.78); line-height:1.7; }
-.install-box strong { color:#fff; font-size:20px; }
 
-/* Dual CTA inside price card */
+.price-badge {
+  display:inline-block; font-size:12px; font-weight:800;
+  padding:5px 20px; border-radius:100px; margin-bottom:20px;
+}
+.price-card.basic .price-badge { background:rgba(92,15,15,.07); color:var(--crimson); }
+.price-card.premium .price-badge { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.88); }
+
+.price-label { font-size:15px; font-weight:600; margin-bottom:14px; }
+.price-card.basic .price-label { color:var(--muted); }
+.price-card.premium .price-label { color:rgba(255,255,255,.6); }
+
+.price-num { font-size:clamp(52px,10vw,80px); font-weight:900; line-height:1; margin-bottom:4px; }
+.price-card.basic .price-num { color:var(--crimson); }
+.price-card.premium .price-num { color:#fff; }
+
+.price-currency { display:block; font-size:16px; font-weight:700; margin-bottom:4px; }
+.price-card.basic .price-currency { color:var(--muted); }
+.price-card.premium .price-currency { color:rgba(255,255,255,.6); }
+
+.price-period { font-size:13px; margin-bottom:28px; }
+.price-card.basic .price-period { color:rgba(92,15,15,.3); }
+.price-card.premium .price-period { color:rgba(255,255,255,.35); }
+
+.price-features { list-style:none; text-align:right; margin-bottom:28px; display:flex; flex-direction:column; gap:10px; }
+.price-features li { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; }
+.price-card.basic .price-features li { color:var(--text); }
+.price-card.premium .price-features li { color:rgba(255,255,255,.85); }
+.price-features li .pf-icon { width:20px; height:20px; min-width:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.price-card.basic .pf-icon { background:rgba(92,15,15,.08); color:var(--crimson); }
+.price-card.premium .pf-icon { background:rgba(255,255,255,.15); color:#fff; }
+
+.install-box { border-radius:14px; padding:14px 18px; margin-bottom:24px; }
+.price-card.basic .install-box { background:rgba(92,15,15,.04); border:1px solid rgba(92,15,15,.1); }
+.price-card.premium .install-box { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); }
+.install-box p { font-size:14px; line-height:1.7; }
+.price-card.basic .install-box p { color:var(--muted); }
+.price-card.premium .install-box p { color:rgba(255,255,255,.78); }
+.price-card.basic .install-box strong { color:var(--crimson); font-size:17px; }
+.price-card.premium .install-box strong { color:#fff; font-size:17px; }
+
 .price-cta-group { display:flex; flex-direction:column; gap:12px; }
 .btn-price-form {
-  display:block; background:#fff; color:var(--crimson);
-  font-size:16px; font-weight:800; padding:14px 32px; border-radius:100px;
-  text-decoration:none; transition:all .28s;
+  display:block; font-size:16px; font-weight:800; padding:14px 32px; border-radius:100px;
+  text-decoration:none; transition:all .28s; border:none; cursor:pointer; font-family:'Tajawal',sans-serif;
 }
-.btn-price-form:hover { background:var(--cream); transform:translateY(-2px); }
+.price-card.basic .btn-price-form { background:var(--crimson); color:#fff; }
+.price-card.basic .btn-price-form:hover { background:var(--crimson-2); transform:translateY(-2px); }
+.price-card.premium .btn-price-form { background:#fff; color:var(--crimson); }
+.price-card.premium .btn-price-form:hover { background:var(--cream); transform:translateY(-2px); }
+
+.popular-tag {
+  position:absolute; top:18px; left:18px;
+  background:#fff; color:var(--crimson);
+  font-size:11px; font-weight:800; padding:4px 14px; border-radius:100px;
+  letter-spacing:.5px;
+}
 
 /* ─── FINAL ─── */
 .final { background:var(--crimson-2); padding:clamp(72px,10vw,116px) 24px; text-align:center; position:relative; overflow:hidden; }
@@ -437,17 +491,18 @@ footer a:hover { color:#fff; }
     <p>انضم لمجتمع المدربين المحترفين في الكويت<br>اعتماد رسمي، شبكة علاقات، ومسار واضح نحو الاحتراف</p>
 
     <div class="cta-group">
-      <button onclick="openModal()" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 56px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.18);">سجّل بياناتك الحين ←</button>
+      <button onclick="openPlanChoice()" style="display:inline-block;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 56px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.18);">سجّل بياناتك الحين ←</button>
     </div>
 
-    <p class="hero-note">العضوية السنوية <strong>١٣٠ د.ك</strong> — قابلة للتقسيط على <strong>٤ دفعات</strong></p>
+    <p class="hero-note">عضوية المبتدئين <strong>٦٥ د.ك</strong> — عضوية الممارسين <strong>١٣٠ د.ك</strong> — قابلة للتقسيط</p>
   </div>
 </section>
 
 <!-- STATS -->
 <div class="stats">
   <div class="stat"><div class="stat-n">+٩٠</div><div class="stat-l">مدرب محترف</div></div>
-  <div class="stat"><div class="stat-n">١٤</div><div class="stat-l">ميزة بعضوية واحدة</div></div>
+  <div class="stat"><div class="stat-n">٢</div><div class="stat-l">باقة تناسبك</div></div>
+  <div class="stat"><div class="stat-n">١٤</div><div class="stat-l">ميزة في الممارسين</div></div>
   <div class="stat"><div class="stat-n">٥</div><div class="stat-l">جهات اعتماد رسمية</div></div>
 </div>
 
@@ -568,19 +623,58 @@ footer a:hover { color:#fff; }
 <!-- PRICING -->
 <div class="pricing-wrap">
   <p class="sec-tag">الاشتراك</p>
-  <h2 class="sec-title">العضوية السنوية</h2>
-  <div class="price-card">
-    <div class="price-badge">١٤ ميزة — عضوية واحدة</div>
-    <p class="price-label">كل شي تحتاجه كمدرب محترف</p>
-    <div class="price-num">١٣٠</div>
-    <span class="price-currency">دينار كويتي</span>
-    <p class="price-period">للسنة الواحدة</p>
-    <div class="install-box">
-      <p>تقدر تقسّطها على <strong>٤ دفعات</strong><br>بدون فوائد — بدون تعقيدات</p>
+  <h2 class="sec-title">اختر الباقة المناسبة لك</h2>
+  <p class="sec-sub">باقتان مصممتان لمراحل مختلفة من مسيرتك التدريبية</p>
+
+  <div class="pricing-grid">
+
+    <!-- BASIC -->
+    <div class="price-card basic">
+      <div class="price-badge">٨ مزايا أساسية</div>
+      <p class="price-label">للمدرب الذي يبحث عن الاعتماد</p>
+      <div class="price-num">٦٥</div>
+      <span class="price-currency">دينار كويتي</span>
+      <p class="price-period">للسنة الواحدة</p>
+      <ul class="price-features">
+        <li><span class="pf-icon">✓</span> اعتماد تدريبي رسمي</li>
+        <li><span class="pf-icon">✓</span> إصدار شهادات (١٠ د.ك/شهادة)</li>
+        <li><span class="pf-icon">✓</span> جلسات تطوير مستمرة</li>
+        <li><span class="pf-icon">✓</span> مجتمع مدربي تمكين</li>
+        <li><span class="pf-icon">✓</span> طباعة احترافية مخفضة</li>
+        <li><span class="pf-icon">✓</span> اعتماد في قائمة تمكين</li>
+        <li><span class="pf-icon">✓</span> شعار تمكين على دوراتك</li>
+        <li><span class="pf-icon">✓</span> دعم شخصي مستمر</li>
+      </ul>
+      <div class="price-cta-group">
+        <button onclick="openModal('مبتدئين')" class="btn-price-form">سجّل في عضوية المبتدئين ←</button>
+      </div>
     </div>
-    <div class="price-cta-group">
-      <button onclick="openModal()" style="display:block;width:100%;background:#FFFFFF;color:#5C0F0F;font-family:Tajawal,sans-serif;font-size:18px;font-weight:900;padding:18px 40px;border-radius:100px;border:none;cursor:pointer;text-align:center;">سجّل بياناتك الحين</button>
+
+    <!-- PREMIUM -->
+    <div class="price-card premium">
+      <div class="popular-tag">⭐ الأكثر طلباً</div>
+      <div class="price-badge">١٤ ميزة كاملة</div>
+      <p class="price-label">للمدرب الجاد الذي يبني مسيرته</p>
+      <div class="price-num">١٣٠</div>
+      <span class="price-currency">دينار كويتي</span>
+      <p class="price-period">للسنة الواحدة</p>
+      <ul class="price-features">
+        <li><span class="pf-icon">✓</span> كل مزايا عضوية المبتدئين</li>
+        <li><span class="pf-icon">✓</span> قاعات تدريبية مجهزة</li>
+        <li><span class="pf-icon">✓</span> خطة تدريبية متكاملة</li>
+        <li><span class="pf-icon">✓</span> خطة تسويقية شخصية</li>
+        <li><span class="pf-icon">✓</span> تصوير احترافي لدورة</li>
+        <li><span class="pf-icon">✓</span> ترشيح للجهات والمؤسسات</li>
+        <li><span class="pf-icon">✓</span> إعداد الحقيبة التدريبية</li>
+      </ul>
+      <div class="install-box">
+        <p>تقدر تقسّطها على <strong>٤ دفعات</strong><br>بدون فوائد — بدون تعقيدات</p>
+      </div>
+      <div class="price-cta-group">
+        <button onclick="openModal('ممارسين')" class="btn-price-form">سجّل في عضوية الممارسين ←</button>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -785,6 +879,38 @@ function qReset() {
 }
 </script>
 
+<!-- PLAN CHOICE MODAL -->
+<div id="planChoiceModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(26,8,8,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:26px;max-width:560px;width:100%;padding:clamp(32px,5vw,48px);position:relative;box-shadow:0 32px 80px rgba(92,15,15,.25);">
+    <button onclick="closePlanChoice()" style="position:absolute;top:16px;left:16px;background:rgba(92,15,15,.07);border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;font-size:18px;color:var(--crimson);display:flex;align-items:center;justify-content:center;">✕</button>
+    <p style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px;text-align:center;">اختر عضويتك</p>
+    <h3 style="font-size:clamp(22px,4vw,30px);font-weight:900;color:var(--text);text-align:center;margin-bottom:8px;">أي عضوية تناسبك؟</h3>
+    <p style="font-size:15px;color:var(--muted);text-align:center;margin-bottom:32px;line-height:1.7;">اختر الباقة المناسبة لمرحلتك التدريبية</p>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- مبتدئين -->
+      <button onclick="selectPlanAndOpen('مبتدئين')" style="background:var(--cream);border:2px solid rgba(92,15,15,.12);border-radius:18px;padding:20px 24px;cursor:pointer;text-align:right;transition:all .25s;font-family:'Tajawal',sans-serif;" onmouseover="this.style.borderColor='#5C0F0F';this.style.background='rgba(92,15,15,.04)'" onmouseout="this.style.borderColor='rgba(92,15,15,.12)';this.style.background='var(--cream)'">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:22px;font-weight:900;color:var(--crimson);">٦٥ د.ك</span>
+          <span style="font-size:16px;font-weight:900;color:var(--text);">عضوية المبتدئين</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin:0;line-height:1.6;">اعتماد رسمي + إصدار شهادات + مجتمع المدربين + دعم شخصي</p>
+      </button>
+
+      <!-- ممارسين -->
+      <button onclick="selectPlanAndOpen('ممارسين')" style="background:var(--crimson);border:2px solid transparent;border-radius:18px;padding:20px 24px;cursor:pointer;text-align:right;transition:all .25s;font-family:'Tajawal',sans-serif;position:relative;" onmouseover="this.style.opacity='.92'" onmouseout="this.style.opacity='1'">
+        <div style="position:absolute;top:12px;left:16px;background:rgba(255,255,255,.2);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:800;color:#fff;">⭐ الأكثر طلباً</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:22px;font-weight:900;color:#fff;">١٣٠ د.ك</span>
+          <span style="font-size:16px;font-weight:900;color:#fff;">عضوية الممارسين</span>
+        </div>
+        <p style="font-size:13px;color:rgba(255,255,255,.75);margin:0;line-height:1.6;">كل مزايا المبتدئين + قاعات + خطة تسويقية + تصوير + ترشيح للمؤسسات</p>
+      </button>
+
+    </div>
+  </div>
+</div>
+
 <!-- REGISTRATION MODAL -->
 <div class="modal-overlay" id="regModal">
   <div class="modal-box">
@@ -824,6 +950,10 @@ function qReset() {
           <div class="err">يرجى إدخال مجال تخصصك</div>
         </div>
 
+        <!-- حقل الباقة المختارة -->
+        <input type="hidden" name="plan" id="selectedPlan" value="بريميوم">
+        <div id="planDisplay" style="display:none;background:rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.15);border-radius:12px;padding:12px 16px;font-size:15px;font-weight:800;color:var(--crimson);text-align:center;margin-bottom:4px;"></div>
+
         <div class="mf" id="mf-hasTraining">
           <label><span class="req">*</span> هل قدّمت دورات تدريبية من قبل؟</label>
           <div style="display:flex;gap:12px;margin-top:4px;">
@@ -860,11 +990,41 @@ function qReset() {
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
 
-function openModal() {
+function openPlanChoice() {
+  document.getElementById('planChoiceModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePlanChoice() {
+  document.getElementById('planChoiceModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function selectPlanAndOpen(plan) {
+  closePlanChoice();
+  setTimeout(() => openModal(plan), 200);
+}
+
+function openModal(plan) {
   document.getElementById('regModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // تخزين الباقة المختارة
+  if(plan) {
+    document.getElementById('selectedPlan').value = plan;
+    const planLabel = plan === 'بيسك' ? 'البيسك — ٦٥ د.ك' : 'البريميوم — ١٣٠ د.ك';
+    document.getElementById('planDisplay').textContent = planLabel;
+    document.getElementById('planDisplay').style.display = 'block';
+    // تحديد خيار الدفع المناسب
+    if(plan === 'بيسك') {
+      document.getElementById('lbl-install').style.display = 'none';
+      document.querySelector('#mForm input[name="payment"][value="دفعة واحدة"]').value = 'دفعة واحدة — ٦٥ د.ك';
+      document.getElementById('lbl-full').querySelector('input').nextSibling.textContent = ' دفعة واحدة — ٦٥ د.ك';
+    } else {
+      document.getElementById('lbl-install').style.display = 'flex';
+      document.querySelector('#mForm input[name="payment"]').value = 'دفعة واحدة';
+      document.getElementById('lbl-full').querySelector('input').nextSibling.textContent = ' دفعة واحدة — ١٣٠ د.ك';
+    }
+  }
 }
 function closeModal() {
   document.getElementById('regModal').classList.remove('open');
@@ -905,12 +1065,14 @@ document.getElementById('mForm').addEventListener('submit', async function(e) {
   const f = this;
   const hasTraining = document.querySelector('#mForm input[name="hasTraining"]:checked')?.value || '';
   const payment     = document.querySelector('#mForm input[name="payment"]:checked')?.value || '';
+  const plan        = document.getElementById('selectedPlan')?.value || 'بريميوم';
   const data = {
     fullName: f.fullName.value,
     phone: f.phone.value,
     specialty: f.specialty.value,
     hasTraining: hasTraining,
     payment: payment,
+    plan: plan,
   };
   const checks = [
     ['fullName','mf-name'],['phone','mf-phone'],['specialty','mf-specialty']
@@ -937,6 +1099,7 @@ document.getElementById('mForm').addEventListener('submit', async function(e) {
         field: data.specialty,
         courses: data.hasTraining,
         payment: data.payment,
+        plan: data.plan,
         timestamp: new Date().toLocaleString('ar-SA')
       })
     });
