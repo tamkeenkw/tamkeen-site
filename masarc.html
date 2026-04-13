@@ -1,0 +1,207 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
+.masar-wrap { font-family: 'Cairo', sans-serif; direction: rtl; background: #F5EFE4; padding: 1.25rem; border-radius: var(--border-radius-lg); }
+.masar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.slide { aspect-ratio: 1/1; border-radius: var(--border-radius-lg); padding: 22px; padding-bottom: 38px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+.slide.dark { background: #6B1F2E; color: #F5EFE4; }
+.slide.dark * { color: #F5EFE4 !important; }
+.slide.light { background: #F5EFE4; color: #6B1F2E; border: 1px solid #6B1F2E; }
+.slide-num { font-size: 11px; font-weight: 600; letter-spacing: 1px; opacity: 0.75; }
+.slide-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; width: fit-content; }
+.slide.dark .slide-tag { background: #F5EFE4 !important; color: #6B1F2E !important; }
+.slide.light .slide-tag { background: #6B1F2E; color: #F5EFE4; }
+.slide-title { font-size: 22px; font-weight: 800; line-height: 1.3; margin: 0; }
+.slide-title.big { font-size: 26px; }
+.slide-sub { font-size: 13px; line-height: 1.7; opacity: 0.9; margin: 8px 0 0; font-weight: 400; }
+.points li { font-size: 12px; line-height: 1.9; font-weight: 500; list-style: none; padding-right: 16px; position: relative; }
+.slide.dark .points li::before { content: ''; position: absolute; right: 0; top: 10px; width: 6px; height: 6px; background: #F5EFE4; border-radius: 50%; }
+.slide.light .points li::before { content: ''; position: absolute; right: 0; top: 10px; width: 6px; height: 6px; background: #6B1F2E; border-radius: 50%; }
+.cert-box { padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+.slide.dark .cert-box { background: rgba(245,239,228,0.12); border: 0.5px solid rgba(245,239,228,0.35); }
+.slide.light .cert-box { background: rgba(107,31,46,0.08); border: 0.5px solid rgba(107,31,46,0.25); }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { padding: 12px; border-radius: 8px; }
+.slide.light .stat { background: rgba(107,31,46,0.06); border: 0.5px solid rgba(107,31,46,0.2); }
+.stat-num { font-size: 26px; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 10px; font-weight: 500; opacity: 0.75; margin-top: 4px; }
+.deco { position: absolute; border-radius: 50%; opacity: 0.08; }
+.cta-big { font-size: 24px; font-weight: 800; text-align: center; line-height: 1.4; }
+.cta-link { padding: 12px 20px; border-radius: 30px; text-align: center; font-size: 13px; font-weight: 700; }
+.slide.light .cta-link { background: #6B1F2E; color: #F5EFE4; }
+.arrow-hint { text-align: center; font-size: 11px; font-weight: 500; opacity: 0.65; margin-top: 8px; }
+.cert-stack { padding: 12px; border-radius: 8px; font-size: 11px; line-height: 1.9; font-weight: 600; }
+.slide.dark .cert-stack { background: rgba(245,239,228,0.12); border: 0.5px solid rgba(245,239,228,0.3); }
+.slide.light .cert-stack { background: rgba(107,31,46,0.06); border: 0.5px solid rgba(107,31,46,0.2); }
+.handle { position: absolute; bottom: 12px; left: 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; opacity: 0.75; }
+</style>
+
+<div class="masar-wrap">
+<div class="masar-grid">
+
+<div class="slide dark">
+<div class="deco" style="width:200px;height:200px;background:#F5EFE4;top:-60px;left:-60px;"></div>
+<div>
+<span class="slide-tag">أكاديمية مسار</span>
+<div class="slide-num">MASAR ACADEMY</div>
+</div>
+<div>
+<h2 class="slide-title big">معلم متمكن في الذكاء الاصطناعي</h2>
+<p class="slide-sub">من مبتدئ إلى محترف في توظيف AI بالتعليم</p>
+</div>
+<div style="font-size:10px;font-weight:500;opacity:0.7;text-align:right;">معتمدة من معهد تمكين · اسحب ←</div>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide light">
+<div>
+<span class="slide-tag">نظرة عامة</span>
+</div>
+<div>
+<h3 class="slide-title">باقة تدريبية منهجية أونلاين</h3>
+<p class="slide-sub">مصممة خصيصاً للمعلمين في الكويت</p>
+</div>
+<div class="stat-grid">
+<div class="stat"><div class="stat-num">٤</div><div class="stat-label">دورات متخصصة</div></div>
+<div class="stat"><div class="stat-num">٥</div><div class="stat-label">شهادات معتمدة</div></div>
+<div class="stat"><div class="stat-num">٢</div><div class="stat-label">أسبوع فقط</div></div>
+<div class="stat"><div class="stat-num">AI</div><div class="stat-label">توظيف احترافي</div></div>
+</div>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide dark">
+<span class="slide-tag">الاعتماد الرسمي</span>
+<div>
+<h3 class="slide-title">شهادات معتمدة رسمياً</h3>
+<p class="slide-sub">صادرة من معهد تمكين إيديوكلاود — معتمد ومسجل لدى الجهات الرسمية في الكويت</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div class="cert-box">✓ معهد تمكين إيديوكلاود — الجهة المانحة</div>
+<div class="cert-box">✓ الهيئة العامة للتعليم والتدريب التطبيقي</div>
+<div class="cert-box">✓ ديوان الخدمة المدنية</div>
+</div>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide light">
+<span class="slide-tag">نظام الشهادات</span>
+<div>
+<h3 class="slide-title">٥ شهادات في أسبوعين</h3>
+<p class="slide-sub">كل دورة تنتهي بشهادة معتمدة وبعد إكمال الأربعة تحصل على شهادة المستوى الشاملة</p>
+</div>
+<div class="cert-stack">
+📜 شهادة استراتيجيات AI<br>
+📜 شهادة كانفا AI<br>
+📜 شهادة إعداد الدرس<br>
+📜 شهادة إدارة المتعلمين<br>
+🎓 شهادة معلم متمكن في AI
+</div>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide dark">
+<div>
+<span class="slide-tag">الدورة الأولى</span>
+<div class="slide-num" style="margin-top:8px;">السبت ٣ مايو</div>
+</div>
+<div>
+<h3 class="slide-title">استراتيجيات الذكاء الاصطناعي في التعليم</h3>
+<p class="slide-sub">الأساس قبل الأدوات — فهم متى ولماذا وكيف توظّف AI</p>
+</div>
+<ul class="points" style="padding:0;margin:0;">
+<li>ما هو AI وكيف يغير التعليم</li>
+<li>متى تستخدمه ومتى لا</li>
+<li>أبرز الأدوات المجانية للمعلم</li>
+<li>وفّر ٣ ساعات يومياً</li>
+</ul>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide light">
+<div>
+<span class="slide-tag">الدورة الثانية</span>
+<div class="slide-num" style="margin-top:8px;">الثلاثاء ٦ مايو</div>
+</div>
+<div>
+<h3 class="slide-title">كانفا AI — تصميم محتوى تعليمي</h3>
+<p class="slide-sub">أسهل أداة وأكثرها استخداماً — تصميم احترافي بضغطة</p>
+</div>
+<ul class="points" style="padding:0;margin:0;">
+<li>حوّل أي نص لعرض احترافي</li>
+<li>ولّد صور وأيقونات تعليمية</li>
+<li>أوراق عمل وبطاقات تلقائياً</li>
+<li>قوالب جاهزة لكل مرحلة</li>
+</ul>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide dark">
+<div>
+<span class="slide-tag">الدورة الثالثة</span>
+<div class="slide-num" style="margin-top:8px;">السبت ١٠ مايو</div>
+</div>
+<div>
+<h3 class="slide-title">إعداد درس متكامل بالذكاء الاصطناعي</h3>
+<p class="slide-sub">من الفكرة حتى التنفيذ — درس كامل في أقل من ١٠ دقائق</p>
+</div>
+<ul class="points" style="padding:0;margin:0;">
+<li>خطة درس كاملة بـ ChatGPT</li>
+<li>أسئلة وأنشطة تفاعلية</li>
+<li>تكييف المحتوى لكل المستويات</li>
+<li>مراجعة وتحسين بالـ AI</li>
+</ul>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide light">
+<div>
+<span class="slide-tag">الدورة الرابعة</span>
+<div class="slide-num" style="margin-top:8px;">الثلاثاء ١٣ مايو</div>
+</div>
+<div>
+<h3 class="slide-title">إدارة وتقييم المتعلمين</h3>
+<p class="slide-sub">إدارة الفصل بكفاءة — تقييم ذكي وتغذية راجعة فورية</p>
+</div>
+<ul class="points" style="padding:0;margin:0;">
+<li>تتبع تقدم الطلاب بأدوات ذكية</li>
+<li>تقارير وتغذية راجعة تلقائية</li>
+<li>اكتشف الطلاب المحتاجين للدعم</li>
+<li>نظام تقييم مرن وموثوق</li>
+</ul>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide dark">
+<span class="slide-tag">ماذا تحصل</span>
+<div>
+<h3 class="slide-title">كل ما تحتاجه في شهر واحد</h3>
+</div>
+<ul class="points" style="padding:0;margin:0;">
+<li>٤ دورات مع مدربين معتمدين</li>
+<li>٥ شهادات معتمدة رسمياً</li>
+<li>مسار تصاعدي من الاستراتيجية للتطبيق</li>
+<li>متابعة عبر منصة تمكين</li>
+<li>مرونة كاملة — أكمل بوقتك</li>
+</ul>
+<div class="handle">@Bymasar</div>
+</div>
+
+<div class="slide light">
+<div class="deco" style="width:240px;height:240px;background:#6B1F2E;bottom:-80px;right:-80px;"></div>
+<div>
+<span class="slide-tag">ابدأ الآن</span>
+</div>
+<div style="text-align:center;">
+<div style="font-size:40px;margin-bottom:10px;">🎓</div>
+<div class="cta-big">سجّل في الباقة</div>
+<p class="slide-sub" style="text-align:center;margin-top:12px;font-weight:600;">الدفعة القادمة تبدأ<br>السبت ٣ مايو ٢٠٢٦</p>
+</div>
+<div style="text-align:center;">
+<div class="cta-link">↑ الرابط في البايو للتسجيل</div>
+<div class="arrow-hint">أماكن محدودة</div>
+</div>
+<div class="handle">@Bymasar</div>
+</div>
+
+</div>
+</div>
