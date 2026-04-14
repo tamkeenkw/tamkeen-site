@@ -786,7 +786,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         <div class="err">يرجى اختيار إجابة</div>
       </div>
       <button type="submit" class="modal-submit" id="cBtn">
-        <span id="cBtnTxt">سجّل وأرسل لي لينك زووم</span>
+        <span id="cBtnTxt">سجّل الآن</span>
         <div class="modal-spinner" id="cSpinner" style="display:none;"></div>
       </button>
     </form>
@@ -794,8 +794,8 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <!-- نجاح التسجيل -->
     <div class="modal-success" id="cSuccess" style="display:none;">
       <div class="s-icon">✅</div>
-      <h3>تم التسجيل بنجاح!</h3>
-      <p>تم إرسال لينك زووم على إيميلك<br>نراك في الدورة</p>
+      <h3>تم تسجيل طلبك!</h3>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;">سيصلك لينك زووم على إيميلك قبل الدورة<br>نراك هناك</p>
     </div>
 
     <!-- مشترك فعال -->
@@ -821,6 +821,17 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         سبق لك التسجيل في دورة مجانية<br>
         الدورة المجانية متاحة <strong style="color:var(--text);">لمرة واحدة فقط</strong> لكل معلم
       </p>
+      <!-- توضيح الاشتراك -->
+      <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid rgba(92,15,15,.08);">
+        <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:8px;">الاشتراك الشهري — شنو يشمل؟</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;flex-shrink:0;">·</span>حضور جميع دورات الشهر بدون قيود</div>
+          <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;flex-shrink:0;">·</span>لينك زووم يوصلك قبل كل دورة تسجل فيها</div>
+          <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;flex-shrink:0;">·</span>شهادة معتمدة لأي دورة بـ ١٠ د.ك عند الطلب</div>
+          <div style="font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;"><span style="color:var(--crimson);font-weight:900;flex-shrink:0;">·</span>الحضور بدون شهادة مجاني لمن اشترك</div>
+        </div>
+      </div>
+
       <!-- اختيار الباقة -->
       <div style="background:var(--cream);border-radius:16px;padding:14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);">
         <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:10px;text-align:center;">اشترك وتابع جميع الدورات</div>
