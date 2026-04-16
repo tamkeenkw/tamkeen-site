@@ -1055,10 +1055,12 @@ document.getElementById('regModal').addEventListener('click', function(e) {
 
 function mHighlightPayment() {
   const val = document.querySelector('#mForm input[name="payment"]:checked')?.value;
-  document.getElementById('lbl-full').style.borderColor    = val==='دفعة واحدة'      ? '#5C0F0F' : 'rgba(92,15,15,.1)';
-  document.getElementById('lbl-full').style.background     = val==='دفعة واحدة'      ? 'rgba(92,15,15,.05)' : '';
-  document.getElementById('lbl-install').style.borderColor = val==='تقسيط على 4 دفعات' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
-  document.getElementById('lbl-install').style.background  = val==='تقسيط على 4 دفعات' ? 'rgba(92,15,15,.05)' : '';
+  const isFull    = val && val.includes('دفعة واحدة');
+  const isInstall = val && val.includes('تقسيط');
+  document.getElementById('lbl-full').style.borderColor    = isFull    ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-full').style.background     = isFull    ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('lbl-install').style.borderColor = isInstall ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-install').style.background  = isInstall ? 'rgba(92,15,15,.05)' : '';
   document.getElementById('mf-payment').classList.remove('invalid');
 }
 
