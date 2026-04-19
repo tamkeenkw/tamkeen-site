@@ -381,7 +381,20 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .modal-success { text-align:center; padding:24px 0; display:none; }
 .modal-success .s-icon { font-size:52px; margin-bottom:16px; }
 .modal-success h3 { font-size:22px; font-weight:900; color:var(--text); margin-bottom:8px; }
-.modal-success p { font-size:15px; color:var(--muted); line-height:1.75; }
+.modal-success p { font-size:15px; color:var(--muted); line-height:1.75; margin-bottom:20px; }
+.pay-btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  background:var(--crimson); color:#fff;
+  font-family:'Tajawal',sans-serif; font-size:17px; font-weight:900;
+  padding:16px 32px; border-radius:14px; text-decoration:none;
+  transition:all .25s; border:none; cursor:pointer;
+  box-shadow:0 8px 24px rgba(92,15,15,.2);
+  width:100%;
+}
+.pay-btn:hover { background:var(--crimson-2); transform:translateY(-2px); box-shadow:0 12px 32px rgba(92,15,15,.3); }
+.pay-note { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; }
+.pay-divider { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--muted); font-size:13px; }
+.pay-divider::before, .pay-divider::after { content:''; flex:1; height:1px; background:rgba(92,15,15,.12); }
 
 @keyframes fadeDown { from{opacity:0;transform:translateY(-18px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
@@ -731,7 +744,12 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div class="modal-success" id="mSuccess">
       <div class="s-icon">🎓</div>
       <h3>تم التسجيل بنجاح!</h3>
-      <p>سيتواصل معك فريق أكاديمية مسار خلال ٢٤ ساعة<br>لتأكيد تسجيلك وإرشادك لأول خطوة في مسارك</p>
+      <p>سيتواصل معك فريقنا خلال ٢٤ ساعة لتأكيد تسجيلك</p>
+      <div class="pay-divider">أو ادفع الآن مباشرة</div>
+      <a href="https://upayto.me/bymasar" target="_blank" class="pay-btn" id="payBtn" onclick="trackPayClick()">
+        💳 ادفع الآن — ٣٥ د.ك
+      </a>
+      <div class="pay-note">ادفع الآن واضمن مقعدك فوراً<br>دفعة واحدة أو تقسيط على ٤ دفعات</div>
     </div>
   </div>
 </div>
@@ -770,6 +788,18 @@ function highlightBatch(which) {
   document.getElementById('lbl-notify').style.borderColor = which==='notify' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
   document.getElementById('lbl-notify').style.background  = which==='notify' ? 'rgba(92,15,15,.05)' : '';
   document.getElementById('mf-batch').classList.remove('invalid');
+}
+
+// Track when user clicks pay button
+function trackPayClick() {
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'InitiateCheckout', {
+      content_name: 'Masar AI Course',
+      content_category: 'Education',
+      value: 35,
+      currency: 'KWD'
+    });
+  }
 }
 
 document.getElementById('mForm').addEventListener('submit', async function(e) {
