@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار تمكّن المعلم من تكنولوجيا التعليم والذكاء الاصطناعي — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--crimson:#5C0F0F;--crimson-2:#7A1515;--cream:#FAF7F2;--cream-2:#F2EDE5;--text:#1A0808;--muted:#7A6060;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+.hero{background:var(--crimson);padding:56px 24px 44px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%),
+  linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%),
+  linear-gradient(45deg,transparent 75%,rgba(255,255,255,.03) 75%),
+  linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.03) 75%);
+  background-size:40px 40px;background-position:0 0,0 20px,20px -20px,-20px 0;}
+.hero-inner{position:relative;z-index:2;max-width:600px;margin:0 auto;}
+.hero-tag{display:inline-block;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:5px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:18px;}
+.quiz-name{font-size:11px;font-weight:800;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.hero h1{font-size:clamp(22px,4.5vw,40px);font-weight:900;color:#fff;line-height:1.3;margin-bottom:10px;}
+.hero p{font-size:14px;color:rgba(255,255,255,.65);line-height:1.8;margin-bottom:24px;}
+.hero-stats{display:flex;justify-content:center;gap:28px;}
+.hero-stat{text-align:center;}
+.hero-stat-n{font-size:22px;font-weight:900;color:#fff;}
+.hero-stat-l{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:1px;}
+
+.quiz-wrap{max-width:660px;margin:0 auto;padding:28px 20px 80px;}
+
+.progress-wrap{margin-bottom:24px;}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:8px;}
+.progress-label{font-size:13px;font-weight:700;color:var(--muted);}
+.progress-count{font-size:13px;font-weight:900;color:var(--crimson);}
+.progress-bar-bg{height:6px;background:var(--cream-2);border-radius:100px;overflow:hidden;}
+.progress-bar{height:100%;background:var(--crimson);border-radius:100px;transition:width .4s ease;}
+
+.question-card{background:#fff;border-radius:20px;padding:26px;box-shadow:0 4px 24px rgba(92,15,15,.07);margin-bottom:14px;border:1.5px solid rgba(92,15,15,.06);animation:slideIn .3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.q-num{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:2px;margin-bottom:8px;}
+.q-text{font-size:16px;font-weight:800;color:var(--text);line-height:1.65;margin-bottom:18px;}
+
+.options{display:flex;flex-direction:column;gap:9px;}
+.option{background:var(--cream);border:2px solid transparent;border-radius:13px;padding:13px 16px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;text-align:right;transition:all .2s;display:flex;align-items:center;gap:10px;width:100%;}
+.option:hover{background:rgba(92,15,15,.05);border-color:rgba(92,15,15,.15);}
+.option.selected{background:rgba(92,15,15,.06);border-color:var(--crimson);color:var(--crimson);}
+.opt-dot{width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);transition:all .2s;flex-shrink:0;}
+.option.selected .opt-dot{background:var(--crimson);border-color:var(--crimson);display:flex;align-items:center;justify-content:center;}
+.option.selected .opt-dot::after{content:'';width:8px;height:8px;background:#fff;border-radius:50%;}
+
+.next-btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;margin-top:6px;display:none;}
+.next-btn:hover{background:var(--crimson-2);}
+.next-btn.show{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* LEAD */
+.lead-card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 24px rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.06);animation:slideIn .3s ease;}
+.lead-card h3{font-size:19px;font-weight:900;margin-bottom:6px;}
+.lead-card p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
+.mf{margin-bottom:13px;}
+.mf label{display:block;font-size:13px;font-weight:800;margin-bottom:5px;}
+.mf input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
+.mf input:focus{border-color:var(--crimson);}
+.mf.invalid input{border-color:#C62828;background:#FFF5F5;}
+.req{color:var(--crimson);margin-left:3px;}
+.submit-btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;}
+.submit-btn:hover{background:var(--crimson-2);}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* RESULTS */
+.result-card{background:#fff;border-radius:20px;padding:30px;box-shadow:0 4px 24px rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.06);animation:slideIn .4s ease;}
+.result-quiz-name{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:2px;text-align:center;margin-bottom:6px;}
+.result-level-badge{display:inline-block;padding:6px 20px;border-radius:100px;font-size:13px;font-weight:800;letter-spacing:1px;margin-bottom:14px;}
+.level-beginner{background:#FFF3E0;color:#E65100;}
+.level-medium{background:#FFF9C4;color:#F57F17;}
+.level-advanced{background:#E3F2FD;color:#1565C0;}
+.level-pro{background:#E8F5E9;color:#2E7D32;}
+
+.result-header{text-align:center;margin-bottom:24px;}
+.result-icon{font-size:52px;margin-bottom:10px;}
+.result-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.result-sub{font-size:14px;color:var(--muted);line-height:1.75;}
+
+/* GAUGE */
+.gauge-wrap{margin:20px 0 24px;text-align:center;}
+.gauge-label{font-size:13px;font-weight:800;color:var(--muted);margin-bottom:10px;}
+.gauge-bar-bg{height:14px;background:var(--cream-2);border-radius:100px;overflow:hidden;margin-bottom:6px;}
+.gauge-bar{height:100%;border-radius:100px;transition:width 1.2s ease;}
+.gauge-pct{font-size:28px;font-weight:900;color:var(--crimson);}
+
+/* STRENGTHS */
+.str-wrap{background:var(--cream);border-radius:16px;padding:18px;margin-bottom:18px;border:1.5px solid rgba(92,15,15,.07);}
+.str-title{font-size:12px;font-weight:800;color:var(--crimson);letter-spacing:1px;margin-bottom:10px;}
+.str-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;}
+.str-dot{width:6px;height:6px;min-width:6px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.str-dot.green{background:#2E7D32;}
+.str-dot.red{background:var(--crimson);}
+.str-text{font-size:13px;color:var(--text);line-height:1.65;}
+
+.cta-btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:15px;border:none;border-radius:100px;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all .2s;margin-bottom:10px;}
+.cta-btn:hover{background:var(--crimson-2);}
+.retry-btn{width:100%;background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;padding:11px;border:1.5px solid rgba(92,15,15,.12);border-radius:100px;cursor:pointer;transition:all .2s;}
+.retry-btn:hover{border-color:var(--crimson);color:var(--crimson);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">أكاديمية مسار</div>
+    <div class="quiz-name">اختبار تمكّن المعلم</div>
+    <h1>تكنولوجيا التعليم والذكاء الاصطناعي</h1>
+    <p>اعرف مستواك الحقيقي في توظيف التكنولوجيا والذكاء الاصطناعي بالتعليم<br>النتيجة فورية ومجانية</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n">١٠</div><div class="hero-stat-l">أسئلة</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">٤</div><div class="hero-stat-l">مستويات</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">٣</div><div class="hero-stat-l">دقائق</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-wrap">
+
+  <!-- QUIZ -->
+  <div id="quizSection">
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label">تقدمك في الاختبار</span>
+        <span class="progress-count" id="progressCount">١ / ١٠</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar" style="width:10%"></div></div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="q-num" id="qNum">السؤال ١</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="optionsWrap"></div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">التالي ←</button>
+  </div>
+
+  <!-- LEAD -->
+  <div id="leadSection" style="display:none;">
+    <div class="lead-card">
+      <h3>أنت على وشك تعرف نتيجتك!</h3>
+      <p>أدخل بياناتك لتظهر نتيجة اختبار تمكّن المعلم من تكنولوجيا التعليم والذكاء الاصطناعي مع توصياتك المخصصة</p>
+      <div class="mf" id="mf-name"><label><span class="req">*</span> الاسم الكامل</label><input type="text" id="leadName" placeholder="اسمك الكامل"></div>
+      <div class="mf" id="mf-phone"><label><span class="req">*</span> رقم الواتساب</label><input type="tel" id="leadPhone" placeholder="XXXXXXXX"></div>
+      <div class="mf" id="mf-email"><label><span class="req">*</span> الإيميل</label><input type="email" id="leadEmail" placeholder="example@email.com"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitLead()">
+        <span id="submitTxt">اعرف نتيجتي الآن</span>
+        <div class="spinner" id="submitSpinner"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultSection" style="display:none;">
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-quiz-name">اختبار تمكّن المعلم من تكنولوجيا التعليم والذكاء الاصطناعي</div>
+        <div id="levelBadge" class="result-level-badge"></div>
+        <div class="result-icon" id="resultIcon"></div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-sub" id="resultSub"></div>
+      </div>
+
+      <div class="gauge-wrap">
+        <div class="gauge-label">مستوى التمكّن</div>
+        <div class="gauge-bar-bg"><div class="gauge-bar" id="gaugeBar" style="width:0%"></div></div>
+        <div class="gauge-pct" id="gaugePct">٠٪</div>
+      </div>
+
+      <div class="str-wrap">
+        <div class="str-title">ملاحظات على أدائك</div>
+        <div id="strItems"></div>
+      </div>
+
+      <div class="str-wrap" style="margin-bottom:20px;">
+        <div class="str-title">توصيات أكاديمية مسار لك</div>
+        <div id="recItems"></div>
+      </div>
+
+      <a href="https://tamkeenkuw.com/masar-free" class="cta-btn">سجّل في الدورة المناسبة لك ←</a>
+      <button class="retry-btn" onclick="resetQuiz()">أعد الاختبار</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
+const QUIZ_NAME  = 'اختبار تمكّن المعلم من تكنولوجيا التعليم والذكاء الاصطناعي';
+
+// ١٠ أسئلة — كل سؤال له ٤ خيارات
+// النقاط: أ=٤، ب=٣، ج=٢، د=١ — المجموع الأقصى ٤٠
+const questions = [
+  {
+    text: 'كيف تستخدم الذكاء الاصطناعي في تحضير دروسك اليومية؟',
+    options: [
+      {text: 'أستخدمه بانتظام لبناء الدروس وتوليد الأسئلة وتوفير وقتي', score: 4},
+      {text: 'أستخدمه أحياناً لبعض المهام البسيطة', score: 3},
+      {text: 'جربته مرة أو مرتين لكن لم أثبّت العادة', score: 2},
+      {text: 'لم أستخدمه في التدريس حتى الآن', score: 1},
+    ]
+  },
+  {
+    text: 'ما مستوى إتقانك لأدوات التصميم التعليمي مثل كانفا؟',
+    options: [
+      {text: 'محترف — أصمم مواد تعليمية جذابة باستخدام ميزات AI في كانفا', score: 4},
+      {text: 'جيد — أستخدمه بانتظام لكن لم أستكشف ميزات AI بعد', score: 3},
+      {text: 'مبتدئ — أستخدمه أحياناً للتصاميم البسيطة فقط', score: 2},
+      {text: 'لم أتعلمه بعد', score: 1},
+    ]
+  },
+  {
+    text: 'كيف تتعامل مع أداة مثل ChatGPT في عملك التعليمي؟',
+    options: [
+      {text: 'أوظّفه يومياً لكتابة خطط الدروس والأنشطة والتقييمات', score: 4},
+      {text: 'أستخدمه للأفكار العامة وأحياناً في التحضير', score: 3},
+      {text: 'جربته لكن لم أجد له فائدة واضحة في التدريس', score: 2},
+      {text: 'لم أستخدمه في العمل التعليمي', score: 1},
+    ]
+  },
+  {
+    text: 'هل تستخدم منصات رقمية لمتابعة تقدم طلابك وتقييمهم؟',
+    options: [
+      {text: 'نعم — أستخدم منصات متعددة وأحلل بياناتها لتحسين التدريس', score: 4},
+      {text: 'أستخدم منصة واحدة لكن لا أستغل بياناتها بشكل كامل', score: 3},
+      {text: 'أحياناً حسب متطلبات المدرسة', score: 2},
+      {text: 'أعتمد على الورقة والقلم فقط', score: 1},
+    ]
+  },
+  {
+    text: 'كيف تحضّر عروض الدرس التقديمية؟',
+    options: [
+      {text: 'أستخدم أدوات متقدمة مع عناصر AI وتفاعلية وبصرية احترافية', score: 4},
+      {text: 'PowerPoint أو كانفا بشرائح منظمة وجذابة', score: 3},
+      {text: 'PowerPoint عادي بشرائح نصية في الغالب', score: 2},
+      {text: 'لا أستخدم عروضاً تقديمية بانتظام', score: 1},
+    ]
+  },
+  {
+    text: 'ما مدى توظيفك للفيديو والمحتوى المرئي في التدريس؟',
+    options: [
+      {text: 'أنتج مقاطع فيديو تعليمية خاصة بي وأشارك المحتوى الرقمي بانتظام', score: 4},
+      {text: 'أستخدم فيديوهات جاهزة من الإنترنت وأدمجها في الدرس', score: 3},
+      {text: 'أحياناً فقط حين يتوفر محتوى مناسب', score: 2},
+      {text: 'نادراً ما أستخدم المحتوى المرئي', score: 1},
+    ]
+  },
+  {
+    text: 'كيف تستخدم التكنولوجيا لتفريد التعليم وتلبية احتياجات كل طالب؟',
+    options: [
+      {text: 'أستخدم أدوات AI لتكييف المحتوى تلقائياً لمستويات مختلفة', score: 4},
+      {text: 'أعطي مهام مختلفة رقمياً للمستويات المختلفة', score: 3},
+      {text: 'أحاول التمييز أحياناً لكن بشكل محدود', score: 2},
+      {text: 'درس موحد للجميع في الغالب', score: 1},
+    ]
+  },
+  {
+    text: 'كيف تبقى محدّثاً بأحدث أدوات التكنولوجيا التعليمية؟',
+    options: [
+      {text: 'أتابع مصادر متخصصة بانتظام وأجرب الأدوات الجديدة فور ظهورها', score: 4},
+      {text: 'أتابع أحياناً وأجرب ما يوصي به الزملاء', score: 3},
+      {text: 'أتعلم فقط ما تطلبه المدرسة', score: 2},
+      {text: 'لا أتابع التطورات التكنولوجية بشكل منتظم', score: 1},
+    ]
+  },
+  {
+    text: 'ما مدى قدرتك على حماية بيانات طلابك في البيئة الرقمية؟',
+    options: [
+      {text: 'ملتزم تماماً بسياسات الخصوصية وأعلّم طلابي الأمان الرقمي', score: 4},
+      {text: 'أعرف الأساسيات وأحاول التطبيق', score: 3},
+      {text: 'معلوماتي محدودة في هذا الجانب', score: 2},
+      {text: 'لم أفكر في هذا الموضوع بجدية', score: 1},
+    ]
+  },
+  {
+    text: 'لو طُلب منك غداً تقديم دورة تدريبية لزملائك عن AI في التعليم — كيف ستكون؟',
+    options: [
+      {text: 'جاهز تماماً — عندي محتوى عملي وأمثلة حقيقية من تجربتي', score: 4},
+      {text: 'أقدر أقدمها بعد تحضير بسيط ليوم أو يومين', score: 3},
+      {text: 'أحتاج وقتاً أطول للتحضير والتعلم أولاً', score: 2},
+      {text: 'لست مستعداً لذلك حالياً', score: 1},
+    ]
+  },
+];
+
+let current = 0;
+let totalScore = 0;
+let answered = false;
+
+const levels = [
+  {
+    min: 0, max: 10, label: 'مبتدئ', badge: 'level-beginner',
+    icon: '🌱', title: 'في بداية مسيرتك الرقمية',
+    sub: 'لديك فرصة رائعة لتطوير مهاراتك التكنولوجية — كل خطوة صغيرة ستحدث فرقاً كبيراً',
+    strengths: ['اهتمامك بمعرفة مستواك خطوة ممتازة', 'لديك أساس يمكن البناء عليه'],
+    gaps: ['توظيف الذكاء الاصطناعي في التحضير اليومي', 'أدوات التصميم والتقديم الرقمي', 'منصات متابعة الطلاب رقمياً'],
+    recs: ['ابدأ بدورة كانفا AI — الأسهل والأسرع تأثيراً', 'جرّب ChatGPT لتحضير درس واحد هذا الأسبوع', 'سجّل في دورات أكاديمية مسار للتكنولوجيا التعليمية']
+  },
+  {
+    min: 11, max: 20, label: 'متوسط', badge: 'level-medium',
+    icon: '📈', title: 'تتطور وعندك إمكانيات أكبر',
+    sub: 'تستخدم بعض الأدوات التكنولوجية لكن هناك إمكانيات لم تستغلها بعد',
+    strengths: ['لديك تجربة مع بعض الأدوات الرقمية', 'أنت منفتح على التكنولوجيا في التعليم'],
+    gaps: ['الاستخدام المنتظم للذكاء الاصطناعي', 'تحليل بيانات الطلاب لتحسين التدريس'],
+    recs: ['دورة بناء الدروس بأدوات AI — ستوفر لك ساعات يومياً', 'دورة التصميم بكانفا AI للمحتوى الاحترافي']
+  },
+  {
+    min: 21, max: 30, label: 'متقدم', badge: 'level-advanced',
+    icon: '🚀', title: 'معلم رقمي متمكّن',
+    sub: 'أنت تستخدم التكنولوجيا بفاعلية وعندك وعي جيد بأدوات الذكاء الاصطناعي',
+    strengths: ['توظيف التكنولوجيا في تحسين التدريس', 'انفتاح على الأدوات الجديدة ومواكبة التطور'],
+    gaps: ['تعميق استخدام AI في التفريد والتقييم', 'مشاركة خبرتك مع الزملاء وقيادة التحول'],
+    recs: ['دورة إدارة وتقييم المتعلمين بالذكاء الاصطناعي', 'دورة استراتيجيات AI في التعليم للتعمق أكثر']
+  },
+  {
+    min: 31, max: 40, label: 'محترف', badge: 'level-pro',
+    icon: '🏆', title: 'رائد التكنولوجيا في مدرستك',
+    sub: 'أنت من أكثر المعلمين تمكناً من توظيف التكنولوجيا والذكاء الاصطناعي في التعليم',
+    strengths: ['توظيف AI بشكل متقدم في جميع جوانب التدريس', 'قدرتك على تدريب زملائك وقيادة التحول الرقمي'],
+    gaps: ['الاستمرار في مواكبة أحدث الأدوات', 'نقل خبرتك لزملائك وتأثيرك في المنظومة التعليمية'],
+    recs: ['باقة AI في أكاديمية مسار — عمّق خبرتك واحصل على شهادة معتمدة', 'شارك خبرتك وكن مدرباً معتمداً في معهد تمكين']
+  },
+];
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('progressCount').textContent = toA(current+1) + ' / ١٠';
+  document.getElementById('progressBar').style.width = ((current+1)/10*100) + '%';
+  document.getElementById('qNum').textContent = 'السؤال ' + toA(current+1);
+  document.getElementById('qText').textContent = q.text;
+  answered = false;
+  document.getElementById('nextBtn').classList.remove('show');
+
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="opt-dot"></span><span>${opt.text}</span>`;
+    btn.onclick = () => selectOption(i, opt.score);
+    wrap.appendChild(btn);
+  });
+  document.getElementById('questionCard').style.animation = 'none';
+  setTimeout(() => document.getElementById('questionCard').style.animation = '', 10);
+}
+
+function selectOption(idx, score) {
+  // أزل التحديد من جميع خيارات هذا السؤال
+  const allOpts = document.getElementById('optionsWrap').querySelectorAll('.option');
+  allOpts.forEach(o => o.classList.remove('selected'));
+
+  // حدد الخيار الجديد فقط
+  allOpts[idx].classList.add('selected');
+
+  // احفظ النقاط — نعيد الحساب من الصفر في النهاية
+  questions[current]._chosen = score;
+
+  answered = true;
+  const isLast = current === 9;
+  document.getElementById('nextBtn').textContent = isLast ? 'اعرف نتيجتي ←' : 'التالي ←';
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion() {
+  current++;
+  if(current >= 10) showLeadForm();
+  else renderQuestion();
+}
+
+function showLeadForm() {
+  document.getElementById('quizSection').style.display = 'none';
+  document.getElementById('leadSection').style.display = 'block';
+}
+
+async function submitLead() {
+  const name  = document.getElementById('leadName').value.trim();
+  const phone = document.getElementById('leadPhone').value.trim();
+  const email = document.getElementById('leadEmail').value.trim();
+  let ok = true;
+  if(!name)  { document.getElementById('mf-name').classList.add('invalid'); ok=false; } else document.getElementById('mf-name').classList.remove('invalid');
+  if(!phone) { document.getElementById('mf-phone').classList.add('invalid'); ok=false; } else document.getElementById('mf-phone').classList.remove('invalid');
+  if(!email||!email.includes('@')) { document.getElementById('mf-email').classList.add('invalid'); ok=false; } else document.getElementById('mf-email').classList.remove('invalid');
+  if(!ok) return;
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitTxt').style.display = 'none';
+  document.getElementById('submitSpinner').style.display = 'block';
+
+  const level = getLevel();
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type: 'اختبار تكنولوجيا التعليم',
+      quizName: QUIZ_NAME,
+      name, phone, email,
+      score: totalScore + '/40',
+      level: level.label,
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).catch(()=>{});
+
+  showResults();
+}
+
+function getLevel() {
+  // احسب المجموع الفعلي من اختيارات المعلم
+  totalScore = questions.reduce((sum, q) => sum + (q._chosen || 0), 0);
+  return levels.find(l => totalScore >= l.min && totalScore <= l.max) || levels[0];
+}
+
+function showResults() {
+  document.getElementById('leadSection').style.display = 'none';
+  document.getElementById('resultSection').style.display = 'block';
+
+  const lv  = getLevel();
+  const pct = Math.round(totalScore / 40 * 100);
+
+  document.getElementById('levelBadge').textContent = lv.label;
+  document.getElementById('levelBadge').className = 'result-level-badge ' + lv.badge;
+  document.getElementById('resultIcon').textContent = lv.icon;
+  document.getElementById('resultTitle').textContent = lv.title;
+  document.getElementById('resultSub').textContent   = lv.sub;
+
+  // شريط
+  setTimeout(() => {
+    document.getElementById('gaugeBar').style.width = pct + '%';
+    document.getElementById('gaugeBar').style.background =
+      pct >= 75 ? '#2E7D32' : pct >= 50 ? '#1565C0' : pct >= 25 ? '#F57F17' : '#C62828';
+    document.getElementById('gaugePct').textContent = pct + '٪';
+  }, 300);
+
+  // نقاط قوة
+  const strWrap = document.getElementById('strItems');
+  strWrap.innerHTML = lv.strengths.map(s =>
+    `<div class="str-item"><div class="str-dot green"></div><div class="str-text">${s}</div></div>`
+  ).join('') + lv.gaps.map(g =>
+    `<div class="str-item"><div class="str-dot red"></div><div class="str-text">يمكن تطوير: ${g}</div></div>`
+  ).join('');
+
+  // توصيات
+  document.getElementById('recItems').innerHTML = lv.recs.map(r =>
+    `<div class="str-item"><div class="str-dot green"></div><div class="str-text">${r}</div></div>`
+  ).join('');
+}
+
+function toA(n) {
+  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function resetQuiz() {
+  current = 0; totalScore = 0; answered = false;
+  questions.forEach(q => delete q._chosen);
+  document.getElementById('resultSection').style.display = 'none';
+  document.getElementById('quizSection').style.display = 'block';
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
