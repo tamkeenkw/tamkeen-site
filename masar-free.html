@@ -820,13 +820,39 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div id="cActive" style="display:none;">
       <div class="s-icon">🎓</div>
       <h3 style="color:#2E7D32;">اشتراكك فعال!</h3>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:16px;">أدخل إيميلك ونرسل لك لينك زووم فوراً</p>
-      <div class="mf">
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:16px;">أكمل بياناتك ونرسل لك لينك زووم فوراً</p>
+      <div class="mf" id="mf-activename">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" id="activeName" placeholder="الاسم الكامل">
+      </div>
+      <div class="mf" id="mf-activeemail">
         <label><span class="req">*</span> الإيميل</label>
         <input type="email" id="activeEmail" placeholder="example@email.com">
       </div>
+      <div class="mf" id="mf-activecert">
+        <div style="background:var(--cream);border-radius:14px;padding:14px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.08);">
+          <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:8px;text-align:center;">احصل على شهادة معتمدة من</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:12px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px;"><span style="width:20px;height:20px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;">🎓</span>معهد تمكين إيديوكلاود</div>
+            <div style="font-size:12px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px;"><span style="width:20px;height:20px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;">✅</span>الهيئة العامة للتعليم والتدريب التطبيقي</div>
+            <div style="font-size:12px;color:var(--text);font-weight:600;display:flex;align-items:center;gap:6px;"><span style="width:20px;height:20px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0;">📋</span>ديوان الخدمة المدنية</div>
+          </div>
+        </div>
+        <label style="font-size:13px;font-weight:700;display:block;margin-bottom:8px;"><span class="req">*</span> تبي شهادة معتمدة بـ ١٠ د.ك؟</label>
+        <div style="display:flex;gap:10px;">
+          <label class="radio-option" id="lbl-active-cert-yes" style="flex:1;">
+            <input type="radio" name="activeCert" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightActiveCert('yes')">
+            نعم، أبي شهادة
+          </label>
+          <label class="radio-option" id="lbl-active-cert-no" style="flex:1;">
+            <input type="radio" name="activeCert" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="highlightActiveCert('no')">
+            لا، حضور فقط
+          </label>
+        </div>
+        <div class="err">يرجى اختيار إجابة</div>
+      </div>
       <button class="modal-submit" id="activeBtn" onclick="sendZoomActive()">
-        <span id="activeBtnTxt">أرسل لي لينك زووم</span>
+        <span id="activeBtnTxt">سجّل الآن</span>
         <div class="modal-spinner" id="activeSpinner" style="display:none;"></div>
       </button>
     </div>
@@ -1034,22 +1060,44 @@ async function checkPhone() {
 }
 
 async function sendZoomActive() {
-  const email = document.getElementById('activeEmail').value.trim();
-  const phone = document.getElementById('step1Phone').value.trim();
+  const name   = document.getElementById('activeName').value.trim();
+  const email  = document.getElementById('activeEmail').value.trim();
+  const phone  = document.getElementById('step1Phone').value.trim();
   const course = document.getElementById('courseNameInput').value;
-  if(!email || !email.includes('@')) return;
+  const wantCert = document.querySelector('input[name="activeCert"]:checked')?.value || '';
+
+  let ok = true;
+  if(!name)  { document.getElementById('mf-activename').classList.add('invalid'); ok=false; } else document.getElementById('mf-activename').classList.remove('invalid');
+  if(!email || !email.includes('@')) { document.getElementById('mf-activeemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-activeemail').classList.remove('invalid');
+  if(!wantCert) { document.getElementById('mf-activecert').classList.add('invalid'); ok=false; } else document.getElementById('mf-activecert').classList.remove('invalid');
+  if(!ok) return;
+
   document.getElementById('activeBtn').disabled = true;
   document.getElementById('activeBtnTxt').style.display = 'none';
   document.getElementById('activeSpinner').style.display = 'block';
+
   await fetch(SCRIPT_URL, {
     method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-    body: JSON.stringify({ type:'تسجيل دورة مجانية', name:'', phone, email,
-      course, courseType:'مشترك',
+    body: JSON.stringify({
+      type: 'تسجيل دورة مجانية',
+      name, phone, email,
+      course, courseType: 'مشترك',
+      wantCert,
       courseDate: document.getElementById('courseDateInput').value,
-      timestamp: new Date().toLocaleString('ar-SA') })
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
   }).catch(()=>{});
+
   if(typeof fbq !== 'undefined') fbq('track', 'Lead');
   showOnly('cSuccess');
+}
+
+function highlightActiveCert(which) {
+  document.getElementById('lbl-active-cert-yes').style.borderColor = which==='yes' ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-active-cert-yes').style.background  = which==='yes' ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('lbl-active-cert-no').style.borderColor  = which==='no'  ? '#5C0F0F' : 'rgba(92,15,15,.1)';
+  document.getElementById('lbl-active-cert-no').style.background   = which==='no'  ? 'rgba(92,15,15,.05)' : '';
+  document.getElementById('mf-activecert').classList.remove('invalid');
 }
 
 async function submitSub() {
