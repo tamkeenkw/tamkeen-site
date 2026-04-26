@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دورة إعداد مدرب معتمد | عتيق خالد العتيق</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Facebook Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2012479919334361');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2012479919334361&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel -->
 <style>
 :root{
   --cr:#5C0F0F;--cr2:#7A1414;--cr3:#2A0505;
@@ -20,9 +38,9 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .hero{
   background:var(--cr3);
   min-height:100svh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  display:flex;
   align-items:center;
+  justify-content:center;
   position:relative;overflow:hidden;
 }
 .hero::before{
@@ -41,6 +59,9 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .hero-left{
   position:relative;z-index:2;
   padding:80px clamp(24px,5vw,72px);
+  max-width:760px;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
 }
 .hero-tag{
   display:inline-flex;align-items:center;gap:8px;
@@ -52,8 +73,8 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .hero-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--cream2)}
 .hero-h1{font-size:clamp(42px,6vw,72px);font-weight:900;color:#fff;line-height:1.05;margin-bottom:8px}
 .hero-h1-sub{font-size:clamp(28px,4vw,48px);font-weight:700;color:rgba(255,255,255,.55);display:block;margin-top:4px}
-.hero-desc{font-size:clamp(15px,2vw,17px);color:rgba(255,255,255,.6);line-height:1.85;margin:20px 0 36px;max-width:480px}
-.hero-stats{display:flex;gap:28px;margin-bottom:40px;flex-wrap:wrap}
+.hero-desc{font-size:clamp(15px,2vw,17px);color:rgba(255,255,255,.6);line-height:1.85;margin:20px 0 36px;max-width:560px;text-align:center}
+.hero-stats{display:flex;gap:28px;margin-bottom:40px;flex-wrap:wrap;justify-content:center}
 .hstat{border-right:2px solid rgba(255,255,255,.15);padding-right:24px}
 .hstat:last-child{border:none;padding:0}
 .hstat-n{font-size:clamp(28px,4vw,40px);font-weight:900;color:#fff;line-height:1}
@@ -72,12 +93,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .hero-right{
   position:relative;z-index:2;
   height:100%;min-height:100svh;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-top:80px;
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 0;
 }
 .hero-img{
   width:100%;max-width:480px;
-  object-fit:cover;object-position:top;
+  object-fit:contain;object-position:bottom;
   display:block;
   filter:drop-shadow(-20px 0 60px rgba(0,0,0,.5));
 }
@@ -96,11 +117,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .hbadge-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
 
 @media(max-width:860px){
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-right{min-height:auto;padding-top:0;order:-1}
-  .hero-img{max-width:100%;max-height:420px;object-position:top center}
-  .hero-left{padding:40px 24px 60px}
-  .hero-badges{display:none}
+  .hero-left{padding:60px 24px}
 }
 
 /* ─── SECTION COMMONS ─── */
@@ -335,35 +352,16 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
     </button>
     <div class="hero-cta-note">المقاعد محدودة — الدفعة القادمة ١٦ مايو ٢٠٢٦</div>
   </div>
-  <div class="hero-right">
-    <img src="trainer-ateiq.jpg" alt="عتيق خالد العتيق" class="hero-img">
-    <div class="hero-badges">
-      <div class="hbadge">
-        <div class="hbadge-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
-        <div><div class="hbadge-text">معتمد BITA</div><div class="hbadge-sub">البورد الأمريكي للتدريب</div></div>
-      </div>
-      <div class="hbadge">
-        <div class="hbadge-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
-        <div><div class="hbadge-text">جامعة الكويت</div><div class="hbadge-sub">كلية التربية</div></div>
-      </div>
-      <div class="hbadge">
-        <div class="hbadge-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6z"/></svg></div>
-        <div><div class="hbadge-text">+٦٠٠٠ خريج</div><div class="hbadge-sub">في الكويت والخليج</div></div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- ══════ CREDIBILITY BAR ══════ -->
 <div class="cred-bar">
   <div class="cred-inner">
-    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>وزارة التجارة</div>
+    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>معتمد من الهيئة العامة للتعليم التطبيقي</div>
     <div class="cred-divider"></div>
-    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>غرفة التجارة والصناعة</div>
+    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>معتمد من ديوان الخدمة المدنية</div>
     <div class="cred-divider"></div>
-    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>هيئة التعليم التطبيقي</div>
-    <div class="cred-divider"></div>
-    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>ديوان الخدمة المدنية</div>
+    <div class="cred-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>معتمد من البورد الأمريكي BITA</div>
   </div>
 </div>
 
@@ -637,7 +635,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </footer>
 
 <script>
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbxjWIl1t5FcMAinO-2cCHShWx-PMKp8BdEcD46bZL-oMRhm05SvM0mSubrbXgSZgigR/exec';
 const PKG_NAMES = {basic:'الأساسية — ٧٥ د.ك', international:'الدولية — ١٠٠ د.ك', practitioner:'الممارس — ١٤٠ د.ك'};
 let pkg='international', pay='full';
 
@@ -670,9 +668,10 @@ async function submitReg(){
   document.getElementById('fSpin').style.display='block';
   try{
     await fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({type:'عضوية',name,phone,email,field:'إعداد مدرب معتمد',courses:PKG_NAMES[pkg]+' | '+date,payment:pay==='full'?'دفع كامل':'تقسيط'})
+      body:JSON.stringify({type:'تسجيل_دورة',name,phone,email,courses:PKG_NAMES[pkg],payment:pay==='full'?'دفع كامل':'تقسيط',date})
     });
     document.getElementById('fCard').style.display='none';
+    if(typeof fbq !== 'undefined') fbq('track', 'Lead');
     document.getElementById('fSuccess').style.display='block';
   }catch(e){
     btn.disabled=false;
