@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية مسار — @bymasar</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #5C0F0F;
+    --crimson-2: #7A1515;
+    --cream: #FAF7F2;
+    --cream-2: #F2EDE5;
+    --text: #1A0808;
+    --muted: #7A6060;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--crimson);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* خلفية نقاط */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* LOGO */
+  .logo-wrap {
+    text-align: center;
+    margin-bottom: 32px;
+    animation: fadeDown .6s ease both;
+  }
+  .logo-circle {
+    width: 90px;
+    height: 90px;
+    background: rgba(255,255,255,.1);
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    backdrop-filter: blur(8px);
+  }
+  .logo-text {
+    font-size: 32px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+  .logo-sub {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .logo-handle {
+    font-size: 13px;
+    color: rgba(255,255,255,.5);
+    font-weight: 600;
+    letter-spacing: 3px;
+  }
+  .logo-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,.6);
+    line-height: 1.7;
+    margin-top: 8px;
+  }
+
+  /* CARDS */
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px 22px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all .25s;
+    animation: fadeUp .5s ease both;
+    border: 1.5px solid rgba(92,15,15,.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(92,15,15,.03);
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,.15); }
+  .card:hover::after { opacity: 1; }
+  .card:active { transform: translateY(0); }
+
+  .card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .icon-ai   { background: linear-gradient(135deg, #5C0F0F, #7A1515); }
+  .icon-free { background: linear-gradient(135deg, #1565C0, #1976D2); }
+  .icon-dash { background: linear-gradient(135deg, #2E7D32, #388E3C); }
+
+  .card-body { flex: 1; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .card-arrow {
+    font-size: 18px;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: transform .2s;
+  }
+  .card:hover .card-arrow { transform: translateX(-4px); }
+
+  /* STAFF CARD */
+  .card.staff {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+  }
+  .card.staff .card-title { color: #fff; }
+  .card.staff .card-desc  { color: rgba(255,255,255,.5); }
+  .card.staff .card-arrow { color: rgba(255,255,255,.4); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .footer-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,255,255,.15);
+    margin: 0 auto 16px;
+  }
+  .footer-credits {
+    font-size: 11px;
+    color: rgba(255,255,255,.3);
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .footer-tamkeen {
+    font-size: 12px;
+    color: rgba(255,255,255,.45);
+    margin-top: 4px;
+    font-weight: 700;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .card:nth-child(1) { animation-delay: .1s; }
+  .card:nth-child(2) { animation-delay: .2s; }
+  .card:nth-child(3) { animation-delay: .3s; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <div class="logo-circle">
+      <span style="font-size:36px;">🎓</span>
+    </div>
+    <div class="logo-sub">أكاديمية مسار</div>
+    <div class="logo-handle">@BYMASAR</div>
+    <div class="logo-desc">معتمدة من معهد تمكين إيديوكلاود<br>دورات تطوير مهني للمعلمين في الكويت</div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+
+    <!-- باقة AI -->
+    <a href="https://tamkeenkuw.com/masar-ai" class="card">
+      <div class="card-icon icon-ai">🤖</div>
+      <div class="card-body">
+        <div class="card-title">باقة الذكاء الاصطناعي في التعليم</div>
+        <div class="card-desc">٤ دورات · ٥ شهادات معتمدة · أسبوعان فقط</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- دورات مجانية -->
+    <a href="https://tamkeenkuw.com/masar-free" class="card">
+      <div class="card-icon icon-free">📚</div>
+      <div class="card-body">
+        <div class="card-title">الدورات الشهرية المجانية</div>
+        <div class="card-desc">دورات أونلاين مجانية للمعلمين · حضور مجاني</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- دورة خاصة -->
+    <a href="https://tamkeenkuw.com/masar-private" class="card staff">
+      <div class="card-icon" style="background:rgba(255,255,255,.1);">📋</div>
+      <div class="card-body">
+        <div class="card-title">تسجيل الدورات الخاصة</div>
+        <div class="card-desc">تسجيل المتدربين في الدورات الخاصة</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+    <!-- لوحة الموظف -->
+    <a href="https://tamkeenkuw.com/masar-dashboard" class="card staff">
+      <div class="card-icon" style="background:rgba(255,255,255,.1);">⚙️</div>
+      <div class="card-body">
+        <div class="card-title">لوحة تحكم الموظف</div>
+        <div class="card-desc">خاص بفريق أكاديمية مسار فقط</div>
+      </div>
+      <div class="card-arrow">←</div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-divider"></div>
+    <div class="footer-credits">MASAR ACADEMY · KUWAIT</div>
+    <div class="footer-tamkeen">معتمدة من معهد تمكين إيديوكلاود</div>
+  </div>
+
+</div>
+
+</body>
+</html>
