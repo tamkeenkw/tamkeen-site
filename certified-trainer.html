@@ -163,6 +163,7 @@ section{background:var(--cream);color:var(--text);position:relative}
 
 /* VIDEOS */
 .videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.videos-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.videos-grid{grid-template-columns:1fr}}
 .video-card{
   background:var(--white);border:1px solid rgba(92,15,15,.08);
@@ -170,9 +171,9 @@ section{background:var(--cream);color:var(--text);position:relative}
 }
 .video-card:hover{border-color:rgba(92,15,15,.2);transform:translateY(-4px)}
 .video-thumb{
-  aspect-ratio:16/9;background:var(--cream2);
+  aspect-ratio:9/16;background:#000;
   display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;cursor:pointer;
+  position:relative;overflow:hidden;
 }
 .video-play{
   width:56px;height:56px;border-radius:50%;
@@ -473,24 +474,36 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none}
   <div class="section-wrap" style="padding-top:0">
     <div class="section-eyebrow" style="text-align:center">شاهد عتيق يدرّب</div>
     <div class="section-title" style="text-align:center;margin-bottom:32px">من داخل القاعات الحقيقية</div>
-    <div class="videos-grid">
+    <div class="videos-grid" style="grid-template-columns:repeat(3,1fr)">
       <div class="video-card">
-        <div class="video-thumb" onclick="openVideo('جامعة_الكويت')">
-          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/ay4BQRwbElA" title="كلية التربية الأساسية" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe>
+        </div>
+        <div class="video-label">كلية التربية الأساسية<div class="video-sub">الهيئة العامة للتعليم التطبيقي</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/fXM3h-BZEx8" title="مقتطفات من دورة مدرب معتمد" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe>
+        </div>
+        <div class="video-label">مقتطفات من الدورة<div class="video-sub">لحظات حقيقية من التدريب</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/UOJ5tKO5EtI" title="مركز القياس والتقويم" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe>
+        </div>
+        <div class="video-label">مركز القياس والتقويم<div class="video-sub">الهيئة العامة للتعليم التطبيقي</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/96zXlZbSzt4" title="جامعة الكويت" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe>
         </div>
         <div class="video-label">جامعة الكويت — كلية التربية<div class="video-sub">تدريب مؤسسي رسمي</div></div>
       </div>
       <div class="video-card">
-        <div class="video-thumb" onclick="openVideo('التطبيقي')">
-          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="video-thumb">
+          <iframe src="https://www.youtube.com/embed/xWERmfOOfnk" title="تعرف على دورة إعداد مدرب معتمد" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;inset:0"></iframe>
         </div>
-        <div class="video-label">الهيئة العامة للتعليم التطبيقي<div class="video-sub">مركز القياس والتقويم</div></div>
-      </div>
-      <div class="video-card">
-        <div class="video-thumb" onclick="openVideo('دورة')">
-          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        </div>
-        <div class="video-label">من داخل الدورة التدريبية<div class="video-sub">لحظات حقيقية من التدريب</div></div>
+        <div class="video-label">تعرف على دورة إعداد مدرب معتمد<div class="video-sub">نظرة شاملة على الدورة</div></div>
       </div>
     </div>
   </div>
