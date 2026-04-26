@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدورات الخاصة — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #7A1515;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --text: #1A0808;
+  --muted: #7A6060;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+.header{background:var(--crimson);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-size:18px;font-weight:900;color:#fff;}
+.header-sub{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;margin-top:2px;}
+.header-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);}
+
+.main{max-width:560px;margin:0 auto;padding:32px 20px 80px;}
+
+.form-card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 20px rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.06);}
+.form-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:22px;display:flex;align-items:center;gap:8px;}
+
+.mf{margin-bottom:16px;}
+.mf label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:7px;}
+.mf input, .mf select{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:13px 16px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
+.mf input:focus, .mf select:focus{border-color:var(--crimson);background:#fff;}
+.mf.invalid input, .mf.invalid select{border-color:#C62828;background:#FFF5F5;}
+.req{color:var(--crimson);margin-left:3px;}
+.err{font-size:12px;color:#C62828;margin-top:4px;display:none;}
+.mf.invalid .err{display:block;}
+
+/* PAYMENT OPTIONS */
+.pay-opts{display:flex;gap:10px;margin-top:4px;}
+.pay-opt{flex:1;background:var(--cream);border:2px solid transparent;border-radius:12px;padding:13px 16px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;text-align:center;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pay-opt:hover{background:rgba(92,15,15,.05);border-color:rgba(92,15,15,.15);}
+.pay-opt.selected{background:rgba(92,15,15,.06);border-color:var(--crimson);color:var(--crimson);}
+.pay-opt input{display:none;}
+
+/* COURSE CARDS */
+.courses-list{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.course-opt{background:var(--cream);border:2px solid transparent;border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
+.course-opt:hover{background:rgba(92,15,15,.04);border-color:rgba(92,15,15,.12);}
+.course-opt.selected{background:rgba(92,15,15,.05);border-color:var(--crimson);}
+.course-opt input{display:none;}
+.course-dot{width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);transition:all .2s;flex-shrink:0;}
+.course-opt.selected .course-dot{background:var(--crimson);border-color:var(--crimson);display:flex;align-items:center;justify-content:center;}
+.course-opt.selected .course-dot::after{content:'';width:8px;height:8px;background:#fff;border-radius:50%;}
+.course-info{flex:1;}
+.course-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.course-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+.course-meta span{display:flex;align-items:center;gap:3px;}
+
+/* SUBMIT */
+.submit-btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:16px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;margin-top:8px;}
+.submit-btn:hover{background:var(--crimson-2);}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* SUCCESS */
+.success-card{background:#fff;border-radius:20px;padding:40px 28px;text-align:center;box-shadow:0 4px 20px rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.06);display:none;}
+.success-icon{font-size:52px;margin-bottom:14px;}
+.success-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.new-btn{background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;padding:12px 28px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;}
+.new-btn:hover{background:var(--crimson-2);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">تسجيل الدورات الخاصة</div>
+    <div class="header-sub">أكاديمية مسار — للموظفين فقط</div>
+  </div>
+  <div class="header-badge">@bymasar</div>
+</div>
+
+<div class="main">
+
+  <div class="form-card" id="formCard">
+    <div class="form-title">📋 بيانات المتدرب</div>
+
+    <!-- الاسم -->
+    <div class="mf" id="mf-name">
+      <label><span class="req">*</span> الاسم الكامل</label>
+      <input type="text" id="fname" placeholder="اسم المتدرب">
+      <div class="err">يرجى إدخال الاسم</div>
+    </div>
+
+    <!-- الرقم -->
+    <div class="mf" id="mf-phone">
+      <label><span class="req">*</span> رقم الواتساب</label>
+      <input type="tel" id="fphone" placeholder="XXXXXXXX">
+      <div class="err">يرجى إدخال الرقم</div>
+    </div>
+
+    <!-- الإيميل -->
+    <div class="mf" id="mf-email">
+      <label><span class="req">*</span> الإيميل</label>
+      <input type="email" id="femail" placeholder="example@email.com">
+      <div class="err">يرجى إدخال إيميل صحيح</div>
+    </div>
+
+    <!-- الدورة -->
+    <div class="mf" id="mf-course">
+      <label><span class="req">*</span> اختر الدورة</label>
+      <div class="courses-list" id="coursesList">
+
+        <label class="course-opt" onclick="selectCourse(this,'الذكاء العاطفي','خالد الهلالي','11-5-2026','5-7pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">الذكاء العاطفي</div>
+            <div class="course-meta">
+              <span>👤 خالد الهلالي</span>
+              <span>📅 11-5-2026</span>
+              <span>🕔 5-7pm</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="course-opt" onclick="selectCourse(this,'استبدل كامرتك بهاتفك','غدير الهندي','18-5-2026','7-9pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">استبدل كامرتك بهاتفك</div>
+            <div class="course-meta">
+              <span>👤 غدير الهندي</span>
+              <span>📅 18-5-2026</span>
+              <span>🕔 7-9pm</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="course-opt" onclick="selectCourse(this,'كيف تربي طفل سليم','حليمة خليفة حسن','25-5-2026','7-9pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">كيف تربي طفل سليم</div>
+            <div class="course-meta">
+              <span>👤 حليمة خليفة حسن</span>
+              <span>📅 25-5-2026</span>
+              <span>🕔 7-9pm</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="course-opt" onclick="selectCourse(this,'التواصل مع جيل الفا','حصة عبدالرزاق العبيد','16-5-2026','7-9pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">التواصل مع جيل الفا</div>
+            <div class="course-meta">
+              <span>👤 حصة عبدالرزاق العبيد</span>
+              <span>📅 16-5-2026</span>
+              <span>🕔 7-9pm</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="course-opt" onclick="selectCourse(this,'تصميم ملف الإنجاز باحتراف عبر KEYNOTE','نوف حسن','23-5-2026','7-9pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">تصميم ملف الإنجاز باحتراف عبر KEYNOTE</div>
+            <div class="course-meta">
+              <span>👤 نوف حسن</span>
+              <span>📅 23-5-2026</span>
+              <span>🕔 7-9pm</span>
+            </div>
+          </div>
+        </label>
+
+        <label class="course-opt" onclick="selectCourse(this,'القانون الطبي والأخطاء الطبية','روان عذال الشمري','19-5-2026','7-9pm')">
+          <input type="radio" name="course">
+          <div class="course-dot"></div>
+          <div class="course-info">
+            <div class="course-name">القانون الطبي والأخطاء الطبية</div>
+            <div class="course-meta">
+              <span>👤 روان عذال الشمري</span>
+              <span>📅 19-5-2026</span>
+              <span>🕔 7-9pm</span>
+            </div>
+          </div>
+        </label>
+
+      </div>
+      <div class="err" id="course-err">يرجى اختيار دورة</div>
+    </div>
+
+    <!-- الدفع -->
+    <div class="mf" id="mf-pay">
+      <label><span class="req">*</span> حالة الدفع</label>
+      <div class="pay-opts">
+        <label class="pay-opt" id="pay-done" onclick="selectPay('تم الدفع',this)">
+          <input type="radio" name="pay" value="تم الدفع">
+          ✅ تم الدفع
+        </label>
+        <label class="pay-opt" id="pay-later" onclick="selectPay('يدفع لاحقاً',this)">
+          <input type="radio" name="pay" value="يدفع لاحقاً">
+          ⏳ يدفع لاحقاً
+        </label>
+      </div>
+      <div class="err" id="pay-err">يرجى اختيار حالة الدفع</div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+      <span id="submitTxt">سجّل الآن</span>
+      <div class="spinner" id="submitSpinner"></div>
+    </button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-card" id="successCard">
+    <div class="success-icon">✅</div>
+    <div class="success-title">تم التسجيل بنجاح!</div>
+    <div class="success-sub" id="successMsg">تم حفظ بيانات المتدرب في الشيت</div>
+    <button class="new-btn" onclick="resetForm()">تسجيل متدرب جديد</button>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
+
+let selectedCourse  = '';
+let selectedPayment = '';
+
+function selectCourse(el, name, trainer, date, time) {
+  document.querySelectorAll('.course-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCourse = { name, trainer, date, time };
+  document.getElementById('course-err').style.display = 'none';
+  document.getElementById('mf-course').classList.remove('invalid');
+}
+
+function selectPay(val, el) {
+  document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPayment = val;
+  document.getElementById('pay-err').style.display = 'none';
+  document.getElementById('mf-pay').classList.remove('invalid');
+}
+
+async function submitForm() {
+  const name  = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const email = document.getElementById('femail').value.trim();
+
+  let ok = true;
+  if(!name)  { document.getElementById('mf-name').classList.add('invalid'); ok=false; } else document.getElementById('mf-name').classList.remove('invalid');
+  if(!phone) { document.getElementById('mf-phone').classList.add('invalid'); ok=false; } else document.getElementById('mf-phone').classList.remove('invalid');
+  if(!email||!email.includes('@')) { document.getElementById('mf-email').classList.add('invalid'); ok=false; } else document.getElementById('mf-email').classList.remove('invalid');
+  if(!selectedCourse) {
+    document.getElementById('mf-course').classList.add('invalid');
+    document.getElementById('course-err').style.display = 'block';
+    ok=false;
+  }
+  if(!selectedPayment) {
+    document.getElementById('mf-pay').classList.add('invalid');
+    document.getElementById('pay-err').style.display = 'block';
+    ok=false;
+  }
+  if(!ok) return;
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitTxt').style.display = 'none';
+  document.getElementById('submitSpinner').style.display = 'block';
+
+  await fetch(SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type:     'دورة خاصة',
+      name,
+      phone,
+      email,
+      course:   selectedCourse.name,
+      trainer:  selectedCourse.trainer,
+      date:     selectedCourse.date,
+      time:     selectedCourse.time,
+      payment:  selectedPayment,
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).catch(()=>{});
+
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successCard').style.display = 'block';
+  document.getElementById('successMsg').textContent =
+    'تم تسجيل ' + name + ' في دورة ' + selectedCourse.name;
+}
+
+function resetForm() {
+  document.getElementById('fname').value = '';
+  document.getElementById('fphone').value = '';
+  document.getElementById('femail').value = '';
+  document.querySelectorAll('.course-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('selected'));
+  selectedCourse = '';
+  selectedPayment = '';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitTxt').style.display = 'block';
+  document.getElementById('submitSpinner').style.display = 'none';
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('successCard').style.display = 'none';
+}
+</script>
+</body>
+</html>
