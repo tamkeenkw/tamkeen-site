@@ -71,8 +71,9 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(92,15,15,.02);}
 
 /* CERT BADGE */
-.cert-yes{background:var(--green-bg);color:var(--green);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
+.cert-done{background:var(--green-bg);color:var(--green);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
 .cert-no{background:var(--cream-2);color:var(--muted);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;display:inline-block;}
+.cert-pending{background:var(--yellow-bg);color:var(--yellow);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
 
 /* AVATAR */
 .avatar{width:34px;height:34px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
@@ -165,7 +166,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
             <th>#</th>
             <th>الاسم</th>
             <th>رقم الواتساب</th>
-            <th>شهادة</th>
+            <th>صدرت الشهادة؟</th>
             <th>تواصل</th>
           </tr>
         </thead>
@@ -174,7 +175,27 @@ tr:hover td{background:rgba(92,15,15,.02);}
     </div>
   </div>
 
-  <!-- EMPTY -->
+  <!-- BULK MESSAGE -->
+  <div class="results-card" id="messageCard" style="display:none;margin-top:20px;">
+    <div class="results-header">
+      <div class="results-title">✉️ إرسال رسالة للمسجلين</div>
+      <div class="results-count" id="msgCount"></div>
+    </div>
+    <div style="padding:20px;">
+      <div style="background:var(--cream);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7;">
+        الرسالة ستُرسل لجميع المسجلين في الدورة مع رابط زووم واسم المدرب تلقائياً
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label>الرسالة</label>
+        <textarea id="bulkMsg" rows="4" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;resize:vertical;transition:border .2s;" placeholder="اكتب رسالتك هنا..."></textarea>
+      </div>
+      <button class="search-btn" id="sendBtn" onclick="sendBulkMessage()" style="width:100%;justify-content:center;">
+        <span id="sendTxt">إرسال للجميع</span>
+        <div class="spinner" id="sendSpinner"></div>
+      </button>
+      <div id="sendResult" style="display:none;margin-top:12px;background:var(--green-bg);color:var(--green);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:800;text-align:center;"></div>
+    </div>
+  </div>
   <div id="emptyState" style="display:none;">
     <div class="empty">
       <div class="empty-icon">📭</div>
@@ -241,57 +262,128 @@ async function searchCourse() {
   }
 }
 
-function renderResults(course, date, students) {
-  const total   = students.length;
-  const wantCert = students.filter(s => s.cert === 'نعم').length;
-  const noCert   = total - wantCert;
+let currentCourse = '';
+let currentTrainer = '';
+let currentZoom = '';
 
-  // Stats
+async function searchCourse() {
+  const course = document.getElementById('courseName').value.trim();
+  const date   = document.getElementById('courseDate').value.trim();
+
+  if(!course) {
+    document.getElementById('f-course').classList.add('invalid');
+    return;
+  }
+  document.getElementById('f-course').classList.remove('invalid');
+
+  document.getElementById('searchBtn').disabled = true;
+  document.getElementById('searchTxt').style.display = 'none';
+  document.getElementById('searchSpinner').style.display = 'block';
+  document.getElementById('statsRow').style.display = 'none';
+  document.getElementById('resultsCard').style.display = 'none';
+  document.getElementById('messageCard').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+
+  try {
+    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(course) +
+                (date ? '&date=' + encodeURIComponent(date) : '');
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    document.getElementById('loadingState').style.display = 'none';
+
+    if(!data.students || data.students.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+    } else {
+      currentCourse  = course;
+      currentTrainer = data.trainer || '';
+      currentZoom    = data.zoomLink || '';
+      renderResults(course, date, data.students);
+    }
+  } catch(err) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+  } finally {
+    document.getElementById('searchBtn').disabled = false;
+    document.getElementById('searchTxt').style.display = 'block';
+    document.getElementById('searchSpinner').style.display = 'none';
+  }
+}
+
+function renderResults(course, date, students) {
+  const total    = students.length;
+  const certDone = students.filter(s => s.certDone === 'تم').length;
+  const noCert   = total - certDone;
+
   document.getElementById('statTotal').textContent  = toA(total);
-  document.getElementById('statCert').textContent   = toA(wantCert);
+  document.getElementById('statCert').textContent   = toA(certDone);
   document.getElementById('statNoCert').textContent = toA(noCert);
   document.getElementById('statsRow').style.display = 'grid';
 
-  // Header
   document.getElementById('resultsTitle').textContent = course + (date ? ' — ' + date : '');
   document.getElementById('resultsCount').textContent = toA(total) + ' مسجل';
 
-  // Table
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
   students.forEach((s, i) => {
     const initial = s.name ? s.name.charAt(0) : '؟';
-    const certBadge = s.cert === 'نعم'
-      ? '<span class="cert-yes">نعم ✓</span>'
-      : '<span class="cert-no">حضور فقط</span>';
+    let certBadge = '';
+    if (s.certDone === 'تم')       certBadge = '<span class="cert-done">صدرت ✓</span>';
+    else if (s.certDone === 'لا')  certBadge = '<span class="cert-no">لم تصدر</span>';
+    else                           certBadge = '<span class="cert-pending">معلق</span>';
+
     const waLink = s.phone
       ? `<a href="https://wa.me/965${s.phone}" target="_blank" class="wa-btn">واتساب</a>`
       : '—';
     tbody.innerHTML += `
       <tr>
         <td class="row-num">${toA(i+1)}</td>
-        <td>
-          <div class="name-row">
-            <div class="avatar">${initial}</div>
-            <span style="font-weight:700;">${s.name || '—'}</span>
-          </div>
-        </td>
-        <td style="font-family:monospace;font-size:13px;letter-spacing:1px;">${s.phone || '—'}</td>
+        <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
+        <td style="font-family:monospace;font-size:13px;letter-spacing:1px;">${s.phone||'—'}</td>
         <td>${certBadge}</td>
         <td>${waLink}</td>
       </tr>`;
   });
 
   document.getElementById('resultsCard').style.display = 'block';
+
+  // أظهر قسم الرسالة
+  document.getElementById('msgCount').textContent = toA(total) + ' مسجل سيستلمون الرسالة';
+  document.getElementById('messageCard').style.display = 'block';
+  document.getElementById('sendResult').style.display = 'none';
+  document.getElementById('bulkMsg').value = '';
 }
 
-// Enter key
-document.getElementById('courseName').addEventListener('keydown', e => {
-  if(e.key === 'Enter') searchCourse();
-});
-document.getElementById('courseDate').addEventListener('keydown', e => {
-  if(e.key === 'Enter') searchCourse();
-});
+async function sendBulkMessage() {
+  const msg = document.getElementById('bulkMsg').value.trim();
+  if(!msg) { document.getElementById('bulkMsg').style.borderColor = '#C62828'; return; }
+  document.getElementById('bulkMsg').style.borderColor = '';
+
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sendTxt').style.display = 'none';
+  document.getElementById('sendSpinner').style.display = 'block';
+  document.getElementById('sendResult').style.display = 'none';
+
+  await fetch(SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type:     'رسالة جماعية',
+      course:   currentCourse,
+      message:  msg,
+      trainer:  currentTrainer,
+      zoomLink: currentZoom,
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).catch(()=>{});
+
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('sendTxt').style.display = 'block';
+  document.getElementById('sendSpinner').style.display = 'none';
+  document.getElementById('sendResult').textContent = 'تم إرسال الرسالة بنجاح ✅';
+  document.getElementById('sendResult').style.display = 'block';
+  document.getElementById('bulkMsg').value = '';
+}
 </script>
 </body>
 </html>
