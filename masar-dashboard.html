@@ -123,12 +123,12 @@ tr:hover td{background:rgba(92,15,15,.02);}
     <div class="search-title"><span>🔍</span> بحث عن مسجلي دورة</div>
     <div class="search-row">
       <div class="field" id="f-course">
-        <label>اسم الدورة</label>
+        <label>اسم الدورة <span style="color:var(--crimson);">*</span></label>
         <input type="text" id="courseName" placeholder="مثال: الذكاء العاطفي">
       </div>
-      <div class="field">
-        <label>تاريخ الدورة (اختياري)</label>
-        <input type="text" id="courseDate" placeholder="مثال: الاثنين ١١ مايو">
+      <div class="field" id="f-date">
+        <label>تاريخ الدورة <span style="color:var(--crimson);">*</span></label>
+        <input type="text" id="courseDate" placeholder="مثال: 11-5-2026">
       </div>
       <button class="search-btn" id="searchBtn" onclick="searchCourse()">
         <span id="searchTxt">بحث</span>
@@ -166,7 +166,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
             <th>#</th>
             <th>الاسم</th>
             <th>رقم الواتساب</th>
-            <th>صدرت الشهادة؟</th>
+            <th>يبي شهادة؟</th>
             <th>تواصل</th>
           </tr>
         </thead>
@@ -276,8 +276,13 @@ async function searchCourse() {
   }
   document.getElementById('f-course').classList.remove('invalid');
 
+  if(!date) {
+    document.getElementById('f-date').classList.add('invalid');
+    return;
+  }
+  document.getElementById('f-date').classList.remove('invalid');
+
   document.getElementById('searchBtn').disabled = true;
-  document.getElementById('searchTxt').style.display = 'none';
   document.getElementById('searchSpinner').style.display = 'block';
   document.getElementById('statsRow').style.display = 'none';
   document.getElementById('resultsCard').style.display = 'none';
@@ -313,12 +318,12 @@ async function searchCourse() {
 
 function renderResults(course, date, students) {
   const total    = students.length;
-  const certDone = students.filter(s => s.certDone === 'تم').length;
-  const noCert   = total - certDone;
+  const certYes  = students.filter(s => s.cert === 'نعم').length;
+  const certNo   = total - certYes;
 
   document.getElementById('statTotal').textContent  = toA(total);
-  document.getElementById('statCert').textContent   = toA(certDone);
-  document.getElementById('statNoCert').textContent = toA(noCert);
+  document.getElementById('statCert').textContent   = toA(certYes);
+  document.getElementById('statNoCert').textContent = toA(certNo);
   document.getElementById('statsRow').style.display = 'grid';
 
   document.getElementById('resultsTitle').textContent = course + (date ? ' — ' + date : '');
@@ -329,9 +334,9 @@ function renderResults(course, date, students) {
   students.forEach((s, i) => {
     const initial = s.name ? s.name.charAt(0) : '؟';
     let certBadge = '';
-    if (s.certDone === 'تم')       certBadge = '<span class="cert-done">صدرت ✓</span>';
-    else if (s.certDone === 'لا')  certBadge = '<span class="cert-no">لم تصدر</span>';
-    else                           certBadge = '<span class="cert-pending">معلق</span>';
+    if (s.cert === 'نعم')      certBadge = '<span class="cert-done">نعم ✓</span>';
+    else if (s.cert === 'لا')  certBadge = '<span class="cert-no">لا</span>';
+    else                       certBadge = '<span class="cert-pending">—</span>';
 
     const waLink = s.phone
       ? `<a href="https://wa.me/965${s.phone}" target="_blank" class="wa-btn">واتساب</a>`
