@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دورة إعداد مدرب معتمد | عتيق العتيق × معهد تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#5C0F0F;--cr2:#7A1414;--cr3:#2E0606;
+  --cream:#FAF7F2;--cream2:#F2EDE5;
+  --text:#1A0808;--muted:#7A6060;
+  --white:#fff;--green:#1A7A3A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ===================== HERO ===================== */
+.hero{
+  min-height:100vh;
+  background:linear-gradient(160deg,#6B1212 0%,#2E0606 100%);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(255,255,255,.06) 0%,transparent 60%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.hero-noise{display:none}
+
+.nav{
+  position:relative;z-index:10;
+  padding:20px clamp(20px,5vw,60px);
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.nav-logo{font-size:20px;font-weight:900;color:#fff;letter-spacing:.5px}
+.nav-logo span{color:rgba(255,255,255,.5)}
+.nav-badge{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.9);font-size:11px;font-weight:700;
+  padding:5px 14px;border-radius:100px;letter-spacing:1px;
+}
+
+.hero-content{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:clamp(40px,8vw,80px) clamp(20px,5vw,60px);
+  position:relative;z-index:2;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.9);font-size:12px;font-weight:700;letter-spacing:2px;
+  padding:8px 20px;border-radius:100px;margin-bottom:28px;
+  text-transform:uppercase;
+}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--cream2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero-title{
+  font-size:clamp(48px,10vw,96px);font-weight:900;
+  color:#fff;line-height:1;margin-bottom:6px;
+  font-family:'Cairo',sans-serif;
+}
+.hero-title-gold{
+  display:block;
+  color:var(--cream2);
+  font-size:clamp(32px,7vw,68px);
+  font-weight:700;
+  margin-top:8px;
+  opacity:.8;
+}
+.hero-sub{
+  font-size:clamp(15px,2.5vw,18px);color:rgba(255,255,255,.65);
+  max-width:520px;line-height:1.9;margin:24px auto 40px;
+}
+
+.hero-stats{
+  display:flex;justify-content:center;gap:clamp(24px,5vw,56px);flex-wrap:wrap;
+  margin-bottom:48px;padding:24px 36px;
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+}
+.stat-n{
+  font-size:clamp(28px,5vw,44px);font-weight:900;
+  color:#fff;
+  line-height:1;
+}
+.stat-l{font-size:13px;color:rgba(255,255,255,.55);margin-top:5px;font-weight:600}
+
+.hero-cta{
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--cream);
+  color:var(--cr);font-family:'Cairo',sans-serif;
+  font-size:17px;font-weight:900;
+  padding:16px 40px;border-radius:100px;
+  text-decoration:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  transition:all .3s;border:none;cursor:pointer;
+}
+.hero-cta:hover{background:#fff;transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.hero-cta svg{width:20px;height:20px;fill:var(--cr)}
+
+.scroll-hint{
+  position:relative;z-index:2;text-align:center;padding-bottom:32px;
+  color:rgba(255,255,255,.25);font-size:12px;letter-spacing:2px;
+  animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+/* ===================== SECTIONS ===================== */
+section{background:var(--cream);color:var(--text);position:relative}
+
+.section-wrap{max-width:1100px;margin:0 auto;padding:clamp(64px,8vw,100px) clamp(20px,5vw,48px)}
+
+.section-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:3px;
+  color:var(--cr);text-transform:uppercase;margin-bottom:10px;
+}
+.section-title{font-size:clamp(28px,5vw,44px);font-weight:900;line-height:1.2;margin-bottom:16px;color:var(--text) !important}
+.section-sub{font-size:16px;color:var(--muted);line-height:1.8;max-width:600px}
+.dark .section-sub{color:var(--muted)}
+
+/* TRAINER */
+.trainer-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:768px){.trainer-grid{grid-template-columns:1fr}}
+.trainer-img-wrap{position:relative}
+.trainer-img-bg{
+  width:100%;aspect-ratio:4/5;border-radius:24px;overflow:hidden;
+  background:linear-gradient(160deg,var(--cr),var(--cr2));
+  position:relative;
+}
+.trainer-img-placeholder{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:80px;opacity:.3;
+}
+.trainer-badge-wrap{
+  position:absolute;bottom:-20px;right:-20px;
+  background:var(--cr);border-radius:16px;padding:16px 20px;
+  border:3px solid var(--cr3);box-shadow:0 8px 32px rgba(0,0,0,.3);
+  text-align:center;
+}
+.trainer-badge-n{font-size:28px;font-weight:900;color:#fff;line-height:1}
+.trainer-badge-l{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+
+.trainer-creds{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+.cred-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;background:rgba(92,15,15,.06);border-radius:12px;
+  border-right:3px solid var(--cr);
+}
+.cred-icon{width:32px;height:32px;background:var(--cr);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cred-icon svg{width:16px;height:16px;fill:#fff}
+.cred-text{font-size:14px;font-weight:600;color:var(--text)}
+
+/* VIDEOS */
+.videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:768px){.videos-grid{grid-template-columns:1fr}}
+.video-card{
+  background:var(--white);border:1px solid rgba(92,15,15,.08);
+  border-radius:20px;overflow:hidden;transition:all .3s;
+}
+.video-card:hover{border-color:rgba(92,15,15,.2);transform:translateY(-4px)}
+.video-thumb{
+  aspect-ratio:16/9;background:var(--cream2);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.video-play{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--cr);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;
+}
+.video-play svg{width:22px;height:22px;fill:#fff;margin-right:-3px}
+.video-card:hover .video-play{background:var(--cr2);transform:scale(1.1)}
+.video-label{padding:16px;font-size:14px;font-weight:700;color:var(--text)}
+.video-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* CURRICULUM */
+.curriculum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:640px){.curriculum-grid{grid-template-columns:1fr}}
+.curr-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:20px;background:var(--white);border-radius:16px;
+  border:1.5px solid rgba(92,15,15,.07);
+  box-shadow:0 2px 12px rgba(92,15,15,.04);
+  transition:all .25s;
+}
+.curr-item:hover{border-color:rgba(92,15,15,.15);transform:translateY(-2px)}
+.curr-num{
+  width:36px;height:36px;min-width:36px;border-radius:10px;
+  background:var(--cr);color:#fff;font-size:14px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.curr-text{font-size:14px;font-weight:700;color:var(--text);line-height:1.5}
+
+/* PACKAGES */
+.packages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:768px){.packages-grid{grid-template-columns:1fr}}
+.pkg-card{
+  background:var(--white);border:1.5px solid rgba(92,15,15,.1);
+  border-radius:24px;padding:32px 24px;position:relative;overflow:hidden;
+  transition:all .3s;
+}
+.pkg-card:hover{border-color:rgba(92,15,15,.2)}
+.pkg-card.featured{
+  background:rgba(92,15,15,.04);
+  border-color:rgba(92,15,15,.25);
+  transform:scale(1.02);
+}
+.pkg-featured-badge{
+  position:absolute;top:16px;left:16px;
+  background:var(--cream);color:var(--cr);
+  font-size:10px;font-weight:800;padding:4px 12px;border-radius:100px;letter-spacing:1px;
+}
+.pkg-name{font-size:18px;font-weight:900;color:#fff;margin-bottom:6px;margin-top:8px}
+.pkg-price{
+  font-size:44px;font-weight:900;
+  background:linear-gradient(135deg,var(--cr),var(--cr));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:4px;
+}
+.pkg-price-unit{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:20px}
+.pkg-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pkg-features li{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px;color:rgba(255,255,255,.75);font-weight:600;
+}
+.pkg-features li::before{
+  content:'';width:18px;height:18px;min-width:18px;border-radius:50%;
+  background:rgba(26,122,58,.2);border:1.5px solid rgba(26,122,58,.4);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' fill='%231A7A3A'/%3E%3C/svg%3E");
+  background-size:12px;background-position:center;background-repeat:no-repeat;
+}
+.pkg-btn{
+  width:100%;background:rgba(255,255,255,.08);color:#fff;
+  font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;
+  padding:13px;border-radius:100px;border:1.5px solid rgba(255,255,255,.2);
+  cursor:pointer;transition:all .25s;
+}
+.pkg-card.featured .pkg-btn{
+  background:var(--cr);
+  color:var(--cr3);border-color:transparent;
+  box-shadow:0 6px 24px rgba(92,15,15,.2);
+}
+.pkg-btn:hover{transform:translateY(-2px)}
+
+/* DATES */
+.dates-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:640px){.dates-grid{grid-template-columns:1fr}}
+.date-card{
+  background:var(--white);border:1px solid rgba(92,15,15,.08);
+  border-radius:20px;padding:24px;display:flex;align-items:center;gap:20px;
+  transition:all .3s;
+}
+.date-card:hover{border-color:var(--cr);background:rgba(92,15,15,.03)}
+.date-num{
+  min-width:64px;height:64px;border-radius:16px;
+  background:rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.date-day{font-size:24px;font-weight:900;color:var(--cr);line-height:1}
+.date-month{font-size:11px;color:var(--muted);font-weight:600}
+.date-info{}
+.date-batch{font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px}
+.date-details{font-size:13px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.date-tag{
+  background:rgba(92,15,15,.07);border-radius:100px;
+  padding:2px 10px;font-size:11px;font-weight:700;color:var(--muted);
+}
+.date-tag.online{background:rgba(26,122,58,.12);color:#5DCAA5}
+.date-tag.offline{background:rgba(92,15,15,.2);color:#D4956A}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.testi-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.testi-grid{grid-template-columns:1fr}}
+.testi-card{
+  background:var(--white);border-radius:20px;padding:24px;
+  border:1.5px solid rgba(92,15,15,.07);
+  box-shadow:0 4px 20px rgba(92,15,15,.05);
+  display:flex;flex-direction:column;gap:14px;
+}
+.testi-stars{color:var(--cr);font-size:14px;letter-spacing:2px}
+.testi-text{font-size:14px;color:var(--text);line-height:1.8;flex:1}
+.testi-author{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid rgba(92,15,15,.06)}
+.testi-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--cr);color:#fff;
+  font-size:14px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.testi-name{font-size:13px;font-weight:800;color:var(--text)}
+.testi-batch{font-size:11px;color:var(--muted)}
+
+/* FORM */
+.form-wrap{
+  background:var(--white);border:1px solid rgba(92,15,15,.08);
+  border-radius:28px;padding:clamp(28px,5vw,48px);max-width:680px;margin:0 auto;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.field{margin-bottom:0}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.5px}
+.field input,.field select{
+  width:100%;background:var(--cream);
+  border:1.5px solid rgba(92,15,15,.1);
+  border-radius:12px;padding:13px 16px;
+  font-family:'Cairo',sans-serif;font-size:15px;
+  color:var(--text);outline:none;transition:all .25s;direction:rtl;
+}
+.field input:focus,.field select:focus{border-color:var(--cr);background:var(--white)}
+.field input::placeholder{color:rgba(122,96,96,.4)}
+.field select option{background:var(--cream);color:var(--text)}
+
+.pkg-select-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;grid-column:1/-1}
+@media(max-width:580px){.pkg-select-grid{grid-template-columns:1fr}}
+.pkg-opt{
+  background:var(--cream);border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px;padding:14px;text-align:center;cursor:pointer;
+  transition:all .2s;
+}
+.pkg-opt:hover{border-color:var(--cr)}
+.pkg-opt.sel{border-color:var(--cr);background:rgba(92,15,15,.05)}
+.pkg-opt input[type=radio]{display:none}
+.pkg-opt-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
+.pkg-opt-price{font-size:20px;font-weight:900;color:var(--cr)}
+.pkg-opt-unit{font-size:11px;color:var(--muted)}
+
+.pay-select-grid{display:flex;gap:10px;grid-column:1/-1}
+.pay-opt{
+  flex:1;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);
+  border-radius:12px;padding:12px;text-align:center;cursor:pointer;
+  font-size:14px;font-weight:700;color:var(--muted);transition:all .2s;
+}
+.pay-opt.sel{border-color:var(--cr);background:rgba(92,15,15,.05);color:var(--cr)}
+
+.form-submit{
+  width:100%;grid-column:1/-1;margin-top:8px;
+  background:var(--cr);
+  color:var(--cr3);font-family:'Cairo',sans-serif;
+  font-size:17px;font-weight:900;
+  padding:16px;border-radius:100px;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 6px 24px rgba(92,15,15,.2);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(92,15,15,.25)}
+.form-submit:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.spin{width:20px;height:20px;border:3px solid rgba(92,15,15,.3);border-top-color:var(--cr3);border-radius:50%;animation:spin .8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+.success-box{text-align:center;padding:40px 20px}
+.success-icon-wrap{width:80px;height:80px;border-radius:50%;background:rgba(26,122,58,.15);border:2px solid rgba(26,122,58,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.success-icon-wrap svg{width:40px;height:40px;fill:#5DCAA5}
+
+/* ACCREDITATIONS */
+.accr-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
+.accr-badge{
+  background:var(--white);border:1px solid rgba(92,15,15,.1);
+  border-radius:100px;padding:8px 20px;
+  font-size:13px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:8px;
+}
+.accr-dot{width:6px;height:6px;border-radius:50%;background:var(--cr)}
+
+/* FOOTER */
+footer{background:var(--cr3);padding:32px;text-align:center;border-top:1px solid rgba(255,255,255,.05)}
+footer p{font-size:13px;color:rgba(255,255,255,.3)}
+footer a{color:rgba(255,255,255,.5);text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+
+  <nav class="nav">
+    <div class="nav-logo">تمكين <span>×</span> عتيق العتيق</div>
+    <div class="nav-badge">أول حاضنة مدربين في الكويت</div>
+  </nav>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      دورة معتمدة رسمياً
+    </div>
+    <h1 class="hero-title">
+      إعداد
+      <span class="hero-title-gold">مدرب معتمد</span>
+    </h1>
+    <p class="hero-sub">الدورة التي خرّجت أكثر من ٦٠٠٠ مدرب ومدربة في الكويت — حوّل خبرتك إلى مسار تدريبي احترافي معتمد</p>
+
+    <div class="hero-stats">
+      <div>
+        <div class="stat-n">+٦٠٠٠</div>
+        <div class="stat-l">مدرب خرّجناهم</div>
+      </div>
+      <div>
+        <div class="stat-n">+١١٠</div>
+        <div class="stat-l">دفعة تدريبية</div>
+      </div>
+      <div>
+        <div class="stat-n">٥</div>
+        <div class="stat-l">جهات اعتماد</div>
+      </div>
+      <div>
+        <div class="stat-n">٣</div>
+        <div class="stat-l">أيام فقط</div>
+      </div>
+    </div>
+
+    <a href="#register" class="hero-cta">
+      سجّل الحين
+      <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+    </a>
+  </div>
+
+  <div class="scroll-hint">▼ &nbsp; اكتشف المزيد</div>
+</section>
+
+<!-- ==================== TRAINER ==================== -->
+<section>
+  <div class="section-wrap">
+    <div class="trainer-grid">
+      <div class="trainer-img-wrap">
+        <div class="trainer-img-bg">
+          <img src="trainer-ateiq.jpg" alt="عتيق خالد العتيق" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+        </div>
+        <div class="trainer-badge-wrap">
+          <div class="trainer-badge-n">+١١٠</div>
+          <div class="trainer-badge-l">دفعة تدريبية</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-eyebrow">مقدم الدورة</div>
+        <div class="section-title">عتيق خالد العتيق</div>
+        <p class="section-sub">متخصص في تأهيل وتدريب المدربين — قدّم أكثر من ١١٠ دفعة تدريبية وخرّج أكثر من ٦٠٠٠ مدرب ومدربة في الكويت والخليج.</p>
+        <div class="trainer-creds">
+          <div class="cred-item">
+            <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+            <div class="cred-text">دورة تدريبية في جامعة الكويت — كلية التربية</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
+            <div class="cred-text">مركز القياس والتقويم — الهيئة العامة للتعليم التطبيقي</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2z"/></svg></div>
+            <div class="cred-text">مدرب معتمد من البورد الأمريكي BITA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VIDEOS ==================== -->
+<section class="dark" style="padding-top:0">
+  <div class="section-wrap" style="padding-top:0">
+    <div class="section-eyebrow" style="text-align:center">شاهد عتيق يدرّب</div>
+    <div class="section-title" style="text-align:center;margin-bottom:32px">من داخل القاعات الحقيقية</div>
+    <div class="videos-grid">
+      <div class="video-card">
+        <div class="video-thumb" onclick="openVideo('جامعة_الكويت')">
+          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-label">جامعة الكويت — كلية التربية<div class="video-sub">تدريب مؤسسي رسمي</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb" onclick="openVideo('التطبيقي')">
+          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-label">الهيئة العامة للتعليم التطبيقي<div class="video-sub">مركز القياس والتقويم</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-thumb" onclick="openVideo('دورة')">
+          <div class="video-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="video-label">من داخل الدورة التدريبية<div class="video-sub">لحظات حقيقية من التدريب</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CURRICULUM ==================== -->
+<section>
+  <div class="section-wrap">
+    <div class="section-eyebrow">محتوى الدورة</div>
+    <div class="section-title">شنو راح تتعلم؟</div>
+    <p class="section-sub" style="margin-bottom:36px">٣ أيام مكثّفة تخرج منها بمهارات تدريبية احترافية قابلة للتطبيق فوراً</p>
+    <div class="curriculum-grid">
+      <div class="curr-item"><div class="curr-num">١</div><div class="curr-text">تحليل فكرتك التدريبية وتحويلها إلى برنامج احترافي</div></div>
+      <div class="curr-item"><div class="curr-num">٢</div><div class="curr-text">تخطيط وتصميم الدورة التدريبية خطوة بخطوة</div></div>
+      <div class="curr-item"><div class="curr-num">٣</div><div class="curr-text">مهارات الإلقاء والتأثير بثقة أمام الجمهور</div></div>
+      <div class="curr-item"><div class="curr-num">٤</div><div class="curr-text">إعداد الأنشطة والتمارين التدريبية الجذابة</div></div>
+      <div class="curr-item"><div class="curr-num">٥</div><div class="curr-text">كتابة المخطط التدريبي باحتراف</div></div>
+      <div class="curr-item"><div class="curr-num">٦</div><div class="curr-text">تحليل الجمهور المستهدف باستخدام استراتيجية المربع الجماهيري</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PACKAGES ==================== -->
+<section style="background:var(--cr3)">
+  <div class="section-wrap">
+    <div class="section-eyebrow" style="text-align:center;color:var(--cream2)">الباقات التدريبية</div>
+    <div class="section-title" style="text-align:center;margin-bottom:8px;color:#fff">اختر الباقة المناسبة لك</div>
+    <p class="section-sub" style="text-align:center;margin:0 auto 40px;color:rgba(255,255,255,.6)">ثلاث باقات تناسب كل مستوى وهدف</p>
+    <div class="packages-grid">
+
+      <div class="pkg-card">
+        <div class="pkg-name">الأساسية</div>
+        <div class="pkg-price">٧٥</div>
+        <div class="pkg-price-unit">دينار كويتي</div>
+        <ul class="pkg-features">
+          <li>شهادة تدريب محلية معتمدة</li>
+          <li>ليسن تدريب محلي</li>
+          <li>٣ أيام تدريب مكثّف</li>
+        </ul>
+        <button class="pkg-btn" onclick="selectPkg('basic')">اختر هذه الباقة</button>
+      </div>
+
+      <div class="pkg-card featured">
+        <div class="pkg-featured-badge">الأكثر طلباً</div>
+        <div class="pkg-name">الدولية</div>
+        <div class="pkg-price">١٠٠</div>
+        <div class="pkg-price-unit">دينار كويتي</div>
+        <ul class="pkg-features">
+          <li>شهادة تدريب محلية معتمدة</li>
+          <li>ليسن تدريب محلي</li>
+          <li>شهادة دولية من البورد الأمريكي BITA</li>
+        </ul>
+        <button class="pkg-btn" onclick="selectPkg('international')">اختر هذه الباقة</button>
+      </div>
+
+      <div class="pkg-card">
+        <div class="pkg-name">الممارس</div>
+        <div class="pkg-price">١٤٠</div>
+        <div class="pkg-price-unit">دينار كويتي</div>
+        <ul class="pkg-features">
+          <li>شهادة تدريب محلية معتمدة</li>
+          <li>ليسن تدريب محلي</li>
+          <li>شهادة دولية من البورد الأمريكي BITA</li>
+          <li>عضوية تمكين لمدة سنة كاملة</li>
+        </ul>
+        <button class="pkg-btn" onclick="selectPkg('practitioner')">اختر هذه الباقة</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DATES ==================== -->
+<section class="dark" style="padding-top:0">
+  <div class="section-wrap" style="padding-top:0">
+    <div class="section-eyebrow">مواعيد الدورات</div>
+    <div class="section-title" style="margin-bottom:32px">اختر موعدك القادم</div>
+    <div class="dates-grid">
+      <div class="date-card">
+        <div class="date-num"><div class="date-day">١٦</div><div class="date-month">مايو</div></div>
+        <div class="date-info">
+          <div class="date-batch">الدفعة ١١٢ — ٣ أيام</div>
+          <div class="date-details"><span class="date-tag offline">حضوري</span><span>١٦-١٨ مايو ٢٠٢٦</span></div>
+        </div>
+      </div>
+      <div class="date-card">
+        <div class="date-num"><div class="date-day">٣٠</div><div class="date-month">مايو</div></div>
+        <div class="date-info">
+          <div class="date-batch">الدفعة ١١٣ — ٣ أيام</div>
+          <div class="date-details"><span class="date-tag online">أونلاين</span><span>٣٠ مايو - ١ يونيو ٢٠٢٦</span></div>
+        </div>
+      </div>
+      <div class="date-card">
+        <div class="date-num"><div class="date-day">١٣</div><div class="date-month">يونيو</div></div>
+        <div class="date-info">
+          <div class="date-batch">الدفعة ١١٤ — ٣ أيام</div>
+          <div class="date-details"><span class="date-tag offline">حضوري</span><span>١٣-١٥ يونيو ٢٠٢٦</span></div>
+        </div>
+      </div>
+      <div class="date-card">
+        <div class="date-num"><div class="date-day">٢٧</div><div class="date-month">يونيو</div></div>
+        <div class="date-info">
+          <div class="date-batch">الدفعة ١١٥ — ٣ أيام</div>
+          <div class="date-details"><span class="date-tag online">أونلاين</span><span>٢٧-٢٩ يونيو ٢٠٢٦</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TESTIMONIALS ==================== -->
+<section>
+  <div class="section-wrap">
+    <div class="section-eyebrow">آراء الخريجين</div>
+    <div class="section-title" style="margin-bottom:32px">ماذا قالوا عن الدورة؟</div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"الحمدلله كانت تجربة تدريبية مفيدة وأسهمت بشكل واضح في تطوير مهاراتي المهنية — كل الشكر والتقدير متمنية لكم دوام التوفيق"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">ن</div>
+          <div><div class="testi-name">أ. نورة</div><div class="testi-batch">الدفعة ١٠٦</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"كانت تجربة مُثرية ومفيدة، الأسس واضحة ووافية للاحتياج — ممتنة لكم وأرجو دوام التوفيق والنجاح"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">ج</div>
+          <div><div class="testi-name">أ. الجازي</div><div class="testi-batch">الدفعة ١٠٦</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"هذه أول دورة لي — جداً استفدت منها وتعلمت. المدرب ما قصّر، خفيف وما تعبنا، أعطانا المهم والمفيد — أنا جداً فخورة إني خذيت الشهادة عند عتيق العتيق 🌷"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">ج</div>
+          <div><div class="testi-name">أ. جنان</div><div class="testi-batch">الدفعة ١٠٦</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"شرحه جداً واضح ووافي ومتمكن ومستمع للأسئلة ويجاوبها بشكل تام — ساعدنا في معرفة كيفية تطوير أنفسنا جزاه الله خير"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">غ</div>
+          <div><div class="testi-name">أ. غالية</div><div class="testi-batch">الدفعة ١٠٥</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"الدورة كانت جداً مفيدة بالنسبة لي كمعلمة — تعلمت أساسيات ومهارات لمواجهة الجمهور، وجهود واضحة وكانت الدورة خفيفة ولطيفة 🧡"</div>
+        <div class="testi-author">
+          <div class="testi-avatar">ن</div>
+          <div><div class="testi-name">أ. نورة</div><div class="testi-batch">الدفعة ١٠٥</div></div>
+        </div>
+      </div>
+      <div class="testi-card" style="background:rgba(92,15,15,.04);border-color:rgba(92,15,15,.12)">
+        <div style="font-size:48px;text-align:center;padding:20px 0;opacity:.3">+٦٠٠٠</div>
+        <div style="text-align:center;font-size:15px;font-weight:700;color:var(--muted)">خريج ومدرب معتمد</div>
+        <div style="text-align:center;font-size:13px;color:var(--muted);margin-top:6px">من +١١٠ دفعة تدريبية</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ACCREDITATIONS ==================== -->
+<section>
+  <div class="section-wrap" style="text-align:center">
+    <div class="section-eyebrow">الاعتمادات الرسمية</div>
+    <div class="section-title">معتمدون في ٥ جهات حكومية</div>
+    <div class="accr-grid">
+      <div class="accr-badge"><div class="accr-dot"></div>وزارة التجارة الكويتية</div>
+      <div class="accr-badge"><div class="accr-dot"></div>غرفة التجارة والصناعة</div>
+      <div class="accr-badge"><div class="accr-dot"></div>الهيئة العامة للتعليم التطبيقي</div>
+      <div class="accr-badge"><div class="accr-dot"></div>ديوان الخدمة المدنية</div>
+      <div class="accr-badge"><div class="accr-dot"></div>الجهاز المركزي للمناقصات</div>
+      <div class="accr-badge"><div class="accr-dot"></div>البورد الأمريكي BITA</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== REGISTER FORM ==================== -->
+<section class="dark" id="register">
+  <div class="section-wrap">
+    <div class="section-eyebrow" style="text-align:center">التسجيل</div>
+    <div class="section-title" style="text-align:center;margin-bottom:8px">سجّل الحين</div>
+    <p class="section-sub" style="text-align:center;margin:0 auto 40px">أكمل بياناتك واختر دورتك وباقتك — وسنتواصل معك لتأكيد التسجيل</p>
+
+    <div class="form-wrap" id="regForm">
+      <div class="form-grid">
+
+        <div class="field">
+          <label>الاسم الثلاثي *</label>
+          <input type="text" id="rName" placeholder="أدخل اسمك الثلاثي">
+        </div>
+        <div class="field">
+          <label>رقم الهاتف *</label>
+          <input type="tel" id="rPhone" placeholder="XXXXXXXX">
+        </div>
+        <div class="field full">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="rEmail" placeholder="example@email.com" style="direction:ltr;text-align:right">
+        </div>
+
+        <div class="field full">
+          <label>اختر الباقة *</label>
+          <div class="pkg-select-grid">
+            <div class="pkg-opt" id="popt-basic" onclick="selPkg('basic')">
+              <input type="radio" name="pkg" value="basic">
+              <div class="pkg-opt-name">الأساسية</div>
+              <div class="pkg-opt-price">٧٥</div>
+              <div class="pkg-opt-unit">د.ك</div>
+            </div>
+            <div class="pkg-opt" id="popt-international" onclick="selPkg('international')">
+              <input type="radio" name="pkg" value="international">
+              <div class="pkg-opt-name">الدولية</div>
+              <div class="pkg-opt-price">١٠٠</div>
+              <div class="pkg-opt-unit">د.ك</div>
+            </div>
+            <div class="pkg-opt" id="popt-practitioner" onclick="selPkg('practitioner')">
+              <input type="radio" name="pkg" value="practitioner">
+              <div class="pkg-opt-name">الممارس</div>
+              <div class="pkg-opt-price">١٤٠</div>
+              <div class="pkg-opt-unit">د.ك</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>نظام الدفع *</label>
+          <div class="pay-select-grid">
+            <div class="pay-opt" id="pay-full" onclick="selPay('full')">دفع كامل</div>
+            <div class="pay-opt" id="pay-install" onclick="selPay('install')">دفع بالتقسيط</div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>اختر موعد الدورة *</label>
+          <select id="rDate">
+            <option value="">اختر الدفعة والموعد</option>
+            <option value="دفعة 112 — 16 مايو 2026 — حضوري">الدفعة ١١٢ — ١٦ مايو ٢٠٢٦ — حضوري</option>
+            <option value="دفعة 113 — 30 مايو 2026 — أونلاين">الدفعة ١١٣ — ٣٠ مايو ٢٠٢٦ — أونلاين</option>
+            <option value="دفعة 114 — 13 يونيو 2026 — حضوري">الدفعة ١١٤ — ١٣ يونيو ٢٠٢٦ — حضوري</option>
+            <option value="دفعة 115 — 27 يونيو 2026 — أونلاين">الدفعة ١١٥ — ٢٧ يونيو ٢٠٢٦ — أونلاين</option>
+          </select>
+        </div>
+
+        <button class="form-submit" id="btnReg" onclick="submitReg()">
+          <span id="regTxt">تأكيد التسجيل ←</span>
+          <div class="spin" id="regSpin"></div>
+        </button>
+
+      </div>
+    </div>
+
+    <div id="successReg" style="display:none">
+      <div class="form-wrap">
+        <div class="success-box">
+          <div class="success-icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div style="font-size:26px;font-weight:900;color:var(--text);margin-bottom:10px">تم استلام طلبك! 🎉</div>
+          <p style="font-size:15px;color:var(--muted);line-height:1.8">سيتواصل معك فريق تمكين خلال ٢٤ ساعة لتأكيد تسجيلك وتفاصيل الدفع.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>معهد تمكين إيديوكلاود للتدريب الأهلي — <a href="https://tamkeenkuw.com">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw">@tamkeen.kw</a></p>
+</footer>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
+let selPkgVal = '', selPayVal = '';
+
+const pkgNames = {
+  basic: 'الأساسية — ٧٥ د.ك',
+  international: 'الدولية — ١٠٠ د.ك',
+  practitioner: 'الممارس — ١٤٠ د.ك'
+};
+
+function selPkg(v) {
+  selPkgVal = v;
+  ['basic','international','practitioner'].forEach(k => {
+    document.getElementById('popt-'+k).classList.toggle('sel', k === v);
+  });
+}
+
+function selectPkg(v) {
+  selPkg(v);
+  document.getElementById('register').scrollIntoView({behavior:'smooth'});
+}
+
+function selPay(v) {
+  selPayVal = v;
+  ['full','install'].forEach(k => {
+    document.getElementById('pay-'+k).classList.toggle('sel', k === v);
+  });
+}
+
+async function submitReg() {
+  const name  = document.getElementById('rName').value.trim();
+  const phone = document.getElementById('rPhone').value.trim();
+  const email = document.getElementById('rEmail').value.trim();
+  const date  = document.getElementById('rDate').value;
+
+  if (!name || name.length < 3) { alert('أدخل اسمك الثلاثي'); return; }
+  if (!phone || phone.length < 7) { alert('أدخل رقم هاتفك'); return; }
+  if (!selPkgVal) { alert('اختر الباقة التدريبية'); return; }
+  if (!selPayVal) { alert('اختر نظام الدفع'); return; }
+  if (!date) { alert('اختر موعد الدورة'); return; }
+
+  const btn = document.getElementById('btnReg');
+  btn.disabled = true;
+  document.getElementById('regTxt').style.display = 'none';
+  document.getElementById('regSpin').style.display = 'block';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type:    'عضوية',
+        name:    name,
+        phone:   phone,
+        email:   email,
+        field:   'إعداد مدرب معتمد',
+        courses: pkgNames[selPkgVal] + ' | ' + date,
+        payment: selPayVal === 'full' ? 'دفع كامل' : 'تقسيط'
+      })
+    });
+
+    document.getElementById('regForm').style.display = 'none';
+    document.getElementById('successReg').style.display = 'block';
+
+  } catch(e) {
+    btn.disabled = false;
+    document.getElementById('regTxt').style.display = 'block';
+    document.getElementById('regSpin').style.display = 'none';
+    alert('حدث خطأ — حاول مجدداً');
+  }
+}
+
+function openVideo(label) {
+  alert('أضف رابط الفيديو الخاص بـ: ' + label);
+}
+</script>
+
+</body>
+</html>
