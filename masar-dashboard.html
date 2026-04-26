@@ -120,18 +120,16 @@ tr:hover td{background:rgba(92,15,15,.02);}
 
   <!-- SEARCH -->
   <div class="search-card">
-    <div class="search-title"><span>🔍</span> بحث عن مسجلي دورة</div>
+    <div class="search-title"><span>🔍</span> اختر الدورة</div>
     <div class="search-row">
-      <div class="field" id="f-course">
-        <label>اسم الدورة <span style="color:var(--crimson);">*</span></label>
-        <input type="text" id="courseName" placeholder="مثال: الذكاء العاطفي">
+      <div class="field" id="f-course" style="grid-column:1/-1;">
+        <label>الدورة <span style="color:var(--crimson);">*</span></label>
+        <select id="courseSelect" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;cursor:pointer;">
+          <option value="">-- جاري تحميل الدورات --</option>
+        </select>
       </div>
-      <div class="field" id="f-date">
-        <label>تاريخ الدورة <span style="color:var(--crimson);">*</span></label>
-        <input type="text" id="courseDate" placeholder="مثال: 11-5-2026">
-      </div>
-      <button class="search-btn" id="searchBtn" onclick="searchCourse()">
-        <span id="searchTxt">بحث</span>
+      <button class="search-btn" id="searchBtn" onclick="searchCourse()" style="grid-column:1/-1;justify-content:center;">
+        <span id="searchTxt">عرض المسجلين</span>
         <div class="spinner" id="searchSpinner"></div>
       </button>
     </div>
@@ -220,69 +218,44 @@ function toA(n) {
   return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 }
 
-async function searchCourse() {
-  const course = document.getElementById('courseName').value.trim();
-  const date   = document.getElementById('courseDate').value.trim();
+let currentCourse = '', currentTrainer = '', currentZoom = '';
+let coursesData = [];
 
-  if(!course) {
-    document.getElementById('f-course').classList.add('invalid');
-    return;
-  }
-  document.getElementById('f-course').classList.remove('invalid');
-
-  // Loading
-  document.getElementById('searchBtn').disabled = true;
-  document.getElementById('searchTxt').style.display = 'none';
-  document.getElementById('searchSpinner').style.display = 'block';
-  document.getElementById('statsRow').style.display = 'none';
-  document.getElementById('resultsCard').style.display = 'none';
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('loadingState').style.display = 'block';
-
+async function loadCourses() {
   try {
-    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(course) +
-                (date ? '&date=' + encodeURIComponent(date) : '');
-    const res  = await fetch(url);
+    const res  = await fetch(SCRIPT_URL + '?action=getCourses');
     const data = await res.json();
-
-    document.getElementById('loadingState').style.display = 'none';
-
-    if(!data.students || data.students.length === 0) {
-      document.getElementById('emptyState').style.display = 'block';
-    } else {
-      renderResults(course, date, data.students);
-    }
+    coursesData = data.courses || [];
+    const sel = document.getElementById('courseSelect');
+    sel.innerHTML = '<option value="">-- اختر الدورة --</option>';
+    coursesData.forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = c.name + ' — ' + c.date + (c.time ? ' (' + c.time + ')' : '');
+      sel.appendChild(opt);
+    });
   } catch(err) {
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'block';
-  } finally {
-    document.getElementById('searchBtn').disabled = false;
-    document.getElementById('searchTxt').style.display = 'block';
-    document.getElementById('searchSpinner').style.display = 'none';
+    document.getElementById('courseSelect').innerHTML = '<option value="">خطأ في تحميل الدورات</option>';
   }
 }
 
-let currentCourse = '';
-let currentTrainer = '';
-let currentZoom = '';
-
 async function searchCourse() {
-  const course = document.getElementById('courseName').value.trim();
-  const date   = document.getElementById('courseDate').value.trim();
+  const sel = document.getElementById('courseSelect');
+  const idx = sel.value;
 
-  if(!course) {
-    document.getElementById('f-course').classList.add('invalid');
+  if(idx === '') {
+    sel.style.borderColor = '#C62828';
     return;
   }
-  document.getElementById('f-course').classList.remove('invalid');
+  sel.style.borderColor = '';
 
-  if(!date) {
-    document.getElementById('f-date').classList.add('invalid');
-    return;
-  }
-  document.getElementById('f-date').classList.remove('invalid');
+  const chosen = coursesData[parseInt(idx)];
+  currentCourse  = chosen.name;
+  currentTrainer = chosen.trainer || '';
+  currentZoom    = chosen.zoom || '';
 
   document.getElementById('searchBtn').disabled = true;
+  document.getElementById('searchTxt').style.display = 'none';
   document.getElementById('searchSpinner').style.display = 'block';
   document.getElementById('statsRow').style.display = 'none';
   document.getElementById('resultsCard').style.display = 'none';
@@ -291,8 +264,8 @@ async function searchCourse() {
   document.getElementById('loadingState').style.display = 'block';
 
   try {
-    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(course) +
-                (date ? '&date=' + encodeURIComponent(date) : '');
+    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(chosen.name) +
+                '&date=' + encodeURIComponent(chosen.date);
     const res  = await fetch(url);
     const data = await res.json();
 
@@ -301,10 +274,7 @@ async function searchCourse() {
     if(!data.students || data.students.length === 0) {
       document.getElementById('emptyState').style.display = 'block';
     } else {
-      currentCourse  = course;
-      currentTrainer = data.trainer || '';
-      currentZoom    = data.zoomLink || '';
-      renderResults(course, date, data.students);
+      renderResults(chosen.name, chosen.date, data.students);
     }
   } catch(err) {
     document.getElementById('loadingState').style.display = 'none';
@@ -317,9 +287,9 @@ async function searchCourse() {
 }
 
 function renderResults(course, date, students) {
-  const total    = students.length;
-  const certYes  = students.filter(s => s.cert === 'نعم').length;
-  const certNo   = total - certYes;
+  const total   = students.length;
+  const certYes = students.filter(s => s.cert === 'نعم').length;
+  const certNo  = total - certYes;
 
   document.getElementById('statTotal').textContent  = toA(total);
   document.getElementById('statCert').textContent   = toA(certYes);
@@ -332,28 +302,23 @@ function renderResults(course, date, students) {
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
   students.forEach((s, i) => {
-    const initial = s.name ? s.name.charAt(0) : '؟';
-    let certBadge = '';
-    if (s.cert === 'نعم')      certBadge = '<span class="cert-done">نعم ✓</span>';
-    else if (s.cert === 'لا')  certBadge = '<span class="cert-no">لا</span>';
-    else                       certBadge = '<span class="cert-pending">—</span>';
-
+    const initial  = s.name ? s.name.charAt(0) : '؟';
+    const certBadge = s.cert === 'نعم'
+      ? '<span class="cert-done">نعم ✓</span>'
+      : s.cert === 'لا' ? '<span class="cert-no">لا</span>' : '<span class="cert-pending">—</span>';
     const waLink = s.phone
       ? `<a href="https://wa.me/965${s.phone}" target="_blank" class="wa-btn">واتساب</a>`
       : '—';
-    tbody.innerHTML += `
-      <tr>
-        <td class="row-num">${toA(i+1)}</td>
-        <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
-        <td style="font-family:monospace;font-size:13px;letter-spacing:1px;">${s.phone||'—'}</td>
-        <td>${certBadge}</td>
-        <td>${waLink}</td>
-      </tr>`;
+    tbody.innerHTML += `<tr>
+      <td class="row-num">${toA(i+1)}</td>
+      <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
+      <td style="font-family:monospace;font-size:13px;letter-spacing:1px;">${s.phone||'—'}</td>
+      <td>${certBadge}</td>
+      <td>${waLink}</td>
+    </tr>`;
   });
 
   document.getElementById('resultsCard').style.display = 'block';
-
-  // أظهر قسم الرسالة
   document.getElementById('msgCount').textContent = toA(total) + ' مسجل سيستلمون الرسالة';
   document.getElementById('messageCard').style.display = 'block';
   document.getElementById('sendResult').style.display = 'none';
@@ -373,10 +338,10 @@ async function sendBulkMessage() {
   await fetch(SCRIPT_URL, {
     method: 'POST', mode: 'no-cors', headers: {'Content-Type':'text/plain'},
     body: JSON.stringify({
-      type:     'رسالة جماعية',
-      course:   currentCourse,
-      message:  msg,
-      trainer:  currentTrainer,
+      type: 'رسالة جماعية',
+      course: currentCourse,
+      message: msg,
+      trainer: currentTrainer,
       zoomLink: currentZoom,
       timestamp: new Date().toLocaleString('ar-SA')
     })
@@ -389,6 +354,8 @@ async function sendBulkMessage() {
   document.getElementById('sendResult').style.display = 'block';
   document.getElementById('bulkMsg').value = '';
 }
+
+loadCourses();
 </script>
 </body>
 </html>
