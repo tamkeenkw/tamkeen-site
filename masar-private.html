@@ -234,6 +234,38 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_zi
 let selectedCourse  = '';
 let selectedPayment = '';
 
+async function loadPrivateCourses() {
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('خاصة'));
+    const data = await res.json();
+    const list = document.getElementById('coursesList');
+    const courses = data.courses || [];
+
+    if(courses.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">لا توجد دورات خاصة متاحة حالياً</div>';
+      return;
+    }
+
+    list.innerHTML = courses.map((c, i) => `
+      <label class="course-opt" onclick="selectCourse(this,'${c.name}','${c.trainer}','${c.date}','${c.time}')">
+        <input type="radio" name="course">
+        <div class="course-dot"></div>
+        <div class="course-info">
+          <div class="course-name">${c.name}</div>
+          <div class="course-meta">
+            <span>👤 ${c.trainer}</span>
+            <span>📅 ${c.date}</span>
+            <span>🕔 ${c.time}</span>
+          </div>
+        </div>
+      </label>`).join('');
+  } catch(err) {
+    document.getElementById('coursesList').innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">تعذر تحميل الدورات</div>';
+  }
+}
+
+loadPrivateCourses();
+
 function selectCourse(el, name, trainer, date, time) {
   document.querySelectorAll('.course-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
@@ -313,4 +345,7 @@ function resetForm() {
 }
 </script>
 </body>
-</html>
+</html>        <div class="courses-list" id="coursesList">
+          <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">جاري تحميل الدورات...</div>
+        </div>
+
