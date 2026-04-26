@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم المدرب — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson: #5C0F0F;
+  --crimson-2: #7A1515;
+  --cream: #FAF7F2;
+  --cream-2: #F2EDE5;
+  --text: #1A0808;
+  --muted: #7A6060;
+  --white: #FFFFFF;
+  --green: #2E7D32;
+  --green-bg: #E8F5E9;
+  --yellow: #F57F17;
+  --yellow-bg: #FFF9C4;
+  --blue: #1565C0;
+  --blue-bg: #E3F2FD;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--crimson);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header-logo{display:flex;align-items:center;gap:12px;}
+.header-logo-text{font-size:20px;font-weight:900;color:#fff;}
+.header-logo-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:2px;}
+.header-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:32px 20px;}
+
+/* SEARCH CARD */
+.search-card{background:#fff;border-radius:20px;padding:28px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);margin-bottom:28px;}
+.search-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.search-title span{font-size:20px;}
+.search-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;}
+@media(max-width:600px){.search-row{grid-template-columns:1fr;}}
+.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.field input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
+.field input:focus{border-color:var(--crimson);background:#fff;}
+.field.invalid input{border-color:#C62828;background:#FFF5F5;}
+.search-btn{background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;padding:13px 28px;border:none;border-radius:12px;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.search-btn:hover{background:var(--crimson-2);}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:500px){.stats-row{grid-template-columns:repeat(3,1fr);}}
+.stat-card{background:#fff;border-radius:16px;padding:16px 20px;text-align:center;box-shadow:0 2px 12px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);}
+.stat-n{font-size:28px;font-weight:900;color:var(--crimson);}
+.stat-l{font-size:12px;font-weight:700;color:var(--muted);margin-top:2px;}
+
+/* RESULTS */
+.results-card{background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);overflow:hidden;}
+.results-header{padding:18px 24px;border-bottom:1px solid rgba(92,15,15,.06);display:flex;align-items:center;justify-content:space-between;}
+.results-title{font-size:15px;font-weight:800;color:var(--text);}
+.results-count{font-size:13px;font-weight:700;color:var(--muted);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--cream);padding:12px 16px;text-align:right;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
+td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(92,15,15,.02);}
+
+/* CERT BADGE */
+.cert-yes{background:var(--green-bg);color:var(--green);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
+.cert-no{background:var(--cream-2);color:var(--muted);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;display:inline-block;}
+
+/* AVATAR */
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
+
+/* NAME ROW */
+.name-row{display:flex;align-items:center;gap:10px;}
+
+/* EMPTY / LOADING */
+.empty{text-align:center;padding:48px 20px;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--muted);}
+
+.loading{text-align:center;padding:40px;}
+.loading-dots{display:inline-flex;gap:6px;}
+.loading-dots span{width:8px;height:8px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(0.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+
+/* ROW NUM */
+.row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
+
+/* WHATSAPP BTN */
+.wa-btn{display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;transition:opacity .2s;}
+.wa-btn:hover{opacity:.85;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <div>
+      <div class="header-logo-text">أكاديمية مسار</div>
+      <div class="header-logo-sub">لوحة تحكم المدرب</div>
+    </div>
+  </div>
+  <div class="header-badge">@bymasar</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SEARCH -->
+  <div class="search-card">
+    <div class="search-title"><span>🔍</span> بحث عن مسجلي دورة</div>
+    <div class="search-row">
+      <div class="field" id="f-course">
+        <label>اسم الدورة</label>
+        <input type="text" id="courseName" placeholder="مثال: الذكاء العاطفي">
+      </div>
+      <div class="field">
+        <label>تاريخ الدورة (اختياري)</label>
+        <input type="text" id="courseDate" placeholder="مثال: الاثنين ١١ مايو">
+      </div>
+      <button class="search-btn" id="searchBtn" onclick="searchCourse()">
+        <span id="searchTxt">بحث</span>
+        <div class="spinner" id="searchSpinner"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow" style="display:none;">
+    <div class="stat-card">
+      <div class="stat-n" id="statTotal">٠</div>
+      <div class="stat-l">إجمالي المسجلين</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-n" id="statCert" style="color:var(--green);">٠</div>
+      <div class="stat-l">يبون شهادة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-n" id="statNoCert" style="color:var(--muted);">٠</div>
+      <div class="stat-l">حضور فقط</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-card" id="resultsCard" style="display:none;">
+    <div class="results-header">
+      <div class="results-title" id="resultsTitle">المسجلون</div>
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>رقم الواتساب</th>
+            <th>شهادة</th>
+            <th>تواصل</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EMPTY -->
+  <div id="emptyState" style="display:none;">
+    <div class="empty">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">لا يوجد مسجلون</div>
+      <div class="empty-sub">تأكد من اسم الدورة أو التاريخ</div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingState" style="display:none;">
+    <div class="loading">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
+
+function toA(n) {
+  return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+async function searchCourse() {
+  const course = document.getElementById('courseName').value.trim();
+  const date   = document.getElementById('courseDate').value.trim();
+
+  if(!course) {
+    document.getElementById('f-course').classList.add('invalid');
+    return;
+  }
+  document.getElementById('f-course').classList.remove('invalid');
+
+  // Loading
+  document.getElementById('searchBtn').disabled = true;
+  document.getElementById('searchTxt').style.display = 'none';
+  document.getElementById('searchSpinner').style.display = 'block';
+  document.getElementById('statsRow').style.display = 'none';
+  document.getElementById('resultsCard').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+
+  try {
+    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(course) +
+                (date ? '&date=' + encodeURIComponent(date) : '');
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    document.getElementById('loadingState').style.display = 'none';
+
+    if(!data.students || data.students.length === 0) {
+      document.getElementById('emptyState').style.display = 'block';
+    } else {
+      renderResults(course, date, data.students);
+    }
+  } catch(err) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+  } finally {
+    document.getElementById('searchBtn').disabled = false;
+    document.getElementById('searchTxt').style.display = 'block';
+    document.getElementById('searchSpinner').style.display = 'none';
+  }
+}
+
+function renderResults(course, date, students) {
+  const total   = students.length;
+  const wantCert = students.filter(s => s.cert === 'نعم').length;
+  const noCert   = total - wantCert;
+
+  // Stats
+  document.getElementById('statTotal').textContent  = toA(total);
+  document.getElementById('statCert').textContent   = toA(wantCert);
+  document.getElementById('statNoCert').textContent = toA(noCert);
+  document.getElementById('statsRow').style.display = 'grid';
+
+  // Header
+  document.getElementById('resultsTitle').textContent = course + (date ? ' — ' + date : '');
+  document.getElementById('resultsCount').textContent = toA(total) + ' مسجل';
+
+  // Table
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  students.forEach((s, i) => {
+    const initial = s.name ? s.name.charAt(0) : '؟';
+    const certBadge = s.cert === 'نعم'
+      ? '<span class="cert-yes">نعم ✓</span>'
+      : '<span class="cert-no">حضور فقط</span>';
+    const waLink = s.phone
+      ? `<a href="https://wa.me/965${s.phone}" target="_blank" class="wa-btn">واتساب</a>`
+      : '—';
+    tbody.innerHTML += `
+      <tr>
+        <td class="row-num">${toA(i+1)}</td>
+        <td>
+          <div class="name-row">
+            <div class="avatar">${initial}</div>
+            <span style="font-weight:700;">${s.name || '—'}</span>
+          </div>
+        </td>
+        <td style="font-family:monospace;font-size:13px;letter-spacing:1px;">${s.phone || '—'}</td>
+        <td>${certBadge}</td>
+        <td>${waLink}</td>
+      </tr>`;
+  });
+
+  document.getElementById('resultsCard').style.display = 'block';
+}
+
+// Enter key
+document.getElementById('courseName').addEventListener('keydown', e => {
+  if(e.key === 'Enter') searchCourse();
+});
+document.getElementById('courseDate').addEventListener('keydown', e => {
+  if(e.key === 'Enter') searchCourse();
+});
+</script>
+</body>
+</html>
