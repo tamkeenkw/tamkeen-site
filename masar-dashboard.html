@@ -629,7 +629,9 @@ async function issueCertificates() {
 
     document.getElementById('certResult').style.display = 'block';
     document.getElementById('certResultTitle').textContent = 'تم إصدار ' + toA(count) + ' شهادة بنجاح';
-    document.getElementById('certFolderLink').href = folderUrl;
+    const downloadUrl = data.downloadUrl || folderUrl;
+    document.getElementById('certFolderLink').href = downloadUrl;
+    document.getElementById('certFolderLink').textContent = count > 1 ? '📥 تحميل ملف الشهادات (PDF واحد)' : '📥 تحميل الشهادة';
     document.getElementById('certStudentsCard').style.display = 'none';
   } catch(err) {
     alert('حدث خطأ — ' + err.message);
