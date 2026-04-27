@@ -126,6 +126,10 @@ tr:hover td{background:rgba(92,15,15,.02);}
       style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
       📦 تسجيلات الباقات
     </button>
+    <button id="tab3" onclick="switchTab(3)"
+      style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
+      🎓 إصدار الشهادات
+    </button>
   </div>
 </div>
 
@@ -258,6 +262,80 @@ tr:hover td{background:rgba(92,15,15,.02);}
       <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
     </div>
   </div><!-- end tabContent2 -->
+
+  <!-- TAB 3: الشهادات -->
+  <div id="tabContent3" style="display:none;">
+
+    <div class="search-card">
+      <div class="search-title"><span>🎓</span> إصدار الشهادات</div>
+
+      <div class="field" id="fc-course" style="margin-bottom:12px;">
+        <label>الدورة <span style="color:var(--crimson);">*</span></label>
+        <select id="certCourseSelect" onchange="onCertCourseChange()" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;cursor:pointer;">
+          <option value="">-- اختر الدورة --</option>
+        </select>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div class="field">
+          <label>رقم المادة التدريبية <span style="color:var(--crimson);">*</span></label>
+          <input type="text" id="certMaterialCode" placeholder="مثال: TM0060">
+        </div>
+        <div class="field">
+          <label>المدرب</label>
+          <input type="text" id="certTrainer" placeholder="يُعبّى تلقائياً">
+        </div>
+      </div>
+
+      <button class="search-btn" id="loadCertStudentsBtn" onclick="loadCertStudents()" style="width:100%;justify-content:center;margin-bottom:0;">
+        <span id="loadCertTxt">عرض المسجلين للشهادة</span>
+        <div class="spinner" id="loadCertSpinner"></div>
+      </button>
+    </div>
+
+    <!-- قائمة المسجلين للشهادة -->
+    <div class="results-card" id="certStudentsCard" style="display:none;">
+      <div class="results-header">
+        <div class="results-title">المسجلون الذين يريدون شهادة</div>
+        <div class="results-count" id="certStudentsCount"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>الاسم</th><th>رقم الواتساب</th><th>تسلسل الشهادة</th></tr>
+          </thead>
+          <tbody id="certStudentsBody"></tbody>
+        </table>
+      </div>
+      <div style="padding:20px;border-top:1px solid rgba(92,15,15,.06);">
+        <button class="search-btn" id="issueCertBtn" onclick="issueCertificates()" style="width:100%;justify-content:center;background:#2E7D32;">
+          <span id="issueCertTxt">تصدير الشهادات</span>
+          <div class="spinner" id="issueCertSpinner"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- نتيجة الإصدار -->
+    <div id="certResult" style="display:none;margin-top:16px;">
+      <div style="background:var(--green-bg);border-radius:16px;padding:20px;text-align:center;border:1.5px solid rgba(46,125,50,.15);">
+        <div style="font-size:32px;margin-bottom:8px;">✅</div>
+        <div style="font-size:16px;font-weight:900;color:var(--green);margin-bottom:6px;" id="certResultTitle"></div>
+        <a id="certFolderLink" href="#" target="_blank"
+          style="display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;padding:10px 24px;border-radius:100px;text-decoration:none;margin-top:8px;">
+          📁 افتح مجلد الشهادات
+        </a>
+      </div>
+    </div>
+
+    <div id="certEmpty" style="display:none;">
+      <div class="empty"><div class="empty-icon">📭</div><div class="empty-title">لا يوجد مسجلون يريدون شهادة</div></div>
+    </div>
+
+    <div id="certLoading" style="display:none;">
+      <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+    </div>
+
+  </div><!-- end tabContent3 -->
 
 </div>
 
@@ -406,12 +484,137 @@ async function sendBulkMessage() {
 }
 
 function switchTab(n) {
-  document.getElementById('tabContent1').style.display = n===1 ? '' : 'none';
-  document.getElementById('tabContent2').style.display = n===2 ? '' : 'none';
-  document.getElementById('tab1').style.background = n===1 ? 'var(--crimson)' : 'transparent';
-  document.getElementById('tab1').style.color = n===1 ? '#fff' : 'var(--muted)';
-  document.getElementById('tab2').style.background = n===2 ? 'var(--crimson)' : 'transparent';
-  document.getElementById('tab2').style.color = n===2 ? '#fff' : 'var(--muted)';
+  [1,2,3].forEach(i => {
+    document.getElementById('tabContent'+i).style.display = i===n ? '' : 'none';
+    document.getElementById('tab'+i).style.background = i===n ? 'var(--crimson)' : 'transparent';
+    document.getElementById('tab'+i).style.color = i===n ? '#fff' : 'var(--muted)';
+  });
+  if(n===3 && document.getElementById('certCourseSelect').options.length <= 1) loadCertCourses();
+}
+
+let certCoursesData = [];
+let certStudentsList = [];
+
+async function loadCertCourses() {
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني'));
+    const data = await res.json();
+    certCoursesData = data.courses || [];
+    const sel = document.getElementById('certCourseSelect');
+    sel.innerHTML = '<option value="">-- اختر الدورة --</option>';
+    certCoursesData.forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = c.name + ' — ' + c.date;
+      sel.appendChild(opt);
+    });
+  } catch(err) {}
+}
+
+function onCertCourseChange() {
+  const idx = document.getElementById('certCourseSelect').value;
+  if(idx === '') return;
+  const c = certCoursesData[parseInt(idx)];
+  document.getElementById('certTrainer').value = c.trainer || '';
+  document.getElementById('certStudentsCard').style.display = 'none';
+  document.getElementById('certResult').style.display = 'none';
+  document.getElementById('certEmpty').style.display = 'none';
+}
+
+async function loadCertStudents() {
+  const idx = document.getElementById('certCourseSelect').value;
+  if(idx === '') { document.getElementById('certCourseSelect').style.borderColor='#C62828'; return; }
+  document.getElementById('certCourseSelect').style.borderColor='';
+
+  const c = certCoursesData[parseInt(idx)];
+  document.getElementById('loadCertStudentsBtn').disabled = true;
+  document.getElementById('loadCertTxt').style.display = 'none';
+  document.getElementById('loadCertSpinner').style.display = 'block';
+  document.getElementById('certLoading').style.display = 'block';
+  document.getElementById('certStudentsCard').style.display = 'none';
+  document.getElementById('certEmpty').style.display = 'none';
+  document.getElementById('certResult').style.display = 'none';
+
+  try {
+    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(c.name) +
+                '&date=' + encodeURIComponent(c.date);
+    const res  = await fetch(url);
+    const data = await res.json();
+    const all  = (data.students || []).filter(s => s.cert === 'نعم');
+
+    document.getElementById('certLoading').style.display = 'none';
+
+    if(all.length === 0) {
+      document.getElementById('certEmpty').style.display = 'block';
+      return;
+    }
+
+    certStudentsList = all;
+
+    // احسب التسلسل المؤقت
+    const now = new Date();
+    const yy  = String(now.getFullYear()).slice(-2);
+    const mm  = String(now.getMonth()+1).padStart(2,'0');
+    const prefix = 'TM02' + yy + mm + '-';
+
+    document.getElementById('certStudentsCount').textContent = toA(all.length) + ' متدرب';
+    document.getElementById('certStudentsBody').innerHTML = all.map((s,i) => `
+      <tr>
+        <td class="row-num">${toA(i+1)}</td>
+        <td><div class="name-row"><div class="avatar">${s.name.charAt(0)}</div><span style="font-weight:700;">${s.name}</span></div></td>
+        <td style="font-family:monospace;font-size:13px;">${s.phone||'—'}</td>
+        <td style="font-size:12px;color:var(--muted);font-weight:700;">${prefix}${i+1} (مؤقت)</td>
+      </tr>`).join('');
+
+    document.getElementById('certStudentsCard').style.display = 'block';
+  } catch(err) {
+    document.getElementById('certLoading').style.display = 'none';
+    document.getElementById('certEmpty').style.display = 'block';
+  } finally {
+    document.getElementById('loadCertStudentsBtn').disabled = false;
+    document.getElementById('loadCertTxt').style.display = 'block';
+    document.getElementById('loadCertSpinner').style.display = 'none';
+  }
+}
+
+async function issueCertificates() {
+  const idx          = document.getElementById('certCourseSelect').value;
+  const materialCode = document.getElementById('certMaterialCode').value.trim();
+  if(!materialCode) { document.getElementById('certMaterialCode').style.borderColor='#C62828'; return; }
+  document.getElementById('certMaterialCode').style.borderColor='';
+
+  const c = certCoursesData[parseInt(idx)];
+  document.getElementById('issueCertBtn').disabled = true;
+  document.getElementById('issueCertTxt').style.display = 'none';
+  document.getElementById('issueCertSpinner').style.display = 'block';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({
+        type:         'إصدار شهادات',
+        course:       c.name,
+        date:         c.date,
+        trainer:      c.trainer || document.getElementById('certTrainer').value,
+        materialCode,
+        students:     certStudentsList,
+        timestamp:    new Date().toLocaleString('ar-SA')
+      })
+    });
+    const data = await res.json();
+
+    document.getElementById('certResult').style.display = 'block';
+    document.getElementById('certResultTitle').textContent = 'تم إصدار ' + toA(data.count||0) + ' شهادة بنجاح';
+    document.getElementById('certFolderLink').href = data.folderUrl || '#';
+    document.getElementById('certStudentsCard').style.display = 'none';
+  } catch(err) {
+    alert('حدث خطأ — ' + err.message);
+  } finally {
+    document.getElementById('issueCertBtn').disabled = false;
+    document.getElementById('issueCertTxt').style.display = 'block';
+    document.getElementById('issueCertSpinner').style.display = 'none';
+  }
 }
 
 async function loadPackages() {
