@@ -355,7 +355,7 @@ let coursesData = [];
 
 async function loadCourses() {
   try {
-    const res  = await fetch(SCRIPT_URL + '?action=getCourses');
+    const res  = await fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني'));
     const data = await res.json();
     coursesData = data.courses || [];
     const sel = document.getElementById('courseSelect');
