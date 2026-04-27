@@ -621,8 +621,18 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
       <div class="form-card">
         <div class="success-box">
           <div class="succ-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          <div class="succ-title">تم الدفع بنجاح! 🎉</div>
+          <p class="succ-desc">تم تأكيد تسجيلك — سنتواصل معك قريباً بتفاصيل الدورة.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="fInstall" style="display:none">
+      <div class="form-card">
+        <div class="success-box">
+          <div class="succ-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
           <div class="succ-title">تم استلام طلبك! 🎉</div>
-          <p class="succ-desc">سيتواصل معك فريق تمكين خلال ٢٤ ساعة لتأكيد تسجيلك وتفاصيل الدفع.</p>
+          <p class="succ-desc">شكراً لتسجيلك — سيتواصل معك الموظف المختص قريباً لترتيب التقسيط وتأكيد مقعدك.</p>
         </div>
       </div>
     </div>
@@ -635,7 +645,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </footer>
 
 <script>
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbzY1BwvT0muK9INLP8NW4IlG9puUNSjTsOdODf6MHoV0LgXwSCFxYtqOqTzZUYZTh81/exec';
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
 const PKG_NAMES = {basic:'الأساسية — ٧٥ د.ك', international:'الدولية — ١٠٠ د.ك', practitioner:'الممارس — ١٤٠ د.ك'};
 let pkg='international', pay='full';
 
@@ -654,25 +664,56 @@ function selPay(v){
   ['full','install'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('sel',k===v));
 }
 
+const PKG_PRICES = {basic:1, international:1, practitioner:1}; // TEST
+
 async function submitReg(){
-  const name=document.getElementById('rName').value.trim();
-  const phone=document.getElementById('rPhone').value.trim();
-  const email=document.getElementById('rEmail').value.trim();
-  const date=document.getElementById('rDate').value;
+  const name  = document.getElementById('rName').value.trim();
+  const phone = document.getElementById('rPhone').value.trim();
+  const email = document.getElementById('rEmail').value.trim();
+  const date  = document.getElementById('rDate').value;
   if(!name||name.length<3){alert('أدخل اسمك الثلاثي');return}
   if(!phone||phone.length<7){alert('أدخل رقم هاتفك');return}
   if(!date){alert('اختر موعد الدورة');return}
-  const btn=document.getElementById('fSubmit');
-  btn.disabled=true;
+
+  const btn = document.getElementById('fSubmit');
+  btn.disabled = true;
   document.getElementById('fTxt').style.display='none';
   document.getElementById('fSpin').style.display='block';
-  try{
-    await fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({type:'تسجيل_دورة',name,phone,email,courses:PKG_NAMES[pkg],payment:pay==='full'?'دفع كامل':'تقسيط',date})
-    });
+
+  if(typeof fbq !== 'undefined') fbq('track', 'Lead');
+
+  // تقسيط — حفظ فقط وأظهر رسالة شكر
+  if(pay === 'install'){
+    try{
+      await fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:'تسجيل_دورة',name,phone,email,courses:PKG_NAMES[pkg],payment:'تقسيط',date})
+      });
+    }catch(e){}
     document.getElementById('fCard').style.display='none';
-    if(typeof fbq !== 'undefined') fbq('track', 'Lead');
-    document.getElementById('fSuccess').style.display='block';
+    document.getElementById('fInstall').style.display='block';
+    return;
+  }
+
+  // دفع كامل — أنشئ charge عبر Apps Script
+  try{
+    const res = await fetch(SCRIPT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        type:'create_charge',
+        name, phone, email,
+        courses: PKG_NAMES[pkg],
+        date,
+        amount: PKG_PRICES[pkg],
+        redirect: window.location.href.split('?')[0] + '?payment=success'
+      })
+    });
+    const data = await res.json();
+    if(data.url){
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'خطأ في الدفع');
+    }
   }catch(e){
     btn.disabled=false;
     document.getElementById('fTxt').style.display='block';
@@ -680,6 +721,17 @@ async function submitReg(){
     alert('حدث خطأ — حاول مجدداً');
   }
 }
+
+// تحقق من نجاح الدفع عند العودة
+window.addEventListener('DOMContentLoaded', ()=>{
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('payment') === 'success'){
+    const fc = document.getElementById('fCard');
+    if(fc) fc.style.display='none';
+    const fs = document.getElementById('fSuccess');
+    if(fs) fs.style.display='block';
+  }
+});
 </script>
 </body>
 </html>
