@@ -115,8 +115,25 @@ tr:hover td{background:rgba(92,15,15,.02);}
   <div class="header-badge">@bymasar</div>
 </div>
 
+<!-- TABS -->
+<div style="max-width:900px;margin:0 auto;padding:28px 20px 0;">
+  <div style="display:flex;gap:8px;background:#fff;padding:6px;border-radius:14px;box-shadow:0 2px 12px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);">
+    <button id="tab1" onclick="switchTab(1)"
+      style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:var(--crimson);color:#fff;transition:all .2s;">
+      🔍 مسجلو الدورات
+    </button>
+    <button id="tab2" onclick="switchTab(2)"
+      style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
+      📦 تسجيلات الباقات
+    </button>
+  </div>
+</div>
+
 <!-- MAIN -->
 <div class="main">
+
+  <!-- TAB 1: الدورات -->
+  <div id="tabContent1">
 
   <!-- SEARCH -->
   <div class="search-card">
@@ -208,6 +225,39 @@ tr:hover td{background:rgba(92,15,15,.02);}
       <div class="loading-dots"><span></span><span></span><span></span></div>
     </div>
   </div>
+
+  </div><!-- end tabContent1 -->
+
+  <!-- TAB 2: الباقات -->
+  <div id="tabContent2" style="display:none;">
+    <div class="search-card">
+      <div class="search-title"><span>📦</span> تسجيلات الباقات</div>
+      <button class="search-btn" id="loadPkgBtn" onclick="loadPackages()" style="width:100%;justify-content:center;">
+        <span id="loadPkgTxt">تحميل التسجيلات</span>
+        <div class="spinner" id="loadPkgSpinner"></div>
+      </button>
+    </div>
+    <div class="results-card" id="pkgResults" style="display:none;">
+      <div class="results-header">
+        <div class="results-title">تسجيلات الباقات</div>
+        <div class="results-count" id="pkgCount"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>الاسم</th><th>الرقم</th><th>الباقة</th><th>الوضع</th><th>تواصل</th></tr>
+          </thead>
+          <tbody id="pkgBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="pkgEmpty" style="display:none;">
+      <div class="empty"><div class="empty-icon">📭</div><div class="empty-title">لا توجد تسجيلات</div></div>
+    </div>
+    <div id="pkgLoading" style="display:none;">
+      <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+    </div>
+  </div><!-- end tabContent2 -->
 
 </div>
 
@@ -355,7 +405,65 @@ async function sendBulkMessage() {
   document.getElementById('bulkMsg').value = '';
 }
 
-loadCourses();
+function switchTab(n) {
+  document.getElementById('tabContent1').style.display = n===1 ? '' : 'none';
+  document.getElementById('tabContent2').style.display = n===2 ? '' : 'none';
+  document.getElementById('tab1').style.background = n===1 ? 'var(--crimson)' : 'transparent';
+  document.getElementById('tab1').style.color = n===1 ? '#fff' : 'var(--muted)';
+  document.getElementById('tab2').style.background = n===2 ? 'var(--crimson)' : 'transparent';
+  document.getElementById('tab2').style.color = n===2 ? '#fff' : 'var(--muted)';
+}
+
+async function loadPackages() {
+  document.getElementById('loadPkgBtn').disabled = true;
+  document.getElementById('loadPkgTxt').style.display = 'none';
+  document.getElementById('loadPkgSpinner').style.display = 'block';
+  document.getElementById('pkgResults').style.display = 'none';
+  document.getElementById('pkgEmpty').style.display = 'none';
+  document.getElementById('pkgLoading').style.display = 'block';
+
+  try {
+    const res  = await fetch(SCRIPT_URL + '?action=getPackages');
+    const data = await res.json();
+    const pkgs = data.packages || [];
+
+    document.getElementById('pkgLoading').style.display = 'none';
+
+    if(pkgs.length === 0) {
+      document.getElementById('pkgEmpty').style.display = 'block';
+      return;
+    }
+
+    document.getElementById('pkgCount').textContent = toA(pkgs.length) + ' تسجيل';
+    const tbody = document.getElementById('pkgBody');
+    tbody.innerHTML = pkgs.map((p, i) => {
+      const statusBadge = p.status === 'مكتمل'
+        ? `<span style="background:var(--green-bg);color:var(--green);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;">مكتمل ✓</span>`
+        : `<span style="background:var(--yellow-bg);color:var(--yellow);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;">معلق</span>`;
+      const waLink = p.phone
+        ? `<a href="https://wa.me/965${p.phone}" target="_blank" class="wa-btn">واتساب</a>`
+        : '—';
+      const initial = p.name ? p.name.charAt(0) : '؟';
+      return `<tr>
+        <td class="row-num">${toA(i+1)}</td>
+        <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${p.name||'—'}</span></div></td>
+        <td style="font-family:monospace;font-size:13px;">${p.phone||'—'}</td>
+        <td style="font-weight:700;">${p.plan||'—'}</td>
+        <td>${statusBadge}</td>
+        <td>${waLink}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('pkgResults').style.display = 'block';
+  } catch(err) {
+    document.getElementById('pkgLoading').style.display = 'none';
+    document.getElementById('pkgEmpty').style.display = 'block';
+  } finally {
+    document.getElementById('loadPkgBtn').disabled = false;
+    document.getElementById('loadPkgTxt').style.display = 'block';
+    document.getElementById('loadPkgSpinner').style.display = 'none';
+  }
+}
 </script>
 </body>
 </html>
