@@ -645,7 +645,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </footer>
 
 <script>
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbzM1NDxxMK6gcP1CwNsGmJBFltz9oImKhcTFxGaQads0bOr6ak70VjUOG0yEtL-hnM/exec';
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec';
 const PKG_NAMES = {basic:'الأساسية — ٧٥ د.ك', international:'الدولية — ١٠٠ د.ك', practitioner:'الممارس — ١٤٠ د.ك'};
 let pkg='international', pay='full';
 
@@ -694,26 +694,31 @@ async function submitReg(){
     return;
   }
 
-  // دفع كامل — أنشئ charge عبر Apps Script
+  // دفع كامل — form submission (بدون CORS)
   try{
-    const res = await fetch(SCRIPT,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({
-        type:'create_charge',
-        name, phone, email,
-        courses: PKG_NAMES[pkg],
-        date,
-        amount: PKG_PRICES[pkg],
-        redirect: window.location.href.split('?')[0] + '?payment=success'
-      })
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = SCRIPT;
+
+    const fields = {
+      type: 'create_charge',
+      name, phone, email,
+      courses: PKG_NAMES[pkg],
+      date,
+      amount: PKG_PRICES[pkg],
+      redirect: window.location.href.split('?')[0] + '?payment=success'
+    };
+
+    Object.entries(fields).forEach(([k,v])=>{
+      const inp = document.createElement('input');
+      inp.type = 'hidden';
+      inp.name = k;
+      inp.value = v;
+      form.appendChild(inp);
     });
-    const data = await res.json();
-    if(data.url){
-      window.location.href = data.url;
-    } else {
-      throw new Error(data.error || 'خطأ في الدفع');
-    }
+
+    document.body.appendChild(form);
+    form.submit();
   }catch(e){
     btn.disabled=false;
     document.getElementById('fTxt').style.display='block';
