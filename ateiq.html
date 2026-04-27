@@ -701,7 +701,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
      ===================================================== -->
 <script>
 // ⬇️ ضع هنا رابط الـ Web App بعد النشر على Apps Script
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjWIl1t5FcMAinO-2cCHShWx-PMKp8BdEcD46bZL-oMRhm05SvM0mSubrbXgSZgigR/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzY1BwvT0muK9INLP8NW4IlG9puUNSjTsOdODf6MHoV0LgXwSCFxYtqOqTzZUYZTh81/exec";
 
 const statusMap = {
   "مكتملة":     { label:"مكتملة ✓",       cls:"s-done"    },
@@ -792,12 +792,8 @@ function renderResult(data) {
       : isCurrent
         ? 'background:rgba(92,15,15,.08);color:var(--crimson)'
         : 'background:var(--cream-2);color:var(--muted)';
-    const tagLabel   = isDone ? 'تم الانجاز ✓' : isCurrent ? 'أنت هنا' : hasPlanDate ? '📅 مجدولة' : 'متبقية';
-    const hasPlanDate = !isDone && !isCurrent && c.status && c.status !== 'متبقية' && c.status !== 'قيد التسجيل';
-    const subLabel   = isDone && c.date ? c.date
-      : isCurrent ? 'الدورة الحالية'
-      : hasPlanDate ? 'تبدأ الخطة في ' + c.status
-      : 'لم تبدأ بعد';
+    const tagLabel   = isDone ? 'تم الانجاز ✓' : isCurrent ? 'أنت هنا' : 'متبقية';
+    const subLabel   = isDone && c.date ? c.date : isCurrent ? 'الدورة الحالية' : 'لم تبدأ بعد';
 
     const circleStyle = isDone
       ? 'background:#2e7d32;color:#fff'
