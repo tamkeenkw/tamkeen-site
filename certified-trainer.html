@@ -328,6 +328,7 @@ footer{background:#0D0101;padding:28px;text-align:center}
 footer p{font-size:12px;color:rgba(255,255,255,.25)}
 footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </style>
+<script src="https://tap-gosell.cdn.tap.company/web-sdk/v2/tap.min.js"></script>
 </head>
 <body>
 
@@ -621,18 +622,8 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
       <div class="form-card">
         <div class="success-box">
           <div class="succ-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-          <div class="succ-title">تم الدفع بنجاح! 🎉</div>
-          <p class="succ-desc">تم تأكيد تسجيلك — سنتواصل معك قريباً بتفاصيل الدورة.</p>
-        </div>
-      </div>
-    </div>
-
-    <div id="fInstall" style="display:none">
-      <div class="form-card">
-        <div class="success-box">
-          <div class="succ-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
           <div class="succ-title">تم استلام طلبك! 🎉</div>
-          <p class="succ-desc">شكراً لتسجيلك — سيتواصل معك الموظف المختص قريباً لترتيب التقسيط وتأكيد مقعدك.</p>
+          <p class="succ-desc">سيتواصل معك فريق تمكين خلال ٢٤ ساعة لتأكيد تسجيلك وتفاصيل الدفع.</p>
         </div>
       </div>
     </div>
@@ -645,8 +636,9 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </footer>
 
 <script>
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec';
+const SCRIPT   = 'https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec';
 const PKG_NAMES = {basic:'الأساسية — ٧٥ د.ك', international:'الدولية — ١٠٠ د.ك', practitioner:'الممارس — ١٤٠ د.ك'};
+const PKG_PRICES = {basic:1, international:1, practitioner:1}; // TEST
 let pkg='international', pay='full';
 
 function selPkg(v){
@@ -664,9 +656,7 @@ function selPay(v){
   ['full','install'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('sel',k===v));
 }
 
-const PKG_PRICES = {basic:1, international:1, practitioner:1}; // TEST
-
-async function submitReg(){
+function submitReg(){
   const name  = document.getElementById('rName').value.trim();
   const phone = document.getElementById('rPhone').value.trim();
   const email = document.getElementById('rEmail').value.trim();
@@ -675,66 +665,75 @@ async function submitReg(){
   if(!phone||phone.length<7){alert('أدخل رقم هاتفك');return}
   if(!date){alert('اختر موعد الدورة');return}
 
-  const btn = document.getElementById('fSubmit');
-  btn.disabled = true;
-  document.getElementById('fTxt').style.display='none';
-  document.getElementById('fSpin').style.display='block';
+  if(typeof fbq!=='undefined') fbq('track','Lead');
 
-  if(typeof fbq !== 'undefined') fbq('track', 'Lead');
-
-  // تقسيط — حفظ فقط وأظهر رسالة شكر
-  if(pay === 'install'){
-    try{
-      await fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'تسجيل_دورة',name,phone,email,courses:PKG_NAMES[pkg],payment:'تقسيط',date})
-      });
-    }catch(e){}
+  // تقسيط
+  if(pay==='install'){
+    fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'تسجيل_دورة',name,phone,email,courses:PKG_NAMES[pkg],payment:'تقسيط',date})
+    }).catch(()=>{});
     document.getElementById('fCard').style.display='none';
     document.getElementById('fInstall').style.display='block';
     return;
   }
 
-  // دفع كامل — form submission (بدون CORS)
+  // دفع كامل — Tap goSell
+  const btn = document.getElementById('fSubmit');
+  btn.disabled = true;
+  document.getElementById('fTxt').textContent = 'جاري التحضير...';
+
   try{
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SCRIPT;
-
-    const fields = {
-      type: 'create_charge',
-      name, phone, email,
-      courses: PKG_NAMES[pkg],
-      date,
-      amount: PKG_PRICES[pkg],
-      redirect: window.location.href.split('?')[0] + '?payment=success'
-    };
-
-    Object.entries(fields).forEach(([k,v])=>{
-      const inp = document.createElement('input');
-      inp.type = 'hidden';
-      inp.name = k;
-      inp.value = v;
-      form.appendChild(inp);
+    const goSell = Tapjsli('pk_live_c2yHlIXLNadz7e6bYpFgOMwG');
+    goSell.initUI({
+      colors: { headerColor:'#5C0F0F', buttonColor:'#5C0F0F', payButtonColor:'#5C0F0F' },
+      labels: { cardNumber:'رقم البطاقة', expirationDate:'تاريخ الانتهاء', cvv:'CVV', cardHolder:'اسم حامل البطاقة', actionButton:'ادفع' },
+      style:  { theme:'default', direction:'rtl', responsiveLayout:'default', iconSize:'large' },
+      customer: {
+        first_name: name.split(' ')[0],
+        last_name:  name.split(' ').slice(1).join(' ')||'-',
+        phone: { country_code:'965', number: phone.replace(/^(\+965|00965)/,'') },
+        email: email||'no@email.com'
+      },
+      order: {
+        amount: PKG_PRICES[pkg],
+        currency: 'KWD',
+        items: [{ id:'1', name:PKG_NAMES[pkg], description:'دورة إعداد مدرب معتمد', quantity:1, amount_per_unit:PKG_PRICES[pkg], total_amount:PKG_PRICES[pkg] }],
+        shipping: null, taxes: null
+      },
+      transaction: { mode:'charge', charge:{
+        saveCard:false, threeDSecure:true,
+        description:'دورة إعداد مدرب معتمد',
+        statement_descriptor:'تمكين',
+        reference:{ transaction:Date.now().toString(), order:'CT-'+Date.now() },
+        metadata:{ name, phone, courses:PKG_NAMES[pkg], date },
+        receipt:{ email:!!email, sms:true },
+        redirect:{ url: window.location.href.split('?')[0]+'?payment=success&n='+encodeURIComponent(name)+'&p='+encodeURIComponent(phone)+'&c='+encodeURIComponent(PKG_NAMES[pkg])+'&d='+encodeURIComponent(date) },
+        post:{ url:'' }
+      } }
     });
-
-    document.body.appendChild(form);
-    form.submit();
-  }catch(e){
-    btn.disabled=false;
-    document.getElementById('fTxt').style.display='block';
-    document.getElementById('fSpin').style.display='none';
-    alert('حدث خطأ — حاول مجدداً');
+    goSell.openLightBox();
+  }catch(ex){
+    alert('خطأ في تحميل بوابة الدفع — حاول مجدداً');
   }
+  btn.disabled=false;
+  document.getElementById('fTxt').textContent='تأكيد التسجيل ←';
 }
 
-// تحقق من نجاح الدفع عند العودة
-window.addEventListener('DOMContentLoaded', ()=>{
+// بعد الدفع الناجح
+window.addEventListener('DOMContentLoaded',()=>{
   const p = new URLSearchParams(window.location.search);
-  if(p.get('payment') === 'success'){
-    const fc = document.getElementById('fCard');
+  if(p.get('payment')==='success'){
+    const fc=document.getElementById('fCard');
     if(fc) fc.style.display='none';
-    const fs = document.getElementById('fSuccess');
+    const fs=document.getElementById('fSuccess');
     if(fs) fs.style.display='block';
+    const n=p.get('n')||'', ph=p.get('p')||'', c=p.get('c')||'', d=p.get('d')||'';
+    if(n){
+      fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:'',courses:c,payment:'تم الدفع',date:d})
+      }).catch(()=>{});
+    }
+    window.history.replaceState({},'',window.location.pathname);
   }
 });
 </script>
