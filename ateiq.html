@@ -792,8 +792,10 @@ function renderResult(data) {
       : isCurrent
         ? 'background:rgba(92,15,15,.08);color:var(--crimson)'
         : 'background:var(--cream-2);color:var(--muted)';
-    const tagLabel   = isDone ? 'تم الانجاز ✓' : isCurrent ? 'أنت هنا' : 'متبقية';
-    const subLabel   = isDone && c.date ? c.date : isCurrent ? 'الدورة الحالية' : 'لم تبدأ بعد';
+    const isDate = (s) => s && s !== 'متبقية' && s !== 'قيد التسجيل' && s !== 'تم الانجاز';
+    const hasPlanDate = !isDone && isDate(c.status);
+    const tagLabel   = isDone ? 'تم الانجاز ✓' : hasPlanDate ? '📅 مجدولة' : isCurrent ? 'أنت هنا' : 'متبقية';
+    const subLabel   = isDone && c.date ? c.date : hasPlanDate ? 'تبدأ الخطة في ' + c.status : isCurrent ? 'الدورة الحالية' : 'لم تبدأ بعد';
 
     const circleStyle = isDone
       ? 'background:#2e7d32;color:#fff'
