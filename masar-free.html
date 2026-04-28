@@ -817,10 +817,11 @@ async function checkPhone() {
 }
 
 async function sendZoomActive() {
-  const name   = document.getElementById('activeName').value.trim();
-  const email  = document.getElementById('activeEmail').value.trim();
-  const phone  = document.getElementById('step1Phone').value.trim();
-  const course = document.getElementById('courseNameInput').value;
+  const name     = document.getElementById('activeName').value.trim();
+  const email    = document.getElementById('activeEmail').value.trim();
+  const phone    = document.getElementById('step1Phone').value.trim();
+  const course   = document.getElementById('courseNameInput').value;
+  const courseDate = document.getElementById('courseDateInput').value;
   const wantCert = document.querySelector('input[name="activeCert"]:checked')?.value || '';
 
   let ok = true;
@@ -833,14 +834,34 @@ async function sendZoomActive() {
   document.getElementById('activeBtnTxt').style.display = 'none';
   document.getElementById('activeSpinner').style.display = 'block';
 
+  if (wantCert === 'نعم') {
+    // شهادة → ارسل للدفع
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({
+          type: 'دفع_شهادة',
+          name, phone, email, course, courseDate,
+          courseType: 'مشترك', amount: 15,
+          notes: courseDate ? 'تاريخ الدورة: ' + courseDate : ''
+        })
+      });
+      const data = await res.json();
+      if(data.status === 'ok' && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch(err) {}
+  }
+
+  // بدون شهادة أو فشل الدفع — سجّل عادي
   await fetch(SCRIPT_URL, {
     method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
     body: JSON.stringify({
       type: 'تسجيل دورة مجانية',
       name, phone, email,
       course, courseType: 'مشترك',
-      wantCert,
-      courseDate: document.getElementById('courseDateInput').value,
+      wantCert, courseDate,
       timestamp: new Date().toLocaleString('ar-SA')
     })
   }).catch(()=>{});
