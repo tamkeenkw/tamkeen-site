@@ -328,15 +328,6 @@ footer{background:#0D0101;padding:28px;text-align:center}
 footer p{font-size:12px;color:rgba(255,255,255,.25)}
 footer a{color:rgba(255,255,255,.4);text-decoration:none}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
-<script src="https://checkout.goSell.me/web-sdk-v3/gosell.js"></script>
-<script>
-function handlePaymentCallback(response){
-  if(response && response.callback && response.callback.status === 'CAPTURED'){
-    window.location.href = window.location.href.split('?')[0]+'?payment=success';
-  }
-}
-</script>
 </head>
 <body>
 
@@ -688,58 +679,24 @@ function submitReg(){
 
   var btn = document.getElementById('fSubmit');
   btn.disabled = true;
-  document.getElementById('fTxt').textContent = 'جاري التحضير...';
+  document.getElementById('fTxt').textContent = 'جاري الإعداد...';
 
-  goSell.config({
-    gateway: {
-      publicKey: 'pk_live_c2yHlIXLNadz7e6bYpFgOMwG',
-      language: 'ar',
-      supportedCurrencies: 'provided',
-      supportedPaymentMethods: 'ALL',
-      saveCardOption: false,
-      notifications: 'standard',
-      callback: function(response){
-        if(response && response.callback && response.callback.status==='CAPTURED'){
-          var n=encodeURIComponent(name), p=encodeURIComponent(phone),
-              c=encodeURIComponent(PKG_NAMES[pkg]), d=encodeURIComponent(date);
-          window.location.href = window.location.pathname+'?payment=success&n='+n+'&p='+p+'&c='+c+'&d='+d;
-        }
-      },
-      labels:{ cardNumber:'رقم البطاقة', expirationDate:'تاريخ الانتهاء', cvv:'رمز الحماية', cardHolder:'اسم حامل البطاقة', actionButton:'ادفع الآن' },
-      style:{ base:{ color:'#535353', fontFamily:'Cairo', fontSize:'16px' }, invalid:{ color:'red' } }
-    },
-    customer:{
-      id:'',
-      first_name: name.split(' ')[0],
-      middle_name:'',
-      last_name: name.split(' ').slice(1).join(' ')||'-',
-      email: email||'no@email.com',
-      phone:{ country_code:'965', number: phone.replace(/\+965|00965/,'') }
-    },
-    order:{
-      amount: PKG_PRICES[pkg],
-      currency:'KWD',
-      items:[{id:'1',name:PKG_NAMES[pkg],description:'دورة مدرب معتمد',quantity:1,amount_per_unit:PKG_PRICES[pkg],discount:{type:'P',value:0},total_amount:PKG_PRICES[pkg]}],
-      shipping:null, taxes:null
-    },
-    transaction:{
-      mode:'charge',
-      charge:{
-        saveCard:false, threeDSecure:true,
-        description:'دورة إعداد مدرب معتمد',
-        statement_descriptor:'تمكين',
-        reference:{transaction:String(Date.now()), order:'CT-'+Date.now()},
-        metadata:{name:name, phone:phone},
-        receipt:{email:!!email, sms:true},
-        redirect:{url: window.location.origin+window.location.pathname+'?payment=success&n='+encodeURIComponent(name)+'&p='+encodeURIComponent(phone)+'&c='+encodeURIComponent(PKG_NAMES[pkg])+'&d='+encodeURIComponent(date)},
-        post:{url:''}
-      }
-    }
+  // إرسال لـ Apps Script عبر form
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = SCRIPT;
+  var fields = {
+    type:'create_charge', name:name, phone:phone, email:email,
+    courses:PKG_NAMES[pkg], date:date, amount:PKG_PRICES[pkg],
+    redirect: window.location.origin+window.location.pathname+'?payment=success&n='+encodeURIComponent(name)+'&p='+encodeURIComponent(phone)+'&c='+encodeURIComponent(PKG_NAMES[pkg])+'&d='+encodeURIComponent(date)
+  };
+  Object.keys(fields).forEach(function(k){
+    var inp = document.createElement('input');
+    inp.type='hidden'; inp.name=k; inp.value=fields[k];
+    form.appendChild(inp);
   });
-
-  goSell.showUI();
-  btn.disabled = false;
-  document.getElementById('fTxt').textContent = 'تأكيد التسجيل ←';
+  document.body.appendChild(form);
+  form.submit();
 }
 
 window.addEventListener('DOMContentLoaded', function(){
