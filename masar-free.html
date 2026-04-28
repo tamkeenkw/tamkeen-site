@@ -909,14 +909,38 @@ document.getElementById('courseForm').addEventListener('submit', async function(
   document.getElementById('cBtn').disabled = true;
   document.getElementById('cBtnTxt').style.display = 'none';
   document.getElementById('cSpinner').style.display = 'block';
-  const phone = document.getElementById('formPhone').value;
+  const phone    = document.getElementById('formPhone').value;
+  const course   = document.getElementById('courseNameInput').value;
+  const courseDate = document.getElementById('courseDateInput').value;
+
+  if (wantCert === 'نعم') {
+    // شهادة → ارسل للدفع
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({
+          type: 'دفع_شهادة',
+          name: f.fullName.value, phone, email: f.email.value,
+          course, courseDate, courseType: 'مجاني',
+          amount: 15,
+          notes: courseDate ? 'تاريخ الدورة: ' + courseDate : ''
+        })
+      });
+      const data = await res.json();
+      if(data.status === 'ok' && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch(err) {}
+    // لو فشل الدفع — سجّل عادي
+  }
+
+  // بدون شهادة أو لو فشل الدفع — سجّل عادي
   await fetch(SCRIPT_URL, {
     method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
     body: JSON.stringify({ type:'تسجيل دورة مجانية',
       name:f.fullName.value, phone, email:f.email.value,
-      course: document.getElementById('courseNameInput').value,
-      courseDate: document.getElementById('courseDateInput').value,
-      wantCert, courseType:'مجاني',
+      course, courseDate, wantCert, courseType:'مجاني',
       timestamp: new Date().toLocaleString('ar-SA') })
   }).catch(()=>{});
   if(typeof fbq !== 'undefined') fbq('track', 'Lead');
@@ -959,10 +983,31 @@ document.getElementById('pricingForm').addEventListener('submit', async function
   document.getElementById('pBtn').disabled=true;
   document.getElementById('pBtnTxt').style.display='none';
   document.getElementById('pSpinner').style.display='block';
+
+  const plan = document.getElementById('pPlanType').value;
+  const amountMap = {'اشتراك شهر — ١٠ د.ك':10, 'اشتراك ٦ أشهر — ٤٠ د.ك':40, 'اشتراك ١٢ شهر — ٧٠ د.ك':70};
+  const amount = amountMap[plan] || 10;
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        type: 'دفع_اشتراك',
+        name: f.fullName.value, phone: f.phone.value, email: f.email.value,
+        plan, amount
+      })
+    });
+    const data = await res.json();
+    if(data.status === 'ok' && data.url) {
+      window.location.href = data.url;
+      return;
+    }
+  } catch(err) {}
+
+  // لو فشل الدفع — سجّل عادي
   await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({type:'طلب مسار',name:f.fullName.value,phone:f.phone.value,
-      email:f.email.value,plan:document.getElementById('pPlanType').value,
-      timestamp:new Date().toLocaleString('ar-SA')})}).catch(()=>{});
+      email:f.email.value,plan,timestamp:new Date().toLocaleString('ar-SA')})}).catch(()=>{});
   if(typeof fbq !== 'undefined') fbq('track', 'Lead');
   f.style.display='none';
   document.getElementById('pSuccess').style.display='block';
@@ -1031,6 +1076,24 @@ function formatDateAr(dateStr) {
 }
 
 loadFreeCourses();
+
+// معالج رجوع الدفع
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('payment') === 'success') {
+    // أخبر السكريبت بتحديث الشيت
+    fetch(SCRIPT_URL + '?payment=success&type=' + encodeURIComponent(params.get('type')||'') +
+      '&phone=' + encodeURIComponent(params.get('phone')||'') +
+      '&plan=' + encodeURIComponent(params.get('plan')||'') +
+      '&course=' + encodeURIComponent(params.get('course')||'')
+    ).catch(()=>{});
+    // أظهر رسالة نجاح
+    setTimeout(() => {
+      alert('تم الدفع بنجاح ✅\nسيتم التواصل معك قريباً');
+      window.history.replaceState({}, '', window.location.pathname);
+    }, 500);
+  }
+})();
 </script>
 </body>
 </html>
