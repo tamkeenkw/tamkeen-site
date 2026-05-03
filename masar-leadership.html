@@ -304,15 +304,20 @@ async function submitReg(){
   if(selectedBatch === 'full') {
     // دفعة واحدة → Tap
     try{
-      const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
-        type:'أكاديمية مسار', name, phone, email,
-        plan:'باقة فن الإدارة وتمكين القيادي',
-        batch: batchVal, amount:45,
-        timestamp:new Date().toLocaleString('ar-SA')
-      })});
+      const res=await fetch(SCRIPT_URL,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({
+          type:'أكاديمية مسار', name, phone, email,
+          plan:'باقة فن الإدارة وتمكين القيادي',
+          batch: batchVal, amount:45,
+          redirect: 'https://tamkeenkuw.com/masar-leadership?payment=success&name='+encodeURIComponent(name)+'&phone='+encodeURIComponent(phone),
+          timestamp:new Date().toLocaleString('ar-SA')
+        })
+      });
       const data=await res.json();
-      if(data.status==='ok'&&data.url){window.location.href=data.url;return;}
-    }catch(err){}
+      if(data.url){ window.location.href=data.url; return; }
+    }catch(err){console.log('tap error:',err);}
   }
 
   // تقسيط أو فشل الدفع → سجّل في الشيت
