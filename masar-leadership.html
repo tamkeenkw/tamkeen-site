@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>باقة فن الإدارة وتمكين القيادي — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--crimson:#5C0F0F;--crimson-2:#6B1212;--cream:#FAF7F2;--cream-2:#F2EDE5;--white:#FFFFFF;--text:#1A0808;--muted:#7A6060;--green:#2E7D32;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+
+.hero{background:var(--crimson);min-height:72vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);background-size:60px 60px;background-position:0 0,0 30px,30px -30px,-30px 0;}
+.hero-badge{position:relative;z-index:1;display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);padding:6px 20px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:20px;border:1px solid rgba(255,255,255,.2);}
+.hero-tag{position:relative;z-index:1;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:3px;margin-bottom:14px;}
+.hero h1{position:relative;z-index:1;font-size:clamp(32px,6vw,58px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:18px;}
+.hero h1 em{font-style:normal;color:rgba(255,255,255,.65);}
+.hero-sub{position:relative;z-index:1;font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,.65);line-height:1.9;max-width:560px;margin:0 auto 32px;}
+.hero-pills{position:relative;z-index:1;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px;}
+.pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);padding:7px 18px;border-radius:100px;font-size:13px;font-weight:700;}
+.hero-cta{position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px 34px;border:none;border-radius:100px;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.2);}
+
+.section{padding:clamp(56px,8vw,96px) 24px;}
+.section-inner{max-width:920px;margin:0 auto;}
+.sec-tag{display:inline-block;background:var(--crimson);color:#fff;font-size:11px;font-weight:800;letter-spacing:2px;padding:5px 16px;border-radius:100px;margin-bottom:14px;}
+.sec-title{font-size:clamp(24px,4vw,36px);font-weight:900;color:var(--text);margin-bottom:12px;line-height:1.3;}
+.sec-sub{font-size:15px;color:var(--muted);line-height:1.9;max-width:560px;margin-bottom:44px;}
+
+.axes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;}
+.axis-card{background:#fff;border-radius:18px;padding:26px 22px;border:1.5px solid rgba(92,15,15,.07);box-shadow:0 2px 12px rgba(92,15,15,.04);transition:all .2s;}
+.axis-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(92,15,15,.09);border-color:rgba(92,15,15,.15);}
+.axis-icon{font-size:26px;margin-bottom:12px;}
+.axis-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4;}
+.axis-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+
+.courses-list{display:flex;flex-direction:column;gap:14px;}
+.course-card{background:#fff;border-radius:18px;padding:24px 28px;border:1.5px solid rgba(92,15,15,.07);box-shadow:0 2px 12px rgba(92,15,15,.04);display:grid;grid-template-columns:48px 1fr auto;gap:20px;align-items:center;transition:all .2s;}
+@media(max-width:560px){.course-card{grid-template-columns:1fr;}}
+.course-card:hover{box-shadow:0 8px 28px rgba(92,15,15,.09);border-color:rgba(92,15,15,.15);}
+.course-num{width:48px;height:48px;background:var(--crimson);color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;flex-shrink:0;}
+.course-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.course-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.course-meta span{font-size:13px;color:var(--muted);font-weight:600;}
+.trainer-chip{background:var(--cream-2);color:var(--crimson);padding:6px 16px;border-radius:100px;font-size:13px;font-weight:800;white-space:nowrap;flex-shrink:0;border:1.5px solid rgba(92,15,15,.08);}
+
+.trainers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+.trainer-card{background:#fff;border-radius:18px;padding:26px 22px;border:1.5px solid rgba(92,15,15,.07);box-shadow:0 2px 12px rgba(92,15,15,.04);transition:all .2s;}
+.trainer-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(92,15,15,.09);}
+.trainer-avatar{width:52px;height:52px;background:var(--crimson);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;margin-bottom:14px;}
+.trainer-name{font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.trainer-role{font-size:12px;font-weight:700;color:var(--crimson);letter-spacing:1px;margin-bottom:10px;}
+.trainer-bio{font-size:13px;color:var(--muted);line-height:1.7;}
+
+.certs-band{background:var(--crimson);padding:clamp(56px,8vw,96px) 24px;}
+.certs-inner{max-width:920px;margin:0 auto;}
+.certs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;}
+@media(max-width:560px){.certs-grid{grid-template-columns:1fr;}}
+.cert-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:22px 18px;text-align:center;transition:all .2s;}
+.cert-card:hover{background:rgba(255,255,255,.13);}
+.cert-icon{font-size:28px;margin-bottom:10px;}
+.cert-name{font-size:13px;font-weight:800;color:#fff;line-height:1.5;}
+.cert-org{font-size:12px;color:rgba(255,255,255,.45);margin-top:5px;}
+
+.pricing-wrap{max-width:460px;margin:0 auto;}
+.pricing-card{background:#fff;border-radius:24px;padding:40px;border:1.5px solid rgba(92,15,15,.08);box-shadow:0 8px 40px rgba(92,15,15,.1);}
+.pricing-label{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);margin-bottom:16px;}
+.pricing-price{font-size:58px;font-weight:900;color:var(--crimson);line-height:1;margin-bottom:4px;}
+.pricing-price span{font-size:20px;color:var(--muted);}
+.pricing-note{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.7;}
+.pricing-features{list-style:none;margin-bottom:26px;}
+.pricing-features li{font-size:14px;color:var(--text);padding:10px 0;border-bottom:1px solid rgba(92,15,15,.05);display:flex;align-items:center;gap:10px;}
+.pricing-features li:last-child{border:none;}
+.pricing-features li::before{content:'✓';color:var(--green);font-weight:900;flex-shrink:0;}
+.pricing-btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:16px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;}
+.pricing-btn:hover{background:var(--crimson-2);}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:22px;padding:32px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal-close{position:absolute;top:14px;left:14px;width:34px;height:34px;background:var(--cream-2);border:none;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+.modal-title{font-size:19px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.mf{margin-bottom:14px;}
+.mf label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.mf input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
+.mf input:focus{border-color:var(--crimson);background:#fff;}
+.mf.invalid input{border-color:#C62828;background:#FFF5F5;}
+.req{color:var(--crimson);}
+.err{font-size:12px;color:#C62828;margin-top:4px;display:none;}
+.mf.invalid .err{display:block;}
+.modal-submit{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;margin-top:6px;}
+.modal-submit:hover{background:var(--crimson-2);}
+.modal-submit:disabled{opacity:.6;cursor:not-allowed;}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.success-view{display:none;text-align:center;padding:16px 0;}
+.success-icon{font-size:48px;margin-bottom:14px;}
+.success-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.8;}
+
+.nav{position:fixed;top:0;width:100%;z-index:900;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;transition:all .3s;}
+.nav.scrolled{background:rgba(92,15,15,.97);backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.nav-logo{font-size:17px;font-weight:900;color:#fff;}
+.nav-cta{background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:900;padding:9px 22px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;}
+.nav-cta:hover{opacity:.9;}
+
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease;}
+.fade-in.on{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-logo">أكاديمية مسار</div>
+  <button class="nav-cta" onclick="openModal()">سجّل الآن</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">@bymasar — أكاديمية مسار</div>
+  <div class="hero-tag">باقة تدريبية متكاملة</div>
+  <h1>فن الإدارة<br><em>وتمكين القيادي</em></h1>
+  <p class="hero-sub">برنامج تدريبي متكامل يمنحك أدوات القيادة الفعّالة — ٣ دورات مع نخبة من المتخصصين وشهادات معتمدة رسمياً</p>
+  <div class="hero-pills">
+    <span class="pill">٣ دورات تدريبية</span>
+    <span class="pill">٣ شهادات معتمدة</span>
+    <span class="pill">٦ ساعات تدريبية</span>
+    <span class="pill">أونلاين عبر زووم</span>
+  </div>
+  <a href="#pricing" class="hero-cta">سجّل في الباقة — ٤٥ د.ك ←</a>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="sec-tag">محاور الباقة</div>
+    <h2 class="sec-title">٤ محاور تدريبية متكاملة</h2>
+    <p class="sec-sub">تغطي كل ما يحتاجه القائد لبناء فريق ناجح وإدارة عمل مؤثر ومستدام</p>
+    <div class="axes-grid fade-in">
+      <div class="axis-card"><div class="axis-icon">🧭</div><div class="axis-title">القيادة الاستراتيجية</div><div class="axis-desc">بناء رؤية واضحة وترجمتها لخطط تنفيذية قابلة للقياس والتحقيق على أرض الواقع</div></div>
+      <div class="axis-card"><div class="axis-icon">🤝</div><div class="axis-title">إدارة الفريق وتطويره</div><div class="axis-desc">فهم ديناميكيات الفريق وتوزيع الأدوار وبناء بيئة عمل محفّزة ومنتجة</div></div>
+      <div class="axis-card"><div class="axis-icon">⚡</div><div class="axis-title">التفويض الفعّال</div><div class="axis-desc">إتقان فن تفويض المهام بثقة دون فقدان السيطرة — وتمكين الآخرين من النمو والإبداع</div></div>
+      <div class="axis-card"><div class="axis-icon">📊</div><div class="axis-title">قياس الإنجاز والأداء</div><div class="axis-desc">أدوات عملية لمتابعة الأداء وتوثيق الإنجازات وبناء ملف احترافي يعكس قيمتك القيادية</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--cream-2);padding-top:0;">
+  <div class="section-inner">
+    <div class="sec-tag">الدورات الثلاث</div>
+    <h2 class="sec-title">برنامج متدرّج ومتكامل</h2>
+    <p class="sec-sub">كل دورة تبني على السابقة — من التخطيط إلى التنفيذ إلى التوثيق والإنجاز</p>
+    <div class="courses-list fade-in">
+      <div class="course-card">
+        <div class="course-num">١</div>
+        <div><div class="course-title">التخطيط الإداري وقيادة الفريق</div><div class="course-meta"><span>📅 الاثنين ٨ يونيو ٢٠٢٦</span><span>🕔 ٥–٧ م</span><span>💻 زووم</span></div></div>
+        <div class="trainer-chip">خالد الهلالي</div>
+      </div>
+      <div class="course-card">
+        <div class="course-num">٢</div>
+        <div><div class="course-title">فن التفويض وتوزيع المهام</div><div class="course-meta"><span>📅 الاثنين ١٥ يونيو ٢٠٢٦</span><span>🕔 ٥–٧ م</span><span>💻 زووم</span></div></div>
+        <div class="trainer-chip">د. جاسم الجزاع</div>
+      </div>
+      <div class="course-card">
+        <div class="course-num">٣</div>
+        <div><div class="course-title">إعداد الملف الإنجازي ومتابعة إنجازات الفريق</div><div class="course-meta"><span>📅 الاثنين ٢٢ يونيو ٢٠٢٦</span><span>🕔 ٥–٧ م</span><span>💻 زووم</span></div></div>
+        <div class="trainer-chip">نوف محمد حسن</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="sec-tag">المدربون</div>
+    <h2 class="sec-title">نخبة من المتخصصين</h2>
+    <p class="sec-sub">خبراء معتمدون في الإدارة والقيادة والتطوير المؤسسي</p>
+    <div class="trainers-grid fade-in">
+      <div class="trainer-card"><div class="trainer-avatar">خ</div><div class="trainer-name">خالد الهلالي</div><div class="trainer-role">مدرب دولي معتمد</div><div class="trainer-bio">خبرة أكثر من ٢٣ سنة في الإدارة وتدريب موظفي القطاع الخاص والبنوك</div></div>
+      <div class="trainer-card"><div class="trainer-avatar">ج</div><div class="trainer-name">د. جاسم الجزاع</div><div class="trainer-role">مستشار تطوير أعمال</div><div class="trainer-bio">مؤسس ومدير شركة Clear Mind للاستشارات الإدارية — متخصص في القيادة والتطوير المؤسسي</div></div>
+      <div class="trainer-card"><div class="trainer-avatar">ن</div><div class="trainer-name">نوف محمد حسن</div><div class="trainer-role">مدربة معتمدة</div><div class="trainer-bio">متخصصة في تطوير الملفات الإنجازية وقياس الأداء المؤسسي والفردي</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="certs-band">
+  <div class="certs-inner">
+    <div class="sec-tag" style="background:rgba(255,255,255,.15);color:#fff;">الاعتماد والشهادات</div>
+    <h2 class="sec-title" style="color:#fff;">٣ شهادات معتمدة رسمياً</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.6);">تُضاف لملفك المهني وتُحتسب لدى جهات الاعتماد الرسمية في الكويت</p>
+    <div class="certs-grid fade-in">
+      <div class="cert-card"><div class="cert-icon">🏛️</div><div class="cert-name">معهد تمكين إيديوكلاود</div><div class="cert-org">معتمد دولياً</div></div>
+      <div class="cert-card"><div class="cert-icon">✅</div><div class="cert-name">الهيئة العامة للتعليم والتدريب التطبيقي</div><div class="cert-org">الكويت</div></div>
+      <div class="cert-card"><div class="cert-icon">📋</div><div class="cert-name">ديوان الخدمة المدنية</div><div class="cert-org">الكويت</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-inner" style="text-align:center;">
+    <div class="sec-tag">التسجيل</div>
+    <h2 class="sec-title">انضم للباقة الآن</h2>
+    <p class="sec-sub" style="margin:0 auto 40px;">سعر الباقة الكاملة — ٣ دورات + ٣ شهادات معتمدة</p>
+    <div class="pricing-wrap fade-in">
+      <div class="pricing-card">
+        <div class="pricing-label">باقة فن الإدارة وتمكين القيادي</div>
+        <div class="pricing-price">٤٥ <span>د.ك</span></div>
+        <p class="pricing-note">للباقة الكاملة — ٣ دورات + ٣ شهادات معتمدة + ٦ ساعات تدريبية مع نخبة من المتخصصين</p>
+        <ul class="pricing-features">
+          <li>التخطيط الإداري وقيادة الفريق</li>
+          <li>فن التفويض وتوزيع المهام</li>
+          <li>إعداد الملف الإنجازي ومتابعة الإنجازات</li>
+          <li>٣ شهادات معتمدة رسمياً</li>
+          <li>جلسات أونلاين عبر زووم</li>
+          <li>مفتوحة للجميع — مو بس المعلمين</li>
+        </ul>
+
+        <!-- خيار الدفع -->
+        <div style="display:flex;gap:10px;margin-bottom:20px;" id="batch-opts">
+          <label id="lbl-full" style="flex:1;background:var(--cream-2);border:2px solid transparent;border-radius:14px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;font-size:14px;font-weight:700;color:var(--text);">
+            <input type="radio" name="batch" value="دفعة واحدة — ٤٥ د.ك" style="display:none;" onchange="selectBatch('full')">
+            دفعة واحدة<br><span style="font-size:13px;color:var(--crimson);font-weight:900;">٤٥ د.ك</span>
+          </label>
+          <label id="lbl-inst" style="flex:1;background:var(--cream-2);border:2px solid transparent;border-radius:14px;padding:14px;cursor:pointer;text-align:center;transition:all .2s;font-size:14px;font-weight:700;color:var(--text);">
+            <input type="radio" name="batch" value="تقسيط — ٤ دفعات" style="display:none;" onchange="selectBatch('inst')">
+            تقسيط<br><span style="font-size:13px;color:var(--crimson);font-weight:900;">٤ دفعات</span>
+          </label>
+        </div>
+        <div id="batch-err" style="display:none;font-size:12px;color:#C62828;margin-bottom:12px;">يرجى اختيار طريقة الدفع</div>
+
+        <button class="pricing-btn" onclick="openModal()">سجّل الآن</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="formView">
+      <div class="modal-title">سجّل في الباقة</div>
+      <div class="modal-sub" id="modal-sub">فن الإدارة وتمكين القيادي</div>
+      <div class="mf" id="mf-name"><label><span class="req">*</span> الاسم الكامل</label><input type="text" id="regName" placeholder="اسمك الكامل"><div class="err">يرجى إدخال الاسم</div></div>
+      <div class="mf" id="mf-phone"><label><span class="req">*</span> رقم الواتساب</label><input type="tel" id="regPhone" placeholder="XXXXXXXX"><div class="err">يرجى إدخال الرقم</div></div>
+      <div class="mf" id="mf-email"><label><span class="req">*</span> الإيميل</label><input type="email" id="regEmail" placeholder="example@email.com"><div class="err">يرجى إدخال إيميل صحيح</div></div>
+      <button class="modal-submit" id="submitBtn" onclick="submitReg()">
+        <span id="submitTxt">تأكيد التسجيل والدفع</span>
+        <div class="spinner" id="submitSpinner"></div>
+      </button>
+    </div>
+    <div class="success-view" id="successView">
+      <div class="success-icon">✅</div>
+      <div class="success-title">تم التسجيل!</div>
+      <div class="success-sub" id="success-sub">سيتم التواصل معك قريباً لإتمام الدفع وإرسال تفاصيل الدورات</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
+let selectedBatch = '';
+
+function selectBatch(type) {
+  selectedBatch = type;
+  document.getElementById('lbl-full').style.borderColor = type==='full' ? 'var(--crimson)' : 'transparent';
+  document.getElementById('lbl-full').style.background  = type==='full' ? 'rgba(92,15,15,.06)' : 'var(--cream-2)';
+  document.getElementById('lbl-inst').style.borderColor = type==='inst' ? 'var(--crimson)' : 'transparent';
+  document.getElementById('lbl-inst').style.background  = type==='inst' ? 'rgba(92,15,15,.06)' : 'var(--cream-2)';
+  document.getElementById('batch-err').style.display = 'none';
+}
+
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');obs.unobserve(x.target);}}),{threshold:.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+function openModal(){
+  if(!selectedBatch) { document.getElementById('batch-err').style.display='block'; document.getElementById('batch-opts').scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  // حدّث عنوان الموديل حسب الاختيار
+  document.getElementById('modal-sub').textContent = selectedBatch==='full'
+    ? 'باقة فن الإدارة وتمكين القيادي — ٤٥ د.ك دفعة واحدة'
+    : 'باقة فن الإدارة وتمكين القيادي — تقسيط ٤ دفعات';
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+async function submitReg(){
+  const name=document.getElementById('regName').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  let ok=true;
+  if(!name){document.getElementById('mf-name').classList.add('invalid');ok=false;}else document.getElementById('mf-name').classList.remove('invalid');
+  if(!phone){document.getElementById('mf-phone').classList.add('invalid');ok=false;}else document.getElementById('mf-phone').classList.remove('invalid');
+  if(!email||!email.includes('@')){document.getElementById('mf-email').classList.add('invalid');ok=false;}else document.getElementById('mf-email').classList.remove('invalid');
+  if(!ok) return;
+
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('submitTxt').style.display='none';
+  document.getElementById('submitSpinner').style.display='block';
+
+  const batchVal = selectedBatch==='full' ? 'دفعة واحدة — ٤٥ د.ك' : 'تقسيط — ٤ دفعات';
+
+  if(selectedBatch === 'full') {
+    // دفعة واحدة → Tap
+    try{
+      const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+        type:'أكاديمية مسار', name, phone, email,
+        plan:'باقة فن الإدارة وتمكين القيادي',
+        batch: batchVal, amount:45,
+        timestamp:new Date().toLocaleString('ar-SA')
+      })});
+      const data=await res.json();
+      if(data.status==='ok'&&data.url){window.location.href=data.url;return;}
+    }catch(err){}
+  }
+
+  // تقسيط أو فشل الدفع → سجّل في الشيت
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+    type:'أكاديمية مسار', name, phone, email,
+    plan:'باقة فن الإدارة وتمكين القيادي',
+    batch: batchVal,
+    timestamp:new Date().toLocaleString('ar-SA')
+  })}).catch(()=>{});
+
+  document.getElementById('formView').style.display='none';
+  document.getElementById('successView').style.display='block';
+  // حدّث رسالة النجاح حسب الاختيار
+  document.getElementById('success-sub').textContent = selectedBatch==='inst'
+    ? 'تم تسجيل طلبك — سيتواصل معك فريق أكاديمية مسار خلال ٢٤ ساعة لترتيب دفعات التقسيط'
+    : 'سيتم التواصل معك قريباً لإتمام التسجيل';
+}
+
+(function(){const p=new URLSearchParams(window.location.search);if(p.get('payment')==='success'){setTimeout(()=>{alert('تم الدفع بنجاح ✅\nسيصلك إيميل بتفاصيل الدورات قريباً');window.history.replaceState({},'',window.location.pathname);},500);}})();
+</script>
+</body>
+</html>
