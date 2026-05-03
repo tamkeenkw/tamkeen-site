@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>باقة فن الإدارة وتمكين القيادي — أكاديمية مسار</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Facebook Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2012479919334361');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2012479919334361&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel -->
 <style>
 :root{--crimson:#5C0F0F;--crimson-2:#6B1212;--cream:#FAF7F2;--cream-2:#F2EDE5;--white:#FFFFFF;--text:#1A0808;--muted:#7A6060;--green:#2E7D32;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -294,6 +312,8 @@ async function submitReg(){
   if(!phone){document.getElementById('mf-phone').classList.add('invalid');ok=false;}else document.getElementById('mf-phone').classList.remove('invalid');
   if(!email||!email.includes('@')){document.getElementById('mf-email').classList.add('invalid');ok=false;}else document.getElementById('mf-email').classList.remove('invalid');
   if(!ok) return;
+
+  if(typeof fbq !== 'undefined') fbq('track', 'Lead');
 
   document.getElementById('submitBtn').disabled=true;
   document.getElementById('submitTxt').style.display='none';
