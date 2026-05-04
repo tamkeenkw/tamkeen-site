@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدورات المكثفة | معهد EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal:    #0D5C48;
+  --teal2:   #0A4D3C;
+  --teallt:  #15705A;
+  --accent:  #1A8F6F;
+  --accentlt:#22B08A;
+  --cream:   #F5FAF8;
+  --cream2:  #E8F4F0;
+  --text:    #0A2620;
+  --muted:   #4A7A6E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Cairo',sans-serif;
+  background:var(--teal);
+  min-height:100vh;
+  padding:40px 20px 70px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(26,143,111,.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(10,77,60,.3) 0%, transparent 50%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:52px 52px;
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:1;max-width:500px;margin:0 auto}
+.header{text-align:center;margin-bottom:36px}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18)}
+.logo-icon svg{width:22px;height:22px}
+.logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:100px;margin-bottom:22px}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0}
+h1{font-size:clamp(30px,8vw,44px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:12px}
+h1 span{color:var(--accentlt)}
+.sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.8}
+.card{background:var(--cream);border-radius:26px;padding:clamp(22px,5vw,36px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.sec-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;margin-top:26px}
+.sec-label:first-of-type{margin-top:0}
+.sec-line{flex:1;height:1px;background:var(--cream2)}
+/* PACKAGES */
+.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pkg{border:2px solid rgba(13,92,72,.12);border-radius:18px;padding:18px 16px;cursor:pointer;transition:all .25s;background:#fff;position:relative;text-align:right}
+.pkg:hover{border-color:var(--teal);background:rgba(13,92,72,.03)}
+.pkg.selected{border-color:var(--teal);background:rgba(13,92,72,.05);box-shadow:0 0 0 4px rgba(13,92,72,.08)}
+.pkg.selected .pkg-check{opacity:1;transform:scale(1)}
+.pkg-check{position:absolute;top:12px;left:12px;width:22px;height:22px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:all .25s}
+.pkg-check svg{width:12px;height:12px}
+.pkg-name{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
+.pkg-desc{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.pkg-features{list-style:none;margin-bottom:14px}
+.pkg-features li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(13,92,72,.06)}
+.pkg-features li:last-child{border-bottom:none}
+.pkg-features li svg{width:14px;height:14px;color:var(--accent);flex-shrink:0}
+.pkg-price-row{display:flex;align-items:baseline;gap:5px;justify-content:flex-end}
+.pkg-price{font-size:22px;font-weight:900;color:var(--teal)}
+.pkg-currency{font-size:13px;font-weight:700;color:var(--muted)}
+.pkg-save{font-size:11px;font-weight:700;color:var(--accentlt);background:rgba(26,143,111,.1);border-radius:100px;padding:3px 10px;margin-top:6px;display:inline-block}
+/* ADDON */
+.addon-box{margin-top:12px;border:1.5px dashed rgba(13,92,72,.3);border-radius:16px;padding:16px 18px;background:#fff;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:14px;user-select:none}
+.addon-box:hover{border-color:var(--teal);background:rgba(13,92,72,.03)}
+.addon-box.checked{border-color:var(--teal);border-style:solid;background:rgba(13,92,72,.05);box-shadow:0 0 0 3px rgba(13,92,72,.08)}
+.addon-cb{width:22px;height:22px;border-radius:7px;border:2px solid rgba(13,92,72,.25);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.addon-box.checked .addon-cb{background:var(--teal);border-color:var(--teal)}
+.addon-cb svg{width:13px;height:13px;opacity:0;transition:opacity .2s}
+.addon-box.checked .addon-cb svg{opacity:1}
+.addon-info{flex:1}
+.addon-title{font-size:14px;font-weight:800;color:var(--text)}
+.addon-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.addon-price-tag{font-size:15px;font-weight:900;color:var(--teal);white-space:nowrap;text-align:left}
+.addon-note{font-size:11px;color:var(--muted);white-space:nowrap;text-align:left}
+/* SUMMARY */
+.price-summary{margin-top:14px;background:rgba(13,92,72,.06);border-radius:14px;padding:14px 18px;display:none}
+.price-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);padding:4px 0}
+.price-row.total{font-size:16px;font-weight:900;color:var(--teal);border-top:1px solid rgba(13,92,72,.12);margin-top:6px;padding-top:10px}
+/* FIELDS */
+.fields-grid{display:grid;gap:16px}
+.field{display:grid;gap:7px}
+.field label{font-size:13px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:7px}
+.field label svg{width:15px;height:15px;color:var(--teal)}
+.field input,.field select{width:100%;background:#fff;border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:14px 18px;font-family:'Cairo',sans-serif;font-size:15px;color:var(--text);outline:none;transition:all .25s;direction:rtl;-webkit-appearance:none;appearance:none}
+.field input:focus,.field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,92,72,.07)}
+.field input::placeholder{color:rgba(74,122,110,.35)}
+.field input[type=tel]{direction:ltr;text-align:right}
+.select-wrap{position:relative}
+.select-wrap::after{content:'';position:absolute;top:50%;left:18px;transform:translateY(-50%);width:0;height:0;border-top:5px solid var(--teal);border-right:4px solid transparent;border-left:4px solid transparent;pointer-events:none}
+.toggle-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggle-opt{border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:13px 16px;cursor:pointer;transition:all .2s;background:#fff;text-align:center;font-size:14px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
+.toggle-opt:hover{border-color:var(--teal);color:var(--teal)}
+.toggle-opt.active{border-color:var(--teal);color:var(--teal);background:rgba(13,92,72,.05);box-shadow:0 0 0 3px rgba(13,92,72,.08)}
+.toggle-opt svg{width:16px;height:16px;flex-shrink:0}
+.pay-grid{display:grid;gap:10px}
+.pay-opt{border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:16px 18px;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;gap:14px}
+.pay-opt:hover{border-color:var(--teal)}
+.pay-opt.active{border-color:var(--teal);background:rgba(13,92,72,.04);box-shadow:0 0 0 3px rgba(13,92,72,.08)}
+.pay-radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(13,92,72,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.pay-opt.active .pay-radio{border-color:var(--teal);background:var(--teal)}
+.pay-radio-dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:0;transition:all .2s}
+.pay-opt.active .pay-radio-dot{opacity:1}
+.pay-info{flex:1}
+.pay-title{font-size:14px;font-weight:800;color:var(--text)}
+.pay-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.pay-icon{width:36px;height:36px;border-radius:10px;background:rgba(13,92,72,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pay-icon svg{width:18px;height:18px;color:var(--teal)}
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;padding:17px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(13,92,72,.4);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn:hover{background:var(--teallt);transform:translateY(-2px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.terms{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.8}
+.success{text-align:center;padding:28px 0;display:none}
+.succ-icon-wrap{width:80px;height:80px;border-radius:50%;background:rgba(13,92,72,.1);margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+.succ-icon-wrap svg{width:40px;height:40px;color:var(--teal)}
+.succ-title{font-size:24px;font-weight:900;color:var(--text);margin-bottom:10px}
+.succ-desc{font-size:14px;color:var(--muted);line-height:1.9}
+footer{text-align:center;margin-top:28px;position:relative;z-index:1}
+footer p{font-size:11px;color:rgba(255,255,255,.25)}
+footer a{color:rgba(255,255,255,.4);text-decoration:none}
+.field input.error,.field select.error{border-color:#e53e3e;box-shadow:0 0 0 3px rgba(229,62,62,.08)}
+.error-msg{font-size:12px;color:#e53e3e;font-weight:600;display:none}
+.error-msg.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="logo-text">EDUCLOUD</div>
+    </div>
+    <div class="badge"><div class="badge-dot"></div>التسجيل مفتوح الآن</div>
+    <h1>الدورات <span>المكثفة</span></h1>
+    <p class="sub">دورات مكثفة احترافية لمتابعة المنهج وتحقيق أعلى الدرجات</p>
+  </div>
+
+  <div class="card">
+    <div id="formWrap">
+
+      <div class="sec-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        اختر الباقة
+        <div class="sec-line"></div>
+      </div>
+
+      <div class="pkg-grid">
+        <div class="pkg" id="pkg1" onclick="selectPkg(1)">
+          <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pkg-name">الفردية</div>
+          <div class="pkg-desc">مادة واحدة</div>
+          <ul class="pkg-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>تدريس المنهج كاملاً</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>أهم الأسئلة</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>اختبارات سابقة</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>٦ حصص / ٣ أيام</li>
+          </ul>
+          <div class="pkg-price-row">
+            <div class="pkg-price">٣٥</div>
+            <div class="pkg-currency">د.ك</div>
+          </div>
+        </div>
+
+        <div class="pkg" id="pkg2" onclick="selectPkg(2)">
+          <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="pkg-name">الأساسية</div>
+          <div class="pkg-desc">جميع مواد الجدول</div>
+          <ul class="pkg-features">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>تدريس المنهج كاملاً</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>أهم الأسئلة</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>اختبارات سابقة</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>٦ حصص / ٣ أيام</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>٧ مواد كاملة</li>
+          </ul>
+          <div class="pkg-price-row">
+            <div class="pkg-price">١٥٩</div>
+            <div class="pkg-currency">د.ك</div>
+          </div>
+          <div class="pkg-save">توفر ٨٦ د.ك</div>
+        </div>
+      </div>
+
+      <!-- ADDON NOTEBOOKS -->
+      <div class="addon-box" id="addonBox" onclick="toggleAddon()">
+        <div class="addon-cb">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="addon-info">
+          <div class="addon-title">إضافة المذكرات</div>
+          <div class="addon-sub">جميع المواد — ٧ مواد كاملة</div>
+        </div>
+        <div>
+          <div class="addon-price-tag">١٥ د.ك</div>
+          <div class="addon-note">اختياري</div>
+        </div>
+      </div>
+
+      <!-- PRICE SUMMARY -->
+      <div class="price-summary" id="priceSummary">
+        <div class="price-row">
+          <span id="summaryPkgLabel">الباقة</span>
+          <span id="summaryPkgPrice">—</span>
+        </div>
+        <div class="price-row" id="summaryAddonRow" style="display:none">
+          <span>المذكرات</span>
+          <span>١٥ د.ك</span>
+        </div>
+        <div class="price-row total">
+          <span>الإجمالي</span>
+          <span id="summaryTotal">—</span>
+        </div>
+      </div>
+
+      <!-- FIELDS -->
+      <div class="sec-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        بيانات التسجيل
+        <div class="sec-line"></div>
+      </div>
+
+      <div class="fields-grid">
+        <div class="field">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            الاسم الثلاثي *
+          </label>
+          <input type="text" id="name" placeholder="أدخل اسمك كاملاً">
+          <span class="error-msg" id="nameErr">يرجى إدخال الاسم الثلاثي</span>
+        </div>
+        <div class="field" id="subjectField" style="display:none">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            اسم المادة *
+          </label>
+          <input type="text" id="subject" placeholder="مثال: الرياضيات، الفيزياء...">
+          <span class="error-msg" id="subjectErr">يرجى كتابة اسم المادة</span>
+        </div>
+        <div class="field">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.71 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.58 2.81.71A2 2 0 0 1 22 16.92z"/></svg>
+            رقم الهاتف *
+          </label>
+          <input type="tel" id="phone" placeholder="XXXXXXXX">
+          <span class="error-msg" id="phoneErr">يرجى إدخال رقم هاتف صحيح</span>
+        </div>
+        <div class="field">
+          <label>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-7 10 7"/><path d="M6 10v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>
+            المرحلة الدراسية *
+          </label>
+          <div class="select-wrap">
+            <select id="grade">
+              <option value="" disabled selected>اختر المرحلة</option>
+              <option>الحادي عشر أدبي</option>
+              <option>الثاني عشر أدبي</option>
+            </select>
+          </div>
+          <span class="error-msg" id="gradeErr">يرجى اختيار المرحلة الدراسية</span>
+        </div>
+      </div>
+
+      <!-- SYSTEM -->
+      <div class="sec-label" style="margin-top:24px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        نظام الدراسة *
+        <div class="sec-line"></div>
+      </div>
+      <div class="toggle-group">
+        <div class="toggle-opt" id="sysH" onclick="selectSystem('حضوري')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          حضوري
+        </div>
+        <div class="toggle-opt" id="sysO" onclick="selectSystem('أونلاين')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          أونلاين
+        </div>
+      </div>
+      <div id="locationBox" style="display:none;margin-top:10px;background:rgba(13,92,72,.06);border-radius:12px;padding:11px 16px;display:none;align-items:center;gap:10px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span style="font-size:13px;font-weight:700;color:var(--teal)">مكان الدورة: صباح السالم</span>
+      </div>
+      <span class="error-msg" id="sysErr" style="margin-top:6px">يرجى اختيار نظام الدراسة</span>
+
+      <!-- PAYMENT -->
+      <div class="sec-label" style="margin-top:24px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        نظام الدفع *
+        <div class="sec-line"></div>
+      </div>
+      <div class="pay-grid">
+        <div class="pay-opt" id="pay1" onclick="selectPay('دفعة واحدة')">
+          <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+          <div class="pay-info">
+            <div class="pay-title">دفعة واحدة</div>
+            <div class="pay-sub">سداد المبلغ كاملاً</div>
+          </div>
+          <div class="pay-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+        </div>
+        <div class="pay-opt" id="pay2" onclick="selectPay('تقسيط ٤ دفعات')">
+          <div class="pay-radio"><div class="pay-radio-dot"></div></div>
+          <div class="pay-info">
+            <div class="pay-title">تقسيط ٤ دفعات</div>
+            <div class="pay-sub">على ٤ دفعات مريحة</div>
+          </div>
+          <div class="pay-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+        </div>
+      </div>
+      <span class="error-msg" id="payErr" style="margin-top:6px">يرجى اختيار نظام الدفع</span>
+
+      <button class="btn" id="btn" onclick="submitForm()" style="margin-top:28px">
+        <span id="btnTxt">تأكيد التسجيل</span>
+        <svg id="btnArrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <div class="spin" id="spin"></div>
+      </button>
+      <p class="terms">بالتسجيل أنت توافق على شروط وأحكام معهد EDUCLOUD</p>
+    </div>
+
+    <div class="success" id="success">
+      <div class="succ-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="succ-title">تم التسجيل بنجاح!</div>
+      <p class="succ-desc" id="succDesc">شكراً لتسجيلك في الدورات المكثفة<br>سيتواصل معك فريق EDUCLOUD قريباً</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>معهد EDUCLOUD — <a href="https://instagram.com/educloudkw" target="_blank">@educloudkw</a></p>
+  </footer>
+</div>
+
+<script>
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
+const PRICES = {1:35, 2:159};
+const ADDON  = 15;
+
+let selectedPkg=null, selectedSystem=null, selectedPay=null, addonChecked=false;
+
+function toAr(n){ return n.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]) }
+
+function updateSummary(){
+  const s = document.getElementById('priceSummary');
+  if(!selectedPkg){ s.style.display='none'; return; }
+  s.style.display='block';
+  const label = selectedPkg===1 ? 'الباقة الفردية' : 'الباقة الأساسية';
+  const base  = PRICES[selectedPkg];
+  const total = base + (addonChecked ? ADDON : 0);
+  document.getElementById('summaryPkgLabel').textContent = label;
+  document.getElementById('summaryPkgPrice').textContent = toAr(base)+' د.ك';
+  document.getElementById('summaryAddonRow').style.display = addonChecked?'flex':'none';
+  document.getElementById('summaryTotal').textContent = toAr(total)+' د.ك';
+}
+
+function selectPkg(n){
+  selectedPkg=n;
+  document.getElementById('pkg1').classList.toggle('selected',n===1);
+  document.getElementById('pkg2').classList.toggle('selected',n===2);
+  document.getElementById('subjectField').style.display = n===1 ? 'grid' : 'none';
+  if(n===2){ document.getElementById('subject').value=''; markField('subject',false); showErr('subjectErr',false); }
+  updateSummary();
+}
+function toggleAddon(){
+  addonChecked=!addonChecked;
+  document.getElementById('addonBox').classList.toggle('checked',addonChecked);
+  updateSummary();
+}
+function selectSystem(v){
+  selectedSystem=v;
+  document.getElementById('sysH').classList.toggle('active',v==='حضوري');
+  document.getElementById('sysO').classList.toggle('active',v==='أونلاين');
+  document.getElementById('sysErr').classList.remove('show');
+  const loc=document.getElementById('locationBox');
+  loc.style.display=v==='حضوري'?'flex':'none';
+}
+function selectPay(v){
+  selectedPay=v;
+  document.getElementById('pay1').classList.toggle('active',v==='دفعة واحدة');
+  document.getElementById('pay2').classList.toggle('active',v==='تقسيط ٤ دفعات');
+  document.getElementById('payErr').classList.remove('show');
+}
+function showErr(id,s){ document.getElementById(id).classList.toggle('show',s) }
+function markField(id,e){ document.getElementById(id).classList.toggle('error',e) }
+
+async function submitForm(){
+  const name=document.getElementById('name').value.trim();
+  const phone=document.getElementById('phone').value.trim();
+  const grade=document.getElementById('grade').value;
+  const subject=document.getElementById('subject').value.trim();
+  let v=true;
+  if(!selectedPkg) v=false;
+  if(selectedPkg===1 && !subject){ markField('subject',true); showErr('subjectErr',true); v=false; }
+  else{ markField('subject',false); showErr('subjectErr',false); }
+  if(!name||name.length<3){markField('name',true);showErr('nameErr',true);v=false;}
+  else{markField('name',false);showErr('nameErr',false);}
+  if(!phone||phone.length<7){markField('phone',true);showErr('phoneErr',true);v=false;}
+  else{markField('phone',false);showErr('phoneErr',false);}
+  if(!grade){markField('grade',true);showErr('gradeErr',true);v=false;}
+  else{markField('grade',false);showErr('gradeErr',false);}
+  if(!selectedSystem){showErr('sysErr',true);v=false;}
+  if(!selectedPay){showErr('payErr',true);v=false;}
+  if(!v) return;
+
+  const btn=document.getElementById('btn');
+  btn.disabled=true;
+  document.getElementById('btnTxt').style.display='none';
+  document.getElementById('btnArrow').style.display='none';
+  document.getElementById('spin').style.display='block';
+
+  const pkgLabel=selectedPkg===1?'الباقة الفردية — ٣٥ د.ك':'الباقة الأساسية — ١٥٩ د.ك';
+  const total=PRICES[selectedPkg]+(addonChecked?ADDON:0);
+
+  try{
+    const res  = await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'دورات_مكثفة',name,phone,grade,
+        package:pkgLabel, subject: selectedPkg===1 ? subject : 'جميع المواد',
+        notebooks:addonChecked?'نعم — ١٥ د.ك':'لا',
+        total:toAr(total)+' د.ك',system:selectedSystem,payment:selectedPay})
+    });
+    const data = await res.json();
+    if(data.status==='ok' && data.url){
+      window.location.href = data.url;
+      return;
+    }
+    document.getElementById('formWrap').style.display='none';
+    document.getElementById('succDesc').innerHTML=
+      `شكراً <strong>${name}</strong>، تم تسجيلك في<br>${pkgLabel}`+
+      (addonChecked?'<br>+ المذكرات ١٥ د.ك':'')+
+      `<br>الإجمالي: ${toAr(total)} د.ك<br>سيتواصل معك فريق EDUCLOUD قريباً`;
+    document.getElementById('success').style.display='block';
+  }catch(e){
+    btn.disabled=false;
+    document.getElementById('btnTxt').style.display='block';
+    document.getElementById('btnArrow').style.display='block';
+    document.getElementById('spin').style.display='none';
+    alert('حدث خطأ — يرجى المحاولة مجدداً');
+  }
+}
+document.getElementById('name').addEventListener('input',()=>{markField('name',false);showErr('nameErr',false)});
+document.getElementById('phone').addEventListener('input',()=>{markField('phone',false);showErr('phoneErr',false)});
+document.getElementById('grade').addEventListener('change',()=>{markField('grade',false);showErr('gradeErr',false)});
+document.getElementById('subject').addEventListener('input',()=>{markField('subject',false);showErr('subjectErr',false)});
+</script>
+</body>
+</html>
