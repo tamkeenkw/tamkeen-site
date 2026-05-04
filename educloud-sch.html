@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>جداول EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#050e0a;display:flex;flex-direction:column;align-items:center;gap:48px;padding:48px 20px}
+.post{width:1080px;height:1080px;position:relative;overflow:hidden;flex-shrink:0}
+.bg{position:absolute;inset:0}
+#post1 .bg{background:radial-gradient(ellipse 80% 60% at 15% 0%,#0d5c48 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 85% 100%,#093d2e 0%,transparent 55%),#071510}
+#post2 .bg{background:radial-gradient(ellipse 70% 55% at 85% 5%,#0c5040 0%,transparent 60%),radial-gradient(ellipse 65% 50% at 10% 95%,#082e22 0%,transparent 55%),#060f0c}
+.bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:60px 60px}
+.content{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;padding:48px 64px 44px}
+
+/* رأس */
+.top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:30px}
+.grade-chip{display:inline-flex;align-items:center;gap:9px;background:rgba(34,176,138,.15);border:1.5px solid rgba(34,176,138,.3);border-radius:100px;padding:8px 22px;margin-bottom:12px}
+.chip-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0}
+.chip-txt{font-size:18px;font-weight:800;color:#22B08A}
+.main-title{font-size:60px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1px}
+.main-title em{font-style:normal;color:#22B08A}
+.sub-title{font-size:19px;color:rgba(255,255,255,.35);font-weight:600;margin-top:7px}
+.logo-top{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.logo-box{width:54px;height:54px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center}
+.logo-box svg{width:28px;height:28px}
+.logo-txt{font-size:15px;font-weight:900;color:rgba(255,255,255,.3);letter-spacing:1px}
+
+/* بطاقات */
+.days{flex:1;display:flex;flex-direction:column;gap:12px}
+.day-card{flex:1;display:grid;grid-template-columns:130px 1fr 1fr;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;position:relative}
+.day-card::before{content:'';position:absolute;top:0;right:0;bottom:0;width:3px;background:linear-gradient(180deg,#22B08A,#0d7a5c)}
+.day-info{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;background:rgba(13,92,72,.2);border-left:1px solid rgba(255,255,255,.06);gap:3px}
+.day-num{font-size:48px;font-weight:900;color:#fff;line-height:1}
+.day-mon{font-size:14px;font-weight:700;color:rgba(255,255,255,.4)}
+.day-lbl{font-size:11px;font-weight:700;color:#22B08A;margin-top:2px}
+
+/* مادة */
+.subj{display:flex;flex-direction:column;justify-content:center;padding:18px 24px;border-left:1px solid rgba(255,255,255,.05);gap:5px}
+.subj:last-child{border-left:none}
+.subj-order{font-size:11px;font-weight:700;color:rgba(255,255,255,.22);letter-spacing:.5px}
+.subj-name{font-size:27px;font-weight:900;color:#fff;line-height:1}
+.subj-time{display:inline-flex;align-items:center;gap:6px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:100px;padding:4px 12px;font-size:13px;font-weight:700;color:#22B08A;width:fit-content}
+.subj-time svg{width:11px;height:11px;flex-shrink:0}
+.subj-dur{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(255,255,255,.28);margin-top:1px}
+.subj-dur svg{width:11px;height:11px;flex-shrink:0;color:rgba(255,255,255,.25)}
+
+/* فوتر */
+.footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-logo{display:flex;align-items:center;gap:10px}
+.f-icon{width:34px;height:34px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.f-icon svg{width:18px;height:18px}
+.f-name{font-size:17px;font-weight:900;color:rgba(255,255,255,.45);letter-spacing:.5px}
+.footer-cta{display:flex;align-items:center;gap:16px}
+.qr-wrap{width:82px;height:82px;background:#fff;border-radius:10px;padding:4px;flex-shrink:0}
+.cta-text{text-align:right}
+.cta-main{font-size:16px;font-weight:800;color:#fff;line-height:1.45;margin-bottom:7px}
+.cta-main span{color:#22B08A}
+.cta-wa{display:inline-flex;align-items:center;gap:7px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.28);border-radius:100px;padding:5px 14px}
+.cta-wa-num{font-size:15px;font-weight:800;color:#25D366;direction:ltr}
+.cta-wa svg{width:14px;height:14px;flex-shrink:0}
+
+/* زر */
+.dl-btn{width:1080px;background:linear-gradient(135deg,#0D5C48,#15705A);color:#fff;font-family:'Cairo',sans-serif;font-size:18px;font-weight:800;padding:17px;border:none;border-radius:14px;cursor:pointer}
+.dl-btn:hover{opacity:.9}
+
+/* ─── غلاف ─── */
+#cover .bg{background:radial-gradient(ellipse 90% 70% at 50% -5%,#0f7058 0%,transparent 55%),radial-gradient(ellipse 70% 60% at 5% 100%,#093d2e 0%,transparent 50%),radial-gradient(ellipse 60% 50% at 95% 80%,#0a4535 0%,transparent 50%),#030c08}
+#cover .bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:60px 60px}
+.cover-inner{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:64px 80px}
+/* رأس الغلاف */
+.cover-top{display:flex;align-items:center;justify-content:space-between;width:100%}
+.cover-logo-row{display:flex;align-items:center;gap:14px}
+.cover-logo-box{width:56px;height:56px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.13);border-radius:15px;display:flex;align-items:center;justify-content:center}
+.cover-logo-box svg{width:30px;height:30px}
+.cover-logo-name{font-size:22px;font-weight:900;color:rgba(255,255,255,.45);letter-spacing:1.5px}
+.cover-tag{display:inline-flex;align-items:center;gap:9px;background:rgba(34,176,138,.13);border:1.5px solid rgba(34,176,138,.3);border-radius:100px;padding:9px 24px}
+.cover-tag-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;box-shadow:0 0 0 0 rgba(34,176,138,.5);animation:cvpulse 2s infinite;flex-shrink:0}
+@keyframes cvpulse{0%,100%{box-shadow:0 0 0 0 rgba(34,176,138,.5)}50%{box-shadow:0 0 0 8px rgba(34,176,138,0)}}
+.cover-tag-txt{font-size:17px;font-weight:800;color:#22B08A}
+/* وسط الغلاف */
+.cover-mid{display:flex;flex-direction:column;align-items:center;text-align:center}
+.cover-hook{font-size:22px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:1px;margin-bottom:20px}
+.cover-main{font-size:78px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-2px;text-align:center}
+.cover-main em{font-style:normal;color:#22B08A}
+.cover-divider{width:64px;height:3px;background:linear-gradient(90deg,transparent,#22B08A,transparent);margin:24px auto}
+.cover-subtitle{font-size:24px;font-weight:700;color:rgba(255,255,255,.35);text-align:center}
+/* أسفل الغلاف */
+.cover-bottom{width:100%}
+.cover-pills{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px}
+.cover-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:10px 20px}
+.cover-pill svg{width:14px;height:14px;color:rgba(34,176,138,.8);flex-shrink:0}
+.cover-pill-txt{font-size:16px;font-weight:700;color:rgba(255,255,255,.5)}
+.cover-date-line{text-align:center;font-size:18px;font-weight:800;color:rgba(255,255,255,.18);letter-spacing:.5px}
+.cover-date-line span{color:rgba(34,176,138,.5)}
+</style>
+</head>
+<body>
+
+<!-- ══════ الغلاف ══════ -->
+<div class="post" id="cover">
+  <div class="bg"></div>
+  <div class="cover-inner">
+
+    <!-- رأس -->
+    <div class="cover-top">
+      <div class="cover-logo-row">
+        <div class="cover-logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="cover-logo-name">EDUCLOUD</div>
+      </div>
+      <div class="cover-tag"><div class="cover-tag-dot"></div><div class="cover-tag-txt">الدورات المكثفة — مايو ٢٠٢٦</div></div>
+    </div>
+
+    <!-- وسط -->
+    <div class="cover-mid">
+      <div class="cover-hook">استعد قبل الجميع</div>
+      <div class="cover-main">جدول <em>الدورات</em><br><span style="display:block;margin-top:12px">المكثفة</span></div>
+      <div class="cover-divider"></div>
+      <div class="cover-subtitle">الحادي عشر والثاني عشر — أدبي</div>
+    </div>
+
+    <!-- أسفل -->
+    <div class="cover-bottom">
+      <div class="cover-pills">
+        <div class="cover-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="cover-pill-txt">٥:٠٠ — ٩:٠٠ صباحاً</div>
+        </div>
+        <div class="cover-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="cover-pill-txt">٣ أيام متواصلة</div>
+        </div>
+        <div class="cover-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="cover-pill-txt">صباح السالم</div>
+        </div>
+      </div>
+      <div class="cover-date-line">٢٣ &nbsp;—&nbsp; ٢٦ &nbsp;—&nbsp; ٢٩ &nbsp;<span>مايو</span></div>
+    </div>
+
+  </div>
+</div>
+<button class="dl-btn" onclick="download('cover','غلاف-الجدول')">⬇ تحميل الغلاف</button>
+
+<!-- ══════ الحادي عشر ══════ -->
+<div class="post" id="post1">
+  <div class="bg"></div>
+  <div class="content">
+    <div class="top">
+      <div>
+        <div class="grade-chip"><div class="chip-dot"></div><div class="chip-txt">الصف الحادي عشر — أدبي</div></div>
+        <div class="main-title">جدول <em>الدورات</em><br>المكثفة</div>
+        <div class="sub-title">٣ أيام متواصلة — مايو ٢٠٢٦</div>
+      </div>
+      <div class="logo-top">
+        <div class="logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="logo-txt">EDUCLOUD</div>
+      </div>
+    </div>
+
+    <div class="days">
+      <!-- يوم ٢٣ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٣</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الأول</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">التاريخ</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الإحصاء</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+      <!-- يوم ٢٦ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٦</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الثاني</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">الجغرافيا</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الفرنسي</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+      <!-- يوم ٢٩ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٩</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الثالث</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">علم النفس</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الإنجليزي</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-logo">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="f-name">EDUCLOUD — @educloudkw</div>
+      </div>
+      <div class="footer-cta">
+        <div class="cta-text">
+          <div class="cta-main">للتسجيل من هنا<br><span>أو تواصل معنا</span></div>
+          <div class="cta-wa">
+            <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            <div class="cta-wa-num">97999768</div>
+          </div>
+        </div>
+        <div class="qr-wrap" id="qr1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="dl-btn" onclick="download('post1','جدول-١١')">⬇ تحميل جدول الحادي عشر</button>
+
+
+<!-- ══════ الثاني عشر ══════ -->
+<div class="post" id="post2">
+  <div class="bg"></div>
+  <div class="content">
+    <div class="top">
+      <div>
+        <div class="grade-chip"><div class="chip-dot"></div><div class="chip-txt">الصف الثاني عشر — أدبي</div></div>
+        <div class="main-title">جدول <em>الدورات</em><br>المكثفة</div>
+        <div class="sub-title">٣ أيام متواصلة — مايو ٢٠٢٦</div>
+      </div>
+      <div class="logo-top">
+        <div class="logo-box"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="logo-txt">EDUCLOUD</div>
+      </div>
+    </div>
+
+    <div class="days">
+      <!-- يوم ٢٣ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٣</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الأول</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">الجغرافيا</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الإحصاء</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+      <!-- يوم ٢٦ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٦</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الثاني</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">التاريخ</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الفرنسي</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+      <!-- يوم ٢٩ -->
+      <div class="day-card">
+        <div class="day-info"><div class="day-num">٢٩</div><div class="day-mon">مايو</div><div class="day-lbl">اليوم الثالث</div></div>
+        <div class="subj">
+          <div class="subj-order">المادة الأولى</div>
+          <div class="subj-name">الفلسفة</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5:00 — 7:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+        <div class="subj">
+          <div class="subj-order">المادة الثانية</div>
+          <div class="subj-name">الإنجليزي</div>
+          <div class="subj-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:00 — 9:00</div>
+          <div class="subj-dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>لمدة ٣ أيام</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-logo">
+        <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="f-name">EDUCLOUD — @educloudkw</div>
+      </div>
+      <div class="footer-cta">
+        <div class="cta-text">
+          <div class="cta-main">للتسجيل من هنا<br><span>أو تواصل معنا</span></div>
+          <div class="cta-wa">
+            <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            <div class="cta-wa-num">97999768</div>
+          </div>
+        </div>
+        <div class="qr-wrap" id="qr2"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="dl-btn" onclick="download('post2','جدول-١٢')">⬇ تحميل جدول الثاني عشر</button>
+
+<script>
+(function(){
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+  s.onload=function(){
+    const url='https://tamkeenkuw.com/educloud';
+    new QRCode(document.getElementById('qr1'),{text:url,width:74,height:74,colorDark:'#071510',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById('qr2'),{text:url,width:74,height:74,colorDark:'#060f0c',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  };
+  document.head.appendChild(s);
+})();
+
+async function download(id,name){
+  const el=document.getElementById(id);
+  if(!window.html2canvas){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=res;s.onerror=rej;document.head.appendChild(s);
+    });
+  }
+  const canvas=await html2canvas(el,{width:1080,height:1080,scale:1,useCORS:true,backgroundColor:null});
+  const a=document.createElement('a');
+  a.download=name+'.png';a.href=canvas.toDataURL('image/png');a.click();
+}
+</script>
+</body>
+</html>
