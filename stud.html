@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>رزنامة الدراسة — EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#040d09;display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px 20px}
+
+/* ── البوست ── */
+.post{width:1080px;height:1350px;position:relative;overflow:hidden;flex-shrink:0}
+.bg{position:absolute;inset:0}
+.bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:56px 56px}
+#g11 .bg{background:radial-gradient(ellipse 80% 50% at 15% 0%,#0d5c48,transparent 55%),radial-gradient(ellipse 55% 40% at 88% 100%,#093d2e,transparent 50%),#040d09}
+#g12 .bg{background:radial-gradient(ellipse 75% 50% at 88% 0%,#0c5040,transparent 55%),radial-gradient(ellipse 55% 40% at 12% 100%,#082e22,transparent 50%),#030c08}
+
+.inner{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;padding:44px 56px 38px}
+
+/* رأس */
+.hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px}
+.logo-row{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.lb{width:38px;height:38px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:11px;display:flex;align-items:center;justify-content:center}
+.lb svg{width:20px;height:20px}
+.ln{font-size:15px;font-weight:900;color:rgba(255,255,255,.38);letter-spacing:1px}
+.pt{font-size:46px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1.5px}
+.pt em{font-style:normal;color:#22B08A}
+.pg{font-size:24px;font-weight:900;color:rgba(255,255,255,.28);margin-top:4px}
+.ps{font-size:15px;color:rgba(255,255,255,.3);font-weight:600;margin-top:5px}
+.chips{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.chip{display:flex;align-items:center;gap:7px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.22);border-radius:100px;padding:6px 16px}
+.cn{font-size:17px;font-weight:900;color:#22B08A}
+.cl{font-size:12px;font-weight:700;color:rgba(255,255,255,.4)}
+
+/* مفتاح */
+.leg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.li{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:100px;padding:4px 11px}
+.ld{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.lt{font-size:11px;font-weight:700;color:rgba(255,255,255,.5)}
+
+/* تقويم */
+.cal{flex:1;display:flex;flex-direction:column;gap:0}
+.ml{font-size:14px;font-weight:800;color:#22B08A;display:flex;align-items:center;gap:7px;margin-bottom:5px;margin-top:10px}
+.ml:first-child{margin-top:0}
+.ml::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.wn-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px}
+.wn{text-align:center;font-size:10px;font-weight:800;color:rgba(255,255,255,.2)}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0}
+.dc{border-radius:9px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);padding:6px 5px;min-height:0;height:68px;position:relative;overflow:hidden}
+.dc.g12{height:58px}
+.dc.empty{background:transparent;border-color:transparent}
+.dc.active{background:rgba(255,255,255,.05)}
+.dc.rev{border-color:rgba(34,176,138,.15)}
+.dc.last{border-color:rgba(34,176,138,.5);background:rgba(34,176,138,.08)}
+.dn{font-size:12px;font-weight:900;color:rgba(255,255,255,.35);margin-bottom:4px;line-height:1}
+.dc.active .dn,.dc.last .dn{color:#fff}
+.dc.last .dn{color:#22B08A}
+.st{border-radius:4px;padding:3px 5px;font-size:10px;font-weight:800;color:#fff;line-height:1.2;display:block;margin-bottom:2px}
+.sn{font-size:9px;color:rgba(255,255,255,.28);font-weight:600;line-height:1.2}
+
+/* فوتر مع QR */
+.ft{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);margin-top:auto}
+.ft-logo{display:flex;align-items:center;gap:8px}
+.fi{width:30px;height:30px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.fi svg{width:16px;height:16px}
+.fn{font-size:14px;font-weight:900;color:rgba(255,255,255,.38)}
+.ft-cta{display:flex;align-items:center;gap:14px}
+.qr-box{width:72px;height:72px;background:#fff;border-radius:8px;padding:4px;flex-shrink:0}
+.cta-info{text-align:right}
+.cta-t{font-size:14px;font-weight:800;color:#fff;line-height:1.45;margin-bottom:5px}
+.cta-t span{color:#22B08A}
+.wa-row{display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:100px;padding:4px 12px}
+.wa-num{font-size:13px;font-weight:800;color:#25D366;direction:ltr}
+.wa-row svg{width:13px;height:13px;flex-shrink:0}
+
+/* زر */
+.dl-btn{width:1080px;background:linear-gradient(135deg,#0D5C48,#15705A);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;padding:15px;border:none;border-radius:12px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ الحادي عشر ══════════════ -->
+<div class="post" id="g11">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <div class="hd">
+      <div>
+        <div class="logo-row"><div class="lb"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="ln">EDUCLOUD</div></div>
+        <div class="pt">خطة <em>المذاكرة</em></div>
+        <div class="pg">الحادي عشر — أدبي</div>
+        <div class="ps">٥ مايو — ٢ يونيو · ٢ ساعة يومياً</div>
+      </div>
+      <div class="chips">
+        <div class="chip"><div class="cn">٢٩</div><div class="cl">يوم دراسة</div></div>
+        <div class="chip"><div class="cn">٨</div><div class="cl">مواد</div></div>
+        <div class="chip"><div class="cn">٥٨</div><div class="cl">ساعة</div></div>
+      </div>
+    </div>
+
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#1a6b8a"></div><div class="lt">الإحصاء</div></div>
+      <div class="li"><div class="ld" style="background:#8a4a1a"></div><div class="lt">التاريخ</div></div>
+      <div class="li"><div class="ld" style="background:#1a6b30"></div><div class="lt">الجغرافيا</div></div>
+      <div class="li"><div class="ld" style="background:#6b1a8a"></div><div class="lt">علم النفس</div></div>
+      <div class="li"><div class="ld" style="background:#8a6b1a"></div><div class="lt">العربية</div></div>
+      <div class="li"><div class="ld" style="background:#1a3f8a"></div><div class="lt">الفرنسية</div></div>
+      <div class="li"><div class="ld" style="background:#8a1a3f"></div><div class="lt">الإنجليزية</div></div>
+      <div class="li"><div class="ld" style="background:#3f7a3f"></div><div class="lt">الإسلامية</div></div>
+      <div class="li"><div class="ld" style="background:#0f5c3a"></div><div class="lt">مراجعة</div></div>
+    </div>
+
+    <div class="cal">
+      <div class="ml">مايو ٢٠٢٦</div>
+      <div class="wn-row"><div class="wn">أحد</div><div class="wn">اثنين</div><div class="wn">ثلاثاء</div><div class="wn">أربعاء</div><div class="wn">خميس</div><div class="wn">جمعة</div><div class="wn">سبت</div></div>
+      <div class="cg">
+        <div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div>
+        <div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div>
+        <div class="dc active"><div class="dn">٥</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">الفصل الأول</div></div>
+        <div class="dc active"><div class="dn">٦</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">الفصل الثاني</div></div>
+        <div class="dc active"><div class="dn">٧</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">تمارين</div></div>
+        <div class="dc active"><div class="dn">٨</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">٩</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ١</div></div>
+        <div class="dc active"><div class="dn">١٠</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ٢</div></div>
+        <div class="dc active"><div class="dn">١١</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ٣</div></div>
+        <div class="dc active"><div class="dn">١٢</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">١٣</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">الوحدة ١</div></div>
+        <div class="dc active"><div class="dn">١٤</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">الوحدة ٢</div></div>
+        <div class="dc active"><div class="dn">١٥</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">١٦</div><span class="st" style="background:#6b1a8a">علم النفس</span><div class="sn">الفصل ١</div></div>
+        <div class="dc active"><div class="dn">١٧</div><span class="st" style="background:#6b1a8a">علم النفس</span><div class="sn">الفصل ٢</div></div>
+        <div class="dc active"><div class="dn">١٨</div><span class="st" style="background:#6b1a8a">علم النفس</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">١٩</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">نصوص + نحو</div></div>
+        <div class="dc active"><div class="dn">٢٠</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">أدب + تعبير</div></div>
+        <div class="dc active"><div class="dn">٢١</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">٢٢</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">مفردات + قراءة</div></div>
+        <div class="dc active"><div class="dn">٢٣</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">قواعد + تعبير</div></div>
+        <div class="dc active"><div class="dn">٢٤</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active"><div class="dn">٢٥</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Reading+Grammar</div></div>
+        <div class="dc active"><div class="dn">٢٦</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Writing+Vocab</div></div>
+        <div class="dc active"><div class="dn">٢٧</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Past papers</div></div>
+        <div class="dc active"><div class="dn">٢٨</div><span class="st" style="background:#3f7a3f">الإسلامية</span><div class="sn">فقه + عقيدة</div></div>
+        <div class="dc active"><div class="dn">٢٩</div><span class="st" style="background:#3f7a3f">الإسلامية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc active rev"><div class="dn">٣٠</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">إحصاء + تاريخ</div></div>
+        <div class="dc active rev"><div class="dn">٣١</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">جغرافيا + نفس</div></div>
+      </div>
+
+      <div class="ml">يونيو ٢٠٢٦</div>
+      <div class="wn-row"><div class="wn">أحد</div><div class="wn">اثنين</div><div class="wn">ثلاثاء</div><div class="wn">أربعاء</div><div class="wn">خميس</div><div class="wn">جمعة</div><div class="wn">سبت</div></div>
+      <div class="cg">
+        <div class="dc empty"></div>
+        <div class="dc active rev"><div class="dn">١</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">عربي + إسلامية</div></div>
+        <div class="dc last"><div class="dn">٢</div><span class="st" style="background:#22B08A;color:#040d09">مراجعة</span><div class="sn">أول مادة بالجدول</div></div>
+        <div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div><div class="dc empty"></div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <div class="ft-logo">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="fn">EDUCLOUD — @educloudkw</div>
+      </div>
+      <div class="ft-cta">
+        <div class="cta-info">
+          <div class="cta-t">سجّل في الدورات المكثفة<br><span>من هنا أو تواصل معنا</span></div>
+          <div class="wa-row">
+            <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            <div class="wa-num">97999768</div>
+          </div>
+        </div>
+        <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=https://tamkeenkuw.com/educloud&color=040d09&bgcolor=ffffff" width="64" height="64" style="border-radius:4px;display:block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('g11','رزنامة-١١')">⬇ تحميل رزنامة الحادي عشر</button>
+
+
+<!-- ══════════════ الثاني عشر ══════════════ -->
+<div class="post" id="g12">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <div class="hd">
+      <div>
+        <div class="logo-row"><div class="lb"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="ln">EDUCLOUD</div></div>
+        <div class="pt">خطة <em>المذاكرة</em></div>
+        <div class="pg">الثاني عشر — أدبي</div>
+        <div class="ps">٥ مايو — ١٦ يونيو · ٢ ساعة يومياً</div>
+      </div>
+      <div class="chips">
+        <div class="chip"><div class="cn">٤٣</div><div class="cl">يوم دراسة</div></div>
+        <div class="chip"><div class="cn">٨</div><div class="cl">مواد</div></div>
+        <div class="chip"><div class="cn">٨٦</div><div class="cl">ساعة</div></div>
+      </div>
+    </div>
+
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#1a6b8a"></div><div class="lt">الإحصاء</div></div>
+      <div class="li"><div class="ld" style="background:#8a4a1a"></div><div class="lt">التاريخ</div></div>
+      <div class="li"><div class="ld" style="background:#1a6b30"></div><div class="lt">الجغرافيا</div></div>
+      <div class="li"><div class="ld" style="background:#6b1a8a"></div><div class="lt">الفلسفة</div></div>
+      <div class="li"><div class="ld" style="background:#8a6b1a"></div><div class="lt">العربية</div></div>
+      <div class="li"><div class="ld" style="background:#1a3f8a"></div><div class="lt">الفرنسية</div></div>
+      <div class="li"><div class="ld" style="background:#8a1a3f"></div><div class="lt">الإنجليزية</div></div>
+      <div class="li"><div class="ld" style="background:#3f7a3f"></div><div class="lt">الإسلامية</div></div>
+      <div class="li"><div class="ld" style="background:#0f5c3a"></div><div class="lt">مراجعة</div></div>
+    </div>
+
+    <div class="cal">
+      <div class="ml">مايو ٢٠٢٦</div>
+      <div class="wn-row"><div class="wn">أحد</div><div class="wn">اثنين</div><div class="wn">ثلاثاء</div><div class="wn">أربعاء</div><div class="wn">خميس</div><div class="wn">جمعة</div><div class="wn">سبت</div></div>
+      <div class="cg">
+        <div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div>
+        <div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div>
+        <div class="dc g12 active"><div class="dn">٥</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">الفصل ١</div></div>
+        <div class="dc g12 active"><div class="dn">٦</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">الفصل ٢</div></div>
+        <div class="dc g12 active"><div class="dn">٧</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">تمارين</div></div>
+        <div class="dc g12 active"><div class="dn">٨</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">٩</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ١</div></div>
+        <div class="dc g12 active"><div class="dn">١٠</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ٢</div></div>
+        <div class="dc g12 active"><div class="dn">١١</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">الوحدة ٣</div></div>
+        <div class="dc g12 active"><div class="dn">١٢</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">١٣</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">الوحدة ١</div></div>
+        <div class="dc g12 active"><div class="dn">١٤</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">الوحدة ٢</div></div>
+        <div class="dc g12 active"><div class="dn">١٥</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">١٦</div><span class="st" style="background:#6b1a8a">الفلسفة</span><div class="sn">الفصل ١</div></div>
+        <div class="dc g12 active"><div class="dn">١٧</div><span class="st" style="background:#6b1a8a">الفلسفة</span><div class="sn">الفصل ٢</div></div>
+        <div class="dc g12 active"><div class="dn">١٨</div><span class="st" style="background:#6b1a8a">الفلسفة</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">١٩</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">نصوص + نحو</div></div>
+        <div class="dc g12 active"><div class="dn">٢٠</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">أدب + تعبير</div></div>
+        <div class="dc g12 active"><div class="dn">٢١</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">٢٢</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">مفردات + قراءة</div></div>
+        <div class="dc g12 active"><div class="dn">٢٣</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">قواعد + تعبير</div></div>
+        <div class="dc g12 active"><div class="dn">٢٤</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active"><div class="dn">٢٥</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Reading+Grammar</div></div>
+        <div class="dc g12 active"><div class="dn">٢٦</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Writing+Vocab</div></div>
+        <div class="dc g12 active"><div class="dn">٢٧</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">Past papers</div></div>
+        <div class="dc g12 active"><div class="dn">٢٨</div><span class="st" style="background:#3f7a3f">الإسلامية</span><div class="sn">فقه + عقيدة</div></div>
+        <div class="dc g12 active"><div class="dn">٢٩</div><span class="st" style="background:#3f7a3f">الإسلامية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٣٠</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">إحصاء + تاريخ</div></div>
+        <div class="dc g12 active rev"><div class="dn">٣١</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">جغرافيا + فلسفة</div></div>
+      </div>
+
+      <div class="ml">يونيو ٢٠٢٦</div>
+      <div class="wn-row"><div class="wn">أحد</div><div class="wn">اثنين</div><div class="wn">ثلاثاء</div><div class="wn">أربعاء</div><div class="wn">خميس</div><div class="wn">جمعة</div><div class="wn">سبت</div></div>
+      <div class="cg">
+        <div class="dc g12 empty"></div>
+        <div class="dc g12 active rev"><div class="dn">١</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">عربي + إسلامية</div></div>
+        <div class="dc g12 active rev"><div class="dn">٢</div><span class="st" style="background:#0f5c3a">مراجعة</span><div class="sn">فرنسي + إنجليزي</div></div>
+        <div class="dc g12 active rev"><div class="dn">٣</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٤</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٥</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٦</div><span class="st" style="background:#6b1a8a">الفلسفة</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٧</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٨</div><span class="st" style="background:#1a3f8a">الفرنسية</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">٩</div><span class="st" style="background:#8a1a3f">الإنجليزية</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١٠</div><span class="st" style="background:#3f7a3f">الإسلامية</span><div class="sn">مراجعة شاملة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١١</div><span class="st" style="background:#1a6b8a">الإحصاء</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١٢</div><span class="st" style="background:#8a4a1a">التاريخ</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١٣</div><span class="st" style="background:#1a6b30">الجغرافيا</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١٤</div><span class="st" style="background:#6b1a8a">الفلسفة</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 active rev"><div class="dn">١٥</div><span class="st" style="background:#8a6b1a">العربية</span><div class="sn">أسئلة سابقة</div></div>
+        <div class="dc g12 last"><div class="dn">١٦</div><span class="st" style="background:#22B08A;color:#040d09">استعداد</span><div class="sn">راحة قبل الامتحان</div></div>
+        <div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div><div class="dc g12 empty"></div>
+      </div>
+    </div>
+
+    <div class="ft">
+      <div class="ft-logo">
+        <div class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="fn">EDUCLOUD — @educloudkw</div>
+      </div>
+      <div class="ft-cta">
+        <div class="cta-info">
+          <div class="cta-t">سجّل في الدورات المكثفة<br><span>من هنا أو تواصل معنا</span></div>
+          <div class="wa-row">
+            <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+            <div class="wa-num">97999768</div>
+          </div>
+        </div>
+        <div class="qr-box"><img src="https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=https://tamkeenkuw.com/educloud&color=040d09&bgcolor=ffffff" width="64" height="64" style="border-radius:4px;display:block"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('g12','رزنامة-١٢')">⬇ تحميل رزنامة الثاني عشر</button>
+
+<script>
+
+
+async function dl(id,name){
+  if(!window.html2canvas){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=res;s.onerror=rej;document.head.appendChild(s);
+    });
+  }
+  const el=document.getElementById(id);
+  const canvas=await html2canvas(el,{width:1080,height:1350,scale:1,useCORS:true,backgroundColor:null});
+  const a=document.createElement('a');
+  a.download=name+'.png';a.href=canvas.toDataURL('image/png');a.click();
+}
+</script>
+</body>
+</html>
