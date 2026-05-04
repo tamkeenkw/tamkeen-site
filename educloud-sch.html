@@ -19,7 +19,7 @@ body{font-family:'Cairo',sans-serif;background:#050e0a;display:flex;flex-directi
 .grade-chip{display:inline-flex;align-items:center;gap:9px;background:rgba(34,176,138,.15);border:1.5px solid rgba(34,176,138,.3);border-radius:100px;padding:8px 22px;margin-bottom:12px}
 .chip-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0}
 .chip-txt{font-size:18px;font-weight:800;color:#22B08A}
-.main-title{font-size:60px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1px}
+.main-title{font-size:60px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-1px}
 .main-title em{font-style:normal;color:#22B08A}
 .sub-title{font-size:19px;color:rgba(255,255,255,.35);font-weight:600;margin-top:7px}
 .logo-top{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
@@ -37,13 +37,13 @@ body{font-family:'Cairo',sans-serif;background:#050e0a;display:flex;flex-directi
 .day-lbl{font-size:11px;font-weight:700;color:#22B08A;margin-top:2px}
 
 /* مادة */
-.subj{display:flex;flex-direction:column;justify-content:center;padding:18px 24px;border-left:1px solid rgba(255,255,255,.05);gap:5px}
+.subj{display:flex;flex-direction:column;justify-content:center;padding:14px 20px;border-left:1px solid rgba(255,255,255,.05);gap:4px;overflow:hidden}
 .subj:last-child{border-left:none}
-.subj-order{font-size:11px;font-weight:700;color:rgba(255,255,255,.22);letter-spacing:.5px}
-.subj-name{font-size:27px;font-weight:900;color:#fff;line-height:1}
-.subj-time{display:inline-flex;align-items:center;gap:6px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:100px;padding:4px 12px;font-size:13px;font-weight:700;color:#22B08A;width:fit-content}
+.subj-order{font-size:10px;font-weight:700;color:rgba(255,255,255,.22);letter-spacing:.5px;white-space:nowrap}
+.subj-name{font-size:22px;font-weight:900;color:#fff;line-height:1.15;white-space:nowrap}
+.subj-time{display:inline-flex;align-items:center;gap:5px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:100px;padding:3px 10px;font-size:12px;font-weight:700;color:#22B08A;width:fit-content}
 .subj-time svg{width:11px;height:11px;flex-shrink:0}
-.subj-dur{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:rgba(255,255,255,.28);margin-top:1px}
+.subj-dur{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:rgba(255,255,255,.28);margin-top:0}
 .subj-dur svg{width:11px;height:11px;flex-shrink:0;color:rgba(255,255,255,.25)}
 
 /* فوتر */
@@ -150,7 +150,7 @@ body{font-family:'Cairo',sans-serif;background:#050e0a;display:flex;flex-directi
     <div class="top">
       <div>
         <div class="grade-chip"><div class="chip-dot"></div><div class="chip-txt">الصف الحادي عشر — أدبي</div></div>
-        <div class="main-title">جدول <em>الدورات</em><br>المكثفة</div>
+        <div class="main-title">جدول <em>الدورات</em> المكثفة</div>
         <div class="sub-title">٣ أيام متواصلة — مايو ٢٠٢٦</div>
       </div>
       <div class="logo-top">
@@ -238,7 +238,7 @@ body{font-family:'Cairo',sans-serif;background:#050e0a;display:flex;flex-directi
     <div class="top">
       <div>
         <div class="grade-chip"><div class="chip-dot"></div><div class="chip-txt">الصف الثاني عشر — أدبي</div></div>
-        <div class="main-title">جدول <em>الدورات</em><br>المكثفة</div>
+        <div class="main-title">جدول <em>الدورات</em> المكثفة</div>
         <div class="sub-title">٣ أيام متواصلة — مايو ٢٠٢٦</div>
       </div>
       <div class="logo-top">
