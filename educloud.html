@@ -434,31 +434,40 @@ async function submitForm(){
   const pkgLabel=selectedPkg===1?'الباقة الفردية — ٣٥ د.ك':'الباقة الأساسية — ١٥٩ د.ك';
   const total=PRICES[selectedPkg]+(addonChecked?ADDON:0);
 
+  // ── الخطوة ١: احفظ البيانات (no-cors = مضمون 100%) ──
   try{
-    const res  = await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'application/json'},
+    await fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({type:'دورات_مكثفة',name,phone,grade,
         package:pkgLabel, subject: selectedPkg===1 ? subject : 'جميع المواد',
         notebooks:addonChecked?'نعم — ١٥ د.ك':'لا',
         total:toAr(total)+' د.ك',system:selectedSystem,payment:selectedPay})
     });
-    const data = await res.json();
-    if(data.status==='ok' && data.url){
-      window.location.href = data.url;
-      return;
-    }
-    document.getElementById('formWrap').style.display='none';
-    document.getElementById('succDesc').innerHTML=
-      `شكراً <strong>${name}</strong>، تم تسجيلك في<br>${pkgLabel}`+
-      (addonChecked?'<br>+ المذكرات ١٥ د.ك':'')+
-      `<br>الإجمالي: ${toAr(total)} د.ك<br>سيتواصل معك فريق EDUCLOUD قريباً`;
-    document.getElementById('success').style.display='block';
-  }catch(e){
-    btn.disabled=false;
-    document.getElementById('btnTxt').style.display='block';
-    document.getElementById('btnArrow').style.display='block';
-    document.getElementById('spin').style.display='none';
-    alert('حدث خطأ — يرجى المحاولة مجدداً');
+  }catch(_){}
+
+  // ── الخطوة ٢: لو دفعة واحدة → اطلب رابط تاب ──
+  if(selectedPay==='دفعة واحدة'){
+    try{
+      const params = new URLSearchParams({
+        action:'pay', name, phone,
+        package:pkgLabel, total:toAr(total)+' د.ك'
+      });
+      const res2 = await fetch(SCRIPT+'?'+params);
+      const d2   = await res2.json();
+      if(d2.url){ window.location.href = d2.url; return; }
+    }catch(_){}
   }
+
+  // ── شاشة النجاح (تقسيط أو لو تاب ما رجع رابط) ──
+  document.getElementById('formWrap').style.display='none';
+  document.getElementById('succDesc').innerHTML=
+    `شكراً <strong>${name}</strong>، تم تسجيلك في<br>${pkgLabel}`+
+    (addonChecked?'<br>+ المذكرات ١٥ د.ك':'')+
+    `<br>الإجمالي: ${toAr(total)} د.ك<br>سيتواصل معك فريق EDUCLOUD قريباً`;
+  document.getElementById('success').style.display='block';
+  btn.disabled=false;
+  document.getElementById('btnTxt').style.display='block';
+  document.getElementById('btnArrow').style.display='block';
+  document.getElementById('spin').style.display='none';
 }
 document.getElementById('name').addEventListener('input',()=>{markField('name',false);showErr('nameErr',false)});
 document.getElementById('phone').addEventListener('input',()=>{markField('phone',false);showErr('phoneErr',false)});
