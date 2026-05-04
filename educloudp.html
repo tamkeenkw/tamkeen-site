@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>بوستات EDUCLOUD — الكل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#040d09;display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 20px}
+.post-label{font-size:14px;font-weight:700;color:rgba(255,255,255,.25);margin-bottom:12px;margin-top:8px;letter-spacing:.5px}
+.divider{width:1080px;height:1px;background:rgba(255,255,255,.06);margin:32px 0}
+.dl-btn{width:1080px;background:linear-gradient(135deg,#0D5C48,#15705A);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;padding:15px;border:none;border-radius:12px;cursor:pointer;margin-top:14px}
+.dl-btn:hover{opacity:.9}
+.dl-all{width:1080px;background:linear-gradient(135deg,#0a3d2e,#0d5c48);color:#fff;font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;padding:18px;border:2px solid rgba(34,176,138,.4);border-radius:14px;cursor:pointer;margin-bottom:20px;letter-spacing:.5px}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+
+.post{width:1080px;height:1080px;position:relative;overflow:hidden;flex-shrink:0}
+.bg{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 55% at 100% 0%,   #0d5c48 0%,transparent 55%),
+    radial-gradient(ellipse 50% 45% at 0%  100%,  #082e22 0%,transparent 50%),
+    #040d09;
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.008) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.008) 1px,transparent 1px);
+  background-size:56px 56px}
+
+.inner{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;padding:50px 64px 46px}
+
+/* رأس */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-box{width:52px;height:52px;background:rgba(255,255,255,.92);border-radius:14px;padding:5px;display:flex;align-items:center;justify-content:center}
+.logo-box img{width:42px;height:42px;object-fit:contain}
+.logo-name{font-size:17px;font-weight:900;color:rgba(255,255,255,.38);letter-spacing:1px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,176,138,.12);border:1.5px solid rgba(34,176,138,.28);border-radius:100px;padding:8px 22px}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0}
+.badge-txt{font-size:14px;font-weight:800;color:#22B08A}
+
+/* عنوان */
+.intro{margin-bottom:28px}
+.intro-pre{font-size:16px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:8px}
+.intro-title{font-size:52px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1.5px;margin-bottom:6px}
+.intro-title em{font-style:normal;color:#22B08A}
+.intro-sub{font-size:17px;color:rgba(255,255,255,.35);font-weight:600}
+
+/* ميزات */
+.features{flex:1;display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.feat{
+  display:flex;align-items:center;gap:18px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;padding:18px 24px;
+  position:relative;overflow:hidden;
+}
+.feat::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#22B08A,#0d7a5c);border-radius:0 18px 18px 0}
+.feat-icon{width:48px;height:48px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);
+  border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-icon svg{width:24px;height:24px;color:#22B08A}
+.feat-
+.feat-title{font-size:19px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:3px}
+.feat-desc{font-size:13px;color:rgba(255,255,255,.38);font-weight:600;line-height:1.5}
+
+/* بانر ختامي */
+.banner{
+  background:linear-gradient(135deg,rgba(13,92,72,.6),rgba(34,176,138,.15));
+  border:1px solid rgba(34,176,138,.25);border-radius:20px;
+  padding:20px 28px;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;
+}
+.banner-text{}
+.banner-main{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
+.banner-main em{font-style:normal;color:#22B08A}
+.banner-sub{font-size:14px;color:rgba(255,255,255,.45);font-weight:600}
+.banner-stats{display:flex;gap:16px}
+.stat{text-align:center}
+.stat-n{font-size:32px;font-weight:900;color:#22B08A;line-height:1}
+.stat-l{font-size:12px;color:rgba(255,255,255,.4);font-weight:700;margin-top:2px}
+
+/* فوتر */
+.footer{display:flex;align-items:center;justify-content:space-between}
+.ft-handle{font-size:15px;font-weight:700;color:rgba(255,255,255,.22)}
+.ft-cta{display:inline-flex;align-items:center;gap:8px;background:rgba(34,176,138,.08);border:1px solid rgba(34,176,138,.2);border-radius:100px;padding:8px 20px}
+.ft-cta svg{width:14px;height:14px;color:#22B08A}
+.ft-cta-txt{font-size:14px;font-weight:800;color:#22B08A}
+
+
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+
+.post{width:1080px;height:1080px;position:relative;overflow:hidden;flex-shrink:0}
+
+/* خلفية */
+.bg{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 5% 5%,  #0d5c48 0%,transparent 55%),
+    radial-gradient(ellipse 55% 50% at 95% 95%, #082e22 0%,transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 50%, rgba(34,176,138,.06) 0%,transparent 70%),
+    #040d09;
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.008) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.008) 1px,transparent 1px);
+  background-size:56px 56px}
+
+/* محتوى */
+.inner{position:relative;z-index:2;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:56px 72px}
+
+/* رأس */
+.top{display:flex;align-items:center;justify-content:space-between;width:100%}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-box{width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);border-radius:14px;padding:4px}
+.logo-box img{width:48px;height:48px;object-fit:contain}
+.logo-name{font-size:18px;font-weight:900;color:rgba(255,255,255,.4);letter-spacing:1px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,176,138,.12);border:1.5px solid rgba(34,176,138,.28);border-radius:100px;padding:8px 22px}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0}
+.badge-txt{font-size:15px;font-weight:800;color:#22B08A}
+
+/* وسط */
+.mid{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%}
+
+/* أيقونة المذكرة */
+.book-icon{width:80px;height:80px;background:rgba(34,176,138,.1);border:1.5px solid rgba(34,176,138,.25);border-radius:22px;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.book-icon svg{width:40px;height:40px;color:#22B08A}
+
+.pre-title{font-size:18px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:2px;margin-bottom:10px}
+.main-title{font-size:68px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;margin-bottom:8px}
+.main-title em{font-style:normal;color:#22B08A}
+.sub{font-size:20px;font-weight:600;color:rgba(255,255,255,.3);margin-bottom:48px}
+
+/* الميزات */
+.features{display:flex;flex-direction:column;gap:16px;width:100%}
+
+.feat{
+  display:flex;align-items:center;gap:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;
+  padding:22px 28px;
+  position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.feat::before{
+  content:'';position:absolute;
+  right:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#22B08A,#0d7a5c);
+  border-radius:0 20px 20px 0;
+}
+
+.feat-num{
+  font-size:42px;font-weight:900;
+  color:rgba(34,176,138,.2);
+  line-height:1;flex-shrink:0;
+  width:52px;text-align:center;
+}
+.feat-icon{
+  width:52px;height:52px;flex-shrink:0;
+  background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+}
+.feat-icon svg{width:26px;height:26px;color:#22B08A}
+.feat-text{flex:1}
+.feat-title{font-size:24px;font-weight:900;color:#fff;margin-bottom:4px;line-height:1.2}
+.feat-desc{font-size:15px;color:rgba(255,255,255,.4);font-weight:600;line-height:1.5}
+
+/* فوتر */
+.footer{display:flex;align-items:center;justify-content:space-between;width:100%}
+.ft-handle{font-size:16px;font-weight:700;color:rgba(255,255,255,.25)}
+.ft-cta{display:flex;align-items:center;gap:10px;background:rgba(34,176,138,.08);border:1px solid rgba(34,176,138,.2);border-radius:100px;padding:8px 20px}
+.ft-cta svg{width:15px;height:15px;color:#22B08A}
+.ft-cta-txt{font-size:14px;font-weight:800;color:#22B08A}
+
+/* زر */
+
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+.post{width:1080px;height:1080px;position:relative;overflow:hidden;flex-shrink:0}
+.bg{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 0%   0%,  #0d5c48 0%,transparent 52%),
+    radial-gradient(ellipse 55% 45% at 100% 100%,#082e22 0%,transparent 50%),
+    #040d09;
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.007) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.007) 1px,transparent 1px);
+  background-size:56px 56px}
+.inner{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;padding:50px 64px 46px}
+
+/* رأس */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-box{width:52px;height:52px;background:rgba(255,255,255,.92);border-radius:14px;padding:5px;display:flex;align-items:center;justify-content:center}
+.logo-box img{width:42px;height:42px;object-fit:contain}
+.logo-name{font-size:17px;font-weight:900;color:rgba(255,255,255,.38);letter-spacing:1px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,176,138,.12);border:1.5px solid rgba(34,176,138,.28);border-radius:100px;padding:8px 22px}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.badge-txt{font-size:14px;font-weight:800;color:#22B08A}
+
+/* هوك */
+.hook{margin-bottom:28px;text-align:center}
+.hook-pre{font-size:18px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:10px}
+.hook-title{font-size:62px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px;margin-bottom:8px}
+.hook-title em{font-style:normal;color:#22B08A}
+
+/* إحصائيات */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.stat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0D5C48,#22B08A)}
+.stat-n{font-size:44px;font-weight:900;color:#22B08A;line-height:1;margin-bottom:4px}
+.stat-x{font-size:22px;font-weight:900;color:rgba(34,176,138,.5)}
+.stat-l{font-size:14px;font-weight:700;color:rgba(255,255,255,.4)}
+
+/* مقارنة السعر */
+.price-compare{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:24px;padding:28px 32px;margin-bottom:22px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  position:relative;overflow:hidden;
+}
+.price-compare::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(34,176,138,.06),transparent)}
+.price-old-block{text-align:center;flex:1}
+.price-old-label{font-size:13px;font-weight:700;color:rgba(255,255,255,.3);margin-bottom:6px}
+.price-old{font-size:52px;font-weight:900;color:rgba(255,255,255,.25);text-decoration:line-through;line-height:1}
+.price-old-cur{font-size:18px;font-weight:700;color:rgba(255,255,255,.2)}
+.price-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.price-arrow svg{width:36px;height:36px;color:#22B08A}
+.save-tag{background:rgba(34,176,138,.15);border:1px solid rgba(34,176,138,.3);border-radius:100px;padding:5px 14px;font-size:13px;font-weight:800;color:#22B08A;white-space:nowrap}
+.price-new-block{text-align:center;flex:1}
+.price-new-label{font-size:13px;font-weight:700;color:#22B08A;margin-bottom:6px}
+.price-new{font-size:72px;font-weight:900;color:#fff;line-height:1}
+.price-new-cur{font-size:22px;font-weight:700;color:rgba(255,255,255,.5)}
+
+/* تقسيط */
+.installment{
+  background:linear-gradient(135deg,rgba(13,92,72,.5),rgba(34,176,138,.12));
+  border:1.5px solid rgba(34,176,138,.3);border-radius:18px;
+  padding:18px 28px;margin-bottom:22px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.inst-text{}
+.inst-main{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px}
+.inst-main em{font-style:normal;color:#22B08A}
+.inst-sub{font-size:14px;color:rgba(255,255,255,.4);font-weight:600}
+.inst-pills{display:flex;gap:8px}
+.inst-pill{width:54px;height:54px;background:rgba(34,176,138,.15);border:1.5px solid rgba(34,176,138,.3);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#22B08A;gap:1px}
+.inst-pill span{font-size:16px;font-weight:900}
+
+/* فوتر */
+.footer{display:flex;align-items:center;justify-content:space-between}
+.ft-left{font-size:15px;font-weight:700;color:rgba(255,255,255,.22)}
+.ft-wa{display:inline-flex;align-items:center;gap:8px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:100px;padding:8px 22px}
+.ft-wa svg{width:15px;height:15px;flex-shrink:0}
+.ft-wa-num{font-size:15px;font-weight:900;color:#25D366;direction:ltr}
+
+
+
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+.post{width:1080px;height:1080px;position:relative;overflow:hidden;flex-shrink:0}
+.bg{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 65% 55% at 0%   0%,  #0d5c48 0%,transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 100%,#082e22 0%,transparent 50%),
+    #040d09;
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.007) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.007) 1px,transparent 1px);
+  background-size:56px 56px}
+.inner{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;padding:52px 68px 48px}
+
+/* رأس */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-box{width:52px;height:52px;background:rgba(255,255,255,.92);border-radius:14px;padding:5px;display:flex;align-items:center;justify-content:center}
+.logo-box img{width:42px;height:42px;object-fit:contain}
+.logo-name{font-size:17px;font-weight:900;color:rgba(255,255,255,.38);letter-spacing:1px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,176,138,.12);border:1.5px solid rgba(34,176,138,.28);border-radius:100px;padding:8px 22px}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#22B08A;flex-shrink:0}
+.badge-txt{font-size:14px;font-weight:800;color:#22B08A}
+
+/* عنوان */
+.title-block{margin-bottom:40px}
+.pre{font-size:17px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:8px}
+.title{font-size:58px;font-weight:900;color:#fff;line-height:1;letter-spacing:-1.5px;margin-bottom:6px}
+.title em{font-style:normal;color:#22B08A}
+.subtitle{font-size:18px;font-weight:600;color:rgba(255,255,255,.3)}
+
+/* خطوات */
+.steps{flex:1;display:flex;flex-direction:column;gap:0}
+
+.step{display:flex;align-items:stretch;gap:0;position:relative}
+
+/* الخط الرابط */
+.step:not(:last-child) .step-line-wrap::after{
+  content:'';position:absolute;
+  right:calc(50% - 1px);top:64px;bottom:-20px;
+  width:2px;background:linear-gradient(180deg,rgba(34,176,138,.4),rgba(34,176,138,.1));
+  z-index:0;
+}
+
+.step-left{display:flex;flex-direction:column;align-items:center;width:80px;flex-shrink:0;position:relative}
+.step-line-wrap{display:flex;flex-direction:column;align-items:center;position:relative;width:100%}
+
+.step-num-circle{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,#0D5C48,#22B08A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:900;color:#fff;
+  flex-shrink:0;position:relative;z-index:1;
+  box-shadow:0 4px 20px rgba(34,176,138,.35);
+  margin-bottom:20px;
+}
+
+.step-content{
+  flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;padding:22px 28px;margin-bottom:16px;
+  display:flex;align-items:center;gap:20px;
+  position:relative;overflow:hidden;
+}
+.step-content::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#22B08A,#0d7a5c);
+  border-radius:0 20px 20px 0;
+}
+.step-icon{width:52px;height:52px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-icon svg{width:26px;height:26px;color:#22B08A}
+.step-text{}
+.step-title{font-size:22px;font-weight:900;color:#fff;margin-bottom:5px;line-height:1.2}
+.step-desc{font-size:14px;color:rgba(255,255,255,.4);font-weight:600;line-height:1.6}
+
+/* فوتر */
+.footer{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
+.ft-left{font-size:15px;font-weight:700;color:rgba(255,255,255,.22)}
+.ft-wa{display:inline-flex;align-items:center;gap:8px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:100px;padding:8px 20px}
+.ft-wa svg{width:15px;height:15px;flex-shrink:0}
+.ft-wa-num{font-size:15px;font-weight:900;color:#25D366;direction:ltr}
+
+
+
+</style>
+</head>
+<body>
+
+<div class="post-label" style="font-size:20px;color:#22B08A;margin-bottom:20px;font-weight:900">📦 جميع بوستات EDUCLOUD</div>
+
+
+<div class="post-label">بوست — مذكرات educloud</div>
+<div class="post" id="post1">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <!-- رأس -->
+    <div class="top">
+      <div class="logo-row">
+        <div class="logo-box">
+          <img src="/mnt/user-data/uploads/educloudw.png" alt="EDUCLOUD">
+        </div>
+        <div class="logo-name">EDUCLOUD</div>
+      </div>
+      <div class="badge"><div class="badge-dot"></div><div class="badge-txt">مذكرات الدورات المكثفة</div></div>
+    </div>
+
+    <!-- وسط -->
+    <div class="mid">
+      <div class="book-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div class="pre-title">ليش مذكراتنا مختلفة ؟</div>
+      <div class="main-title">٣ أسباب <em>تخليك</em></div>
+      <div class="main-title" style="font-size:52px;color:rgba(255,255,255,.35)">تختار مذكراتنا</div>
+      <div class="sub">كل اللي تحتاجه في مكان وحد</div>
+
+      <!-- الميزات -->
+      <div class="features">
+
+        <div class="feat">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <div class="feat-text">
+            <div class="feat-title">مختصرة ومباشرة</div>
+            <div class="feat-desc">بدون حشو — كل سطر فيها له قيمة</div>
+          </div>
+          <div class="feat-num">١</div>
+        </div>
+
+        <div class="feat">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="feat-text">
+            <div class="feat-title">شاملة المنهج كاملاً</div>
+            <div class="feat-desc">كل وحدة وكل درس — ما تحتاج مصدر ثاني</div>
+          </div>
+          <div class="feat-num">٢</div>
+        </div>
+
+        <div class="feat">
+          <div class="feat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <div class="feat-text">
+            <div class="feat-title">فيها كل الأسئلة المهمة</div>
+            <div class="feat-desc">أسئلة محددة من الاختبارات السابقة</div>
+          </div>
+          <div class="feat-num">٣</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- فوتر -->
+    <div class="footer">
+      <div class="ft-handle">@educloudkw</div>
+      <div class="ft-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.71 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.58 2.81.71A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <div class="ft-cta-txt">97999768 — اطلب مذكرتك</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('post1','مذكرات-educloud')">⬇ تحميل — مذكرات educloud</button>
+<div class="divider"></div>
+
+<div class="post-label">بوست — مدرسينا المبدعين</div>
+<div class="post" id="post2">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <div class="top">
+      <div class="logo-row">
+        <div class="logo-box"><img src="/mnt/user-data/uploads/educloudw.png" alt="EDUCLOUD"></div>
+        <div class="logo-name">EDUCLOUD</div>
+      </div>
+      <div class="badge"><div class="badge-dot"></div><div class="badge-txt">الدورات التدريبية المكثفة</div></div>
+    </div>
+
+    <div class="intro">
+      <div class="intro-pre">خلال دوراتنا التدريبية المكثفة</div>
+      <div class="intro-title">مدرسينا <em>المبدعين</em></div>
+      <div class="intro-sub">مو بس يدرسونك — يفهمونك غصب</div>
+    </div>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">يشرحون لك المنهج كامل</div>
+          <div class="feat-desc">وجنك ما درست شيء — من الصفر للنهاية بأسلوب واضح</div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">يحددون معاك أهم الأسئلة</div>
+          <div class="feat-desc">وطريقة صياغة أسئلة الاختبار — تعرف وين تركز</div>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">يدربونك على الاختبارات</div>
+          <div class="feat-desc">وأفضل طريقة حل — تدخل الاختبار وأنت واثق من نفسك</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- بانر ختامي -->
+    <div class="banner">
+      <div class="banner-text">
+        <div class="banner-main">دوراتنا مو بس يدرسونك — <em>يفهمونك غصب</em></div>
+        <div class="banner-sub">سجّل الحين وخذ مقعدك</div>
+      </div>
+      <div class="banner-stats">
+        <div class="stat"><div class="stat-n">٣</div><div class="stat-l">أيام</div></div>
+        <div class="stat"><div class="stat-n">٦</div><div class="stat-l">حصص</div></div>
+        <div class="stat"><div class="stat-n">١</div><div class="stat-l">مدرس مبدع</div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="ft-handle">@educloudkw</div>
+      <div class="ft-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.71 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.58 2.81.71A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <div class="ft-cta-txt">97999768 — سجّل الحين</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('post2','مدرسينا-المبدعين')">⬇ تحميل — مدرسينا المبدعين</button>
+<div class="divider"></div>
+
+<div class="post-label">بوست — كيف تطلب مذكراتك</div>
+<div class="post" id="post3">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <div class="top">
+      <div class="logo-row">
+        <div class="logo-box"><img src="/mnt/user-data/uploads/educloudw.png" alt="EDUCLOUD"></div>
+        <div class="logo-name">EDUCLOUD</div>
+      </div>
+      <div class="badge"><div class="badge-dot"></div><div class="badge-txt">مذكرات الدورات المكثفة</div></div>
+    </div>
+
+    <div class="title-block">
+      <div class="pre">بكل سهولة وبدون تعقيد</div>
+      <div class="title">كيف <em>تطلب</em></div>
+      <div class="title" style="font-size:46px;color:rgba(255,255,255,.35)">مذكراتك؟</div>
+      <div class="subtitle">٣ خطوات وتوصلك عند بابك</div>
+    </div>
+
+    <div class="steps">
+
+      <!-- خطوة ١ -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-line-wrap">
+            <div class="step-num-circle">١</div>
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.71 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.58 2.81.71A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <div class="step-title">كلّمنا على الواتساب</div>
+            <div class="step-desc">تواصل معنا وإحنا نساعدك من أول خطوة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- خطوة ٢ -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-line-wrap">
+            <div class="step-num-circle">٢</div>
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <div class="step-title">اختر المواد وأعطنا عنوانك</div>
+            <div class="step-desc">حدد المواد اللي تبيها وأرسل عنوانك للتوصيل</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- خطوة ٣ -->
+      <div class="step">
+        <div class="step-left">
+          <div class="step-line-wrap">
+            <div class="step-num-circle">٣</div>
+          </div>
+        </div>
+        <div class="step-content">
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <div class="step-text">
+            <div class="step-title">ادفع وتلقاها عند باب بيتكم</div>
+            <div class="step-desc">نوصّل لك المذكرات مباشرة — ما تحتاج تطلع من البيت</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <div class="ft-left">@educloudkw</div>
+      <div class="ft-wa">
+        <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        <div class="ft-wa-num">97999768</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('post3','كيف-تطلب-مذكراتك')">⬇ تحميل — كيف تطلب مذكراتك</button>
+<div class="divider"></div>
+
+<div class="post-label">بوست — سعر الباقة</div>
+<div class="post" id="post4">
+  <div class="bg"></div>
+  <div class="inner">
+
+    <div class="top">
+      <div class="logo-row">
+        <div class="logo-box"><img src="/mnt/user-data/uploads/educloudw.png" alt="EDUCLOUD"></div>
+        <div class="logo-name">EDUCLOUD</div>
+      </div>
+      <div class="badge"><div class="badge-dot"></div><div class="badge-txt">الباقة الأساسية — مايو ٢٠٢٦</div></div>
+    </div>
+
+    <div class="hook">
+      <div class="hook-pre">تخيّل معاي</div>
+      <div class="hook-title">٧ مواد <em>كاملة</em></div>
+      <div class="hook-title" style="font-size:46px;color:rgba(255,255,255,.35)">بسعر ما تتوقعه</div>
+    </div>
+
+    <!-- إحصائيات -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-n">٧</div>
+        <div class="stat-l">مواد كاملة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">٦</div>
+        <div class="stat-l">حصص لكل مادة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">٤٢</div>
+        <div class="stat-l">حصة إجمالي</div>
+      </div>
+    </div>
+
+    <!-- مقارنة السعر -->
+    <div class="price-compare">
+      <div class="price-old-block">
+        <div class="price-old-label">السعر الأصلي</div>
+        <div class="price-old">٢٤٥</div>
+        <div class="price-old-cur">د.ك</div>
+      </div>
+      <div class="price-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/>
+        </svg>
+        <div class="save-tag">توفر ٨٩ د.ك</div>
+      </div>
+      <div class="price-new-block">
+        <div class="price-new-label">سعرها الحين</div>
+        <div class="price-new">١٥٦</div>
+        <div class="price-new-cur">د.ك فقط</div>
+      </div>
+    </div>
+
+    <!-- ملاحظة -->
+    <div style="display:flex;align-items:center;gap:10px;background:rgba(34,176,138,.07);border:1px solid rgba(34,176,138,.2);border-radius:14px;padding:13px 22px;margin-bottom:16px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22B08A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span style="font-size:16px;font-weight:800;color:rgba(255,255,255,.7)">يعني الحصة الوحدة <span style="color:#22B08A;font-size:18px">أقل من ٤ د.ك</span> — متخيل؟ 🤯</span>
+    </div>
+
+    <!-- تقسيط -->
+    <div class="installment">
+      <div class="inst-text">
+        <div class="inst-main">أو قسّطها على <em>٤ دفعات مريحة</em></div>
+        <div class="inst-sub">كل دفعة تقريباً ٣٩ د.ك — بدون فوائد</div>
+      </div>
+      <div class="inst-pills">
+        <div class="inst-pill"><span>١</span>دفعة</div>
+        <div class="inst-pill"><span>٢</span>دفعة</div>
+        <div class="inst-pill"><span>٣</span>دفعة</div>
+        <div class="inst-pill"><span>٤</span>دفعة</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="ft-left">@educloudkw</div>
+      <div class="ft-wa">
+        <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.508 5.814L0 24l6.335-1.652A11.942 11.942 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.032-1.392l-.36-.214-3.752.979 1.005-3.645-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        <div class="ft-wa-num">97999768</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<button class="dl-btn" onclick="dl('post4','سعر-الباقة')">⬇ تحميل — سعر الباقة</button>
+<div class="divider"></div>
+
+
+<script>
+async function loadH2C(){
+  if(!window.html2canvas){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=res;s.onerror=rej;document.head.appendChild(s);
+    });
+  }
+}
+async function dl(id,name){
+  await loadH2C();
+  const c=await html2canvas(document.getElementById(id),{width:1080,height:1080,scale:1,useCORS:true,backgroundColor:null});
+  const a=document.createElement('a');
+  a.download=name+'.png';a.href=c.toDataURL('image/png');a.click();
+}
+</script>
+</body>
+</html>
