@@ -100,6 +100,15 @@ tr:hover td{background:rgba(92,15,15,.02);}
 /* WHATSAPP BTN */
 .wa-btn{display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;transition:opacity .2s;}
 .wa-btn:hover{opacity:.85;}
+
+/* TAB4 FILTERS */
+.ffilter{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid rgba(92,15,15,.1);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;transition:all .15s;}
+.ffilter.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.finp{width:100%;padding:5px 8px;border:1.5px solid rgba(92,15,15,.1);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);color:var(--text);}
+.finp:focus{outline:none;border-color:var(--crimson);background:#fff;}
+.fsel{width:100%;padding:5px 4px;border:1.5px solid rgba(92,15,15,.1);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:11px;background:var(--cream);color:var(--text);}
+.fsel:focus{outline:none;border-color:var(--crimson);}
+.ftoast{display:none;}
 </style>
 </head>
 <body>
@@ -129,6 +138,10 @@ tr:hover td{background:rgba(92,15,15,.02);}
     <button id="tab3" onclick="switchTab(3)"
       style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
       🎓 إصدار الشهادات
+    </button>
+    <button id="tab4" onclick="switchTab(4)"
+      style="flex:1;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
+      📋 متابعة العملاء
     </button>
   </div>
 </div>
@@ -341,6 +354,112 @@ tr:hover td{background:rgba(92,15,15,.02);}
 
   </div><!-- end tabContent3 -->
 
+  <!-- TAB 4: متابعة العملاء -->
+  <div id="tabContent4" style="display:none;">
+
+    <!-- SUB TABS -->
+    <div style="display:flex;gap:6px;background:#fff;padding:6px;border-radius:14px;box-shadow:0 2px 12px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);margin-bottom:20px;">
+      <button id="ftab1" onclick="switchFTab(1)"
+        style="flex:1;padding:9px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:var(--crimson);color:#fff;transition:all .2s;">
+        قائمة المتابعة
+      </button>
+      <button id="ftab2" onclick="switchFTab(2)"
+        style="flex:1;padding:9px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
+        إضافة من واتساب +
+      </button>
+      <button id="ftab3" onclick="switchFTab(3)"
+        style="flex:1;padding:9px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;">
+        استيراد من الشيت
+      </button>
+    </div>
+
+    <!-- FTAB 1: LIST -->
+    <div id="ftabContent1">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-n" id="fs1">—</div><div class="stat-l">إجمالي</div></div>
+        <div class="stat-card"><div class="stat-n" id="fs2" style="color:var(--yellow);">—</div><div class="stat-l">قيد الدفع</div></div>
+        <div class="stat-card"><div class="stat-n" id="fs3" style="color:var(--green);">—</div><div class="stat-l">لم يُتابَعوا اليوم</div></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
+        <button class="ffilter on" onclick="setFF('all',this)">الكل</button>
+        <button class="ffilter" onclick="setFF('pend',this)">قيد الدفع</button>
+        <button class="ffilter" onclick="setFF('cert',this)">يطلب شهادة</button>
+        <button class="ffilter" onclick="setFF('nc',this)">لم يُتواصل اليوم</button>
+        <input id="fsrch" style="flex:1;min-width:160px;padding:7px 12px;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);outline:none;" placeholder="🔍 ابحث بالاسم أو الرقم..." oninput="doFSearch(this.value)">
+      </div>
+      <div class="results-card">
+        <div class="results-header">
+          <div class="results-title">المهتمون بالتسجيل</div>
+          <div class="results-count"><span id="fsel-cnt">0</span> محدد</div>
+        </div>
+        <div class="table-wrap" style="max-height:340px;overflow-y:auto;">
+          <table>
+            <thead><tr>
+              <th><input type="checkbox" id="fchk-all" onchange="fTogAll(this)" style="width:14px;height:14px;accent-color:var(--crimson);cursor:pointer;"></th>
+              <th>الاسم</th><th>الواتساب</th><th>المصدر</th><th>شهادة</th><th>حالة الدفع</th><th>آخر تواصل</th><th>تواصل</th>
+            </tr></thead>
+            <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">جاري التحميل...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <div style="font-size:12px;color:var(--muted);">تم تحديد <b id="fsel-cnt2" style="color:var(--text);">0</b> شخص</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="fSelNC()" style="padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;background:#fff;color:var(--text);border:1.5px solid rgba(92,15,15,.1);font-family:'Tajawal',sans-serif;">اختار من لم يُتواصل معهم</button>
+          <button id="fupd-btn" disabled onclick="doFUpdate()" style="padding:8px 18px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;background:var(--crimson);color:#fff;border:none;font-family:'Tajawal',sans-serif;opacity:.4;transition:opacity .2s;">✓ تحديث آخر تواصل</button>
+        </div>
+      </div>
+      <div id="f-toast-list" class="ftoast" style="display:none;"></div>
+    </div>
+
+    <!-- FTAB 2: BULK ADD -->
+    <div id="ftabContent2" style="display:none;">
+      <div class="results-card" style="overflow:visible;">
+        <div class="results-header"><div class="results-title">إضافة عملاء من واتساب</div><div class="results-count">عدد: <b id="fbcnt">1</b></div></div>
+        <div style="overflow-x:auto;max-height:360px;overflow-y:auto;">
+          <table style="table-layout:fixed;min-width:620px;">
+            <thead><tr>
+              <th style="width:34px;">#</th>
+              <th style="width:22%;">الاسم الكامل</th>
+              <th style="width:19%;">رقم الواتساب</th>
+              <th style="width:11%;">شهادة؟</th>
+              <th style="width:18%;">حالة الدفع</th>
+              <th>ملاحظة</th>
+              <th style="width:28px;"></th>
+            </tr></thead>
+            <tbody id="fbtbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <div style="display:flex;gap:8px;">
+          <button onclick="fbAddRow()" style="padding:7px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;background:#fff;color:var(--text);border:1.5px solid rgba(92,15,15,.1);font-family:'Tajawal',sans-serif;">+ إضافة سطر</button>
+          <button onclick="fbClear()" style="padding:7px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;background:#fff;color:var(--muted);border:1.5px solid rgba(92,15,15,.06);font-family:'Tajawal',sans-serif;">مسح الكل</button>
+        </div>
+        <button id="fbsub" onclick="fbSubmit()" disabled style="padding:8px 20px;border-radius:10px;font-size:13px;font-weight:900;cursor:pointer;background:#2E7D32;color:#fff;border:none;font-family:'Tajawal',sans-serif;opacity:.4;">إضافة الكل للشيت ←</button>
+      </div>
+      <div id="f-toast-add" class="ftoast" style="display:none;"></div>
+    </div>
+
+    <!-- FTAB 3: IMPORT -->
+    <div id="ftabContent3" style="display:none;">
+      <div class="search-card">
+        <div class="search-title"><span>📥</span> استيراد تلقائي</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+          • من <b>التسجيلات</b> — كل من لم يكتمل دفعه<br>
+          • من <b>الباقات</b> — كل من حالته "معلق"<br>
+          • يتخطى المكررين تلقائياً حسب رقم الواتساب
+        </div>
+        <button class="search-btn" onclick="doFImport(this)" style="width:100%;justify-content:center;">
+          <span>استيراد الآن ←</span>
+          <div class="spinner" id="fImpSpinner"></div>
+        </button>
+      </div>
+      <div id="f-toast-imp" class="ftoast" style="display:none;"></div>
+    </div>
+
+  </div><!-- end tabContent4 -->
+
 </div>
 
 <script>
@@ -488,12 +607,13 @@ async function sendBulkMessage() {
 }
 
 function switchTab(n) {
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     document.getElementById('tabContent'+i).style.display = i===n ? '' : 'none';
     document.getElementById('tab'+i).style.background = i===n ? 'var(--crimson)' : 'transparent';
     document.getElementById('tab'+i).style.color = i===n ? '#fff' : 'var(--muted)';
   });
   if(n===3 && document.getElementById('certCourseSelect').options.length <= 1) loadCertCourses();
+  if(n===4 && fAllLeads.length === 0) fLoad();
 }
 
 let certCoursesData = [];
@@ -692,6 +812,166 @@ async function loadPackages() {
     document.getElementById('loadPkgSpinner').style.display = 'none';
   }
 }
+// ═══════════════════════════════════════════════════
+// TAB 4 — متابعة العملاء
+// ═══════════════════════════════════════════════════
+const FOLLOWUP_URL = 'https://script.google.com/macros/s/AKfycbzvFTq_aubx4EHGAq246gxD6pOIKEFdMlnF7HWMwA6rOxlPDIqZ3y9wVPq9xQWOHbh0/exec';
+const FTODAY = new Date().toISOString().split('T')[0];
+let fAllLeads=[], fSel=new Set(), fFilter='all', fQ='';
+let fbRows=[], fbId=1;
+
+async function fGet(action) {
+  const r = await fetch(`${FOLLOWUP_URL}?action=${action}`); return r.json();
+}
+async function fPost(body) {
+  const r = await fetch(FOLLOWUP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); return r.json();
+}
+
+async function fLoad() {
+  document.getElementById('ftbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">جاري التحميل...</td></tr>';
+  try {
+    const res = await fGet('getLeads');
+    if(!res.ok) throw new Error(res.error);
+    fAllLeads=res.data; fRender();
+  } catch(e) {
+    document.getElementById('ftbody').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:24px;color:#c00;">خطأ: ${e.message}</td></tr>`;
+  }
+}
+
+function fRender() {
+  let d=fAllLeads;
+  if(fFilter==='pend') d=d.filter(r=>r.status==='قيد الدفع');
+  if(fFilter==='cert') d=d.filter(r=>r.cert==='نعم');
+  if(fFilter==='nc')   d=d.filter(r=>r.lastContact!==FTODAY);
+  if(fQ){const q=fQ.toLowerCase();d=d.filter(r=>r.name.toLowerCase().includes(q)||r.phone.includes(q));}
+
+  document.getElementById('fs1').textContent=toA(fAllLeads.length);
+  document.getElementById('fs2').textContent=toA(fAllLeads.filter(r=>r.status==='قيد الدفع').length);
+  document.getElementById('fs3').textContent=toA(fAllLeads.filter(r=>r.lastContact!==FTODAY).length);
+
+  const tb=document.getElementById('ftbody');
+  if(!d.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">لا توجد سجلات</td></tr>';return;}
+  tb.innerHTML=d.map(r=>`
+    <tr style="${fSel.has(r.rowIndex)?'background:rgba(92,15,15,.04)':''}">
+      <td style="text-align:center;"><input type="checkbox" ${fSel.has(r.rowIndex)?'checked':''} onchange="fTog(${r.rowIndex},this)" style="accent-color:var(--crimson);width:14px;height:14px;cursor:pointer;"></td>
+      <td><div class="name-row"><div class="avatar" style="width:28px;height:28px;font-size:11px;">${r.name.charAt(0)}</div><span style="font-weight:700;font-size:13px;">${r.name}</span></div></td>
+      <td style="font-size:12px;color:var(--muted);direction:ltr;text-align:right;">${r.phone}</td>
+      <td>${fSrcPill(r.source)}</td>
+      <td><span class="${r.cert==='نعم'?'cert-done':'cert-no'}">${r.cert}</span></td>
+      <td><span class="${r.status.includes('قيد')||r.status.includes('معلق')?'cert-pending':r.status.includes('تم')||r.status.includes('مكتمل')?'cert-done':'cert-no'}">${r.status}</span></td>
+      <td style="font-size:12px;font-weight:${r.lastContact===FTODAY?'900':'400'};color:${r.lastContact===FTODAY?'var(--green)':'var(--muted)'};">${r.lastContact===FTODAY?'اليوم ✓':(r.lastContact||'—')}</td>
+      <td>${fWaBtn(r.phone,r.name)}</td>
+    </tr>`).join('');
+
+  const cnt=fSel.size;
+  document.getElementById('fsel-cnt').textContent=cnt;
+  document.getElementById('fsel-cnt2').textContent=cnt;
+  const btn=document.getElementById('fupd-btn');
+  btn.disabled=cnt===0; btn.style.opacity=cnt===0?'.4':'1';
+}
+
+function fSrcPill(s){
+  if(!s)return'—';
+  const map={'واتساب':'background:#DCF8C6;color:#128C7E;','التسجيلات':'background:#E8DEF8;color:#4A235A;','الباقات':'background:#FDE8C8;color:#7A3B00;'};
+  const bg=map[s]||'background:var(--cream-2);color:var(--muted);';
+  return`<span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;${bg}">${s}</span>`;
+}
+function fWaBtn(phone,name){
+  const clean=String(phone).replace(/\D/g,'');
+  const num=clean.startsWith('965')?clean:'965'+clean;
+  const msg=encodeURIComponent(`السلام عليكم ${name}، معك فريق أكاديمية مسار 🎓`);
+  return`<a href="https://wa.me/${num}?text=${msg}" target="_blank" class="wa-btn">واتساب</a>`;
+}
+
+function setFF(f,btn){fFilter=f;fSel.clear();document.querySelectorAll('.ffilter').forEach(b=>b.classList.remove('on'));btn.classList.add('on');fRender();}
+function doFSearch(q){fQ=q;fSel.clear();fRender();}
+function fTog(idx,cb){cb.checked?fSel.add(idx):fSel.delete(idx);fRender();}
+function fTogAll(cb){let d=fAllLeads;if(cb.checked)d.forEach(r=>fSel.add(r.rowIndex));else fSel.clear();fRender();}
+function fSelNC(){fSel.clear();fAllLeads.filter(r=>r.lastContact!==FTODAY).forEach(r=>fSel.add(r.rowIndex));fRender();}
+
+async function doFUpdate(){
+  if(!fSel.size)return;
+  const btn=document.getElementById('fupd-btn');
+  btn.textContent='جاري...';btn.disabled=true;btn.style.opacity='.5';
+  try{
+    const res=await fPost({action:'updateContact',rowIndices:Array.from(fSel)});
+    if(!res.ok)throw new Error(res.error);
+    fToast('f-toast-list',`✓ تم تحديث ${res.data.updated} سجل بتاريخ اليوم`,'s');
+    fSel.clear();await fLoad();
+  }catch(e){fToast('f-toast-list','خطأ: '+e.message,'e');}
+  btn.textContent='✓ تحديث آخر تواصل';btn.disabled=false;btn.style.opacity='1';
+}
+
+// BULK ADD
+function fbMkRow(){return{id:fbId++,name:'',phone:'',cert:'نعم',status:'قيد الدفع',notes:''};}
+function fbAddRow(){fbRows.push(fbMkRow());fbRender();setTimeout(()=>{const el=document.querySelector('#fbtbody tr:last-child .fbn');if(el)el.focus();},50);}
+function fbDelRow(id){if(fbRows.length===1){fbRows=[fbMkRow()];fbRender();return;}fbRows=fbRows.filter(r=>r.id!==id);fbRender();}
+function fbClear(){fbRows=[fbMkRow()];fbId=1;fbRender();}
+function fbUpd(id,f,v){const r=fbRows.find(x=>x.id===id);if(r)r[f]=v;fbMark(id);fbCount();}
+function fbMark(id){const r=fbRows.find(x=>x.id===id);const tr=document.getElementById('fbtr-'+id);if(tr&&r)tr.style.background=r.name&&r.phone?'rgba(92,15,15,.02)':'';}
+function fbCount(){
+  document.getElementById('fbcnt').textContent=fbRows.length;
+  const ok=fbRows.filter(r=>r.name&&r.phone).length>0;
+  const btn=document.getElementById('fbsub');btn.disabled=!ok;btn.style.opacity=ok?'1':'.4';
+}
+function fbRender(){
+  document.getElementById('fbtbody').innerHTML=fbRows.map((r,i)=>`
+    <tr id="fbtr-${r.id}" style="${r.name&&r.phone?'background:rgba(92,15,15,.02)':''}">
+      <td style="text-align:center;font-size:11px;font-weight:900;color:var(--muted);">${i+1}</td>
+      <td><input class="fbn finp" placeholder="الاسم" value="${r.name}" oninput="fbUpd(${r.id},'name',this.value)"></td>
+      <td><input class="finp" placeholder="965XXXXXXXX" value="${r.phone}" oninput="fbUpd(${r.id},'phone',this.value)" style="direction:ltr;text-align:left;"></td>
+      <td><select class="fsel" onchange="fbUpd(${r.id},'cert',this.value)"><option value="نعم" ${r.cert==='نعم'?'selected':''}>نعم</option><option value="لا" ${r.cert==='لا'?'selected':''}>لا</option></select></td>
+      <td><select class="fsel" onchange="fbUpd(${r.id},'status',this.value)"><option value="قيد الدفع" ${r.status==='قيد الدفع'?'selected':''}>قيد الدفع</option><option value="مهتم" ${r.status==='مهتم'?'selected':''}>مهتم</option><option value="تم الدفع" ${r.status==='تم الدفع'?'selected':''}>تم الدفع</option></select></td>
+      <td><input class="finp" placeholder="اختياري..." value="${r.notes}" oninput="fbUpd(${r.id},'notes',this.value)"></td>
+      <td><button onclick="fbDelRow(${r.id})" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(92,15,15,.1);background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;margin:auto;color:var(--muted);">×</button></td>
+    </tr>`).join('');
+  fbCount();
+}
+
+async function fbSubmit(){
+  const valid=fbRows.filter(r=>r.name&&r.phone);
+  if(!valid.length)return;
+  const btn=document.getElementById('fbsub');
+  btn.textContent='جاري...';btn.disabled=true;btn.style.opacity='.5';
+  try{
+    const res=await fPost({action:'addLeads',leads:valid.map(r=>({name:r.name,phone:r.phone,cert:r.cert,status:r.status,notes:r.notes,source:'واتساب'}))});
+    if(!res.ok)throw new Error(res.error);
+    fToast('f-toast-add',`✓ تمت إضافة ${res.data.added} عميل — تخطي ${res.data.skipped} مكرر`,res.data.added>0?'s':'w');
+    fbClear();if(res.data.added>0){fAllLeads=[];fLoad();}
+  }catch(e){fToast('f-toast-add','خطأ: '+e.message,'e');}
+  btn.textContent='إضافة الكل للشيت ←';btn.disabled=false;btn.style.opacity='1';
+}
+
+async function doFImport(btn){
+  btn.disabled=true;btn.querySelector('span').textContent='جاري الاستيراد...';
+  document.getElementById('fImpSpinner').style.display='block';
+  try{
+    const res=await fGet('import');
+    if(!res.ok)throw new Error(res.error);
+    fToast('f-toast-imp',`✓ أُضيف ${res.data.added} عميل — تخطي ${res.data.skipped} مكرر`,'s');
+    if(res.data.added>0){fAllLeads=[];fLoad();}
+  }catch(e){fToast('f-toast-imp','خطأ: '+e.message,'e');}
+  btn.disabled=false;btn.querySelector('span').textContent='استيراد الآن ←';
+  document.getElementById('fImpSpinner').style.display='none';
+}
+
+function switchFTab(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('ftabContent'+i).style.display=i===n?'':'none';
+    document.getElementById('ftab'+i).style.background=i===n?'var(--crimson)':'transparent';
+    document.getElementById('ftab'+i).style.color=i===n?'#fff':'var(--muted)';
+  });
+}
+function fToast(id,msg,type){
+  const t=document.getElementById(id);
+  const colors={s:'background:#E8F5E9;color:#2E7D32;',i:'background:#E3F2FD;color:#1565C0;',w:'background:#FFF9C4;color:#F57F17;',e:'background:#FFEBEE;color:#C62828;'};
+  t.style.cssText=`display:block;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:800;margin-top:12px;${colors[type]||colors.s}`;
+  t.textContent=msg;setTimeout(()=>t.style.display='none',4000);
+}
+
+// INIT tab4
+fbRows=[fbMkRow()];fbRender();
+
 loadCourses();
 </script>
 </body>
