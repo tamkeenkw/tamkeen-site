@@ -288,17 +288,22 @@ async function loadProfile() {
   document.getElementById('loadingState').style.display = 'block';
 
   try {
-    const res  = await fetch(SCRIPT_URL + '?action=getProfile&phone=' + encodeURIComponent(phone));
-    const data = await res.json();
+    // JSONP عشان نتجاوز CORS
+    const data = await new Promise((resolve, reject) => {
+      const cbName = 'cb_' + Date.now();
+      window[cbName] = (d) => { delete window[cbName]; document.getElementById('jsonpScript')?.remove(); resolve(d); };
+      const s = document.createElement('script');
+      s.id = 'jsonpScript';
+      s.src = SCRIPT_URL + '?action=getProfile&phone=' + encodeURIComponent(phone) + '&callback=' + cbName;
+      s.onerror = () => { delete window[cbName]; reject(new Error('fail')); };
+      document.head.appendChild(s);
+      setTimeout(() => { delete window[cbName]; reject(new Error('timeout')); }, 10000);
+    });
 
     document.getElementById('loadingState').style.display = 'none';
-
-    if(!data.found) {
-      document.getElementById('notFound').style.display = 'block';
-      return;
-    }
-
+    if(!data.found) { document.getElementById('notFound').style.display = 'block'; return; }
     renderProfile(data);
+
   } catch(err) {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('notFound').style.display = 'block';
