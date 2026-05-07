@@ -428,7 +428,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div class="pricing-grid">
       <div class="plan-card">
         <div class="plan-badge">شهر واحد</div>
-        <div class="plan-price"><span class="plan-price-num">١٠</span><span class="plan-price-cur">د.ك</span></div>
+        <div class="plan-price"><span class="plan-price-num">١٥</span><span class="plan-price-cur">د.ك</span></div>
         <div class="plan-period">وصول لمدة شهر كامل</div>
         <div class="plan-saving">جميع الدورات بلا حدود</div>
         <div class="plan-divider"></div>
@@ -437,7 +437,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
           <li>حضور غير محدود</li>
           <li>شهادة فردية ١٥ د.ك عند الطلب</li>
         </ul>
-        <button class="plan-btn" onclick="openPricingModal('اشتراك شهر — ١٠ د.ك')">اشترك الآن</button>
+        <button class="plan-btn" onclick="openPricingModal('اشتراك شهر — ١٥ د.ك')">اشترك الآن</button>
       </div>
       <div class="plan-card featured">
         <div class="plan-badge">⭐ الأكثر اختياراً</div>
@@ -1006,7 +1006,7 @@ document.getElementById('pricingForm').addEventListener('submit', async function
   document.getElementById('pSpinner').style.display='block';
 
   const plan = document.getElementById('pPlanType').value;
-  const amountMap = {'اشتراك شهر — ١٠ د.ك':10, 'اشتراك ٦ أشهر — ٤٠ د.ك':40, 'اشتراك ١٢ شهر — ٧٠ د.ك':70};
+  const amountMap = {'اشتراك شهر — ١٥ د.ك':15, 'اشتراك ٦ أشهر — ٤٠ د.ك':40, 'اشتراك ١٢ شهر — ٧٠ د.ك':70};
   const amount = amountMap[plan] || 10;
 
   try {
