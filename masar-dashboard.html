@@ -97,7 +97,15 @@ tr:hover td{background:rgba(92,15,15,.02);}
 /* ROW NUM */
 .row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
 
-/* WHATSAPP BTN */
+/* RESULT DROPDOWN */
+.res-sel{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Tajawal',sans-serif;border:none;cursor:pointer;outline:none;transition:all .2s;}
+.res-new{background:#F3F4F6;color:#6B7280;}
+.res-pending{background:#FEF3C7;color:#92400E;}
+.res-thinking{background:#DBEAFE;color:#1E40AF;}
+.res-info{background:#EDE9FE;color:#5B21B6;}
+.res-registered{background:#D1FAE5;color:#065F46;}
+.res-notint{background:#FEE2E2;color:#991B1B;}
+.res-later{background:#FFF7ED;color:#C2410C;}
 .wa-btn{display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;transition:opacity .2s;}
 .wa-btn:hover{opacity:.85;}
 
@@ -396,7 +404,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
           <table>
             <thead><tr>
               <th><input type="checkbox" id="fchk-all" onchange="fTogAll(this)" style="width:14px;height:14px;accent-color:var(--crimson);cursor:pointer;"></th>
-              <th>الاسم</th><th>الواتساب</th><th>المصدر</th><th>شهادة</th><th>حالة الدفع</th><th>آخر تواصل</th><th>تواصل</th>
+              <th>الاسم</th><th>الواتساب</th><th>المصدر</th><th>شهادة</th><th>حالة الدفع</th><th>نتيجة التواصل</th><th>آخر تواصل</th><th>تواصل</th>
             </tr></thead>
             <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);">جاري التحميل...</td></tr></tbody>
           </table>
@@ -859,6 +867,7 @@ function fRender() {
       <td>${fSrcPill(r.source)}</td>
       <td><span class="${r.cert==='نعم'?'cert-done':'cert-no'}">${r.cert}</span></td>
       <td><span class="${r.status.includes('قيد')||r.status.includes('معلق')?'cert-pending':r.status.includes('تم')||r.status.includes('مكتمل')?'cert-done':'cert-no'}">${r.status}</span></td>
+      <td>${fResultSel(r.rowIndex, r.contactResult)}</td>
       <td style="font-size:12px;font-weight:${r.lastContact===FTODAY?'900':'400'};color:${r.lastContact===FTODAY?'var(--green)':'var(--muted)'};">${r.lastContact===FTODAY?'اليوم ✓':(r.lastContact||'—')}</td>
       <td>${fWaBtn(r.phone,r.name)}</td>
     </tr>`).join('');
@@ -875,6 +884,35 @@ function fSrcPill(s){
   const map={'واتساب':'background:#DCF8C6;color:#128C7E;','التسجيلات':'background:#E8DEF8;color:#4A235A;','الباقات':'background:#FDE8C8;color:#7A3B00;'};
   const bg=map[s]||'background:var(--cream-2);color:var(--muted);';
   return`<span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;${bg}">${s}</span>`;
+}
+
+const RESULTS = [
+  { val:'',          label:'— اختر —',        cls:'res-new'        },
+  { val:'لم يرد',    label:'📵 لم يرد',        cls:'res-pending'    },
+  { val:'يفكر',      label:'🤔 يفكر',          cls:'res-thinking'   },
+  { val:'طلب معلومات',label:'📋 طلب معلومات', cls:'res-info'       },
+  { val:'سجّل',      label:'✅ سجّل',          cls:'res-registered' },
+  { val:'مو مهتم',   label:'❌ مو مهتم',       cls:'res-notint'     },
+  { val:'تواصل لاحقاً',label:'📅 تواصل لاحقاً',cls:'res-later'     },
+];
+
+function fResultSel(rowIndex, current) {
+  const cls = RESULTS.find(r=>r.val===current)?.cls || 'res-new';
+  const opts = RESULTS.map(r=>`<option value="${r.val}" ${r.val===current?'selected':''}>${r.label}</option>`).join('');
+  return `<select class="res-sel ${cls}" onchange="doFUpdateResult(${rowIndex},this)">${opts}</select>`;
+}
+
+async function doFUpdateResult(rowIndex, sel) {
+  const val = sel.value;
+  const cls = RESULTS.find(r=>r.val===val)?.cls || 'res-new';
+  sel.className = `res-sel ${cls}`;
+  try {
+    await fPost({ action:'updateResult', rowIndex, contactResult: val });
+    // تحديث البيانات المحلية
+    const lead = fAllLeads.find(r=>r.rowIndex===rowIndex);
+    if (lead) { lead.contactResult = val; lead.lastContact = FTODAY; }
+    fRender();
+  } catch(e) { fToast('f-toast-list','خطأ في الحفظ: '+e.message,'e'); }
 }
 function fWaBtn(phone,name){
   const clean=String(phone).replace(/\D/g,'');
