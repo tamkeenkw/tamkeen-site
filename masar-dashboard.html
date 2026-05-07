@@ -428,10 +428,11 @@ tr:hover td{background:rgba(92,15,15,.02);}
           <table style="table-layout:fixed;min-width:620px;">
             <thead><tr>
               <th style="width:34px;">#</th>
-              <th style="width:22%;">الاسم الكامل</th>
-              <th style="width:19%;">رقم الواتساب</th>
-              <th style="width:11%;">شهادة؟</th>
-              <th style="width:18%;">حالة الدفع</th>
+              <th style="width:20%;">الاسم الكامل</th>
+              <th style="width:17%;">رقم الواتساب</th>
+              <th style="width:16%;">الدورة / الخدمة</th>
+              <th style="width:10%;">شهادة؟</th>
+              <th style="width:16%;">حالة الدفع</th>
               <th>ملاحظة</th>
               <th style="width:28px;"></th>
             </tr></thead>
@@ -862,7 +863,7 @@ function fRender() {
   tb.innerHTML=d.map(r=>`
     <tr style="${fSel.has(r.rowIndex)?'background:rgba(92,15,15,.04)':''}">
       <td style="text-align:center;"><input type="checkbox" ${fSel.has(r.rowIndex)?'checked':''} onchange="fTog(${r.rowIndex},this)" style="accent-color:var(--crimson);width:14px;height:14px;cursor:pointer;"></td>
-      <td><div class="name-row"><div class="avatar" style="width:28px;height:28px;font-size:11px;">${r.name.charAt(0)}</div><span style="font-weight:700;font-size:13px;">${r.name}</span></div></td>
+      <td><div class="name-row"><div class="avatar" style="width:28px;height:28px;font-size:11px;">${r.name.charAt(0)}</div><div><span style="font-weight:700;font-size:13px;display:block;">${r.name}</span>${r.course?`<span style="font-size:10px;color:var(--muted);background:var(--cream-2);padding:1px 6px;border-radius:10px;">${r.course}</span>`:''}</div></div></td>
       <td style="font-size:12px;color:var(--muted);direction:ltr;text-align:right;">${r.phone}</td>
       <td>${fSrcPill(r.source)}</td>
       <td><span class="${r.cert==='نعم'?'cert-done':'cert-no'}">${r.cert}</span></td>
@@ -958,6 +959,7 @@ function fbRender(){
       <td style="text-align:center;font-size:11px;font-weight:900;color:var(--muted);">${i+1}</td>
       <td><input class="fbn finp" placeholder="الاسم" value="${r.name}" oninput="fbUpd(${r.id},'name',this.value)"></td>
       <td><input class="finp" placeholder="965XXXXXXXX" value="${r.phone}" oninput="fbUpd(${r.id},'phone',this.value)" style="direction:ltr;text-align:left;"></td>
+      <td><input class="finp" placeholder="مثال: فن الإدارة" value="${r.course||''}" oninput="fbUpd(${r.id},'course',this.value)"></td>
       <td><select class="fsel" onchange="fbUpd(${r.id},'cert',this.value)"><option value="نعم" ${r.cert==='نعم'?'selected':''}>نعم</option><option value="لا" ${r.cert==='لا'?'selected':''}>لا</option></select></td>
       <td><select class="fsel" onchange="fbUpd(${r.id},'status',this.value)"><option value="قيد الدفع" ${r.status==='قيد الدفع'?'selected':''}>قيد الدفع</option><option value="مهتم" ${r.status==='مهتم'?'selected':''}>مهتم</option><option value="تم الدفع" ${r.status==='تم الدفع'?'selected':''}>تم الدفع</option></select></td>
       <td><input class="finp" placeholder="اختياري..." value="${r.notes}" oninput="fbUpd(${r.id},'notes',this.value)"></td>
@@ -972,7 +974,7 @@ async function fbSubmit(){
   const btn=document.getElementById('fbsub');
   btn.textContent='جاري...';btn.disabled=true;btn.style.opacity='.5';
   try{
-    const res=await fPost({action:'addLeads',leads:valid.map(r=>({name:r.name,phone:r.phone,cert:r.cert,status:r.status,notes:r.notes,source:'واتساب'}))});
+    const res=await fPost({action:'addLeads',leads:valid.map(r=>({name:r.name,phone:r.phone,cert:r.cert,status:r.status,notes:r.notes,course:r.course||'',source:'واتساب'}))});
     if(!res.ok)throw new Error(res.error);
     fToast('f-toast-add',`✓ تمت إضافة ${res.data.added} عميل — تخطي ${res.data.skipped} مكرر`,res.data.added>0?'s':'w');
     fbClear();if(res.data.added>0){fAllLeads=[];fLoad();}
