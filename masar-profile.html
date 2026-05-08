@@ -457,43 +457,87 @@ function renderProfile(data) {
   getInsight(data);
 }
 
+// تحليل محلي بدون AI — يشتغل دائماً كبديل
+function localInsight(data) {
+  var cats = {'إدارية':0,'قيادية':0,'تقنية':0,'فنية':0};
+  data.certs.forEach(function(c) {
+    var n = c.course||'';
+    if(/قياد|تمكين القيادي|فريق|قائد/.test(n))      cats['قيادية']++;
+    else if(/إدار|ادار|تخطيط|تفويض|مهام|إنجاز/.test(n)) cats['إدارية']++;
+    else if(/تقني|تكنولوج|ذكاء|كانفا|رقمي|إلكتروني/.test(n)) cats['تقنية']++;
+    else cats['فنية']++;
+  });
+  var top = Object.entries(cats).sort((a,b)=>b[1]-a[1]).filter(e=>e[1]>0);
+  var total = data.certs.length;
+
+  var analysis = '';
+  if(top.length === 0) return null;
+
+  var primary = top[0][0];
+  var tagMap = {
+    'إدارية': ['مهارات إدارية','تطوير مهني','التخطيط الاستراتيجي'],
+    'قيادية': ['مهارات قيادية','تطوير القيادة','إدارة الفرق'],
+    'تقنية':  ['تقنيات التعليم','الذكاء الاصطناعي','التحول الرقمي'],
+    'فنية':   ['مهارات فنية','الإبداع التربوي','تطوير المناهج']
+  };
+  var recMap = {
+    'إدارية': ['باقة فن الإدارة وتمكين القيادي','دورات التطوير الذاتي'],
+    'قيادية': ['باقة فن الإدارة وتمكين القيادي','دورات التطوير الذاتي'],
+    'تقنية':  ['باقة الذكاء الاصطناعي في التعليم','دورات تقنيات التعليم'],
+    'فنية':   ['دورات التطوير الذاتي','دورات تقنيات التعليم']
+  };
+  var analysisMap = {
+    'إدارية': 'يمتلك ' + data.name + ' توجهاً واضحاً نحو المهارات الإدارية والتنظيمية، ويُظهر اهتماماً بتطوير قدراته القيادية والإدارية. مساره التدريبي يؤهله لتولي مهام إشرافية وقيادية في بيئات العمل التربوي.',
+    'قيادية': 'يتميز ' + data.name + ' بتوجه قيادي واضح يركز على تمكين الفرق وتطوير الكفاءات القيادية. مساره يؤهله ليكون قائداً تربوياً مؤثراً في مؤسسته.',
+    'تقنية':  'يمتلك ' + data.name + ' اهتماماً متميزاً بتقنيات التعليم والأدوات الرقمية الحديثة. مساره يؤهله لتطبيق التحول الرقمي في الممارسة التعليمية اليومية.',
+    'فنية':   'يتمتع ' + data.name + ' بمهارات فنية وإبداعية متنوعة تعكس شغفه بالتجديد في أساليب التعليم. مساره التدريبي يجعله من المعلمين المتميزين في تصميم التجارب التعليمية.'
+  };
+
+  return {
+    analysis: analysisMap[primary] + (total > 1 ? ' أنجز ' + total + ' دورات معتمدة حتى الآن.' : ''),
+    tags: tagMap[primary] || [],
+    recs: recMap[primary] || []
+  };
+}
+
 async function getInsight(data) {
   if(data.certs.length === 0) {
     document.getElementById('insightCard').style.display = 'none';
     return;
   }
 
+  // أولاً جرّب AI من السيرفر
   try {
     const courses = data.certs.map(c => c.course).join('، ');
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        type:    'getInsight',
-        name:    data.name,
-        courses: courses
-      })
+      body: JSON.stringify({ type: 'getInsight', name: data.name, courses: courses })
     });
-
     const d = await res.json();
-
-    if(!d.ok) {
-      document.getElementById('insightCard').style.display = 'none';
+    if(d.ok && d.analysis) {
+      showInsight(d.analysis, d.tags||[], d.recs||[]);
       return;
     }
+  } catch(err) { /* fallback */ }
 
-    document.getElementById('insightLoading').style.display = 'none';
-    document.getElementById('insightContent').style.display = 'block';
-    document.getElementById('insightText').textContent      = d.analysis || '';
-    document.getElementById('insightTags').innerHTML        = (d.tags||[]).map(t => `<span class="itag">${t}</span>`).join('');
-
-    if(d.recs && d.recs.length > 0) {
-      document.getElementById('insightRecs').style.display = 'block';
-      document.getElementById('recsList').innerHTML = d.recs.map(r => `<div class="rec-item">${r}</div>`).join('');
-    }
-
-  } catch(err) {
+  // Fallback: تحليل محلي
+  const local = localInsight(data);
+  if(local) {
+    showInsight(local.analysis, local.tags, local.recs);
+  } else {
     document.getElementById('insightCard').style.display = 'none';
+  }
+}
+
+function showInsight(analysis, tags, recs) {
+  document.getElementById('insightLoading').style.display = 'none';
+  document.getElementById('insightContent').style.display = 'block';
+  document.getElementById('insightText').textContent      = analysis;
+  document.getElementById('insightTags').innerHTML        = tags.map(t => `<span class="itag">${t}</span>`).join('');
+  if(recs.length > 0) {
+    document.getElementById('insightRecs').style.display = 'block';
+    document.getElementById('recsList').innerHTML = recs.map(r => `<div class="rec-item">${r}</div>`).join('');
   }
 }
 
