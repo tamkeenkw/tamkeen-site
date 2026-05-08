@@ -133,6 +133,15 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .rec-course-trainer{font-size:12px;color:var(--muted);}
 .rec-label{display:inline-flex;align-items:center;gap:4px;background:rgba(92,15,15,.06);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-top:4px;}
 
+/* CERT CATEGORIES */
+.cat-section{margin-bottom:18px;}
+.cat-title{font-size:12px;font-weight:900;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cat-title::before{content:'';flex:1;height:1px;background:rgba(92,15,15,.1);}
+.cat-title::after{content:'';flex:1;height:1px;background:rgba(92,15,15,.1);}
+.cert-accred{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px;}
+.cert-accred span{background:var(--cream-2);padding:2px 8px;border-radius:100px;font-weight:700;font-size:11px;color:var(--crimson);}
+.cert-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+
 /* LOADING */
 .loading{text-align:center;padding:48px;}
 .dots{display:inline-flex;gap:6px;}
@@ -217,7 +226,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <!-- الشهادات -->
   <div class="sec-card" id="certsCard" style="display:none;">
     <div class="sec-head"><span>🎓</span> شهاداتك المعتمدة</div>
-    <div class="cert-list" id="certList"></div>
+    <div id="certList"></div>
   </div>
 
   <!-- تسجيلاتك هذا الشهر -->
@@ -292,6 +301,22 @@ function toA(n) {
   return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 }
 
+// تنسيق التاريخ — يعالج Date object وstring معاً
+function cleanDate(val) {
+  if(!val) return '';
+  var s = String(val);
+  // لو Date object كامل
+  if(s.includes('GMT') || s.includes('00:00:00')) {
+    var d = new Date(s);
+    if(!isNaN(d)) {
+      return d.getDate().toString().padStart(2,'0') + '/' +
+             (d.getMonth()+1).toString().padStart(2,'0') + '/' +
+             d.getFullYear();
+    }
+  }
+  return s;
+}
+
 function formatDate(d) {
   const dp = d.split('-');
   if(dp.length < 3) return d;
@@ -346,17 +371,52 @@ function renderProfile(data) {
   document.getElementById('pillMonth').textContent    = toA((data.thisMonth||[]).length) + ' هذا الشهر';
   document.getElementById('pillUpcoming').textContent = toA((data.recommended||[]).length) + ' توصية';
 
-  // الشهادات
+  // الشهادات — مصنّفة بالفئات
   if(data.certs.length > 0) {
     document.getElementById('certsCard').style.display = 'block';
-    document.getElementById('certList').innerHTML = data.certs.map(c => `
-      <div class="cert-row">
-        <div class="cert-serial">${c.serial||'—'}</div>
-        <div class="cert-info">
-          <div class="cert-course">${c.course}</div>
-          <div class="cert-meta">${c.trainer ? '👤 '+c.trainer+' · ' : ''}${c.date}</div>
-        </div>
-      </div>`).join('');
+
+    // تصنيف الدورة بالكلمات المفتاحية
+    function categorizeCourse(name) {
+      var n = name || '';
+      if(/قياد|تمكين القيادي|فريق|قائد|leadership/i.test(n)) return 'قيادية';
+      if(/إدار|ادار|تخطيط|تفويض|مهام|إنجاز|انجاز|تنظيم|منظم/i.test(n)) return 'إدارية';
+      if(/تقني|تكنولوج|ذكاء اصطناعي|AI|كانفا|canva|رقمي|إلكتروني|الكتروني|برنامج|تطبيق/i.test(n)) return 'تقنية';
+      return 'فنية';
+    }
+
+    // ترتيب الفئات
+    var catOrder = ['إدارية','فنية','تقنية','قيادية'];
+    var catIcons = {'إدارية':'🏛️','فنية':'🎨','تقنية':'💻','قيادية':'⭐'};
+    var cats = {};
+    catOrder.forEach(function(c){ cats[c] = []; });
+
+    data.certs.forEach(function(c) {
+      var cat = categorizeCourse(c.course);
+      if(!cats[cat]) cats[cat] = [];
+      cats[cat].push(c);
+    });
+
+    var html = '';
+    catOrder.forEach(function(cat) {
+      if(!cats[cat] || cats[cat].length === 0) return;
+      html += '<div class="cat-section">';
+      html += '<div class="cat-title">' + catIcons[cat] + ' دورات ' + cat + '</div>';
+      html += '<div class="cert-list">';
+      cats[cat].forEach(function(c) {
+        html += '<div class="cert-row">';
+        html += '<div class="cert-serial">' + (c.serial||'—') + '</div>';
+        html += '<div class="cert-info">';
+        html += '<div class="cert-course">' + c.course + '</div>';
+        html += '<div class="cert-meta">' + (c.trainer ? '👤 '+c.trainer : '') + '</div>';
+        html += '<div class="cert-accred">';
+        if(c.accred) html += '📋 رقم الاعتماد: <span>' + c.accred + '</span>';
+        html += '</div>';
+        html += '</div></div>';
+      });
+      html += '</div></div>';
+    });
+
+    document.getElementById('certList').innerHTML = html;
   }
 
   // تسجيلاتك هذا الشهر
@@ -397,43 +457,87 @@ function renderProfile(data) {
   getInsight(data);
 }
 
+// تحليل محلي بدون AI — يشتغل دائماً كبديل
+function localInsight(data) {
+  var cats = {'إدارية':0,'قيادية':0,'تقنية':0,'فنية':0};
+  data.certs.forEach(function(c) {
+    var n = c.course||'';
+    if(/قياد|تمكين القيادي|فريق|قائد/.test(n))      cats['قيادية']++;
+    else if(/إدار|ادار|تخطيط|تفويض|مهام|إنجاز/.test(n)) cats['إدارية']++;
+    else if(/تقني|تكنولوج|ذكاء|كانفا|رقمي|إلكتروني/.test(n)) cats['تقنية']++;
+    else cats['فنية']++;
+  });
+  var top = Object.entries(cats).sort((a,b)=>b[1]-a[1]).filter(e=>e[1]>0);
+  var total = data.certs.length;
+
+  var analysis = '';
+  if(top.length === 0) return null;
+
+  var primary = top[0][0];
+  var tagMap = {
+    'إدارية': ['مهارات إدارية','تطوير مهني','التخطيط الاستراتيجي'],
+    'قيادية': ['مهارات قيادية','تطوير القيادة','إدارة الفرق'],
+    'تقنية':  ['تقنيات التعليم','الذكاء الاصطناعي','التحول الرقمي'],
+    'فنية':   ['مهارات فنية','الإبداع التربوي','تطوير المناهج']
+  };
+  var recMap = {
+    'إدارية': ['باقة فن الإدارة وتمكين القيادي','دورات التطوير الذاتي'],
+    'قيادية': ['باقة فن الإدارة وتمكين القيادي','دورات التطوير الذاتي'],
+    'تقنية':  ['باقة الذكاء الاصطناعي في التعليم','دورات تقنيات التعليم'],
+    'فنية':   ['دورات التطوير الذاتي','دورات تقنيات التعليم']
+  };
+  var analysisMap = {
+    'إدارية': 'يمتلك ' + data.name + ' توجهاً واضحاً نحو المهارات الإدارية والتنظيمية، ويُظهر اهتماماً بتطوير قدراته القيادية والإدارية. مساره التدريبي يؤهله لتولي مهام إشرافية وقيادية في بيئات العمل التربوي.',
+    'قيادية': 'يتميز ' + data.name + ' بتوجه قيادي واضح يركز على تمكين الفرق وتطوير الكفاءات القيادية. مساره يؤهله ليكون قائداً تربوياً مؤثراً في مؤسسته.',
+    'تقنية':  'يمتلك ' + data.name + ' اهتماماً متميزاً بتقنيات التعليم والأدوات الرقمية الحديثة. مساره يؤهله لتطبيق التحول الرقمي في الممارسة التعليمية اليومية.',
+    'فنية':   'يتمتع ' + data.name + ' بمهارات فنية وإبداعية متنوعة تعكس شغفه بالتجديد في أساليب التعليم. مساره التدريبي يجعله من المعلمين المتميزين في تصميم التجارب التعليمية.'
+  };
+
+  return {
+    analysis: analysisMap[primary] + (total > 1 ? ' أنجز ' + total + ' دورات معتمدة حتى الآن.' : ''),
+    tags: tagMap[primary] || [],
+    recs: recMap[primary] || []
+  };
+}
+
 async function getInsight(data) {
   if(data.certs.length === 0) {
     document.getElementById('insightCard').style.display = 'none';
     return;
   }
 
+  // أولاً جرّب AI من السيرفر
   try {
     const courses = data.certs.map(c => c.course).join('، ');
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        type:    'getInsight',
-        name:    data.name,
-        courses: courses
-      })
+      body: JSON.stringify({ type: 'getInsight', name: data.name, courses: courses })
     });
-
     const d = await res.json();
-
-    if(!d.ok) {
-      document.getElementById('insightCard').style.display = 'none';
+    if(d.ok && d.analysis) {
+      showInsight(d.analysis, d.tags||[], d.recs||[]);
       return;
     }
+  } catch(err) { /* fallback */ }
 
-    document.getElementById('insightLoading').style.display = 'none';
-    document.getElementById('insightContent').style.display = 'block';
-    document.getElementById('insightText').textContent      = d.analysis || '';
-    document.getElementById('insightTags').innerHTML        = (d.tags||[]).map(t => `<span class="itag">${t}</span>`).join('');
-
-    if(d.recs && d.recs.length > 0) {
-      document.getElementById('insightRecs').style.display = 'block';
-      document.getElementById('recsList').innerHTML = d.recs.map(r => `<div class="rec-item">${r}</div>`).join('');
-    }
-
-  } catch(err) {
+  // Fallback: تحليل محلي
+  const local = localInsight(data);
+  if(local) {
+    showInsight(local.analysis, local.tags, local.recs);
+  } else {
     document.getElementById('insightCard').style.display = 'none';
+  }
+}
+
+function showInsight(analysis, tags, recs) {
+  document.getElementById('insightLoading').style.display = 'none';
+  document.getElementById('insightContent').style.display = 'block';
+  document.getElementById('insightText').textContent      = analysis;
+  document.getElementById('insightTags').innerHTML        = tags.map(t => `<span class="itag">${t}</span>`).join('');
+  if(recs.length > 0) {
+    document.getElementById('insightRecs').style.display = 'block';
+    document.getElementById('recsList').innerHTML = recs.map(r => `<div class="rec-item">${r}</div>`).join('');
   }
 }
 
