@@ -483,15 +483,18 @@ let coursesData = [];
 
 async function loadCourses() {
   try {
-    const res  = await fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني'));
-    const data = await res.json();
-    coursesData = data.courses || [];
+    const [res1, res2] = await Promise.all([
+      fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('خاصة'))
+    ]);
+    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+    coursesData = [...(data1.courses || []), ...(data2.courses || [])];
     const sel = document.getElementById('courseSelect');
     sel.innerHTML = '<option value="">-- اختر الدورة --</option>';
     coursesData.forEach((c, i) => {
       const opt = document.createElement('option');
       opt.value = i;
-      opt.textContent = c.name + ' — ' + c.date + (c.time ? ' (' + c.time + ')' : '');
+      opt.textContent = c.name + ' — ' + c.date + (c.time ? ' (' + c.time + ')' : '') + (c.system === 'خاصة' ? ' 🔒' : '');
       sel.appendChild(opt);
     });
   } catch(err) {
@@ -630,9 +633,12 @@ let certStudentsList = [];
 
 async function loadCertCourses() {
   try {
-    const res  = await fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني'));
-    const data = await res.json();
-    certCoursesData = data.courses || [];
+    const [res1, res2] = await Promise.all([
+      fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL + '?action=getCourses&type=' + encodeURIComponent('خاصة'))
+    ]);
+    const [data1, data2] = await Promise.all([res1.json(), res2.json()]);
+    certCoursesData = [...(data1.courses || []), ...(data2.courses || [])];
     const sel = document.getElementById('certCourseSelect');
     sel.innerHTML = '<option value="">-- اختر الدورة --</option>';
     certCoursesData.forEach((c, i) => {
