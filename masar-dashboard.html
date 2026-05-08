@@ -655,6 +655,9 @@ function onCertCourseChange() {
   if(idx === '') return;
   const c = certCoursesData[parseInt(idx)];
   document.getElementById('certTrainer').value = c.trainer || '';
+  if(c.materialCode) {
+    document.getElementById('certMaterial').value = c.materialCode;
+  }
   document.getElementById('certStudentsCard').style.display = 'none';
   document.getElementById('certResult').style.display = 'none';
   document.getElementById('certEmpty').style.display = 'none';
