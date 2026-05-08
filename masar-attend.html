@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تأكيد الحضور — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F;--crimson-2:#7A1515;
+  --cream:#FAF7F2;--cream-2:#F2EDE5;
+  --text:#1A0808;--muted:#7A6060;
+  --green:#2E7D32;--green-bg:#E8F5E9;
+  --gold:#C9952A;--gold-bg:#FFF8E7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+.header{background:var(--crimson);padding:18px 24px;text-align:center;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%);background-size:40px 40px;}
+.header-logo{font-size:20px;font-weight:900;color:#fff;position:relative;z-index:1;}
+.header-sub{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:2px;margin-top:3px;position:relative;z-index:1;}
+
+/* MAIN */
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px;}
+.card{background:#fff;border-radius:24px;padding:36px 32px;width:100%;max-width:440px;box-shadow:0 8px 40px rgba(92,15,15,.1);border:1.5px solid rgba(92,15,15,.06);}
+
+/* STEP: PHONE */
+.step-icon{font-size:48px;text-align:center;margin-bottom:16px;}
+.step-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px;text-align:center;}
+.step-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:24px;}
+
+.input-wrap{position:relative;margin-bottom:16px;}
+.input-wrap input{
+  width:100%;background:var(--cream);
+  border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px;padding:14px 18px;
+  font-family:'Tajawal',sans-serif;font-size:16px;
+  color:var(--text);outline:none;transition:border .2s;
+  text-align:center;letter-spacing:2px;
+}
+.input-wrap input:focus{border-color:var(--crimson);background:#fff;}
+.input-wrap input.invalid{border-color:#C62828;background:#FFF5F5;}
+
+.btn{
+  width:100%;background:var(--crimson);color:#fff;
+  font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;
+  padding:15px;border:none;border-radius:100px;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn:hover{background:var(--crimson-2);}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+.btn-outline{
+  width:100%;background:transparent;color:var(--crimson);
+  font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;
+  padding:14px;border:1.5px solid var(--crimson);border-radius:100px;cursor:pointer;
+  transition:all .2s;margin-top:10px;
+}
+.btn-outline:hover{background:rgba(92,15,15,.05);}
+
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* COURSES LIST */
+.courses-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.course-opt{
+  background:var(--cream);border:2px solid transparent;
+  border-radius:14px;padding:14px 16px;cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:12px;
+}
+.course-opt:hover{border-color:rgba(92,15,15,.2);background:var(--cream-2);}
+.course-opt.selected{border-color:var(--crimson);background:rgba(92,15,15,.04);}
+.course-dot{width:20px;height:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.course-opt.selected .course-dot{background:var(--crimson);border-color:var(--crimson);}
+.course-dot::after{content:'✓';color:#fff;font-size:11px;font-weight:900;display:none;}
+.course-opt.selected .course-dot::after{display:block;}
+.course-name{font-size:14px;font-weight:800;color:var(--text);}
+.course-date{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* CERT CHOICE */
+.cert-opts{display:flex;gap:10px;margin-bottom:16px;}
+.cert-opt{
+  flex:1;background:var(--cream);border:2px solid transparent;
+  border-radius:14px;padding:14px;cursor:pointer;text-align:center;
+  font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;
+  color:var(--text);transition:all .2s;
+}
+.cert-opt:hover{border-color:rgba(92,15,15,.2);}
+.cert-opt.selected{border-color:var(--crimson);background:rgba(92,15,15,.04);color:var(--crimson);}
+
+/* ALERT */
+.alert{border-radius:14px;padding:16px 18px;margin-bottom:16px;}
+.alert-gold{background:var(--gold-bg);border:1.5px solid rgba(201,149,42,.3);}
+.alert-title{font-size:14px;font-weight:800;color:var(--gold);margin-bottom:4px;}
+.alert-sub{font-size:13px;color:#7A5A00;line-height:1.7;}
+
+/* SUCCESS */
+.success-icon{font-size:56px;text-align:center;margin-bottom:16px;animation:pop .4s ease;}
+@keyframes pop{0%{transform:scale(.5);}70%{transform:scale(1.1);}100%{transform:scale(1);}}
+.success-title{font-size:20px;font-weight:900;text-align:center;color:var(--green);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);text-align:center;line-height:1.8;}
+
+/* MF */
+.mf{margin-bottom:14px;}
+.mf label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.mf input{
+  width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);
+  border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;
+  font-size:14px;color:var(--text);outline:none;transition:border .2s;
+}
+.mf input:focus{border-color:var(--crimson);background:#fff;}
+.mf.invalid input{border-color:#C62828;background:#FFF5F5;}
+.req{color:var(--crimson);}
+.err{font-size:12px;color:#C62828;margin-top:4px;display:none;}
+.mf.invalid .err{display:block;}
+
+.divider{height:1px;background:rgba(92,15,15,.06);margin:20px 0;}
+.back-link{text-align:center;margin-top:14px;}
+.back-link a{font-size:13px;color:var(--muted);cursor:pointer;font-weight:700;}
+.back-link a:hover{color:var(--crimson);}
+
+/* HIDDEN */
+.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">أكاديمية مسار</div>
+  <div class="header-sub">تأكيد الحضور</div>
+</div>
+
+<div class="main">
+  <div class="card">
+
+    <!-- STEP 1: رقم الهاتف -->
+    <div id="stepPhone">
+      <div class="step-icon">📱</div>
+      <div class="step-title">تأكيد الحضور</div>
+      <div class="step-sub">أدخل رقم واتسابك المسجل به لتأكيد حضورك</div>
+      <div class="input-wrap">
+        <input type="tel" id="phoneInput" placeholder="رقم الواتساب" maxlength="12" id="phoneInput">
+      </div>
+      <button class="btn" id="phoneBtn" onclick="checkPhone()">
+        <span id="phoneBtnTxt">تحقق من تسجيلي</span>
+        <div class="spinner" id="phoneSpinner"></div>
+      </button>
+    </div>
+
+    <!-- STEP 2: اختيار الدورة -->
+    <div id="stepCourses" class="hidden">
+      <div class="step-icon">📚</div>
+      <div class="step-title" id="greetName">مرحباً!</div>
+      <div class="step-sub">اختر الدورة التي حضرتها اليوم</div>
+      <div class="courses-list" id="coursesList"></div>
+      <button class="btn" id="courseBtn" onclick="confirmCourse()">
+        <span id="courseBtnTxt">تأكيد الحضور</span>
+        <div class="spinner" id="courseSpinner"></div>
+      </button>
+      <div class="back-link"><a onclick="goBack('stepPhone')">← تغيير الرقم</a></div>
+    </div>
+
+    <!-- STEP 3: تنبيه الشهادة -->
+    <div id="stepCert" class="hidden">
+      <div class="step-icon">🎓</div>
+      <div class="step-title">خطوة أخيرة!</div>
+      <div class="alert alert-gold">
+        <div class="alert-title">⚡ متبقي خطوة واحدة لاعتماد شهادتك</div>
+        <div class="alert-sub">لاستخراج شهادتك المعتمدة يرجى إتمام دفع رسوم الشهادة (١٥ د.ك)</div>
+      </div>
+      <div class="step-sub" style="margin-bottom:16px;">هل تريد إصدار شهادتك المعتمدة؟</div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" onclick="certChoice('yes')" style="background:var(--green);">✅ نعم، أصدر شهادتي</button>
+        <button class="btn-outline" onclick="certChoice('no')">لا، حضور فقط</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: تسجيل جديد -->
+    <div id="stepNew" class="hidden">
+      <div class="step-icon">📝</div>
+      <div class="step-title">تسجيل حضور جديد</div>
+      <div class="step-sub">رقمك غير مسجل — أكمل بياناتك لتسجيل حضورك</div>
+      <div class="mf" id="mf-name">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" id="newName" placeholder="اسمك الكامل">
+        <div class="err">يرجى إدخال الاسم</div>
+      </div>
+      <div class="mf" id="mf-email">
+        <label><span class="req">*</span> الإيميل</label>
+        <input type="email" id="newEmail" placeholder="example@email.com">
+        <div class="err">يرجى إدخال إيميل صحيح</div>
+      </div>
+      <div class="mf" id="mf-cert-new">
+        <label><span class="req">*</span> تريد شهادة معتمدة؟ (١٥ د.ك)</label>
+        <div class="cert-opts">
+          <div class="cert-opt" id="newCertYes" onclick="selectNewCert('نعم')">نعم أبي شهادة</div>
+          <div class="cert-opt" id="newCertNo"  onclick="selectNewCert('لا')">لا، حضور فقط</div>
+        </div>
+        <div class="err" id="newCertErr" style="display:none;">يرجى الاختيار</div>
+      </div>
+      <button class="btn" id="newBtn" onclick="submitNew()">
+        <span id="newBtnTxt">تسجيل الحضور</span>
+        <div class="spinner" id="newSpinner"></div>
+      </button>
+      <div class="back-link"><a onclick="goBack('stepPhone')">← تغيير الرقم</a></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="stepSuccess" class="hidden">
+      <div class="success-icon" id="successIcon">✅</div>
+      <div class="success-title" id="successTitle">تم اعتماد حضورك!</div>
+      <div class="success-sub" id="successSub">شكراً لحضورك — نتمنى أن تكون الدورة أضافت لك قيمة 🎓</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+
+let currentPhone   = '';
+let currentName    = '';
+let selectedCourse = null;
+let studentRows    = [];
+let newCertVal     = '';
+
+function show(id) {
+  ['stepPhone','stepCourses','stepCert','stepNew','stepSuccess'].forEach(s => {
+    document.getElementById(s).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function goBack(step) { show(step); }
+
+async function checkPhone() {
+  const phone = document.getElementById('phoneInput').value.trim();
+  if(!phone || phone.length < 7) {
+    document.getElementById('phoneInput').classList.add('invalid');
+    return;
+  }
+  document.getElementById('phoneInput').classList.remove('invalid');
+  currentPhone = phone;
+
+  document.getElementById('phoneBtn').disabled = true;
+  document.getElementById('phoneBtnTxt').style.display = 'none';
+  document.getElementById('phoneSpinner').style.display = 'block';
+
+  try {
+    const res  = await fetch(SCRIPT_URL, {
+      method: 'POST', headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({ type: 'getAttendance', phone })
+    });
+    const data = await res.json();
+
+    if(data.found && data.courses && data.courses.length > 0) {
+      currentName  = data.name || '';
+      studentRows  = data.courses;
+      document.getElementById('greetName').textContent = 'أهلاً ' + currentName + '!';
+
+      // بناء قائمة الدورات
+      const list = document.getElementById('coursesList');
+      list.innerHTML = '';
+      studentRows.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'course-opt';
+        div.onclick = () => selectCourse(i);
+        div.id = 'course-' + i;
+        div.innerHTML = `
+          <div class="course-dot" id="dot-${i}"></div>
+          <div>
+            <div class="course-name">${c.course}</div>
+            <div class="course-date">📅 ${c.courseDate || ''}</div>
+          </div>`;
+        list.appendChild(div);
+      });
+
+      show('stepCourses');
+    } else {
+      // رقم غير مسجل
+      show('stepNew');
+    }
+  } catch(err) {
+    show('stepNew');
+  } finally {
+    document.getElementById('phoneBtn').disabled = false;
+    document.getElementById('phoneBtnTxt').style.display = 'block';
+    document.getElementById('phoneSpinner').style.display = 'none';
+  }
+}
+
+function selectCourse(i) {
+  document.querySelectorAll('.course-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('course-' + i).classList.add('selected');
+  selectedCourse = studentRows[i];
+}
+
+async function confirmCourse() {
+  if(!selectedCourse) {
+    alert('يرجى اختيار الدورة أولاً');
+    return;
+  }
+
+  document.getElementById('courseBtn').disabled = true;
+  document.getElementById('courseBtnTxt').style.display = 'none';
+  document.getElementById('courseSpinner').style.display = 'block';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST', headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({
+        type: 'confirmAttendance',
+        phone: currentPhone,
+        course: selectedCourse.course,
+        row: selectedCourse.row
+      })
+    });
+    const data = await res.json();
+
+    // هل يبي شهادة ولم يدفع؟
+    if(selectedCourse.wantCert === 'نعم' && selectedCourse.payment !== 'تم الدفع') {
+      show('stepCert');
+    } else {
+      // حضور فقط أو دفع مكتمل
+      showSuccess(
+        selectedCourse.payment === 'تم الدفع' ? '🎓' : '✅',
+        'تم اعتماد حضورك!',
+        selectedCourse.payment === 'تم الدفع'
+          ? 'تم اعتماد حضورك وشهادتك المعتمدة — شكراً لحضورك 🎓'
+          : 'تم اعتماد حضورك بنجاح — شكراً لحضورك 🌟'
+      );
+    }
+  } catch(err) {
+    showSuccess('✅','تم اعتماد حضورك!','شكراً لحضورك');
+  } finally {
+    document.getElementById('courseBtn').disabled = false;
+    document.getElementById('courseBtnTxt').style.display = 'block';
+    document.getElementById('courseSpinner').style.display = 'none';
+  }
+}
+
+function certChoice(choice) {
+  if(choice === 'yes') {
+    showSuccess('📞','شكراً!','سيتواصل معك موظفونا قريباً لإتمام رسوم الشهادة المعتمدة');
+    // أرسل طلب للسكريبت
+    fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        type: 'certRequest',
+        phone: currentPhone, name: currentName,
+        course: selectedCourse.course
+      })
+    }).catch(()=>{});
+  } else {
+    showSuccess('✅','تم اعتماد حضورك!','شكراً لحضورك — نتمنى أن تكون الدورة أضافت لك قيمة 🌟');
+  }
+}
+
+async function submitNew() {
+  const name  = document.getElementById('newName').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  let ok = true;
+  if(!name)  { document.getElementById('mf-name').classList.add('invalid'); ok=false; } else document.getElementById('mf-name').classList.remove('invalid');
+  if(!email || !email.includes('@')) { document.getElementById('mf-email').classList.add('invalid'); ok=false; } else document.getElementById('mf-email').classList.remove('invalid');
+  if(!newCertVal) { document.getElementById('newCertErr').style.display='block'; ok=false; } else document.getElementById('newCertErr').style.display='none';
+  if(!ok) return;
+
+  document.getElementById('newBtn').disabled = true;
+  document.getElementById('newBtnTxt').style.display = 'none';
+  document.getElementById('newSpinner').style.display = 'block';
+
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type: 'تسجيل دورة مجانية',
+      name, phone: currentPhone, email,
+      course: 'حضور مباشر',
+      courseType: 'مجاني',
+      wantCert: newCertVal,
+      attended: 'نعم حضر',
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).catch(()=>{});
+
+  showSuccess('✅','تم تسجيل حضورك!','تم تسجيلك بنجاح — شكراً لحضورك 🌟');
+}
+
+function selectNewCert(val) {
+  newCertVal = val;
+  document.getElementById('newCertYes').classList.toggle('selected', val==='نعم');
+  document.getElementById('newCertNo').classList.toggle('selected',  val==='لا');
+  document.getElementById('newCertErr').style.display = 'none';
+}
+
+function showSuccess(icon, title, sub) {
+  document.getElementById('successIcon').textContent  = icon;
+  document.getElementById('successTitle').textContent = title;
+  document.getElementById('successSub').textContent   = sub;
+  show('stepSuccess');
+}
+
+document.getElementById('phoneInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') checkPhone();
+});
+</script>
+</body>
+</html>
