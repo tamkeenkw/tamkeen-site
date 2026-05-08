@@ -393,7 +393,8 @@ tr:hover td{background:rgba(92,15,15,.02);}
         <button class="ffilter" onclick="setFF('pend',this)">قيد الدفع</button>
         <button class="ffilter" onclick="setFF('cert',this)">يطلب شهادة</button>
         <button class="ffilter" onclick="setFF('nc',this)">لم يُتواصل اليوم</button>
-        <input id="fsrch" style="flex:1;min-width:160px;padding:7px 12px;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);outline:none;" placeholder="🔍 ابحث بالاسم أو الرقم..." oninput="doFSearch(this.value)">
+        <input id="fsrch" style="flex:1;min-width:160px;padding:7px 12px;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);outline:none;" placeholder="🔍 ابحث بالاسم أو الرقم أو الدورة..." oninput="doFSearch(this.value)">
+        <span id="fsrch-info" style="font-size:12px;color:var(--crimson);font-weight:700;white-space:nowrap;"></span>
       </div>
       <div class="results-card">
         <div class="results-header">
@@ -868,7 +869,10 @@ function fRender() {
   if(fFilter==='pend') d=d.filter(r=>r.status==='قيد الدفع');
   if(fFilter==='cert') d=d.filter(r=>r.cert==='نعم');
   if(fFilter==='nc')   d=d.filter(r=>r.lastContact!==FTODAY);
-  if(fQ){const q=fQ.toLowerCase();d=d.filter(r=>r.name.toLowerCase().includes(q)||r.phone.includes(q));}
+  if(fQ){const q=fQ.toLowerCase();d=d.filter(r=>r.name.toLowerCase().includes(q)||r.phone.includes(q)||r.course.toLowerCase().includes(q));}
+
+  const srchInfo = document.getElementById('fsrch-info');
+  if(srchInfo) srchInfo.textContent = fQ ? `${d.length} نتيجة لـ "${fQ}"` : '';
 
   document.getElementById('fs1').textContent=toA(fAllLeads.length);
   document.getElementById('fs2').textContent=toA(fAllLeads.filter(r=>r.status==='قيد الدفع').length);
