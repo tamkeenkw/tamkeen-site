@@ -506,28 +506,24 @@ async function getInsight(data) {
     return;
   }
 
-  // أولاً جرّب AI من السيرفر
+  // اعرض التحليل المحلي فوراً بدون انتظار
+  const local = localInsight(data);
+  if(local) showInsight(local.analysis, local.tags, local.recs);
+
+  // ثم جرّب تحسينه بالـ AI في الخلفية
   try {
     const courses = data.certs.map(c => c.course).join('، ');
+    const ctrl    = new AbortController();
+    setTimeout(() => ctrl.abort(), 8000); // timeout 8 ثواني
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ type: 'getInsight', name: data.name, courses: courses })
+      body: JSON.stringify({ type: 'getInsight', name: data.name, courses: courses }),
+      signal: ctrl.signal
     });
     const d = await res.json();
-    if(d.ok && d.analysis) {
-      showInsight(d.analysis, d.tags||[], d.recs||[]);
-      return;
-    }
-  } catch(err) { /* fallback */ }
-
-  // Fallback: تحليل محلي
-  const local = localInsight(data);
-  if(local) {
-    showInsight(local.analysis, local.tags, local.recs);
-  } else {
-    document.getElementById('insightCard').style.display = 'none';
-  }
+    if(d.ok && d.analysis) showInsight(d.analysis, d.tags||[], d.recs||[]);
+  } catch(err) { /* يبقى التحليل المحلي */ }
 }
 
 function showInsight(analysis, tags, recs) {
