@@ -212,7 +212,7 @@ async function checkPhone() {
     if(data.found && data.courses && data.courses.length > 0) {
       currentName = data.name || '';
       // فلتر الدورات — أخرج اللي حضرها مسبقاً
-      studentRows = data.courses.filter(c => c.attended !== 'نعم حضر');
+      studentRows = data.courses.filter(c => c.attended !== 'نعم حضر' && c.course !== 'اشتراك شهري');
       if(studentRows.length === 0) {
         showSuccess('✅','سبق تأكيد حضورك!','تم تسجيل حضورك مسبقاً في جميع دوراتك 🎓');
         return;
