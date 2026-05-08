@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ملف المتدرب — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--crimson:#5C0F0F;--crimson-2:#7A1515;--cream:#FAF7F2;--cream-2:#F2EDE5;--text:#1A0808;--muted:#7A6060;--green:#2E7D32;--green-bg:#E8F5E9;--blue:#1565C0;--blue-bg:#E3F2FD;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+.header{background:var(--crimson);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header-logo{font-size:18px;font-weight:900;color:#fff;}
+.header-sub{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;margin-top:2px;}
+
+/* SEARCH */
+.search-wrap{max-width:520px;margin:48px auto 0;padding:0 20px;}
+.search-card{background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 20px rgba(92,15,15,.07);border:1.5px solid rgba(92,15,15,.06);}
+.search-title{font-size:18px;font-weight:900;margin-bottom:6px;}
+.search-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;}
+.search-row{display:flex;gap:10px;}
+.search-input{flex:1;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:13px 16px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;transition:border .2s;}
+.search-input:focus{border-color:var(--crimson);background:#fff;}
+.search-btn{background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;padding:13px 22px;border:none;border-radius:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.search-btn:hover{background:var(--crimson-2);}
+.search-btn:disabled{opacity:.6;cursor:not-allowed;}
+.spinner-sm{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:48px 20px;max-width:520px;margin:24px auto;}
+.not-found-icon{font-size:44px;margin-bottom:14px;}
+.not-found-title{font-size:17px;font-weight:800;margin-bottom:8px;}
+.not-found-sub{font-size:14px;color:var(--muted);line-height:1.7;}
+
+/* PROFILE */
+.profile-wrap{max-width:720px;margin:28px auto 80px;padding:0 20px;}
+
+/* HERO CARD */
+.profile-hero{background:var(--crimson);border-radius:20px;padding:28px 32px;margin-bottom:20px;position:relative;overflow:hidden;}
+.profile-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%);background-size:40px 40px;}
+.profile-top{display:flex;align-items:center;gap:18px;position:relative;z-index:1;}
+.avatar{width:64px;height:64px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;flex-shrink:0;}
+.profile-name{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px;}
+.profile-phone{font-size:13px;color:rgba(255,255,255,.55);}
+.profile-pills{display:flex;gap:10px;margin-top:8px;}
+.ppill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:4px 14px;border-radius:100px;font-size:12px;font-weight:700;}
+
+/* SECTION CARD */
+.sec-card{background:#fff;border-radius:18px;padding:22px 26px;margin-bottom:16px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.sec-head{font-size:14px;font-weight:900;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sec-head span{font-size:17px;}
+
+/* CERTS */
+.cert-list{display:flex;flex-direction:column;gap:10px;}
+.cert-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--cream);border-radius:12px;}
+.cert-serial{background:var(--crimson);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.cert-info{flex:1;}
+.cert-course{font-size:14px;font-weight:700;color:var(--text);}
+.cert-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* UPCOMING */
+.upcoming-list{display:flex;flex-direction:column;gap:10px;}
+.upcoming-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(21,101,192,.1);background:var(--blue-bg);}
+.upcoming-date-badge{background:var(--blue);color:#fff;font-size:11px;font-weight:800;padding:6px 12px;border-radius:10px;text-align:center;min-width:56px;flex-shrink:0;}
+.upcoming-info{flex:1;}
+.upcoming-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.upcoming-trainer{font-size:12px;color:var(--muted);}
+.reg-btn{background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:800;padding:8px 16px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.reg-btn:hover{background:var(--crimson-2);}
+
+/* AI INSIGHT */
+.insight{background:var(--crimson);border-radius:18px;padding:24px 28px;margin-bottom:16px;position:relative;overflow:hidden;}
+.insight::before{content:'';position:absolute;top:-20px;left:-20px;width:100px;height:100px;background:rgba(255,255,255,.05);border-radius:50%;}
+.insight-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:11px;font-weight:800;letter-spacing:1px;padding:4px 14px;border-radius:100px;margin-bottom:12px;}
+.insight-loading{color:rgba(255,255,255,.6);font-size:14px;display:flex;align-items:center;gap:10px;}
+.insight-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.85;}
+.insight-tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.itag{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:12px;font-weight:700;padding:5px 14px;border-radius:100px;}
+.insight-recs{background:rgba(255,255,255,.08);border-radius:12px;padding:14px 16px;margin-top:12px;}
+.recs-title{font-size:11px;font-weight:800;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:10px;}
+.rec-item{font-size:13px;font-weight:700;color:#fff;padding:5px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);}
+.rec-item:last-child{border:none;}
+.rec-item::before{content:'←';color:rgba(255,255,255,.4);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:22px;padding:32px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal-close{position:absolute;top:14px;left:14px;width:34px;height:34px;background:var(--cream-2);border:none;border-radius:50%;font-size:16px;cursor:pointer;color:var(--muted);}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:4px;}
+.modal-course{font-size:13px;color:var(--crimson);font-weight:700;margin-bottom:20px;}
+.mf{margin-bottom:14px;}
+.mf label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-bottom:6px;}
+.mf input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;}
+.mf input:focus{border-color:var(--crimson);background:#fff;}
+.mf.invalid input{border-color:#C62828;background:#FFF5F5;}
+.req{color:var(--crimson);}
+.err{font-size:12px;color:#C62828;margin-top:4px;display:none;}
+.mf.invalid .err{display:block;}
+.cert-opts{display:flex;gap:10px;margin-top:4px;}
+.cert-opt{flex:1;background:var(--cream);border:2px solid transparent;border-radius:12px;padding:12px;cursor:pointer;text-align:center;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;color:var(--text);transition:all .2s;}
+.cert-opt.selected{border-color:var(--crimson);background:rgba(92,15,15,.05);color:var(--crimson);}
+.mf-cert.invalid .cert-opts{outline:2px solid #C62828;border-radius:12px;}
+.modal-submit{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:100px;cursor:pointer;margin-top:8px;transition:all .2s;}
+.modal-submit:hover{background:var(--crimson-2);}
+.modal-submit:disabled{opacity:.6;cursor:not-allowed;}
+.modal-spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;margin:0 auto;}
+
+.success-view{display:none;text-align:center;padding:20px 0;}
+.success-icon{font-size:48px;margin-bottom:14px;}
+.success-title{font-size:19px;font-weight:900;margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.8;}
+
+/* THIS MONTH */
+.month-list{display:flex;flex-direction:column;gap:10px;}
+.month-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--cream);border-radius:12px;}
+.month-badge{background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.month-info{flex:1;}
+.month-course{font-size:14px;font-weight:700;color:var(--text);}
+.month-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.month-status{font-size:11px;font-weight:800;padding:4px 10px;border-radius:100px;flex-shrink:0;}
+.month-status.paid{background:#E8F5E9;color:#2E7D32;}
+.month-status.pending{background:#FFF9C4;color:#F57F17;}
+
+/* RECOMMENDED */
+.rec-course-list{display:flex;flex-direction:column;gap:10px;}
+.rec-course-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(92,15,15,.08);background:#fff6f6;}
+.rec-course-date{background:var(--crimson);color:#fff;font-size:11px;font-weight:800;padding:6px 12px;border-radius:10px;text-align:center;min-width:56px;flex-shrink:0;}
+.rec-course-info{flex:1;}
+.rec-course-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.rec-course-trainer{font-size:12px;color:var(--muted);}
+.rec-label{display:inline-flex;align-items:center;gap:4px;background:rgba(92,15,15,.06);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-top:4px;}
+
+/* LOADING */
+.loading{text-align:center;padding:48px;}
+.dots{display:inline-flex;gap:6px;}
+.dots span{width:8px;height:8px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
+.dots span:nth-child(2){animation-delay:.15s;}
+.dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo">أكاديمية مسار</div>
+    <div class="header-sub">ملف المتدرب</div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap" id="searchWrap">
+  <div class="search-card">
+    <div class="search-title">🎓 ملفك التدريبي</div>
+    <div class="search-sub">أدخل رقم واتسابك لعرض شهاداتك ودوراتك القادمة وتوصياتك الشخصية</div>
+    <div class="search-row">
+      <input type="tel" class="search-input" id="phoneInput" placeholder="رقم الواتساب" maxlength="12">
+      <button class="search-btn" id="searchBtn" onclick="loadProfile()">
+        <span id="searchTxt">عرض ملفي</span>
+        <div class="spinner-sm" id="searchSpinner"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NOT FOUND -->
+<div class="not-found" id="notFound" style="display:none;">
+  <div class="not-found-icon">📭</div>
+  <div class="not-found-title">لم نجد ملفك</div>
+  <div class="not-found-sub">تأكد من الرقم أو تواصل مع أكاديمية مسار عبر @bymasar</div>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loadingState" style="display:none;">
+  <div class="dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- PROFILE -->
+<div class="profile-wrap" id="profileWrap" style="display:none;">
+
+  <!-- HERO -->
+  <div class="profile-hero">
+    <div class="profile-top">
+      <div class="avatar" id="avatarLetter">م</div>
+      <div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-phone" id="profilePhone"></div>
+        <div class="profile-pills">
+          <span class="ppill" id="pillCerts">٠ شهادة</span>
+          <span class="ppill" id="pillMonth">٠ هذا الشهر</span>
+          <span class="ppill" id="pillUpcoming">٠ توصية</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI INSIGHT -->
+  <div class="insight" id="insightCard">
+    <div class="insight-badge">✨ تحليل ذكي بالذكاء الاصطناعي</div>
+    <div class="insight-loading" id="insightLoading">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <span>جاري تحليل ملفك...</span>
+    </div>
+    <div id="insightContent" style="display:none;">
+      <div class="insight-text" id="insightText"></div>
+      <div class="insight-tags" id="insightTags"></div>
+      <div class="insight-recs" id="insightRecs" style="display:none;">
+        <div class="recs-title">توصياتنا لك</div>
+        <div id="recsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- الشهادات -->
+  <div class="sec-card" id="certsCard" style="display:none;">
+    <div class="sec-head"><span>🎓</span> شهاداتك المعتمدة</div>
+    <div class="cert-list" id="certList"></div>
+  </div>
+
+  <!-- تسجيلاتك هذا الشهر -->
+  <div class="sec-card" id="thisMonthCard" style="display:none;">
+    <div class="sec-head"><span>📋</span> تسجيلاتك هذا الشهر</div>
+    <div class="month-list" id="thisMonthList"></div>
+  </div>
+
+  <!-- دورات نوصي بها -->
+  <div class="sec-card" id="recommendedCard" style="display:none;">
+    <div class="sec-head"><span>⭐</span> دورات نوصي بها لك</div>
+    <div class="rec-course-list" id="recommendedList"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="formView">
+      <div class="modal-title">سجّل في الدورة</div>
+      <div class="modal-course" id="modalCourse"></div>
+
+      <div class="mf" id="mf-name">
+        <label><span class="req">*</span> الاسم الكامل</label>
+        <input type="text" id="regName" placeholder="اسمك الكامل">
+        <div class="err">يرجى إدخال الاسم</div>
+      </div>
+      <div class="mf" id="mf-phone">
+        <label><span class="req">*</span> رقم الواتساب</label>
+        <input type="tel" id="regPhone" placeholder="XXXXXXXX">
+        <div class="err">يرجى إدخال الرقم</div>
+      </div>
+      <div class="mf" id="mf-email">
+        <label><span class="req">*</span> الإيميل</label>
+        <input type="email" id="regEmail" placeholder="example@email.com">
+        <div class="err">يرجى إدخال إيميل صحيح</div>
+      </div>
+      <div class="mf mf-cert" id="mf-cert">
+        <label><span class="req">*</span> تبي شهادة معتمدة؟ (١٥ د.ك)</label>
+        <div class="cert-opts">
+          <div class="cert-opt" id="certYes" onclick="selectCert('نعم')">نعم، أبي شهادة</div>
+          <div class="cert-opt" id="certNo"  onclick="selectCert('لا')">لا، حضور فقط</div>
+        </div>
+        <div class="err" id="certErr">يرجى اختيار إجابة</div>
+      </div>
+
+      <button class="modal-submit" id="submitBtn" onclick="submitReg()">
+        <span id="submitTxt">سجّل الآن</span>
+        <div class="modal-spinner" id="submitSpinner"></div>
+      </button>
+    </div>
+
+    <div class="success-view" id="successView">
+      <div class="success-icon">✅</div>
+      <div class="success-title" id="successTitle">تم التسجيل!</div>
+      <div class="success-sub" id="successSub">سيوصلك رابط زووم قريباً</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+
+let currentPhone = '';
+let currentName  = '';
+let selectedCert = '';
+let selectedCourse = {};
+
+function toA(n) {
+  return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function formatDate(d) {
+  const dp = d.split('-');
+  if(dp.length < 3) return d;
+  const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months=['','يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const dt = new Date(parseInt(dp[2]),parseInt(dp[1])-1,parseInt(dp[0]));
+  return dp[0] + ' ' + months[parseInt(dp[1])];
+}
+
+async function loadProfile() {
+  const phone = document.getElementById('phoneInput').value.trim();
+  if(!phone) return;
+  currentPhone = phone;
+
+  document.getElementById('searchBtn').disabled = true;
+  document.getElementById('searchTxt').style.display = 'none';
+  document.getElementById('searchSpinner').style.display = 'block';
+  document.getElementById('notFound').style.display = 'none';
+  document.getElementById('profileWrap').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'getProfile', phone: phone })
+    });
+    const data = await res.json();
+
+    document.getElementById('loadingState').style.display = 'none';
+    if(!data.found) { document.getElementById('notFound').style.display = 'block'; return; }
+    renderProfile(data);
+
+  } catch(err) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('notFound').style.display = 'block';
+  } finally {
+    document.getElementById('searchBtn').disabled = false;
+    document.getElementById('searchTxt').style.display = 'block';
+    document.getElementById('searchSpinner').style.display = 'none';
+  }
+}
+
+function renderProfile(data) {
+  currentName = data.name || '';
+
+  // Hero
+  document.getElementById('avatarLetter').textContent = currentName.charAt(0) || '؟';
+  document.getElementById('profileName').textContent  = currentName;
+  document.getElementById('profilePhone').textContent = currentPhone;
+  document.getElementById('pillCerts').textContent    = toA(data.certs.length) + ' شهادة';
+  document.getElementById('pillMonth').textContent    = toA((data.thisMonth||[]).length) + ' هذا الشهر';
+  document.getElementById('pillUpcoming').textContent = toA((data.recommended||[]).length) + ' توصية';
+
+  // الشهادات
+  if(data.certs.length > 0) {
+    document.getElementById('certsCard').style.display = 'block';
+    document.getElementById('certList').innerHTML = data.certs.map(c => `
+      <div class="cert-row">
+        <div class="cert-serial">${c.serial||'—'}</div>
+        <div class="cert-info">
+          <div class="cert-course">${c.course}</div>
+          <div class="cert-meta">${c.trainer ? '👤 '+c.trainer+' · ' : ''}${c.date}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // تسجيلاتك هذا الشهر
+  if((data.thisMonth||[]).length > 0) {
+    document.getElementById('thisMonthCard').style.display = 'block';
+    document.getElementById('thisMonthList').innerHTML = data.thisMonth.map(m => `
+      <div class="month-row">
+        <div class="month-badge">✅ مسجّل</div>
+        <div class="month-info">
+          <div class="month-course">${m.course}</div>
+          <div class="month-meta">${m.date ? '📅 '+m.date : ''}${m.type ? ' · '+m.type : ''}</div>
+        </div>
+        <span class="month-status ${m.payment==='تم الدفع'?'paid':'pending'}">
+          ${m.payment==='تم الدفع' ? '✓ مدفوع' : m.payment||''}
+        </span>
+      </div>`).join('');
+  }
+
+  // دورات نوصي بها
+  if((data.recommended||[]).length > 0) {
+    document.getElementById('recommendedCard').style.display = 'block';
+    document.getElementById('recommendedList').innerHTML = data.recommended.map(u => `
+      <div class="rec-course-row">
+        <div class="rec-course-date">${formatDate(u.date)}</div>
+        <div class="rec-course-info">
+          <div class="rec-course-name">${u.name}</div>
+          <div class="rec-course-trainer">👤 ${u.trainer} · ${u.time}</div>
+          <span class="rec-label">⭐ موصى به</span>
+        </div>
+        <button class="reg-btn" onclick='openModal(${JSON.stringify(u)})'>سجّل الآن</button>
+      </div>`).join('');
+  }
+
+  document.getElementById('profileWrap').style.display = 'block';
+  document.getElementById('profileWrap').scrollIntoView({behavior:'smooth'});
+
+  // AI Insight
+  getInsight(data);
+}
+
+async function getInsight(data) {
+  if(data.certs.length === 0) {
+    document.getElementById('insightCard').style.display = 'none';
+    return;
+  }
+
+  try {
+    const courses = data.certs.map(c => c.course).join('، ');
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        type:    'getInsight',
+        name:    data.name,
+        courses: courses
+      })
+    });
+
+    const d = await res.json();
+
+    if(!d.ok) {
+      document.getElementById('insightCard').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('insightLoading').style.display = 'none';
+    document.getElementById('insightContent').style.display = 'block';
+    document.getElementById('insightText').textContent      = d.analysis || '';
+    document.getElementById('insightTags').innerHTML        = (d.tags||[]).map(t => `<span class="itag">${t}</span>`).join('');
+
+    if(d.recs && d.recs.length > 0) {
+      document.getElementById('insightRecs').style.display = 'block';
+      document.getElementById('recsList').innerHTML = d.recs.map(r => `<div class="rec-item">${r}</div>`).join('');
+    }
+
+  } catch(err) {
+    document.getElementById('insightCard').style.display = 'none';
+  }
+}
+
+function openModal(course) {
+  selectedCourse = course;
+  selectedCert   = '';
+  document.getElementById('regName').value  = currentName;
+  document.getElementById('regPhone').value = currentPhone;
+  document.getElementById('regEmail').value = '';
+  document.getElementById('modalCourse').textContent = course.name + ' — ' + formatDate(course.date) + ' · ' + course.time;
+  document.getElementById('certYes').classList.remove('selected');
+  document.getElementById('certNo').classList.remove('selected');
+  document.getElementById('formView').style.display   = 'block';
+  document.getElementById('successView').style.display = 'none';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitTxt').style.display = 'block';
+  document.getElementById('submitSpinner').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+function selectCert(val) {
+  selectedCert = val;
+  document.getElementById('certYes').classList.toggle('selected', val==='نعم');
+  document.getElementById('certNo').classList.toggle('selected',  val==='لا');
+  document.getElementById('mf-cert').classList.remove('invalid');
+}
+
+async function submitReg() {
+  const name  = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  let ok = true;
+  if(!name)  { document.getElementById('mf-name').classList.add('invalid'); ok=false; } else document.getElementById('mf-name').classList.remove('invalid');
+  if(!phone) { document.getElementById('mf-phone').classList.add('invalid'); ok=false; } else document.getElementById('mf-phone').classList.remove('invalid');
+  if(!email||!email.includes('@')) { document.getElementById('mf-email').classList.add('invalid'); ok=false; } else document.getElementById('mf-email').classList.remove('invalid');
+  if(!selectedCert) { document.getElementById('mf-cert').classList.add('invalid'); document.getElementById('certErr').style.display='block'; ok=false; }
+  if(!ok) return;
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitTxt').style.display = 'none';
+  document.getElementById('submitSpinner').style.display = 'block';
+
+  const courseType = 'ملف العميل';
+
+  if(selectedCert === 'نعم') {
+    // شهادة → Tap
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method:'POST', headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify({
+          type: 'دفع_شهادة',
+          name, phone, email,
+          course: selectedCourse.name,
+          courseDate: selectedCourse.date,
+          courseType,
+          amount: 15,
+          notes: 'تسجيل من ملف العميل'
+        })
+      });
+      const data = await res.json();
+      if(data.url) { window.location.href = data.url; return; }
+    } catch(err) {}
+  }
+
+  // بدون شهادة أو فشل الدفع
+  await fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type: 'تسجيل دورة مجانية',
+      name, phone, email,
+      course: selectedCourse.name,
+      courseDate: selectedCourse.date,
+      wantCert: selectedCert,
+      courseType,
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).catch(()=>{});
+
+  document.getElementById('formView').style.display   = 'none';
+  document.getElementById('successView').style.display = 'block';
+  document.getElementById('successTitle').textContent = selectedCert==='نعم' ? 'قيد المتابعة ⏳' : 'تم التسجيل ✅';
+  document.getElementById('successSub').textContent  = selectedCert==='نعم'
+    ? 'حدث خطأ في الدفع — سيتواصل معك الفريق لإتمام الدفع'
+    : 'تم تسجيلك في ' + selectedCourse.name + ' — سيوصلك رابط زووم قريباً';
+}
+
+document.getElementById('phoneInput').addEventListener('keydown', e => { if(e.key==='Enter') loadProfile(); });
+
+// معالج رجوع الدفع
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('payment')==='success') {
+    setTimeout(() => {
+      alert('تم الدفع بنجاح ✅\nسيوصلك إيميل بتأكيد التسجيل');
+      window.history.replaceState({},'',window.location.pathname);
+    }, 500);
+  }
+})();
+</script>
+</body>
+</html>
