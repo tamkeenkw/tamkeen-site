@@ -113,6 +113,35 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .success-title{font-size:19px;font-weight:900;margin-bottom:8px;}
 .success-sub{font-size:14px;color:var(--muted);line-height:1.8;}
 
+/* THIS MONTH */
+.month-list{display:flex;flex-direction:column;gap:10px;}
+.month-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--cream);border-radius:12px;}
+.month-badge{background:var(--green);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.month-info{flex:1;}
+.month-course{font-size:14px;font-weight:700;color:var(--text);}
+.month-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.month-status{font-size:11px;font-weight:800;padding:4px 10px;border-radius:100px;flex-shrink:0;}
+.month-status.paid{background:#E8F5E9;color:#2E7D32;}
+.month-status.pending{background:#FFF9C4;color:#F57F17;}
+
+/* RECOMMENDED */
+.rec-course-list{display:flex;flex-direction:column;gap:10px;}
+.rec-course-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1.5px solid rgba(92,15,15,.08);background:#fff6f6;}
+.rec-course-date{background:var(--crimson);color:#fff;font-size:11px;font-weight:800;padding:6px 12px;border-radius:10px;text-align:center;min-width:56px;flex-shrink:0;}
+.rec-course-info{flex:1;}
+.rec-course-name{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.rec-course-trainer{font-size:12px;color:var(--muted);}
+.rec-label{display:inline-flex;align-items:center;gap:4px;background:rgba(92,15,15,.06);color:var(--crimson);font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-top:4px;}
+
+/* CERT CATEGORIES */
+.cat-section{margin-bottom:18px;}
+.cat-title{font-size:12px;font-weight:900;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cat-title::before{content:'';flex:1;height:1px;background:rgba(92,15,15,.1);}
+.cat-title::after{content:'';flex:1;height:1px;background:rgba(92,15,15,.1);}
+.cert-accred{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px;}
+.cert-accred span{background:var(--cream-2);padding:2px 8px;border-radius:100px;font-weight:700;font-size:11px;color:var(--crimson);}
+.cert-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+
 /* LOADING */
 .loading{text-align:center;padding:48px;}
 .dots{display:inline-flex;gap:6px;}
@@ -170,7 +199,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <div class="profile-phone" id="profilePhone"></div>
         <div class="profile-pills">
           <span class="ppill" id="pillCerts">٠ شهادة</span>
-          <span class="ppill" id="pillUpcoming">٠ دورة قادمة</span>
+          <span class="ppill" id="pillMonth">٠ هذا الشهر</span>
+          <span class="ppill" id="pillUpcoming">٠ توصية</span>
         </div>
       </div>
     </div>
@@ -196,13 +226,19 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <!-- الشهادات -->
   <div class="sec-card" id="certsCard" style="display:none;">
     <div class="sec-head"><span>🎓</span> شهاداتك المعتمدة</div>
-    <div class="cert-list" id="certList"></div>
+    <div id="certList"></div>
   </div>
 
-  <!-- الدورات القادمة -->
-  <div class="sec-card" id="upcomingCard" style="display:none;">
-    <div class="sec-head"><span>📅</span> الدورات القادمة</div>
-    <div class="upcoming-list" id="upcomingList"></div>
+  <!-- تسجيلاتك هذا الشهر -->
+  <div class="sec-card" id="thisMonthCard" style="display:none;">
+    <div class="sec-head"><span>📋</span> تسجيلاتك هذا الشهر</div>
+    <div class="month-list" id="thisMonthList"></div>
+  </div>
+
+  <!-- دورات نوصي بها -->
+  <div class="sec-card" id="recommendedCard" style="display:none;">
+    <div class="sec-head"><span>⭐</span> دورات نوصي بها لك</div>
+    <div class="rec-course-list" id="recommendedList"></div>
   </div>
 
 </div>
@@ -254,9 +290,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <script>
-const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
-const CLAUDE_URL  = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_KEY  = 'ضع_مفتاح_API_هنا'; // ← ضع مفتاحك من console.anthropic.com
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
 
 let currentPhone = '';
 let currentName  = '';
@@ -265,6 +299,22 @@ let selectedCourse = {};
 
 function toA(n) {
   return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+// تنسيق التاريخ — يعالج Date object وstring معاً
+function cleanDate(val) {
+  if(!val) return '';
+  var s = String(val);
+  // لو Date object كامل
+  if(s.includes('GMT') || s.includes('00:00:00')) {
+    var d = new Date(s);
+    if(!isNaN(d)) {
+      return d.getDate().toString().padStart(2,'0') + '/' +
+             (d.getMonth()+1).toString().padStart(2,'0') + '/' +
+             d.getFullYear();
+    }
+  }
+  return s;
 }
 
 function formatDate(d) {
@@ -318,30 +368,83 @@ function renderProfile(data) {
   document.getElementById('profileName').textContent  = currentName;
   document.getElementById('profilePhone').textContent = currentPhone;
   document.getElementById('pillCerts').textContent    = toA(data.certs.length) + ' شهادة';
-  document.getElementById('pillUpcoming').textContent = toA(data.upcoming.length) + ' دورة قادمة';
+  document.getElementById('pillMonth').textContent    = toA((data.thisMonth||[]).length) + ' هذا الشهر';
+  document.getElementById('pillUpcoming').textContent = toA((data.recommended||[]).length) + ' توصية';
 
-  // الشهادات
+  // الشهادات — مصنّفة بالفئات
   if(data.certs.length > 0) {
     document.getElementById('certsCard').style.display = 'block';
-    document.getElementById('certList').innerHTML = data.certs.map(c => `
-      <div class="cert-row">
-        <div class="cert-serial">${c.serial||'—'}</div>
-        <div class="cert-info">
-          <div class="cert-course">${c.course}</div>
-          <div class="cert-meta">${c.trainer ? '👤 '+c.trainer+' · ' : ''}${c.date}</div>
+
+    // تصنيف الدورة بالكلمات المفتاحية
+    function categorizeCourse(name) {
+      var n = name || '';
+      if(/قياد|تمكين القيادي|فريق|قائد|leadership/i.test(n)) return 'قيادية';
+      if(/إدار|ادار|تخطيط|تفويض|مهام|إنجاز|انجاز|تنظيم|منظم/i.test(n)) return 'إدارية';
+      if(/تقني|تكنولوج|ذكاء اصطناعي|AI|كانفا|canva|رقمي|إلكتروني|الكتروني|برنامج|تطبيق/i.test(n)) return 'تقنية';
+      return 'فنية';
+    }
+
+    // ترتيب الفئات
+    var catOrder = ['إدارية','فنية','تقنية','قيادية'];
+    var catIcons = {'إدارية':'🏛️','فنية':'🎨','تقنية':'💻','قيادية':'⭐'};
+    var cats = {};
+    catOrder.forEach(function(c){ cats[c] = []; });
+
+    data.certs.forEach(function(c) {
+      var cat = categorizeCourse(c.course);
+      if(!cats[cat]) cats[cat] = [];
+      cats[cat].push(c);
+    });
+
+    var html = '';
+    catOrder.forEach(function(cat) {
+      if(!cats[cat] || cats[cat].length === 0) return;
+      html += '<div class="cat-section">';
+      html += '<div class="cat-title">' + catIcons[cat] + ' دورات ' + cat + '</div>';
+      html += '<div class="cert-list">';
+      cats[cat].forEach(function(c) {
+        html += '<div class="cert-row">';
+        html += '<div class="cert-serial">' + (c.serial||'—') + '</div>';
+        html += '<div class="cert-info">';
+        html += '<div class="cert-course">' + c.course + '</div>';
+        html += '<div class="cert-meta">' + (c.trainer ? '👤 '+c.trainer : '') + '</div>';
+        html += '<div class="cert-accred">';
+        if(c.accred) html += '📋 رقم الاعتماد: <span>' + c.accred + '</span>';
+        html += '</div>';
+        html += '</div></div>';
+      });
+      html += '</div></div>';
+    });
+
+    document.getElementById('certList').innerHTML = html;
+  }
+
+  // تسجيلاتك هذا الشهر
+  if((data.thisMonth||[]).length > 0) {
+    document.getElementById('thisMonthCard').style.display = 'block';
+    document.getElementById('thisMonthList').innerHTML = data.thisMonth.map(m => `
+      <div class="month-row">
+        <div class="month-badge">✅ مسجّل</div>
+        <div class="month-info">
+          <div class="month-course">${m.course}</div>
+          <div class="month-meta">${m.date ? '📅 '+m.date : ''}${m.type ? ' · '+m.type : ''}</div>
         </div>
+        <span class="month-status ${m.payment==='تم الدفع'?'paid':'pending'}">
+          ${m.payment==='تم الدفع' ? '✓ مدفوع' : m.payment||''}
+        </span>
       </div>`).join('');
   }
 
-  // الدورات القادمة
-  if(data.upcoming.length > 0) {
-    document.getElementById('upcomingCard').style.display = 'block';
-    document.getElementById('upcomingList').innerHTML = data.upcoming.map(u => `
-      <div class="upcoming-row">
-        <div class="upcoming-date-badge">${formatDate(u.date)}</div>
-        <div class="upcoming-info">
-          <div class="upcoming-name">${u.name}</div>
-          <div class="upcoming-trainer">👤 ${u.trainer} · ${u.time}</div>
+  // دورات نوصي بها
+  if((data.recommended||[]).length > 0) {
+    document.getElementById('recommendedCard').style.display = 'block';
+    document.getElementById('recommendedList').innerHTML = data.recommended.map(u => `
+      <div class="rec-course-row">
+        <div class="rec-course-date">${formatDate(u.date)}</div>
+        <div class="rec-course-info">
+          <div class="rec-course-name">${u.name}</div>
+          <div class="rec-course-trainer">👤 ${u.trainer} · ${u.time}</div>
+          <span class="rec-label">⭐ موصى به</span>
         </div>
         <button class="reg-btn" onclick='openModal(${JSON.stringify(u)})'>سجّل الآن</button>
       </div>`).join('');
@@ -362,65 +465,35 @@ async function getInsight(data) {
 
   try {
     const courses = data.certs.map(c => c.course).join('، ');
-    const res = await fetch(CLAUDE_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': CLAUDE_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: `أنت مستشار تعليمي في أكاديمية مسار الكويتية. 
-المتدرب اسمه "${data.name}" وأنهى هذه الدورات: ${courses}
-
-اكتب تحليلاً قصيراً (٣ جمل فقط) عن:
-١. توجه وتخصص هذا المتدرب بناءً على الدورات
-٢. ما يميزه ومساره التعليمي
-
-بعد التحليل اكتب JSON هكذا بالضبط:
-{"tags":["تاغ١","تاغ٢","تاغ٣"],"recs":["توصية١","توصية٢"]}
-
-التاغات والتوصيات بالعربية. التوصيات من هذه الخيارات فقط: باقة فن الإدارة وتمكين القيادي، باقة الذكاء الاصطناعي في التعليم، دورات التطوير الذاتي، دورات تقنيات التعليم.`
-        }]
+        type:    'getInsight',
+        name:    data.name,
+        courses: courses
       })
     });
 
     const d = await res.json();
-    const text = d.content?.[0]?.text || '';
 
-    // استخرج JSON
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const analysis  = text.replace(/\{[\s\S]*\}/, '').trim();
-    let tags = [], recs = [];
-    if(jsonMatch) {
-      try {
-        const parsed = JSON.parse(jsonMatch[0]);
-        tags = parsed.tags || [];
-        recs = parsed.recs || [];
-      } catch(e) {}
+    if(!d.ok) {
+      document.getElementById('insightCard').style.display = 'none';
+      return;
     }
 
-    document.getElementById('insightLoading').style.display  = 'none';
-    document.getElementById('insightContent').style.display  = 'block';
-    document.getElementById('insightText').textContent = analysis;
-    document.getElementById('insightTags').innerHTML = tags.map(t => `<span class="itag">${t}</span>`).join('');
+    document.getElementById('insightLoading').style.display = 'none';
+    document.getElementById('insightContent').style.display = 'block';
+    document.getElementById('insightText').textContent      = d.analysis || '';
+    document.getElementById('insightTags').innerHTML        = (d.tags||[]).map(t => `<span class="itag">${t}</span>`).join('');
 
-    if(recs.length > 0) {
+    if(d.recs && d.recs.length > 0) {
       document.getElementById('insightRecs').style.display = 'block';
-      document.getElementById('recsList').innerHTML = recs.map(r => `<div class="rec-item">${r}</div>`).join('');
+      document.getElementById('recsList').innerHTML = d.recs.map(r => `<div class="rec-item">${r}</div>`).join('');
     }
 
   } catch(err) {
-    console.error('Claude API error:', err);
-    document.getElementById('insightLoading').style.display  = 'none';
-    document.getElementById('insightContent').style.display  = 'block';
-    document.getElementById('insightText').textContent = 'تعذّر تحميل التحليل الذكي. تأكد من مفتاح API.';
-    document.getElementById('insightTags').innerHTML = '';
+    document.getElementById('insightCard').style.display = 'none';
   }
 }
 
