@@ -254,8 +254,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
 const CLAUDE_URL  = 'https://api.anthropic.com/v1/messages';
+const CLAUDE_KEY  = 'ضع_مفتاح_API_هنا'; // ← ضع مفتاحك من console.anthropic.com
 
 let currentPhone = '';
 let currentName  = '';
@@ -363,7 +364,12 @@ async function getInsight(data) {
     const courses = data.certs.map(c => c.course).join('، ');
     const res = await fetch(CLAUDE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CLAUDE_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
@@ -410,7 +416,11 @@ async function getInsight(data) {
     }
 
   } catch(err) {
-    document.getElementById('insightCard').style.display = 'none';
+    console.error('Claude API error:', err);
+    document.getElementById('insightLoading').style.display  = 'none';
+    document.getElementById('insightContent').style.display  = 'block';
+    document.getElementById('insightText').textContent = 'تعذّر تحميل التحليل الذكي. تأكد من مفتاح API.';
+    document.getElementById('insightTags').innerHTML = '';
   }
 }
 
