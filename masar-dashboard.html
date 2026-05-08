@@ -570,7 +570,7 @@ function renderResults(course, date, students) {
       ? '<span class="cert-done">نعم ✓</span>'
       : s.cert === 'لا' ? '<span class="cert-no">لا</span>' : '<span class="cert-pending">—</span>';
     const waLink = s.phone
-      ? `<a href="https://wa.me/965${s.phone}" target="_blank" class="wa-btn">واتساب</a>`
+      ? waBtn('965'+s.phone.replace(/\D/g,''), s.name||'')
       : '—';
     tbody.innerHTML += `<tr>
       <td class="row-num">${toA(i+1)}</td>
@@ -883,7 +883,7 @@ function fRender() {
       <td style="font-size:12px;color:var(--muted);direction:ltr;text-align:right;">${r.phone}</td>
       <td>${fSrcPill(r.source)}</td>
       <td><span class="${r.cert==='نعم'?'cert-done':'cert-no'}">${r.cert}</span></td>
-      <td><span class="${r.status.includes('قيد')||r.status.includes('معلق')?'cert-pending':r.status.includes('تم')||r.status.includes('مكتمل')?'cert-done':'cert-no'}">${r.status}</span></td>
+      <td><span class="${r.status==='تم الدفع'?'cert-done':r.status==='قيد الدفع'?'cert-pending':'cert-no'}">${r.status||'لم يدفع'}</span></td>
       <td><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;${r.attended==='نعم حضر'?'background:#E8F5E9;color:#2E7D32;':'background:#FFF3E0;color:#E65100;'}">${r.attended==='نعم حضر'?'✓ حضر':'لم يحضر'}</span></td>
       <td>${fResultSel(r.rowIndex, r.contactResult)}</td>
       <td style="font-size:12px;font-weight:${r.lastContact===FTODAY?'900':'400'};color:${r.lastContact===FTODAY?'var(--green)':'var(--muted)'};">${r.lastContact===FTODAY?'اليوم ✓':(r.lastContact||'—')}</td>
@@ -935,9 +935,58 @@ async function doFUpdateResult(rowIndex, sel) {
 function fWaBtn(phone,name){
   const clean=String(phone).replace(/\D/g,'');
   const num=clean.startsWith('965')?clean:'965'+clean;
-  const msg=encodeURIComponent(`السلام عليكم ${name}، معك فريق أكاديمية مسار 🎓`);
-  return`<a href="https://wa.me/${num}?text=${msg}" target="_blank" class="wa-btn">واتساب</a>`;
+  return`<button onclick="openWaPopup('${num}','${name.replace(/'/g,"\\'")}',this)" class="wa-btn">واتساب</button>`;
 }
+
+function waBtn(phone,name){
+  const clean=String(phone).replace(/\D/g,'');
+  const num=clean.startsWith('965')?clean:'965'+clean;
+  return`<button onclick="openWaPopup('${num}','${name.replace(/'/g,"\\'")}',this)" class="wa-btn">واتساب</button>`;
+}
+
+let waCurrentNum='', waCurrentName='';
+
+function openWaPopup(num, name, btn) {
+  waCurrentNum  = num;
+  waCurrentName = name;
+  const popup = document.getElementById('waPopup');
+  popup.style.display = 'block';
+  const rect = btn.getBoundingClientRect();
+  popup.style.top  = (window.scrollY + rect.bottom + 6) + 'px';
+  popup.style.right = '20px';
+  document.getElementById('waMsg').value = '';
+  document.querySelectorAll('.wa-tpl').forEach(t => t.classList.remove('active'));
+}
+
+function closeWaPopup(){ document.getElementById('waPopup').style.display='none'; }
+
+function setWaTpl(el, key) {
+  const n = waCurrentName;
+  const templates = {
+    'تذكير': `السلام عليكم ${n} 👋\n\nتذكير بموعد دورتك اليوم الساعة 5:00 م\n\nرابط زووم سيصلك قريباً\n\nأكاديمية مسار 🎓`,
+    'شهادة': `السلام عليكم ${n} 👋\n\nلإتمام اعتماد شهادتك المعتمدة يرجى إتمام دفع الرسوم (15 د.ك)\n\nللتواصل راسلنا هنا ✅\n\nأكاديمية مسار 🎓`,
+    'اشتراك': `السلام عليكم ${n} 👋\n\nاشتراكك في أكاديمية مسار جاهز للتفعيل ✅\n\nاشتراك شهر: 15 د.ك\nاشتراك 6 أشهر: 40 د.ك\nاشتراك سنة: 70 د.ك\n\nللتفعيل راسلنا هنا 🎓`,
+    'متابعة': `السلام عليكم ${n} 👋\n\nأردنا الاطمئنان عليك ومعرفة إذا عندك أي استفسار عن دوراتنا 😊\n\nنحن هنا للمساعدة!\n\nأكاديمية مسار 🎓`,
+    'ترحيب': `السلام عليكم ${n} 👋\n\nأهلاً بك في أكاديمية مسار 🎓\n\nيسعدنا انضمامك — لمعرفة دوراتنا زر الرابط:\ntamkeenkuw.com/masar-free\n\nأي استفسار نحن هنا!`
+  };
+  document.querySelectorAll('.wa-tpl').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('waMsg').value = templates[key] || '';
+}
+
+function sendWaMsg() {
+  const msg = document.getElementById('waMsg').value.trim();
+  if(!msg || !waCurrentNum) return;
+  window.open('https://wa.me/' + waCurrentNum + '?text=' + encodeURIComponent(msg), '_blank');
+  closeWaPopup();
+}
+
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('waPopup');
+  if(popup && popup.style.display==='block' && !popup.contains(e.target) && !e.target.classList.contains('wa-btn')) {
+    closeWaPopup();
+  }
+});
 
 function setFF(f,btn){fFilter=f;fSel.clear();document.querySelectorAll('.ffilter').forEach(b=>b.classList.remove('on'));btn.classList.add('on');fRender();}
 function doFSearch(q){fQ=q;fSel.clear();fRender();}
@@ -1031,5 +1080,25 @@ fbRows=[fbMkRow()];fbRender();
 
 loadCourses();
 </script>
+<!-- واتساب popup -->
+<div id="waPopup" style="display:none;position:absolute;z-index:9999;background:#fff;border:1px solid rgba(92,15,15,.12);border-radius:16px;padding:16px;width:300px;box-shadow:0 8px 32px rgba(0,0,0,.12);">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <div style="font-size:13px;font-weight:800;color:#1A0808;">رسالة واتساب</div>
+    <button onclick="closeWaPopup()" style="background:none;border:none;cursor:pointer;font-size:16px;color:#7A6060;padding:0;">✕</button>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+    <button class="wa-tpl" onclick="setWaTpl(this,'تذكير')" style="background:#F2EDE5;border:1.5px solid transparent;border-radius:20px;padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;color:#5C0F0F;cursor:pointer;">📅 تذكير</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'شهادة')" style="background:#F2EDE5;border:1.5px solid transparent;border-radius:20px;padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;color:#5C0F0F;cursor:pointer;">🎓 شهادة</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'اشتراك')" style="background:#F2EDE5;border:1.5px solid transparent;border-radius:20px;padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;color:#5C0F0F;cursor:pointer;">✅ اشتراك</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'متابعة')" style="background:#F2EDE5;border:1.5px solid transparent;border-radius:20px;padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;color:#5C0F0F;cursor:pointer;">💬 متابعة</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'ترحيب')" style="background:#F2EDE5;border:1.5px solid transparent;border-radius:20px;padding:4px 10px;font-family:'Tajawal',sans-serif;font-size:11px;font-weight:700;color:#5C0F0F;cursor:pointer;">👋 ترحيب</button>
+  </div>
+  <textarea id="waMsg" rows="5" placeholder="اكتب رسالتك أو اختر قالب..." style="width:100%;border:1.5px solid rgba(92,15,15,.1);border-radius:10px;padding:10px;font-family:'Tajawal',sans-serif;font-size:12px;color:#1A0808;background:#FAF7F2;resize:none;outline:none;direction:rtl;line-height:1.7;"></textarea>
+  <button onclick="sendWaMsg()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:100px;padding:9px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px;">فتح واتساب ←</button>
+</div>
+<style>
+.wa-tpl.active{background:#5C0F0F!important;color:#fff!important;border-color:#5C0F0F!important;}
+</style>
+
 </body>
 </html>
