@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم المدرب | معهد تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--cr:#5C0F0F;--cr2:#7A1414;--cream:#FAF7F2;--cream2:#F0E9E0;--text:#1A0808;--muted:#7A6060;--green:#1A7A3A}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--cream);min-height:100vh}
+
+/* NAV */
+.nav{background:var(--cr);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-size:18px;font-weight:900;color:#fff}
+.nav-sub{font-size:11px;color:rgba(255,255,255,.45);font-weight:600}
+
+/* LOGIN SCREEN */
+.login-wrap{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--cr);padding:40px 20px;position:relative;
+}
+.login-wrap::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;
+}
+.login-card{
+  position:relative;z-index:1;
+  background:var(--cream);border-radius:24px;
+  padding:clamp(28px,5vw,44px);
+  width:100%;max-width:420px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo-name{font-size:22px;font-weight:900;color:var(--cr)}
+.login-logo-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.login-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;text-align:center}
+.login-desc{font-size:14px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.7}
+.field label{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:7px}
+.field input{
+  width:100%;background:#fff;border:1.5px solid rgba(92,15,15,.1);
+  border-radius:14px;padding:14px 18px;font-family:'Cairo',sans-serif;
+  font-size:16px;color:var(--text);outline:none;transition:all .25s;direction:ltr;text-align:center;
+  letter-spacing:2px;font-weight:700;
+}
+.field input:focus{border-color:var(--cr);box-shadow:0 0 0 3px rgba(92,15,15,.06)}
+.field input::placeholder{color:rgba(122,96,96,.35);letter-spacing:0;font-weight:400;direction:rtl}
+.err-msg{background:rgba(139,26,26,.08);border:1.5px solid rgba(139,26,26,.15);border-radius:12px;padding:11px 16px;font-size:13px;font-weight:600;color:#8B1A1A;margin-top:14px;display:none;text-align:center}
+.err-msg.show{display:block}
+.btn-login{
+  width:100%;background:var(--cr);color:#fff;font-family:'Cairo',sans-serif;
+  font-size:17px;font-weight:900;padding:16px;border-radius:100px;border:none;
+  cursor:pointer;transition:all .28s;box-shadow:0 6px 20px rgba(92,15,15,.25);
+  margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-login:hover{background:var(--cr2);transform:translateY(-2px)}
+.btn-login:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* DASHBOARD */
+.dash{display:none}
+.dash-header{background:var(--cr);padding:clamp(28px,5vw,48px) clamp(20px,5vw,48px) clamp(40px,7vw,64px);position:relative;overflow:hidden}
+.dash-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%);background-size:44px 44px}
+.dash-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.dash-welcome{}
+.dash-hi{font-size:14px;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:4px}
+.dash-name{font-size:clamp(22px,4vw,32px);font-weight:900;color:#fff}
+.dash-id{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
+.dash-badge{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  border-radius:100px;padding:8px 20px;
+  font-size:12px;font-weight:700;color:rgba(255,255,255,.8);
+}
+
+/* CARDS */
+.dash-body{max-width:900px;margin:-32px auto 0;padding:0 clamp(16px,3vw,32px) 60px;position:relative;z-index:2}
+.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:600px){.cards-grid{grid-template-columns:1fr}}
+
+.card{
+  background:#fff;border-radius:20px;padding:24px;
+  border:1.5px solid rgba(92,15,15,.07);
+  box-shadow:0 4px 20px rgba(92,15,15,.06);
+  cursor:pointer;transition:all .25s;
+  display:flex;flex-direction:column;
+}
+.card:hover{border-color:rgba(92,15,15,.2);transform:translateY(-3px);box-shadow:0 10px 32px rgba(92,15,15,.12)}
+.card-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:rgba(92,15,15,.07);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+}
+.card-icon svg{width:26px;height:26px;fill:var(--cr)}
+.card-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:6px}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.7;flex:1}
+.card-arrow{margin-top:16px;font-size:13px;font-weight:700;color:var(--cr);display:flex;align-items:center;gap:6px}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(26,8,8,.6);z-index:100;
+  display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex}
+@media(min-width:600px){.modal-overlay{align-items:center}}
+.modal{
+  background:#fff;border-radius:24px 24px 0 0;
+  width:100%;max-width:540px;max-height:90vh;overflow-y:auto;
+  padding:clamp(24px,5vw,36px);
+}
+@media(min-width:600px){.modal{border-radius:24px}}
+.modal-handle{width:40px;height:4px;background:rgba(92,15,15,.15);border-radius:100px;margin:0 auto 20px}
+@media(min-width:600px){.modal-handle{display:none}}
+.modal-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7}
+
+/* FORM */
+.mfield{margin-bottom:16px}
+.mfield label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+.mfield input,.mfield select,.mfield textarea{
+  width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);
+  border-radius:12px;padding:13px 16px;font-family:'Cairo',sans-serif;
+  font-size:15px;color:var(--text);outline:none;transition:all .2s;direction:rtl;
+}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--cr);background:#fff}
+.mfield input::placeholder,.mfield textarea::placeholder{color:rgba(122,96,96,.4)}
+.mfield textarea{resize:vertical;min-height:90px;line-height:1.7}
+.mfield select{appearance:none;cursor:pointer}
+
+.modal-btns{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.btn-submit{
+  width:100%;background:var(--cr);color:#fff;font-family:'Cairo',sans-serif;
+  font-size:16px;font-weight:900;padding:15px;border-radius:100px;border:none;
+  cursor:pointer;transition:all .25s;box-shadow:0 5px 18px rgba(92,15,15,.2);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit:hover{background:var(--cr2);transform:translateY(-2px)}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-cancel{
+  width:100%;background:transparent;color:var(--muted);font-family:'Cairo',sans-serif;
+  font-size:15px;font-weight:700;padding:12px;border-radius:100px;
+  border:1.5px solid rgba(92,15,15,.1);cursor:pointer;transition:all .2s;
+}
+.btn-cancel:hover{border-color:rgba(92,15,15,.25)}
+
+/* SUCCESS STATE */
+.modal-success{text-align:center;padding:20px 0;display:none}
+.succ-icon{font-size:52px;margin-bottom:14px}
+.succ-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px}
+.succ-desc{font-size:14px;color:var(--muted);line-height:1.8}
+
+/* DOWNLOAD */
+.download-card{
+  background:var(--cream2);border-radius:16px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;margin-bottom:16px;
+  text-decoration:none;transition:all .2s;border:1.5px solid rgba(92,15,15,.1);
+}
+.download-card:hover{border-color:var(--cr);background:#fff}
+.dl-icon{width:44px;height:44px;border-radius:12px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dl-icon svg{width:22px;height:22px;fill:#fff}
+.dl-name{font-size:15px;font-weight:800;color:var(--text)}
+.dl-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.dl-arr{margin-right:auto;font-size:18px;color:var(--cr);font-weight:700;flex-shrink:0}
+
+footer{background:var(--cr);padding:20px;text-align:center}
+footer p{font-size:11px;color:rgba(255,255,255,.3)}
+footer a{color:rgba(255,255,255,.4);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">تمكين</div>
+  <div class="nav-sub">لوحة تحكم المدرب</div>
+</nav>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-name">معهد تمكين</div>
+      <div class="login-logo-sub">إيديوكلاود للتدريب الأهلي</div>
+    </div>
+    <div class="login-title">أدخل رقم عضويتك</div>
+    <div class="login-desc">للوصول للوحة التحكم وإدارة دوراتك ومواد تدريبك</div>
+    <div class="field">
+      <label>رقم العضوية</label>
+      <input type="text" id="memberIdInput" placeholder="مثال: TM256-01" autocomplete="off"
+        onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <div class="err-msg" id="loginErr">رقم العضوية غير صحيح — تحقق وحاول مجدداً</div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">
+      <span id="loginTxt">دخول ←</span>
+      <div class="spin" id="loginSpin"></div>
+    </button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dashboard">
+  <div class="dash-header">
+    <div class="dash-inner">
+      <div class="dash-welcome">
+        <div class="dash-hi">أهلاً وسهلاً</div>
+        <div class="dash-name" id="dashName">—</div>
+        <div class="dash-id" id="dashId">—</div>
+      </div>
+      <div class="dash-badge" id="dashBadge">عضو معهد تمكين</div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="cards-grid">
+
+      <!-- حجز الدورة -->
+      <div class="card" onclick="openModal('booking')">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        </div>
+        <div class="card-title">حجز موعد دورة تدريبية</div>
+        <div class="card-desc">احجز موعدك في الدورات المتاحة — حضوري أو أونلاين</div>
+        <div class="card-arrow">احجز الآن ←</div>
+      </div>
+
+      <!-- تسجيل مادة -->
+      <div class="card" onclick="openModal('material')">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+        </div>
+        <div class="card-title">تسجيل مادة تدريبية</div>
+        <div class="card-desc">سجّل مادتك التدريبية الجديدة لمراجعة الاعتماد</div>
+        <div class="card-arrow">سجّل المادة ←</div>
+      </div>
+
+      <!-- تحميل نموذج -->
+      <div class="card" onclick="openModal('download')">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        </div>
+        <div class="card-title">نماذج الاعتماد</div>
+        <div class="card-desc">حمّل نماذج اعتماد المواد التدريبية الرسمية</div>
+        <div class="card-arrow">تحميل النماذج ←</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="modal-booking" onclick="closeModal(event,'booking')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="booking-form-wrap">
+      <div class="modal-title">حجز موعد دورة تدريبية</div>
+      <div class="modal-sub">اختر الدورة والموعد المناسب لك</div>
+      <div class="mfield">
+        <label>عنوان الدورة *</label>
+        <input type="text" id="b-course" placeholder="عنوان الدورة التي ستقدمها">
+      </div>
+      <div class="mfield">
+        <label>نوع الدورة *</label>
+        <select id="b-type">
+          <option value="">اختر النوع</option>
+          <option>وفق الجدول</option>
+          <option>خاصة</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>نظام التدريب *</label>
+        <select id="b-system">
+          <option value="">اختر النظام</option>
+          <option>حضوري</option>
+          <option>أونلاين</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>التوقيت المفضل</label>
+        <input type="text" id="b-time" placeholder="مثال: ٥-٧ مساءً">
+      </div>
+      <div class="mfield">
+        <label>تاريخ البدء المقترح</label>
+        <input type="date" id="b-date">
+      </div>
+      <div class="modal-btns">
+        <button class="btn-submit" id="b-btn" onclick="submitBooking()">
+          <span id="b-txt">إرسال الطلب ←</span>
+          <div class="spin" id="b-spin"></div>
+        </button>
+        <button class="btn-cancel" onclick="closeModalById('booking')">إلغاء</button>
+      </div>
+    </div>
+    <div class="modal-success" id="booking-success">
+      <div class="succ-icon">📅</div>
+      <div class="succ-title">تم إرسال طلب الحجز!</div>
+      <p class="succ-desc">سيتواصل معك فريق تمكين لتأكيد الموعد</p>
+    </div>
+  </div>
+</div>
+
+<!-- MATERIAL MODAL -->
+<div class="modal-overlay" id="modal-material" onclick="closeModal(event,'material')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="material-form-wrap">
+      <div class="modal-title">تسجيل مادة تدريبية</div>
+      <div class="modal-sub">سجّل مادتك لمراجعتها واعتمادها من معهد تمكين</div>
+      <div class="mfield">
+        <label>اسم المادة التدريبية *</label>
+        <input type="text" id="m-name" placeholder="عنوان المادة">
+      </div>
+      <div class="mfield">
+        <label>الجمهور المستهدف *</label>
+        <input type="text" id="m-audience" placeholder="مثال: المدراء، موظفو الشركات...">
+      </div>
+      <div class="mfield">
+        <label>عدد الساعات التدريبية</label>
+        <input type="text" id="m-hours" placeholder="مثال: ٦ ساعات">
+      </div>
+      <div class="mfield">
+        <label>وصف مختصر للمادة *</label>
+        <textarea id="m-desc" placeholder="اشرح محتوى المادة وأهدافها التدريبية..."></textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-submit" id="m-btn" onclick="submitMaterial()">
+          <span id="m-txt">تسجيل المادة ←</span>
+          <div class="spin" id="m-spin"></div>
+        </button>
+        <button class="btn-cancel" onclick="closeModalById('material')">إلغاء</button>
+      </div>
+    </div>
+    <div class="modal-success" id="material-success">
+      <div class="succ-icon">✅</div>
+      <div class="succ-title">تم استلام المادة!</div>
+      <p class="succ-desc">سيراجع فريق تمكين مادتك ويتواصل معك للاعتماد</p>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD MODAL -->
+<div class="modal-overlay" id="modal-download" onclick="closeModal(event,'download')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">نماذج الاعتماد</div>
+    <div class="modal-sub" style="margin-bottom:20px">حمّل النماذج الرسمية لاعتماد مواد التدريب</div>
+    <a href="https://drive.google.com/uc?export=downloadhttps://drive.google.com/uc?export=download&id=1YsHrkSguB-UPWRFUKQh44zJW58hYE38Hid=1-cCOFIf2SusoKnObaxezJ-nJFyt1gM0J" class="download-card" target="_blank">
+      <div class="dl-icon"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
+      <div>
+        <div class="dl-name">نموذج اعتماد المادة التدريبية</div>
+        <div class="dl-sub">ملف PDF — يُرفع بعد التعبئة</div>
+      </div>
+      <div class="dl-arr">↓</div>
+    </a>
+    <button class="btn-cancel" onclick="closeModalById('download')" style="margin-top:8px">إغلاق</button>
+  </div>
+</div>
+
+<footer><p>معهد تمكين — <a href="https://tamkeenkuw.com">tamkeenkuw.com</a></p></footer>
+
+<script>
+const MAIN_SCRIPT = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
+let memberData = null;
+
+async function doLogin(){
+  const id = document.getElementById('memberIdInput').value.trim().toUpperCase();
+  if(!id){return}
+  const err = document.getElementById('loginErr');
+  err.classList.remove('show');
+  const btn = document.getElementById('loginBtn');
+  btn.disabled=true;
+  document.getElementById('loginTxt').style.display='none';
+  document.getElementById('loginSpin').style.display='block';
+
+  try{
+    const res = await fetch(`${MAIN_SCRIPT}?action=verify&memberId=${encodeURIComponent(id)}`);
+    const data = await res.json();
+    if(data.found){
+      memberData = data;
+      memberData.memberId = id;
+      showDashboard();
+    } else {
+      err.textContent = data.message || 'رقم العضوية غير صحيح';
+      err.classList.add('show');
+      btn.disabled=false;
+      document.getElementById('loginTxt').style.display='block';
+      document.getElementById('loginSpin').style.display='none';
+    }
+  }catch(e){
+    err.textContent = 'خطأ في الاتصال — حاول مجدداً';
+    err.classList.add('show');
+    btn.disabled=false;
+    document.getElementById('loginTxt').style.display='block';
+    document.getElementById('loginSpin').style.display='none';
+  }
+}
+
+function showDashboard(){
+  document.getElementById('loginWrap').style.display='none';
+  const dash = document.getElementById('dashboard');
+  dash.style.display='block';
+  document.getElementById('dashName').textContent = memberData.name || '—';
+  document.getElementById('dashId').textContent = 'رقم العضوية: ' + memberData.memberId;
+}
+
+function openModal(id){
+  document.getElementById('modal-'+id).classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModalById(id){
+  document.getElementById('modal-'+id).classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeModal(e, id){
+  if(e.target === document.getElementById('modal-'+id)) closeModalById(id);
+}
+
+async function submitBooking(){
+  const course  = document.getElementById('b-course').value.trim();
+  const type    = document.getElementById('b-type').value;
+  const system  = document.getElementById('b-system').value;
+  const time    = document.getElementById('b-time').value.trim();
+  const date    = document.getElementById('b-date').value;
+  if(!course||!type||!system){alert('أكمل الحقول المطلوبة');return}
+  const btn=document.getElementById('b-btn');
+  btn.disabled=true;
+  document.getElementById('b-txt').style.display='none';
+  document.getElementById('b-spin').style.display='block';
+  await fetch(MAIN_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({type:'حجز',memberId:memberData.memberId,trainerName:memberData.name,
+      courseTitle:course,courseType:type,system:system,time:time||'—',dateStart:date,dateEnd:date,status:'قيد المراجعة'})
+  }).catch(()=>{});
+  document.getElementById('booking-form-wrap').style.display='none';
+  document.getElementById('booking-success').style.display='block';
+}
+
+async function submitMaterial(){
+  const name     = document.getElementById('m-name').value.trim();
+  const audience = document.getElementById('m-audience').value.trim();
+  const hours    = document.getElementById('m-hours').value.trim();
+  const desc     = document.getElementById('m-desc').value.trim();
+  if(!name||!audience||!desc){alert('أكمل الحقول المطلوبة');return}
+  const btn=document.getElementById('m-btn');
+  btn.disabled=true;
+  document.getElementById('m-txt').style.display='none';
+  document.getElementById('m-spin').style.display='block';
+  await fetch(MAIN_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({type:'مادة',memberId:memberData.memberId,trainerName:memberData.name,
+      materialName:name,audience:audience,hours:hours,description:desc})
+  }).catch(()=>{});
+  document.getElementById('material-form-wrap').style.display='none';
+  document.getElementById('material-success').style.display='block';
+}
+</script>
+</body>
+</html>
