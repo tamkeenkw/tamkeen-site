@@ -682,7 +682,7 @@ async function loadCertStudents() {
                 '&date=' + encodeURIComponent(c.date);
     const res  = await fetch(url);
     const data = await res.json();
-    const all = (data.students || []).filter(s => s.cert === 'نعم' && s.payment === 'تم الدفع');
+    const all = (data.students || []).filter(s => s.payment === 'تم الدفع');
     const fallback = (data.students || []).filter(s => s.cert === 'نعم');
     const filtered = all.length > 0 ? all : fallback;
 
