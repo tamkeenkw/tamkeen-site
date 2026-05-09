@@ -683,7 +683,7 @@ async function loadCertStudents() {
     const res  = await fetch(url);
     const data = await res.json();
     const all = (data.students || []).filter(s => s.payment === 'تم الدفع');
-    const fallback = (data.students || []).filter(s => s.cert === 'نعم');
+    const fallback = (data.students || []).filter(s => s.payment === 'تم الدفع' || s.cert === 'نعم');
     const filtered = all.length > 0 ? all : fallback;
 
     document.getElementById('certLoading').style.display = 'none';
@@ -705,7 +705,7 @@ async function loadCertStudents() {
       const didAttend = s.attended === 'نعم حضر';
       return `<tr style="${!didAttend?'background:#FFF9F9;':''}">
         <td style="text-align:center;">
-          <input type="checkbox" class="cert-chk" data-idx="${i}" ${didAttend?'checked':''} style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;">
+          <input type="checkbox" class="cert-chk" data-idx="${i}" checked style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;">
         </td>
         <td>
           <div class="name-row">
