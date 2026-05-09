@@ -682,9 +682,7 @@ async function loadCertStudents() {
                 '&date=' + encodeURIComponent(c.date);
     const res  = await fetch(url);
     const data = await res.json();
-    const all = (data.students || []).filter(s => s.payment === 'تم الدفع');
-    const fallback = (data.students || []).filter(s => s.payment === 'تم الدفع' || s.cert === 'نعم');
-    const filtered = all.length > 0 ? all : fallback;
+    const filtered = (data.students || []).filter(s => s.payment === 'تم الدفع');
 
     document.getElementById('certLoading').style.display = 'none';
 
@@ -717,7 +715,12 @@ async function loadCertStudents() {
           </div>
         </td>
         <td style="font-family:monospace;font-size:13px;">${s.phone||'—'}</td>
-        <td><span class="cert-done">تم الدفع ✓</span></td>
+        <td>${s.payment === 'تم الدفع'
+  ? '<span class="cert-done">تم الدفع ✓</span>'
+  : s.payment === 'قيد الدفع'
+    ? '<span class="cert-pending">قيد الدفع</span>'
+    : '<span class="cert-no">لم يدفع</span>'
+}</td>
         <td style="font-size:12px;color:var(--muted);font-weight:700;">${prefix}${i+1}</td>
       </tr>`;
     }).join('');
