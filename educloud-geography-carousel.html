@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>EduCloud — الجغرافيا | الغلاف الجوي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:#0a0a0a;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;gap:18px;}
+
+/* === SLIDE === */
+.slide{width:540px;height:675px;position:relative;overflow:hidden;border-radius:18px;display:none;flex-direction:column;flex-shrink:0;}
+.slide.active{display:flex;}
+
+.slide-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 15% 0%,#0d5c48 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 85% 100%,#093d2e 0%,transparent 55%),#040d09;}
+.slide-bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:28px 28px;}
+
+.sc{position:relative;z-index:1;width:100%;height:100%;padding:26px 28px 22px;display:flex;flex-direction:column;gap:10px;}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.logo-area{display:flex;align-items:center;gap:8px;}
+.logo-box{width:34px;height:34px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-box svg{width:16px;height:16px;stroke:rgba(255,255,255,.6);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.logo-name{font-size:12px;font-weight:900;color:rgba(255,255,255,.35);letter-spacing:2px;}
+.s-counter{font-size:11px;font-weight:800;color:rgba(255,255,255,.22);letter-spacing:1px;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,176,138,.12);border:1.5px solid rgba(34,176,138,.28);border-radius:100px;padding:5px 13px;font-size:11px;font-weight:800;color:#22B08A;width:fit-content;}
+.bdot{width:6px;height:6px;border-radius:50%;background:#22B08A;flex-shrink:0;}
+
+/* SECTION LABEL */
+.sec-label{font-size:11px;font-weight:800;color:rgba(34,176,138,.6);letter-spacing:.4px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(34,176,138,.15);}
+
+/* TITLE */
+.slide-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;flex-shrink:0;}
+.slide-title .acc{color:#22B08A;}
+
+/* QA ROWS */
+.qa-list{display:flex;flex-direction:column;gap:7px;flex:1;overflow:hidden;}
+.qa-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;}
+.qa-num{width:24px;height:24px;flex-shrink:0;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#22B08A;margin-top:1px;}
+.qa-body{flex:1;}
+.qa-q{font-size:12px;font-weight:700;color:rgba(255,255,255,.55);line-height:1.5;}
+.qa-a{font-size:13px;font-weight:900;color:#fff;margin-top:3px;line-height:1.4;}
+.qa-a .acc{color:#22B08A;}
+
+/* DEF ROWS */
+.def-list{display:flex;flex-direction:column;gap:7px;flex:1;overflow:hidden;}
+.def-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 14px;}
+.def-term{font-size:13px;font-weight:900;color:#22B08A;margin-bottom:3px;}
+.def-val{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);line-height:1.55;}
+
+/* CORRECT ROWS */
+.corr-list{display:flex;flex-direction:column;gap:7px;flex:1;}
+.corr-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;}
+.corr-icon{width:24px;height:24px;flex-shrink:0;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.corr-icon svg{width:12px;height:12px;stroke:#22B08A;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.corr-body .corr-wrong{font-size:11px;color:rgba(255,255,255,.35);font-weight:600;text-decoration:line-through;}
+.corr-body .corr-right{font-size:13px;font-weight:900;color:#fff;margin-top:2px;}
+
+/* REASON ROWS */
+.reason-list{display:flex;flex-direction:column;gap:7px;flex:1;}
+.reason-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;}
+.reason-icon{width:26px;height:26px;flex-shrink:0;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#22B08A;margin-top:1px;}
+.reason-body .reason-q{font-size:11px;font-weight:700;color:rgba(255,255,255,.45);line-height:1.4;}
+.reason-body .reason-a{font-size:12px;font-weight:800;color:#fff;margin-top:3px;line-height:1.45;}
+
+/* LINK ROWS */
+.link-list{display:flex;flex-direction:column;gap:7px;flex:1;}
+.link-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 14px;}
+.link-items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.link-tag{background:rgba(34,176,138,.08);border:1px solid rgba(34,176,138,.18);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;color:#22B08A;}
+.link-answer{font-size:13px;font-weight:900;color:#fff;}
+
+/* FACTOR CARD */
+.factor-card{background:rgba(34,176,138,.07);border:1.5px solid rgba(34,176,138,.2);border-radius:13px;padding:12px 16px;flex:1;}
+.factor-title{font-size:13px;font-weight:900;color:#fff;margin-bottom:8px;}
+.factor-items{display:flex;flex-wrap:wrap;gap:6px;}
+.factor-tag{background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.2);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;color:#22B08A;}
+
+/* FOOTER */
+.ftr{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin-top:auto;padding-top:10px;}
+.handle{font-size:11px;font-weight:700;color:rgba(255,255,255,.18);}
+.dots{display:flex;gap:5px;align-items:center;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;}
+.dot.on{background:#22B08A;width:18px;border-radius:3px;}
+
+/* COVER */
+.cover-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+.cover-icon{width:80px;height:80px;background:rgba(34,176,138,.08);border:1.5px solid rgba(34,176,138,.2);border-radius:22px;display:flex;align-items:center;justify-content:center;}
+.cover-icon svg{width:40px;height:40px;stroke:#22B08A;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.cover-title{font-size:32px;font-weight:900;color:#fff;line-height:1.2;}
+.cover-title .acc{color:#22B08A;}
+.cover-sub{font-size:14px;font-weight:700;color:rgba(255,255,255,.35);line-height:1.6;}
+.cover-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.chip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);}
+.cover-arrow{display:flex;align-items:center;gap:10px;margin-top:6px;}
+.cover-arrow-line{flex:1;height:1px;background:rgba(34,176,138,.18);}
+.cover-arrow-btn{width:36px;height:36px;background:rgba(34,176,138,.1);border:1px solid rgba(34,176,138,.22);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cover-arrow-btn svg{width:15px;height:15px;stroke:#22B08A;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+/* CONTROLS */
+.controls{display:flex;align-items:center;gap:12px;}
+.ctrl-btn{width:42px;height:42px;background:rgba(13,92,72,.4);border:1.5px solid rgba(34,176,138,.28);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.ctrl-btn:hover{background:#0D5C48;}
+.ctrl-btn svg{width:17px;height:17px;stroke:#22B08A;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.s-info{font-size:12px;font-weight:800;color:rgba(255,255,255,.35);min-width:50px;text-align:center;}
+
+/* BUTTONS */
+.btns-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.dl-btn{background:#0D5C48;color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:900;padding:10px 24px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(13,92,72,.5);transition:all .2s;}
+.dl-btn:hover{background:#15705A;transform:translateY(-1px);}
+.dl-all{background:rgba(34,176,138,.1);color:#22B08A;font-family:'Cairo',sans-serif;font-size:13px;font-weight:900;padding:10px 24px;border-radius:100px;border:1.5px solid rgba(34,176,138,.3);cursor:pointer;transition:all .2s;}
+.dl-all:hover{background:rgba(34,176,138,.18);}
+</style>
+</head>
+<body>
+
+<div id="carousel" style="width:540px;position:relative;">
+
+<!-- ══════════════════════════════
+     SLIDE 1 — COVER
+══════════════════════════════ -->
+<div class="slide active" id="s1">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr">
+    <div class="logo-area">
+      <div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <div class="logo-name">EDUCLOUD</div>
+    </div>
+    <div class="badge"><div class="bdot"></div>الصف الحادي عشر</div>
+  </div>
+  <div class="cover-body">
+    <div class="cover-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+    </div>
+    <div class="cover-title">الغلاف الجوي<br><span class="acc">وعناصر الطقس</span></div>
+    <div class="cover-sub">بنك الأسئلة الكامل مع الإجابات النموذجية<br>جغرافيا — الفصل الثاني</div>
+    <div class="cover-chips">
+      <div class="chip">أسئلة موضوعية</div>
+      <div class="chip">مصطلحات</div>
+      <div class="chip">تعليل</div>
+      <div class="chip">رابط مشترك</div>
+    </div>
+    <div class="cover-arrow">
+      <div class="cover-arrow-line"></div>
+      <div class="cover-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+  </div>
+  <div class="ftr">
+    <div class="handle">@educloudkw</div>
+    <div class="dots" id="dots1"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 2 — اختر الإجابة (١)
+══════════════════════════════ -->
+<div class="slide" id="s2">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٢ / ١٠</div></div>
+  <div class="sec-label">أسئلة موضوعية — اختر الإجابة</div>
+  <div class="slide-title">طبقات الغلاف الجوي <span class="acc">الصح</span></div>
+  <div class="qa-list">
+    <div class="qa-row"><div class="qa-num">١</div><div class="qa-body"><div class="qa-q">الترتيب الصحيح لطبقات الغلاف الجوي من الأسفل للأعلى</div><div class="qa-a"><span class="acc">التروبوسفير</span> ← الأستراتوسفير ← الميزوسفير ← الثيرموسفير</div></div></div>
+    <div class="qa-row"><div class="qa-num">٢</div><div class="qa-body"><div class="qa-q">الطبقة التي تنشأ بها السحب والأمطار والتيارات</div><div class="qa-a"><span class="acc">التروبوسفير</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٣</div><div class="qa-body"><div class="qa-q">الطبقة التي ترتفع حرارة قسمها الأسفل لاحتراق الشهب</div><div class="qa-a"><span class="acc">الميزوسفير</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٤</div><div class="qa-body"><div class="qa-q">الطبقة التي تتركز بها الجزيئات الأيونية أسفل الثيرموسفير</div><div class="qa-a"><span class="acc">الأينوسفير</span></div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots2"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 3 — اختر الإجابة (٢)
+══════════════════════════════ -->
+<div class="slide" id="s3">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٣ / ١٠</div></div>
+  <div class="sec-label">أسئلة موضوعية — اختر الإجابة</div>
+  <div class="slide-title">الإشعاع والرياح <span class="acc">والضغط</span></div>
+  <div class="qa-list">
+    <div class="qa-row"><div class="qa-num">٥</div><div class="qa-body"><div class="qa-q">نسبة الأشعة المنعكسة من السحب</div><div class="qa-a"><span class="acc">23%</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٦</div><div class="qa-body"><div class="qa-q">الأشعة التي لا تزيد عن 9% من الإشعاع الشمسي</div><div class="qa-a"><span class="acc">الأشعة الحيوية / البنفسجية</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٧</div><div class="qa-body"><div class="qa-q">جهاز قياس الضغط الجوي</div><div class="qa-a"><span class="acc">الباروجراف / البارومتر</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٨</div><div class="qa-body"><div class="qa-q">جهاز قياس سرعة الرياح</div><div class="qa-a"><span class="acc">الأنيمومتر</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٩</div><div class="qa-body"><div class="qa-q">الرياح التي يسود نطاقها الأعاصير المدارية</div><div class="qa-a"><span class="acc">الرياح التجارية</span></div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots3"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 4 — اختر الإجابة (٣)
+══════════════════════════════ -->
+<div class="slide" id="s4">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٤ / ١٠</div></div>
+  <div class="sec-label">أسئلة موضوعية — اختر الإجابة</div>
+  <div class="slide-title">الرياح <span class="acc">والتكاثف</span></div>
+  <div class="qa-list">
+    <div class="qa-row"><div class="qa-num">١٠</div><div class="qa-body"><div class="qa-q">الرياح التي تهب في المناطق المعتدلة بين 35–60 شمالاً وجنوباً</div><div class="qa-a"><span class="acc">الرياح العكسية الغربية</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١١</div><div class="qa-body"><div class="qa-q">الرياح المحلية التي تهب من شمال إيطاليا وتذيب الثلوج</div><div class="qa-a"><span class="acc">رياح الفهن الجبلية</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١٢</div><div class="qa-body"><div class="qa-q">مظهر التكاثف الذي يتكون في طبقات الجو العليا</div><div class="qa-a"><span class="acc">السحب</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١٣</div><div class="qa-body"><div class="qa-q">المناطق التي يحدث فيها المطر الانقلابي التصاعدي</div><div class="qa-a"><span class="acc">المناطق الاستوائية</span></div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots4"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 5 — أكمل العبارات
+══════════════════════════════ -->
+<div class="slide" id="s5">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٥ / ١٠</div></div>
+  <div class="sec-label">أسئلة موضوعية — أكمل العبارات</div>
+  <div class="slide-title">أكمل <span class="acc">الفراغ</span></div>
+  <div class="qa-list">
+    <div class="qa-row"><div class="qa-num">١</div><div class="qa-body"><div class="qa-q">نسبة الغازات الرئيسية في الهواء</div><div class="qa-a"><span class="acc">99%</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٢</div><div class="qa-body"><div class="qa-q">الطبقة التي تتضمن الجزء الأكبر من طبقة الأوزون</div><div class="qa-a"><span class="acc">الأستراتوسفير</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٣</div><div class="qa-body"><div class="qa-q">نسبة الأشعة المكتسبة من الإشعاع الشمسي</div><div class="qa-a"><span class="acc">66%</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٤</div><div class="qa-body"><div class="qa-q">وحدة قياس الضغط الجوي</div><div class="qa-a"><span class="acc">المليبار</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٥</div><div class="qa-body"><div class="qa-q">الرياح المحلية التي تهب على مصر وتسبب عواصف ترابية</div><div class="qa-a"><span class="acc">رياح الخماسين</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٦</div><div class="qa-body"><div class="qa-q">الرياح الباردة التي تهب على فرنسا شتاءً</div><div class="qa-a"><span class="acc">المسترال</span></div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots5"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 6 — أكمل العبارات (٢)
+══════════════════════════════ -->
+<div class="slide" id="s6">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٦ / ١٠</div></div>
+  <div class="sec-label">أسئلة موضوعية — أكمل العبارات</div>
+  <div class="slide-title">الرطوبة <span class="acc">والتكاثف</span></div>
+  <div class="qa-list">
+    <div class="qa-row"><div class="qa-num">٧</div><div class="qa-body"><div class="qa-q">المصدر الرئيسي للرطوبة على سطح الأرض</div><div class="qa-a"><span class="acc">عملية النتح من النباتات</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٨</div><div class="qa-body"><div class="qa-q">تحول بخار الماء من الغازية إلى الصلبة مباشرة</div><div class="qa-a"><span class="acc">التسامي</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">٩</div><div class="qa-body"><div class="qa-q">ذرات مائية خفيفة تتطاير في الهواء ويزداد ثقلها قرب الأرض</div><div class="qa-a"><span class="acc">الضباب</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١٠</div><div class="qa-body"><div class="qa-q">بلورات ثلجية ناتجة عن انخفاض حرارة الهواء الملامس للأرض</div><div class="qa-a"><span class="acc">الصقيع</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١١</div><div class="qa-body"><div class="qa-q">تراكم الثلوج وانضغاطها لتصبح شديدة الصلابة</div><div class="qa-a"><span class="acc">الجليد</span></div></div></div>
+    <div class="qa-row"><div class="qa-num">١٢</div><div class="qa-body"><div class="qa-q">جهاز قياس كمية الأمطار الساقطة</div><div class="qa-a"><span class="acc">الوعاء القياسي للمطر</span></div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots6"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 7 — تصحيح
+══════════════════════════════ -->
+<div class="slide" id="s7">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٧ / ١٠</div></div>
+  <div class="sec-label">تصحيح ما تحته خط</div>
+  <div class="slide-title">الخطأ <span class="acc">والصواب</span></div>
+  <div class="corr-list">
+    <div class="corr-row"><div class="corr-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="corr-body"><div class="corr-wrong">الميزوسفير — الطبقة خفيفة الوزن وغازاتها طيارة</div><div class="corr-right">الثيرموسفير</div></div></div>
+    <div class="corr-row"><div class="corr-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="corr-body"><div class="corr-wrong">الأشعة الحيوية — تشكل 45% من الإشعاع الشمسي</div><div class="corr-right">الأشعة الضوئية</div></div></div>
+    <div class="corr-row"><div class="corr-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="corr-body"><div class="corr-wrong">غرب القارات — موسم الرياح الموسمية</div><div class="corr-right">شرق القارات</div></div></div>
+    <div class="corr-row"><div class="corr-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="corr-body"><div class="corr-wrong">الأنيمومتر — جهاز قياس الرطوبة</div><div class="corr-right">السيكرومتر</div></div></div>
+    <div class="corr-row"><div class="corr-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="corr-body"><div class="corr-wrong">التسامي — تحول بخار الماء إلى سائل أو صلب</div><div class="corr-right">التكاثف</div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots7"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 8 — المصطلحات
+══════════════════════════════ -->
+<div class="slide" id="s8">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٨ / ١٠</div></div>
+  <div class="sec-label">الأسئلة المقالية</div>
+  <div class="slide-title">عرّف <span class="acc">المصطلحات</span></div>
+  <div class="def-list">
+    <div class="def-row"><div class="def-term">الغلاف الجوي</div><div class="def-val">غطاء سميك من الغازات يحيط بالأرض ويتأثر بجاذبيتها</div></div>
+    <div class="def-row"><div class="def-term">المناخ</div><div class="def-val">متوسط التتابع المنتظم لأحوال الطقس اليومي لمكان معين لفترة طويلة (35 سنة)</div></div>
+    <div class="def-row"><div class="def-term">الطقس</div><div class="def-val">الحالة الجوية اليومية السائدة فوق مكان معين لفترة قصيرة (ساعات أو أيام)</div></div>
+    <div class="def-row"><div class="def-term">الإشعاع الشمسي</div><div class="def-val">الإشعاع الصادر من الشمس نحو الأرض</div></div>
+    <div class="def-row"><div class="def-term">الإشعاع الأرضي</div><div class="def-val">الأشعة المرتدة من سطح الأرض للأعلى والتي تسخن الهواء</div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots8"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 9 — مصطلحات (٢) + تعليل
+══════════════════════════════ -->
+<div class="slide" id="s9">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">٠٩ / ١٠</div></div>
+  <div class="sec-label">الأسئلة المقالية — علّل</div>
+  <div class="slide-title">علّل <span class="acc">الأسباب</span></div>
+  <div class="reason-list">
+    <div class="reason-row"><div class="reason-icon">١</div><div class="reason-body"><div class="reason-q">أهمية الغلاف الجوي</div><div class="reason-a">يحمي من الشهب، يحتوي الأكسجين، وهو سبب السحب والأمطار</div></div></div>
+    <div class="reason-row"><div class="reason-icon">٢</div><div class="reason-body"><div class="reason-q">ارتفاع حرارة السواحل الجنوبية الشرقية لأمريكا</div><div class="reason-a">تأثرها بتيار الخليج الدافئ × السواحل الغربية بتيار كاليفورنيا البارد</div></div></div>
+    <div class="reason-row"><div class="reason-icon">٣</div><div class="reason-body"><div class="reason-q">نشأة الرياح الموسمية</div><div class="reason-a">اختلاف اتساع اليابس والماء واختلاف حرارتهما وضغطهما</div></div></div>
+    <div class="reason-row"><div class="reason-icon">٤</div><div class="reason-body"><div class="reason-q">أهمية رياح الخماسين في مصر</div><div class="reason-a">تساعد على نضج محصول القمح</div></div></div>
+    <div class="reason-row"><div class="reason-icon">٥</div><div class="reason-body"><div class="reason-q">حدوث المطر الانقلابي</div><div class="reason-a">سخونة الهواء الرطب وارتفاعه فيبرد ويتكثف بخاره ويسقط مطراً</div></div></div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots9"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     SLIDE 10 — الرابط المشترك
+══════════════════════════════ -->
+<div class="slide" id="s10">
+<div class="slide-bg"></div>
+<div class="sc">
+  <div class="hdr"><div class="logo-area"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><div class="logo-name">EDUCLOUD</div></div><div class="s-counter">١٠ / ١٠</div></div>
+  <div class="sec-label">مهارات — الرابط المشترك</div>
+  <div class="slide-title">الرابط <span class="acc">المشترك</span></div>
+  <div class="link-list">
+    <div class="link-row"><div class="link-items"><div class="link-tag">التروبوسفير</div><div class="link-tag">الأستراتوسفير</div><div class="link-tag">الميزوسفير</div></div><div class="link-answer">الطبقات الرأسية للغلاف الجوي</div></div>
+    <div class="link-row"><div class="link-items"><div class="link-tag">حرارية</div><div class="link-tag">ضوئية</div><div class="link-tag">حيوية</div></div><div class="link-answer">أنواع الأشعة الشمسية</div></div>
+    <div class="link-row"><div class="link-items"><div class="link-tag">تجارية</div><div class="link-tag">عكسية غربية</div><div class="link-tag">قطبية</div></div><div class="link-answer">أنواع الرياح الدائمة</div></div>
+    <div class="link-row"><div class="link-items"><div class="link-tag">الخماسين</div><div class="link-tag">السموم</div><div class="link-tag">القبلي</div></div><div class="link-answer">الرياح المحلية الحارة</div></div>
+  </div>
+  <div class="factor-card">
+    <div class="factor-title">العوامل المؤثرة في الضغط الجوي</div>
+    <div class="factor-items">
+      <div class="factor-tag">درجة الحرارة</div>
+      <div class="factor-tag">الرطوبة</div>
+      <div class="factor-tag">الارتفاع</div>
+      <div class="factor-tag">توزيع اليابس والماء</div>
+    </div>
+  </div>
+  <div class="ftr"><div class="handle">@educloudkw</div><div class="dots" id="dots10"></div></div>
+</div>
+</div>
+
+</div><!-- end carousel -->
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button class="ctrl-btn" onclick="go(-1)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div class="s-info" id="sinfo">١ / ١٠</div>
+  <button class="ctrl-btn" onclick="go(1)"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+</div>
+
+<div class="btns-row">
+  <button class="dl-btn" onclick="dlCurrent()">تحميل السلايد الحالي</button>
+  <button class="dl-all" onclick="dlAll()">تحميل كل السلايدات</button>
+</div>
+
+<script>
+const TOTAL = 10;
+let cur = 1;
+const ar = ['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠'];
+
+function buildDots() {
+  for (let s = 1; s <= TOTAL; s++) {
+    const wrap = document.getElementById('dots' + s);
+    if (!wrap) continue;
+    wrap.innerHTML = '';
+    for (let i = 1; i <= TOTAL; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === s ? ' on' : '');
+      wrap.appendChild(d);
+    }
+  }
+}
+buildDots();
+
+function go(dir) {
+  document.getElementById('s' + cur).classList.remove('active');
+  cur += dir;
+  if (cur < 1) cur = TOTAL;
+  if (cur > TOTAL) cur = 1;
+  document.getElementById('s' + cur).classList.add('active');
+  document.getElementById('sinfo').textContent = ar[cur-1] + ' / ١٠';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') go(-1);
+  if (e.key === 'ArrowRight') go(1);
+});
+
+async function loadH2C() {
+  if (window.html2canvas) return;
+  await new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+async function dlCurrent() {
+  const btn = event.target; btn.textContent = 'جاري...'; btn.disabled = true;
+  await loadH2C();
+  const el = document.getElementById('s' + cur);
+  const c = await html2canvas(el, { width:540, height:675, scale:2, useCORS:true, backgroundColor:null });
+  const a = document.createElement('a');
+  a.download = 'geo-slide-' + cur + '.png';
+  a.href = c.toDataURL('image/png'); a.click();
+  btn.textContent = 'تحميل السلايد الحالي'; btn.disabled = false;
+}
+
+async function dlAll() {
+  const btn = event.target; btn.textContent = 'جاري التحميل...'; btn.disabled = true;
+  await loadH2C();
+  const saved = cur;
+  for (let i = 1; i <= TOTAL; i++) {
+    document.getElementById('s' + cur).classList.remove('active');
+    cur = i;
+    document.getElementById('s' + i).classList.add('active');
+    await new Promise(r => setTimeout(r, 350));
+    const el = document.getElementById('s' + i);
+    const c = await html2canvas(el, { width:540, height:675, scale:2, useCORS:true, backgroundColor:null });
+    const a = document.createElement('a');
+    a.download = 'geo-slide-0' + i + '.png';
+    a.href = c.toDataURL('image/png'); a.click();
+    await new Promise(r => setTimeout(r, 400));
+  }
+  document.getElementById('s' + cur).classList.remove('active');
+  cur = saved;
+  document.getElementById('s' + saved).classList.add('active');
+  document.getElementById('sinfo').textContent = ar[saved-1] + ' / ١٠';
+  btn.textContent = 'تحميل كل السلايدات'; btn.disabled = false;
+}
+</script>
+</body>
+</html>
