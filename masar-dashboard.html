@@ -290,11 +290,38 @@ tr:hover td{background:rgba(92,15,15,.02);}
     <div class="search-card">
       <div class="search-title"><span>🎓</span> إصدار الشهادات</div>
 
+      <!-- Toggle -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button id="btnModeList" onclick="setCertMode('list')"
+          style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--crimson);background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">
+          📋 اختر من القائمة
+        </button>
+        <button id="btnModeManual" onclick="setCertMode('manual')"
+          style="flex:1;padding:9px;border-radius:10px;border:1.5px solid rgba(92,15,15,.2);background:var(--cream);color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">
+          ✏️ أدخل يدوياً
+        </button>
+      </div>
+
+      <!-- من القائمة -->
       <div class="field" id="fc-course" style="margin-bottom:12px;">
         <label>الدورة <span style="color:var(--crimson);">*</span></label>
         <select id="certCourseSelect" onchange="onCertCourseChange()" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;cursor:pointer;">
           <option value="">-- اختر الدورة --</option>
         </select>
+      </div>
+
+      <!-- يدوي -->
+      <div id="fc-manual" style="display:none;margin-bottom:12px;">
+        <div class="field">
+          <label>اسم الدورة <span style="color:var(--crimson);">*</span></label>
+          <input type="text" id="certCourseManual" list="courseNamesList"
+            placeholder="ابدأ بالكتابة لتظهر الاقتراحات..."
+            oninput="onManualCourseInput(this.value)">
+          <datalist id="courseNamesList"></datalist>
+          <div id="manualCourseHint" style="font-size:11px;color:var(--muted);margin-top:4px;display:none;">
+            👤 المدرب: <span id="manualTrainerHint"></span>
+          </div>
+        </div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
@@ -312,6 +339,24 @@ tr:hover td{background:rgba(92,15,15,.02);}
         <span id="loadCertTxt">عرض المسجلين للشهادة</span>
         <div class="spinner" id="loadCertSpinner"></div>
       </button>
+    </div>
+
+    <!-- إضافة متدرب يدوياً — يظهر مباشرة في الوضع اليدوي -->
+    <div id="addStudentSection" style="display:none;background:#FFF8E1;border-radius:16px;padding:16px 20px;margin-bottom:12px;border:1.5px solid rgba(245,127,23,.2);">
+      <div style="font-size:13px;font-weight:900;color:#F57F17;margin-bottom:10px;">➕ إضافة متدرب للحضور</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:2;min-width:140px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700;">الاسم الكامل</div>
+          <input id="addStudentName" placeholder="اسم المتدرب" style="width:100%;padding:9px 12px;border:1.5px solid rgba(92,15,15,.15);border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;background:#fff;outline:none;">
+        </div>
+        <div style="flex:1;min-width:120px;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:700;">رقم الواتساب</div>
+          <input id="addStudentPhone" placeholder="مثال: 99444335" type="tel" style="width:100%;padding:9px 12px;border:1.5px solid rgba(92,15,15,.15);border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;background:#fff;outline:none;">
+        </div>
+        <button onclick="addManualStudent()" style="padding:9px 20px;background:var(--crimson);color:#fff;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;">
+          إضافة ✓
+        </button>
+      </div>
     </div>
 
     <!-- قائمة المسجلين للشهادة -->
@@ -648,6 +693,7 @@ async function loadCertCourses() {
       opt.textContent = c.name + ' — ' + c.date;
       sel.appendChild(opt);
     });
+    populateCourseDatalist();
   } catch(err) {}
 }
 
@@ -664,11 +710,24 @@ function onCertCourseChange() {
 }
 
 async function loadCertStudents() {
-  const idx = document.getElementById('certCourseSelect').value;
-  if(idx === '') { document.getElementById('certCourseSelect').style.borderColor='#C62828'; return; }
-  document.getElementById('certCourseSelect').style.borderColor='';
+  let courseName, courseDate;
 
-  const c = certCoursesData[parseInt(idx)];
+  if(certMode === 'manual') {
+    courseName = (document.getElementById('certCourseManual').value || '').trim();
+    if(!courseName) { document.getElementById('certCourseManual').style.borderColor='#C62828'; return; }
+    document.getElementById('certCourseManual').style.borderColor='';
+    courseDate = 'all';
+  } else {
+    const idx = document.getElementById('certCourseSelect').value;
+    if(idx === '') { document.getElementById('certCourseSelect').style.borderColor='#C62828'; return; }
+    document.getElementById('certCourseSelect').style.borderColor='';
+    const c = certCoursesData[parseInt(idx)];
+    courseName = c.name;
+    courseDate = c.date;
+    document.getElementById('certTrainer').value      = c.trainer      || '';
+    document.getElementById('certMaterialCode').value = c.materialCode || '';
+  }
+
   document.getElementById('loadCertStudentsBtn').disabled = true;
   document.getElementById('loadCertTxt').style.display = 'none';
   document.getElementById('loadCertSpinner').style.display = 'block';
@@ -678,8 +737,8 @@ async function loadCertStudents() {
   document.getElementById('certResult').style.display = 'none';
 
   try {
-    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(c.name) +
-                '&date=' + encodeURIComponent(c.date);
+    const url = SCRIPT_URL + '?action=getStudents&course=' + encodeURIComponent(courseName) +
+                '&date=' + encodeURIComponent(courseDate);
     const res  = await fetch(url);
     const data = await res.json();
     const filtered = (data.students || []).filter(s => s.payment === 'تم الدفع');
@@ -736,21 +795,106 @@ async function loadCertStudents() {
   }
 }
 
+let certMode = 'list';
+
+function setCertMode(mode) {
+  certMode = mode;
+  const m = mode === 'manual';
+  document.getElementById('fc-course').style.display         = m ? 'none'  : 'block';
+  document.getElementById('fc-manual').style.display         = m ? 'block' : 'none';
+  document.getElementById('addStudentSection').style.display = m ? 'block' : 'none';
+  document.getElementById('btnModeList').style.cssText   = 'flex:1;padding:9px;border-radius:10px;font-family:Tajawal,sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid ' + (m ? 'rgba(92,15,15,.2);background:var(--cream);color:var(--text)' : 'var(--crimson);background:var(--crimson);color:#fff');
+  document.getElementById('btnModeManual').style.cssText = 'flex:1;padding:9px;border-radius:10px;font-family:Tajawal,sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid ' + (m ? 'var(--crimson);background:var(--crimson);color:#fff' : 'rgba(92,15,15,.2);background:var(--cream);color:var(--text)');
+  if(m) {
+    certStudentsList = [];
+    document.getElementById('certStudentsBody').innerHTML = '';
+    document.getElementById('certStudentsCount').textContent = '٠ متدرب';
+    document.getElementById('certStudentsCard').style.display = 'block';
+    document.getElementById('certEmpty').style.display = 'none';
+  } else {
+    document.getElementById('certStudentsCard').style.display = 'none';
+  }
+  document.getElementById('certResult').style.display = 'none';
+}
+
+function populateCourseDatalist() {
+  const dl = document.getElementById('courseNamesList');
+  if(!dl) return;
+  dl.innerHTML = '';
+  const seen = {};
+  certCoursesData.forEach(function(c) {
+    if(c.name && !seen[c.name]) {
+      seen[c.name] = true;
+      const opt = document.createElement('option');
+      opt.value = c.name;
+      dl.appendChild(opt);
+    }
+  });
+}
+
+function onManualCourseInput(val) {
+  const match = certCoursesData.find(c => c.name === val);
+  const hint  = document.getElementById('manualCourseHint');
+  if(match && match.trainer) {
+    document.getElementById('certTrainer').value      = match.trainer;
+    document.getElementById('certMaterialCode').value = match.materialCode || '';
+    document.getElementById('manualTrainerHint').textContent = match.trainer;
+    hint.style.display = 'block';
+  } else {
+    hint.style.display = 'none';
+  }
+}
+
+function addManualStudent() {
+  const name  = (document.getElementById('addStudentName').value  || '').trim();
+  const phone = (document.getElementById('addStudentPhone').value || '').trim();
+  if(!name) { document.getElementById('addStudentName').style.borderColor='#C62828'; return; }
+  document.getElementById('addStudentName').style.borderColor='';
+
+  certStudentsList.push({ name, phone, email:'', cert:'نعم', payment:'تم الدفع', attended:'', manual:true });
+  const i = certStudentsList.length - 1;
+
+  const now    = new Date();
+  const prefix = 'TM02' + String(now.getFullYear()).slice(-2) + String(now.getMonth()+1).padStart(2,'0') + '-';
+  const serial = prefix + (i + 1);
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="text-align:center;"><input type="checkbox" class="cert-chk" data-idx="${i}" checked style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></td>
+    <td><div class="name-row"><div class="avatar">${name.charAt(0)}</div><div><span style="font-weight:700;">${name}</span><span style="display:block;font-size:10px;color:#F57F17;font-weight:700;">✏️ مُضاف يدوياً</span></div></div></td>
+    <td style="font-family:monospace;font-size:13px;">${phone||'—'}</td>
+    <td><span class="cert-done">تم الدفع ✓</span></td>
+    <td style="font-size:12px;color:var(--muted);font-weight:700;">${serial}</td>`;
+  document.getElementById('certStudentsBody').appendChild(tr);
+  document.getElementById('certStudentsCount').textContent = toA(certStudentsList.length) + ' متدرب';
+  document.getElementById('certStudentsCard').style.display = 'block';
+  document.getElementById('addStudentName').value  = '';
+  document.getElementById('addStudentPhone').value = '';
+  document.getElementById('addStudentName').focus();
+}
+
 function toggleAll(cb) {
   document.querySelectorAll('.cert-chk').forEach(c => c.checked = cb.checked);
 }
 
 async function issueCertificates() {
-  const idx          = document.getElementById('certCourseSelect').value;
   const materialCode = document.getElementById('certMaterialCode').value.trim();
   if(!materialCode) { document.getElementById('certMaterialCode').style.borderColor='#C62828'; return; }
   document.getElementById('certMaterialCode').style.borderColor='';
 
-  // اجمع المحددين فقط
-  const checked = [...document.querySelectorAll('.cert-chk:checked')].map(c => certStudentsList[parseInt(c.dataset.idx)]);
+  const checked = [...document.querySelectorAll('.cert-chk:checked')].map(c => certStudentsList[parseInt(c.dataset.idx)]).filter(Boolean);
   if(checked.length === 0) { alert('يرجى تحديد متدرب واحد على الأقل'); return; }
 
-  const c = certCoursesData[parseInt(idx)];
+  let courseName, courseDate;
+  if(certMode === 'manual') {
+    courseName = (document.getElementById('certCourseManual').value || '').trim();
+    courseDate = new Date().toLocaleDateString('en-GB').split('/').join('-');
+  } else {
+    const idx = document.getElementById('certCourseSelect').value;
+    const c   = certCoursesData[parseInt(idx)];
+    courseName = c ? c.name : '';
+    courseDate = c ? c.date : '';
+  }
   document.getElementById('issueCertBtn').disabled = true;
   document.getElementById('issueCertTxt').style.display = 'none';
   document.getElementById('issueCertSpinner').style.display = 'block';
@@ -761,9 +905,9 @@ async function issueCertificates() {
       headers: {'Content-Type': 'text/plain'},
       body: JSON.stringify({
         type:         'إصدار شهادات',
-        course:       c.name,
-        date:         c.date,
-        trainer:      document.getElementById('certTrainer').value || c.trainer,
+        course:       courseName,
+        date:         courseDate,
+        trainer:      document.getElementById('certTrainer').value,
         materialCode,
         students:     checked,
         timestamp:    new Date().toLocaleString('ar-SA')
