@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل هيئة التدريب | معهد تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#5C0F0F; --cr2:#7A1414;
+  --cream:#FAF7F2; --cream2:#F0E9E0;
+  --text:#1A0808; --muted:#7A6060;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ── HERO ── */
+.hero{
+  background:var(--cr);min-height:34vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:56px 24px 48px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;background-position:0 0,0 26px,26px -26px,-26px 0;
+}
+.back-btn{
+  position:absolute;top:22px;right:22px;z-index:10;
+  display:inline-flex;align-items:center;gap:7px;
+  color:rgba(255,255,255,.65);font-size:13px;font-weight:700;
+  border:1.5px solid rgba(255,255,255,.2);padding:8px 17px;
+  border-radius:100px;text-decoration:none;transition:all .22s;
+}
+.back-btn:hover{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.07)}
+.hero-inner{position:relative;z-index:1;max-width:620px}
+.hero-tag{
+  display:inline-block;border:1.5px solid rgba(255,255,255,.28);
+  color:rgba(255,255,255,.8);padding:5px 20px;border-radius:100px;
+  font-size:12px;font-weight:700;margin-bottom:16px;
+}
+.hero h1{font-size:clamp(28px,6vw,50px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px}
+.hero p{font-size:15px;color:rgba(255,255,255,.55);line-height:1.85}
+
+/* ── FORM SECTION ── */
+.form-section{padding:clamp(40px,7vw,72px) 20px;max-width:640px;margin:0 auto}
+
+.form-card{
+  background:#fff;border-radius:24px;
+  box-shadow:0 8px 48px rgba(92,15,15,.1);
+  border:1.5px solid rgba(92,15,15,.07);
+  overflow:hidden;
+  animation:fadeUp .45s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+.form-head{
+  background:var(--cr);padding:24px 32px;
+  position:relative;overflow:hidden;
+}
+.form-head::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%);
+  background-size:40px 40px;
+}
+.form-head>*{position:relative;z-index:1}
+.form-head h2{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px}
+.form-head p{font-size:12px;color:rgba(255,255,255,.5)}
+
+.form-body{padding:clamp(20px,4vw,36px)}
+
+/* section divider */
+.sec-label{
+  font-size:11px;font-weight:800;text-transform:uppercase;
+  color:var(--cr);margin:22px 0 15px;display:flex;align-items:center;gap:8px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:rgba(92,15,15,.1)}
+
+/* fields */
+.mf{margin-bottom:16px}
+.mf label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+.mf label .req{color:var(--cr);margin-left:2px}
+.mf input,.mf select,.mf textarea{
+  width:100%;padding:13px 16px;
+  border:1.5px solid rgba(92,15,15,.12);border-radius:12px;
+  font-family:'Cairo',sans-serif;font-size:15px;
+  color:var(--text);background:var(--cream);
+  outline:none;transition:all .2s;
+}
+.mf input:focus,.mf select:focus,.mf textarea:focus{
+  border-color:var(--cr);box-shadow:0 0 0 3px rgba(92,15,15,.07);background:#fff;
+}
+.mf input::placeholder,.mf textarea::placeholder{color:rgba(122,96,96,.4)}
+.mf textarea{resize:vertical;min-height:82px;line-height:1.7}
+.mf select{appearance:none;cursor:pointer}
+.mf.invalid input,.mf.invalid select,.mf.invalid textarea{border-color:#dc2626}
+.mf .err{font-size:12px;color:#dc2626;margin-top:4px;display:none}
+.mf.invalid .err{display:block}
+
+/* phone */
+.phone-wrap{display:flex;gap:0}
+.phone-code{
+  padding:13px 14px;background:var(--cream2);
+  border:1.5px solid rgba(92,15,15,.12);border-radius:12px 0 0 12px;
+  font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;
+  color:var(--muted);white-space:nowrap;border-left:none;
+  letter-spacing:normal;
+}
+.phone-wrap input{border-radius:0 12px 12px 0;direction:ltr;letter-spacing:normal}
+
+/* submit */
+.btn-submit{
+  width:100%;padding:16px;background:var(--cr);color:#fff;border:none;
+  border-radius:14px;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;
+  cursor:pointer;transition:all .28s;margin-top:8px;
+  box-shadow:0 8px 24px rgba(92,15,15,.2);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-submit:hover{background:var(--cr2);transform:translateY(-2px);box-shadow:0 14px 36px rgba(92,15,15,.28)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.spinner{display:none;width:22px;height:22px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* success */
+.success-state{display:none;text-align:center;padding:48px 24px}
+.s-icon{
+  width:78px;height:78px;background:linear-gradient(135deg,#1a5c32,#2d8a52);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;box-shadow:0 10px 28px rgba(26,92,50,.28);
+}
+.s-icon svg{width:38px;height:38px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.s-title{font-size:24px;font-weight:900;color:#1a5c32;margin-bottom:8px}
+.s-desc{font-size:14px;color:var(--muted);line-height:1.85;margin-bottom:22px}
+.btn-again{padding:13px 32px;background:var(--cr);color:#fff;border:none;border-radius:100px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .25s}
+.btn-again:hover{background:var(--cr2);transform:translateY(-2px)}
+
+/* footer */
+footer{background:#3A0808;padding:24px;text-align:center;margin-top:60px}
+footer p{font-size:12px;color:rgba(255,255,255,.28)}
+footer a{color:rgba(255,255,255,.45);text-decoration:none}
+footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <a href="index.html" class="back-btn">← الرئيسية</a>
+  <div class="hero-inner">
+    <div class="hero-tag">هيئة التدريب</div>
+    <h1>تسجيل هيئة التدريب</h1>
+    <p>سجّل بياناتك وملفك التدريبي للانضمام لهيئة تدريب معهد تمكين</p>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="form-section">
+  <div class="form-card">
+
+    <div class="form-head">
+      <h2>📋 بيانات التسجيل</h2>
+      <p>تأكد من إدخال جميع البيانات بشكل صحيح</p>
+    </div>
+
+    <div class="form-body">
+      <form id="regForm">
+
+        <!-- بيانات شخصية -->
+        <div class="sec-label">البيانات الشخصية</div>
+
+        <div class="mf" id="mf-name">
+          <label><span class="req">*</span> الاسم</label>
+          <input type="text" id="f-name" placeholder="الاسم الثلاثي">
+          <div class="err">يرجى إدخال الاسم</div>
+        </div>
+
+        <div class="mf" id="mf-memberId">
+          <label><span class="req">*</span> رقم العضوية</label>
+          <input type="text" id="f-memberId" placeholder="مثال: TM264-01">
+          <div class="err">يرجى إدخال رقم العضوية</div>
+        </div>
+
+        <div class="mf" id="mf-phone">
+          <label><span class="req">*</span> رقم التلفون</label>
+          <input type="tel" id="f-phone" placeholder="XXXXXXXX" maxlength="8" inputmode="numeric" style="letter-spacing:normal">
+          <div class="err">يرجى إدخال رقم التلفون</div>
+        </div>
+
+        <!-- بيانات تدريبية -->
+        <div class="sec-label">البيانات التدريبية</div>
+
+        <div class="mf" id="mf-spec">
+          <label><span class="req">*</span> التخصص</label>
+          <input type="text" id="f-spec" placeholder="مثال: تطوير الذات، القيادة، الموارد البشرية...">
+          <div class="err">يرجى إدخال التخصص</div>
+        </div>
+
+        <div class="mf" id="mf-title">
+          <label><span class="req">*</span> اسم العنوان المختار</label>
+          <input type="text" id="f-title" placeholder="عنوان الدورة أو البرنامج التدريبي">
+          <div class="err">يرجى إدخال اسم العنوان</div>
+        </div>
+
+        <div class="mf" id="mf-audience">
+          <label><span class="req">*</span> الفئة المستهدفة</label>
+          <input type="text" id="f-audience" placeholder="مثال: المدراء، موظفو الشركات، الشباب...">
+          <div class="err">يرجى إدخال الفئة المستهدفة</div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="btnTxt">إرسال التسجيل ←</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+      </form>
+
+      <!-- SUCCESS -->
+      <div class="success-state" id="successState">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="s-title">تم التسجيل بنجاح!</div>
+        <p class="s-desc">تم استلام بياناتك وسيتواصل معك فريق معهد تمكين قريباً</p>
+        <button class="btn-again" onclick="resetForm()">تسجيل آخر</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 معهد تمكين — <a href="index.html">العودة للرئيسية</a></p>
+</footer>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
+
+function v(id, val){
+  const ok = val && val.toString().trim() !== '';
+  document.getElementById(id)?.classList.toggle('invalid', !ok);
+  return ok;
+}
+
+document.getElementById('regForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const name     = document.getElementById('f-name').value.trim();
+  const memberId = document.getElementById('f-memberId').value.trim();
+  const phone    = document.getElementById('f-phone').value.trim();
+  const spec     = document.getElementById('f-spec').value.trim();
+  const title    = document.getElementById('f-title').value.trim();
+  const audience = document.getElementById('f-audience').value.trim();
+  let ok = true;
+  if(!v('mf-name',     name))     ok = false;
+  if(!v('mf-memberId', memberId)) ok = false;
+  if(!v('mf-phone',    phone))    ok = false;
+  if(!v('mf-spec',     spec))     ok = false;
+  if(!v('mf-title',    title))    ok = false;
+  if(!v('mf-audience', audience)) ok = false;
+  if(!ok) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('btnTxt').style.display  = 'none';
+  document.getElementById('spinner').style.display = 'block';
+
+  try{
+    await fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type:         'هيئة_تدريب',
+        name,
+        memberId,
+        phone,
+        specialization: spec,
+        titleName:      title,
+        targetAudience: audience
+      })
+    });
+
+    document.getElementById('regForm').style.display          = 'none';
+    document.getElementById('successState').style.display     = 'block';
+
+  } catch(err){
+    btn.disabled = false;
+    document.getElementById('btnTxt').style.display  = 'block';
+    document.getElementById('spinner').style.display = 'none';
+    alert('حدث خطأ، يرجى المحاولة مجدداً');
+  }
+});
+
+function resetForm(){
+  document.getElementById('regForm').reset();
+  document.getElementById('regForm').style.display      = 'block';
+  document.getElementById('successState').style.display = 'none';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('btnTxt').style.display  = 'block';
+  document.getElementById('spinner').style.display = 'none';
+}
+</script>
+</body>
+</html>
