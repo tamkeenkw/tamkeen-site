@@ -57,6 +57,56 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .mf.invalid input { border-color:#dc2626; }
 .mf .err { font-size:12px; color:#dc2626; margin-top:5px; display:none; }
 .mf.invalid .err { display:block; }
+
+/* Textarea (المحاور التدريبية) */
+.mf textarea {
+  width:100%; padding:13px 16px; border:1.5px solid #DDD6C8; border-radius:12px;
+  font-family:'Tajawal',sans-serif; font-size:15px; color:var(--text);
+  background:var(--cream); outline:none; transition:all .22s;
+  min-height:120px; resize:vertical; line-height:1.7;
+}
+.mf textarea:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.08); background:#fff; }
+.mf textarea::placeholder { color:#b0aaa0; }
+.mf.invalid textarea { border-color:#dc2626; }
+.mf-hint { font-size:12px; color:var(--muted); margin-top:6px; font-weight:600; line-height:1.7; }
+
+/* File Upload */
+.file-upload { position:relative; }
+.file-upload input[type="file"] { position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
+.file-drop {
+  border:2px dashed rgba(92,15,15,.22); border-radius:14px;
+  padding:24px 20px; text-align:center; background:var(--cream);
+  cursor:pointer; transition:all .25s; display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+}
+.file-drop:hover { border-color:var(--crimson); background:#fff; }
+.file-drop.dragging { border-color:var(--crimson); background:rgba(92,15,15,.04); }
+.file-drop-icon { width:42px; height:42px; background:rgba(92,15,15,.08); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.file-drop-icon svg { width:22px; height:22px; stroke:var(--crimson); fill:none; stroke-width:1.8; }
+.file-drop-title { font-size:14px; font-weight:800; color:var(--text); }
+.file-drop-sub { font-size:12px; color:var(--muted); font-weight:600; }
+.file-drop-sub b { color:var(--crimson); font-weight:800; }
+
+.file-selected {
+  display:none; align-items:center; gap:14px; padding:14px 16px;
+  background:rgba(92,15,15,.04); border:1.5px solid rgba(92,15,15,.15);
+  border-radius:12px;
+}
+.file-selected.show { display:flex; }
+.file-icon { width:38px; height:38px; background:var(--crimson); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.file-icon svg { width:20px; height:20px; stroke:#fff; fill:none; stroke-width:2; }
+.file-info { flex:1; min-width:0; }
+.file-name { font-size:14px; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.file-size { font-size:12px; color:var(--muted); font-weight:600; margin-top:2px; }
+.file-remove { background:none; border:none; cursor:pointer; padding:6px; color:var(--muted); transition:color .2s; flex-shrink:0; }
+.file-remove:hover { color:#dc2626; }
+.file-remove svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
+.file-progress {
+  display:none; margin-top:10px; height:6px; background:rgba(92,15,15,.08);
+  border-radius:3px; overflow:hidden;
+}
+.file-progress.show { display:block; }
+.file-progress-bar { height:100%; background:var(--crimson); width:0%; transition:width .3s; }
 .mf-section { font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--crimson); margin:26px 0 16px; display:flex; align-items:center; gap:8px; }
 .mf-section::after { content:''; flex:1; height:1px; background:rgba(92,15,15,.12); }
 
@@ -246,6 +296,46 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
           <div class="err" style="display:none;margin-top:6px;" id="err-system">يرجى اختيار نظام الدورة</div>
         </div>
 
+        <div class="mf-section">محتوى الدورة</div>
+
+        <div class="mf" id="mf-topics">
+          <label><span class="req">*</span> المحاور التدريبية</label>
+          <textarea name="topics" id="topicsField" placeholder="اكتب المحاور التدريبية الرئيسية للدورة، كل محور في سطر منفصل&#10;مثال:&#10;- مقدمة في مهارات التواصل&#10;- لغة الجسد وأثرها&#10;- التواصل في بيئة العمل"></textarea>
+          <div class="mf-hint">اذكر المحاور بشكل مختصر وواضح — يساعدنا في الإعلان عن الدورة وتجهيز شهادات الحضور</div>
+          <div class="err">يرجى إدخال المحاور التدريبية</div>
+        </div>
+
+        <div class="mf" id="mf-material">
+          <label>المادة التدريبية (اختياري)</label>
+          <div class="file-upload">
+            <input type="file" id="materialFile" accept=".ppt,.pptx,.pdf" onchange="handleFileSelect(event)">
+            <div class="file-drop" id="fileDrop" onclick="document.getElementById('materialFile').click()">
+              <div class="file-drop-icon">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <div>
+                <div class="file-drop-title">اضغط لرفع ملف البوربوينت</div>
+                <div class="file-drop-sub">PPT, PPTX, PDF · حد أقصى <b>25 ميجا</b></div>
+              </div>
+            </div>
+            <div class="file-selected" id="fileSelected">
+              <div class="file-icon">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="file-info">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+              </div>
+              <button type="button" class="file-remove" onclick="removeFile()" aria-label="حذف الملف">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="file-progress" id="fileProgress"><div class="file-progress-bar" id="fileProgressBar"></div></div>
+          </div>
+          <div class="mf-hint">يمكنك رفع المادة لاحقاً إذا لم تكن جاهزة الآن</div>
+          <div class="err" style="display:none;margin-top:6px;" id="err-file">حجم الملف أكبر من 25 ميجا، يرجى ضغطه أو تقسيمه</div>
+        </div>
+
         <!-- TIME SLOT -->
         <div class="mf" id="mf-time">
           <label><span class="req">*</span> الوقت</label>
@@ -319,6 +409,7 @@ let bookedSlots = {};
 let rangeStart = null, rangeEnd = null;
 let currentYear, currentMonth;
 let selectedType = null, selectedSystem = null, selectedTime = null;
+let selectedFile = null, selectedFileBase64 = null;
 
 const today = new Date();
 currentYear  = today.getFullYear();
@@ -564,6 +655,89 @@ function selectTime(t) {
   renderCalendar();
 }
 
+/* === رفع الملف === */
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+const ALLOWED_TYPES = [
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/pdf'
+];
+
+function fmtFileSize(bytes) {
+  if (bytes < 1024) return bytes + ' بايت';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' كيلو';
+  return (bytes/(1024*1024)).toFixed(2) + ' ميجا';
+}
+
+function handleFileSelect(e) {
+  var f = e.target.files[0];
+  if (!f) return;
+
+  var errBox = document.getElementById('err-file');
+  errBox.style.display = 'none';
+
+  // التحقق من النوع
+  var ext = (f.name.split('.').pop() || '').toLowerCase();
+  var typeOk = ALLOWED_TYPES.indexOf(f.type) !== -1 || ['ppt','pptx','pdf'].indexOf(ext) !== -1;
+  if (!typeOk) {
+    errBox.textContent = 'نوع الملف غير مدعوم — استخدم PPT أو PPTX أو PDF';
+    errBox.style.display = 'block';
+    e.target.value = '';
+    return;
+  }
+
+  // التحقق من الحجم
+  if (f.size > MAX_FILE_SIZE) {
+    errBox.textContent = 'حجم الملف ' + fmtFileSize(f.size) + ' — الحد الأقصى 25 ميجا';
+    errBox.style.display = 'block';
+    e.target.value = '';
+    return;
+  }
+
+  selectedFile = f;
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('fileSize').textContent = fmtFileSize(f.size);
+  document.getElementById('fileDrop').style.display = 'none';
+  document.getElementById('fileSelected').classList.add('show');
+
+  // تحويل لـ base64 في الخلفية
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    selectedFileBase64 = ev.target.result.split(',')[1] || ev.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function removeFile() {
+  selectedFile = null;
+  selectedFileBase64 = null;
+  document.getElementById('materialFile').value = '';
+  document.getElementById('fileDrop').style.display = 'flex';
+  document.getElementById('fileSelected').classList.remove('show');
+  document.getElementById('err-file').style.display = 'none';
+  document.getElementById('fileProgress').classList.remove('show');
+  document.getElementById('fileProgressBar').style.width = '0%';
+}
+
+/* drag & drop */
+(function() {
+  var drop = document.getElementById('fileDrop');
+  if (!drop) return;
+  ['dragenter','dragover'].forEach(function(ev) {
+    drop.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); drop.classList.add('dragging'); });
+  });
+  ['dragleave','drop'].forEach(function(ev) {
+    drop.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragging'); });
+  });
+  drop.addEventListener('drop', function(e) {
+    var files = e.dataTransfer.files;
+    if (files && files.length) {
+      document.getElementById('materialFile').files = files;
+      handleFileSelect({ target: { files: files, value: '' } });
+    }
+  });
+})();
+
 function validateField(id, value) {
   var valid = value && value.toString().trim() !== '';
   document.getElementById(id) && document.getElementById(id).classList.toggle('invalid', !valid);
@@ -576,11 +750,13 @@ document.getElementById('bookingForm').addEventListener('submit', async function
   var memberId    = f.memberId.value.trim();
   var trainerName = f.trainerName.value.trim();
   var courseTitle = f.courseTitle.value.trim();
+  var topics      = f.topics.value.trim();
 
   var ok = true;
   if (!validateField('mf-memberId',    memberId))    ok = false;
   if (!validateField('mf-trainerName', trainerName)) ok = false;
   if (!validateField('mf-courseTitle', courseTitle)) ok = false;
+  if (!validateField('mf-topics',      topics))      ok = false;
   if (!selectedType)   { document.getElementById('err-type').style.display   = 'block'; ok = false; }
   if (!selectedSystem) { document.getElementById('err-system').style.display = 'block'; ok = false; }
   if (!selectedTime)   { document.getElementById('err-time').style.display   = 'block'; ok = false; }
@@ -593,24 +769,29 @@ document.getElementById('bookingForm').addEventListener('submit', async function
   var btn = document.getElementById('submitBtn');
   var txt = document.getElementById('btnTxt');
   var sp  = document.getElementById('spinner');
-  btn.disabled = true; txt.style.display = 'none'; sp.style.display = 'block';
+  btn.disabled = true; sp.style.display = 'block';
+  txt.textContent = selectedFile ? 'جاري رفع المادة...' : 'جاري الإرسال...';
 
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        type:       'حجز',
+        type:        'حجز',
         memberId,
         trainerName,
         courseTitle,
-        courseType: selectedType === 'private' ? 'خاصة' : 'وفق الجدول',
-        system:     selectedSystem === 'online' ? 'أونلاين' : 'حضوري',
-        time:       selectedTime,
-        dateStart:  rangeStart,
-        dateEnd:    rangeEnd || rangeStart,
-        status:     'قيد المراجعة',
-        message:    ''
+        courseType:  selectedType === 'private' ? 'خاصة' : 'وفق الجدول',
+        system:      selectedSystem === 'online' ? 'أونلاين' : 'حضوري',
+        time:        selectedTime,
+        dateStart:   rangeStart,
+        dateEnd:     rangeEnd || rangeStart,
+        status:      'قيد المراجعة',
+        message:     '',
+        topics:      topics,
+        fileName:    selectedFile ? selectedFile.name : '',
+        fileMime:    selectedFile ? selectedFile.type : '',
+        fileBase64:  selectedFileBase64 || ''
       })
     });
 
@@ -626,7 +807,7 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     document.getElementById('successState').style.display = 'block';
 
   } catch(err) {
-    btn.disabled = false; txt.style.display = 'block'; sp.style.display = 'none';
+    btn.disabled = false; txt.textContent = 'إرسال طلب الحجز'; sp.style.display = 'none';
     alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً');
   }
 });
@@ -637,13 +818,14 @@ function resetForm() {
   document.getElementById('successState').style.display = 'none';
   rangeStart = null; rangeEnd = null;
   selectedType = null; selectedSystem = null; selectedTime = null;
+  removeFile();
   document.getElementById('selectedDateBox').classList.remove('show');
   document.getElementById('timeSlotArea').innerHTML = '<div class="slot-msg">اختر نظام الدورة أولاً لعرض الأوقات المتاحة</div>';
   ['tc-schedule','tc-private','sc-inperson','sc-online'].forEach(function(id) {
     document.getElementById(id) && document.getElementById(id).classList.remove('selected');
   });
   document.getElementById('submitBtn').disabled = false;
-  document.getElementById('btnTxt').style.display = 'block';
+  document.getElementById('btnTxt').textContent = 'إرسال طلب الحجز';
   document.getElementById('spinner').style.display = 'none';
   fetchBookings();
 }
