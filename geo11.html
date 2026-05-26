@@ -241,7 +241,7 @@ h1 span{color:var(--accentlt);}
 // ═══════════════════════════════════════════════
 const SCRIPT   = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
 const COURSE   = 'جغرافيا ١١';
-const SUB_FEE  = '15'; // رسوم الاشتراك بالدينار
+let SUB_FEE = '15'; // يُحدَّث تلقائياً من الشيت
 
 // ═══════════════════════════════════════════════
 // STATE
@@ -254,11 +254,17 @@ let activeIndex  = -1;
 // LOAD VIDEOS
 // ═══════════════════════════════════════════════
 async function loadVideos() {
+  // جلب الفيديوات والرسوم معاً
   try {
-    const url = SCRIPT + '?action=getCourseVideos&course=' + encodeURIComponent(COURSE);
-    const res  = await fetch(url);
-    const data = await res.json();
-    videos = data.videos || [];
+    const [vRes, sRes] = await Promise.all([
+      fetch(SCRIPT + '?action=getCourseVideos&course='  + encodeURIComponent(COURSE)),
+      fetch(SCRIPT + '?action=getCourseSettings&course=' + encodeURIComponent(COURSE))
+    ]);
+    const vData = await vRes.json();
+    const sData = await sRes.json();
+    videos   = vData.videos || [];
+    SUB_FEE  = sData.fee    || '15';
+    document.getElementById('feeAmount').textContent = SUB_FEE;
   } catch(e) {
     videos = [];
   }
@@ -395,15 +401,28 @@ async function submitSubscription() {
 
   setBtnState('subTxt', 'subSpin', true);
   try {
-    await fetch(SCRIPT, {
+    const res  = await fetch(SCRIPT, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      mode: 'no-cors',
-      body: JSON.stringify({ type: 'courseSubscribe', name, phone, course: COURSE, fee: SUB_FEE })
+      body: JSON.stringify({
+        type: 'courseSubscribe',
+        name, phone,
+        course: COURSE,
+        fee:    SUB_FEE
+      })
     });
+    const data = await res.json();
+
+    // لو رجع رابط Tap → وجّه للدفع
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    // لو ما في رابط → سجّل بدون دفع إلكتروني
     showPane('modalSuccess');
   } catch(e) {
-    showPane('modalSuccess'); // no-cors always throws, treat as success
+    showPane('modalSuccess');
   }
   setBtnState('subTxt', 'subSpin', false);
 }
@@ -447,6 +466,39 @@ function setBtnState(txtId, spinId, loading) {
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
+
+// تحقق من رجوع بعد الدفع
+async function checkPaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') !== 'success') return;
+
+  const phone = params.get('phone') || '';
+  if (!phone) return;
+
+  // أبلّغ السكريبت بنجاح الدفع
+  try {
+    await fetch(SCRIPT + '?payment=success&type=courseSubscribe&phone='
+      + encodeURIComponent(phone) + '&course=' + encodeURIComponent(COURSE));
+  } catch(e) {}
+
+  // فعّل الوصول فوراً
+  hasAccess = true;
+  updateAccessBar(phone);
+
+  // نظّف الـ URL
+  window.history.replaceState({}, '', window.location.pathname);
+
+  // أظهر رسالة نجاح
+  setTimeout(function() {
+    document.getElementById('overlay').classList.add('show');
+    showPane('modalSuccess');
+    document.getElementById('modalSuccess').querySelector('.succ-title').textContent = '🎉 تم الدفع بنجاح!';
+    document.getElementById('modalSuccess').querySelector('.succ-desc').textContent =
+      'اشتراكك مفعّل الآن — تقدر تشوف جميع المحاضرات.';
+  }, 500);
+}
+
+checkPaymentReturn();
 loadVideos();
 </script>
 </body>
