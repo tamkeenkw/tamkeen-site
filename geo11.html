@@ -405,10 +405,11 @@ async function submitSubscription() {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
-        type: 'courseSubscribe',
-        name, phone,
-        course: COURSE,
-        fee:    SUB_FEE
+        type:     'courseSubscribe',
+        name,     phone,
+        course:   COURSE,
+        fee:      SUB_FEE,
+        redirect: window.location.origin + window.location.pathname
       })
     });
     const data = await res.json();
