@@ -232,6 +232,18 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);ov
 .testi-name{font-size:13px;font-weight:800;color:#fff}
 .testi-batch{font-size:11px;color:rgba(255,255,255,.4)}
 
+/* ─── FEATURED VIDEO ─── */
+.vid-featured{max-width:680px;margin:36px auto 0;border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(92,15,15,.15);border:2px solid rgba(92,15,15,.1)}
+.vid-featured .vid-frame{position:relative;aspect-ratio:9/16}
+.vid-featured .vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.vid-featured-label{padding:16px 20px;background:#fff;font-size:14px;font-weight:800;color:var(--text);text-align:center}
+.vid-featured-label span{font-size:12px;color:var(--muted);font-weight:500;display:block;margin-top:3px}
+.vid-inline{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px;align-items:start}
+@media(max-width:640px){.vid-inline{grid-template-columns:1fr}}
+.vid-inline-text{display:flex;flex-direction:column;justify-content:center;gap:16px}
+.vid-inline-badge{display:inline-flex;align-items:center;gap:8px;background:var(--cr-light);color:var(--cr);font-size:12px;font-weight:800;padding:6px 14px;border-radius:100px;width:fit-content}
+.vid-inline-title{font-size:22px;font-weight:900;color:var(--text);line-height:1.4}
+.vid-inline-desc{font-size:14px;color:var(--muted);line-height:1.8}
 /* ─── VIDEOS ─── */
 .vid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
 @media(max-width:900px){.vid-grid{grid-template-columns:repeat(2,1fr)}}
@@ -350,7 +362,20 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
       سجّل الحين
       <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
     </button>
-    <div class="hero-cta-note">المقاعد محدودة — الدفعة القادمة ١٦ مايو ٢٠٢٦</div>
+    <div class="hero-cta-note">المقاعد محدودة — الدفعة القادمة ١٣ يونيو ٢٠٢٦</div>
+  </div>
+</section>
+
+<!-- ══════ INTRO VIDEO ══════ -->
+<section class="sec" style="padding-top:0;padding-bottom:48px;">
+  <div class="sec-inner" style="text-align:center;">
+    <div class="sec-tag">شاهد قبل ما تقرر</div>
+    <div class="sec-h2">ماذا ستتعلم في الدورة؟</div>
+    <p class="sec-sub">دقائق معدودة تعطيك صورة كاملة عن تجربة إعداد مدرب معتمد</p>
+    <div class="vid-featured">
+      <div class="vid-frame"><iframe src="https://www.youtube.com/embed/xWERmfOOfnk" allowfullscreen loading="lazy"></iframe></div>
+      <div class="vid-featured-label">تعرف على دورة إعداد مدرب معتمد<span>نظرة شاملة على المحتوى والمخرجات</span></div>
+    </div>
   </div>
 </section>
 
@@ -378,6 +403,24 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
       <div class="curr-item"><div class="curr-num">٤</div><div class="curr-text">إعداد الأنشطة والتمارين التدريبية الجذابة</div></div>
       <div class="curr-item"><div class="curr-num">٥</div><div class="curr-text">كتابة المخطط التدريبي باحتراف</div></div>
       <div class="curr-item"><div class="curr-num">٦</div><div class="curr-text">تحليل الجمهور المستهدف باستراتيجية المربع الجماهيري</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ CURRICULUM VIDEO ══════ -->
+<section class="sec" style="background:var(--cream-2);padding-top:56px;padding-bottom:56px;">
+  <div class="sec-inner">
+    <div class="vid-inline">
+      <div class="vid-card" style="margin:0;">
+        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/fXM3h-BZEx8" allowfullscreen loading="lazy"></iframe></div>
+        <div class="vid-label">مقتطفات حقيقية من جلسات التدريب<div class="vid-sub">شاهد الأجواء قبل التسجيل</div></div>
+      </div>
+      <div class="vid-inline-text">
+        <div class="vid-inline-badge">🎥 من داخل الدورة</div>
+        <div class="vid-inline-title">ليس مجرد نظرية — تدريب حقيقي بأدوات فعلية</div>
+        <div class="vid-inline-desc">ستخرج من الدورة بملف إنجازي احترافي، وشهادة معتمدة، ومهارات تطبقها في اليوم الأول من عملك كمدرب.</div>
+        <a href="#register" style="display:inline-flex;align-items:center;gap:8px;background:var(--cr);color:#fff;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none;width:fit-content;">سجّل الآن ←</a>
+      </div>
     </div>
   </div>
 </section>
@@ -440,62 +483,34 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
     <p class="sec-sub">المقاعد محدودة — سجّل مبكراً لضمان مكانك</p>
     <div class="dates-grid">
       <div class="date-card">
-        <div class="date-cal"><div class="date-day">١٦</div><div class="date-mon">مايو</div></div>
-        <div class="date-info">
-          <div class="date-batch">الدفعة ١١٢ — ٣ أيام</div>
-          <div class="date-tags"><span class="dtag offline">حضوري</span><span style="font-size:12px;color:var(--muted)">١٦-١٨ مايو ٢٠٢٦</span></div>
-        </div>
-      </div>
-      <div class="date-card">
-        <div class="date-cal"><div class="date-day">٣٠</div><div class="date-mon">مايو</div></div>
-        <div class="date-info">
-          <div class="date-batch">الدفعة ١١٣ — ٣ أيام</div>
-          <div class="date-tags"><span class="dtag online">أونلاين</span><span style="font-size:12px;color:var(--muted)">٣٠ مايو - ١ يونيو ٢٠٢٦</span></div>
-        </div>
-      </div>
-      <div class="date-card">
         <div class="date-cal"><div class="date-day">١٣</div><div class="date-mon">يونيو</div></div>
         <div class="date-info">
           <div class="date-batch">الدفعة ١١٤ — ٣ أيام</div>
           <div class="date-tags"><span class="dtag offline">حضوري</span><span style="font-size:12px;color:var(--muted)">١٣-١٥ يونيو ٢٠٢٦</span></div>
         </div>
       </div>
-      <div class="date-card">
-        <div class="date-cal"><div class="date-day">٢٧</div><div class="date-mon">يونيو</div></div>
-        <div class="date-info">
-          <div class="date-batch">الدفعة ١١٥ — ٣ أيام</div>
-          <div class="date-tags"><span class="dtag online">أونلاين</span><span style="font-size:12px;color:var(--muted)">٢٧-٢٩ يونيو ٢٠٢٦</span></div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
 
-<!-- ══════ VIDEOS ══════ -->
-<section class="sec">
+<!-- ══════ INSTITUTIONAL VIDEOS ══════ -->
+<section class="sec" style="background:var(--cream-2);">
   <div class="sec-inner">
     <div class="sec-tag">عتيق في الميدان</div>
-    <div class="sec-h2">شاهده يدرّب في الجهات الرسمية</div>
+    <div class="sec-h2">يدرّب في أكبر الجهات الرسمية بالكويت</div>
+    <p class="sec-sub">من الجامعة إلى المؤسسات الحكومية — ثقة ممنوحة من أكبر المؤسسات</p>
     <div class="vid-grid">
       <div class="vid-card">
-        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/ay4BQRwbElA" allowfullscreen></iframe></div>
+        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/ay4BQRwbElA" allowfullscreen loading="lazy"></iframe></div>
         <div class="vid-label">كلية التربية الأساسية<div class="vid-sub">الهيئة العامة للتعليم التطبيقي</div></div>
       </div>
       <div class="vid-card">
-        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/fXM3h-BZEx8" allowfullscreen></iframe></div>
-        <div class="vid-label">مقتطفات من دورة مدرب معتمد<div class="vid-sub">لحظات حقيقية من التدريب</div></div>
-      </div>
-      <div class="vid-card">
-        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/UOJ5tKO5EtI" allowfullscreen></iframe></div>
+        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/UOJ5tKO5EtI" allowfullscreen loading="lazy"></iframe></div>
         <div class="vid-label">مركز القياس والتقويم<div class="vid-sub">الهيئة العامة للتعليم التطبيقي</div></div>
       </div>
       <div class="vid-card">
-        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/96zXlZbSzt4" allowfullscreen></iframe></div>
+        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/96zXlZbSzt4" allowfullscreen loading="lazy"></iframe></div>
         <div class="vid-label">جامعة الكويت — كلية التربية<div class="vid-sub">تدريب مؤسسي رسمي</div></div>
-      </div>
-      <div class="vid-card">
-        <div class="vid-frame"><iframe src="https://www.youtube.com/embed/xWERmfOOfnk" allowfullscreen></iframe></div>
-        <div class="vid-label">تعرف على دورة إعداد مدرب معتمد<div class="vid-sub">نظرة شاملة على الدورة</div></div>
       </div>
     </div>
   </div>
@@ -598,10 +613,7 @@ footer a{color:rgba(255,255,255,.4);text-decoration:none}
           <label>موعد الدورة *</label>
           <select id="rDate">
             <option value="">اختر الدفعة والموعد</option>
-            <option value="دفعة 112 — 16 مايو 2026 — حضوري">الدفعة ١١٢ — ١٦ مايو ٢٠٢٦ — حضوري</option>
-            <option value="دفعة 113 — 30 مايو 2026 — أونلاين">الدفعة ١١٣ — ٣٠ مايو ٢٠٢٦ — أونلاين</option>
             <option value="دفعة 114 — 13 يونيو 2026 — حضوري">الدفعة ١١٤ — ١٣ يونيو ٢٠٢٦ — حضوري</option>
-            <option value="دفعة 115 — 27 يونيو 2026 — أونلاين">الدفعة ١١٥ — ٢٧ يونيو ٢٠٢٦ — أونلاين</option>
           </select>
         </div>
 
