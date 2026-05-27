@@ -64,11 +64,14 @@ h1 span{color:var(--accentlt);}
 .vid-badge.unlocked{background:rgba(26,143,111,.1);color:var(--free);}
 .vid-arrow{font-size:16px;color:var(--muted);flex-shrink:0;}
 
-/* VIDEO PLAYER */
-.player-wrap{margin-bottom:20px;display:none;}
-.player-label{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+/* VIDEO PLAYER — ثابت فوق */
+.player-wrap{margin-bottom:20px;display:block;}
+.player-placeholder{aspect-ratio:16/9;border-radius:18px;background:rgba(13,92,72,.08);border:2px dashed rgba(13,92,72,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+.player-placeholder-icon{font-size:36px;opacity:.4;}
+.player-placeholder-text{font-size:13px;color:var(--muted);font-weight:700;}
+.player-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .player-label-dot{width:8px;height:8px;border-radius:50%;background:var(--accentlt);flex-shrink:0;}
-.player-label-text{font-size:13px;font-weight:800;color:var(--teal);}
+.player-label-text{font-size:13px;font-weight:800;color:var(--teal);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .player-frame{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 12px 40px rgba(0,0,0,.3);}
 .player-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .player-title{font-size:15px;font-weight:800;color:var(--text);margin-top:12px;}
@@ -150,8 +153,23 @@ h1 span{color:var(--accentlt);}
       <button class="btn-unlock" onclick="openModal('access')">دخول ↗</button>
     </div>
 
+    <!-- VIDEO PLAYER — ثابت فوق -->
+    <div class="player-wrap" id="playerWrap">
+      <div class="player-label">
+        <div class="player-label-dot"></div>
+        <div class="player-label-text" id="playerLabel">اختر محاضرة من القائمة أدناه</div>
+      </div>
+      <div class="player-frame" id="playerFrame">
+        <div class="player-placeholder" id="playerPlaceholder">
+          <div class="player-placeholder-icon">▶</div>
+          <div class="player-placeholder-text">اضغط على أي محاضرة لتشغيلها</div>
+        </div>
+        <iframe id="playerIframe" src="" allowfullscreen allow="autoplay; fullscreen" style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+      </div>
+    </div>
+
     <!-- VIDEO LIST -->
-    <div class="sec-label"><span>قائمة المحاضرات</span><div class="sec-line"></div></div>
+    <div class="sec-label" style="margin-top:20px;"><span>قائمة المحاضرات</span><div class="sec-line"></div></div>
 
     <div id="loadingWrap" class="loading-wrap">
       <div class="loading-spin"></div>
@@ -162,18 +180,6 @@ h1 span{color:var(--accentlt);}
     <div class="empty" id="emptyWrap" style="display:none;">
       <div class="empty-icon">📭</div>
       <div class="empty-text">لا يوجد محتوى متاح حالياً</div>
-    </div>
-
-    <!-- VIDEO PLAYER -->
-    <div class="player-wrap" id="playerWrap">
-      <div class="player-label">
-        <div class="player-label-dot"></div>
-        <div class="player-label-text" id="playerLabel">يتم التشغيل</div>
-      </div>
-      <div class="player-frame">
-        <iframe id="playerFrame" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
-      </div>
-      <div class="player-title" id="playerTitle"></div>
     </div>
 
   </div>
@@ -322,11 +328,7 @@ function onVidClick(i) {
   }
 
   if (activeIndex === i) {
-    // toggle off
-    activeIndex = -1;
-    document.getElementById('playerWrap').style.display = 'none';
-    document.getElementById('playerFrame').src = '';
-    renderList();
+    // نفس الفيديو — ما نسوي شيء
     return;
   }
 
@@ -336,23 +338,30 @@ function onVidClick(i) {
 }
 
 function playVideo(v) {
-  const wrap  = document.getElementById('playerWrap');
-  const frame = document.getElementById('playerFrame');
-  const title = document.getElementById('playerTitle');
-  const label = document.getElementById('playerLabel');
+  const iframe      = document.getElementById('playerIframe');
+  const placeholder = document.getElementById('playerPlaceholder');
+  const label       = document.getElementById('playerLabel');
 
   // تحويل رابط Vimeo للـ embed
   let src = v.url;
   if (src.includes('vimeo.com') && !src.includes('player.vimeo.com')) {
-    const id = src.match(/vimeo\.com\/(\d+)/);
-    if (id) src = 'https://player.vimeo.com/video/' + id[1] + '?autoplay=1&color=0D5C48';
+    const match = src.match(/vimeo\.com\/(\d+)(?:\/([a-zA-Z0-9]+))?/);
+    if (match) {
+      src = 'https://player.vimeo.com/video/' + match[1];
+      if (match[2]) src += '?h=' + match[2] + '&autoplay=1';
+      else src += '?autoplay=1';
+      src += '&color=0D5C48';
+    }
   }
 
-  frame.src   = src;
-  title.textContent = v.name;
-  label.textContent = v.name;
-  wrap.style.display = 'block';
-  wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // أظهر الـ iframe واخفي الـ placeholder
+  placeholder.style.display = 'none';
+  iframe.style.display      = 'block';
+  iframe.src                = src;
+  label.textContent         = v.name;
+
+  // scroll للأعلى عشان يشوف الفيديو
+  document.getElementById('playerWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ═══════════════════════════════════════════════
