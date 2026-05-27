@@ -452,6 +452,7 @@ function updateAccessBar(phone) {
   bar.innerHTML = `
     <div class="access-bar-text">✅ <strong>مرحباً!</strong> اشتراكك مفعّل</div>
     <div style="font-size:12px;color:var(--free);font-weight:700;">${phone}</div>`;
+  buildQuestions(); // أعد بناء الأسئلة بعد تفعيل الوصول
 }
 
 // ═══════════════════════════════════════════════
@@ -538,7 +539,13 @@ function switchTab(tab) {
   document.getElementById('pane-' + tab).classList.add('active');
 }
 
-function toggleChapter(el) {
+function toggleChapter(el, idx) {
+  const isFree = idx === 0; // الفصل الأول مجاني
+  if (!hasAccess && !isFree) {
+    document.getElementById('feeAmount').textContent = SUB_FEE;
+    openModal('subscribe');
+    return;
+  }
   const lessons = el.nextElementSibling;
   const arrow   = el.querySelector('span:last-child');
   const isOpen  = lessons.style.display !== 'none';
@@ -835,11 +842,12 @@ function buildQuestions() {
     const totalQ = ch.lessons.reduce((s, l) => s + l.items.length, 0);
     return `
     <div class="chapter-block">
-      <div class="chapter-header" onclick="toggleChapter(this)" style="cursor:pointer;user-select:none;">
+      <div class="chapter-header" onclick="toggleChapter(this, ${ci})" style="cursor:pointer;user-select:none;">
         <span style="font-size:18px;">📚</span>
         <div class="chapter-title" style="flex:1;">${ch.chapter}</div>
+        ${ci === 0 ? '<span style="font-size:10px;font-weight:800;background:rgba(255,255,255,.25);color:#fff;padding:3px 8px;border-radius:100px;">مجاني</span>' : ''}
         <span class="chapter-count">${totalQ} سؤال</span>
-        <span style="color:rgba(255,255,255,.7);font-size:12px;margin-right:6px;">▼</span>
+        <span style="color:rgba(255,255,255,.7);font-size:12px;margin-right:6px;">${(hasAccess || ci === 0) ? '▼' : '🔒'}</span>
       </div>
       <div class="chapter-lessons" style="display:none;">
       ${ch.lessons.map((lesson, li) => `
