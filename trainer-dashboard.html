@@ -75,6 +75,20 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .action-card .arrow { margin-right:auto; color:var(--crimson); opacity:.4; transition:all .25s; }
 .action-card:hover .arrow { opacity:1; transform:translateX(-4px); }
 
+/* حجوزاتي */
+.section-title .count-badge { display:inline-block; background:var(--crimson); color:#fff; font-size:12px; font-weight:800; border-radius:100px; padding:2px 11px; margin-right:8px; letter-spacing:0; }
+.bk-card { background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:12px; }
+.bk-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.bk-title { font-size:16px; font-weight:900; color:var(--text); }
+.bk-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); font-weight:600; }
+.bk-meta span { display:inline-flex; align-items:center; gap:5px; }
+.bk-status { font-size:12px; font-weight:800; padding:5px 13px; border-radius:100px; white-space:nowrap; }
+.st-done    { background:#e8f5e9; color:#1A7A3A; }
+.st-pending { background:#fff8e1; color:#B8860B; }
+.st-warn    { background:#fff3e0; color:#B85C00; }
+.st-reject  { background:#fdecea; color:#C62828; }
+.bk-empty { text-align:center; padding:26px; color:var(--muted); font-size:14px; font-weight:600; background:#fff; border-radius:16px; border:1.5px dashed rgba(92,15,15,.18); line-height:1.7; }
+
 footer { background:#3A0808; padding:24px; text-align:center; }
 footer p { font-size:13px; color:rgba(255,255,255,.28); }
 @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
@@ -143,6 +157,13 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
         <div class="txt"><h3>المادة التدريبية</h3><p>ارفع مادتك التدريبية لاعتمادها</p></div>
         <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
       </a>
+    </div>
+
+    <div class="section-title" style="margin-top:30px;">حجوزاتي
+      <span class="count-badge" id="bkCount" style="display:none;"></span>
+    </div>
+    <div id="bookingsBox">
+      <div class="bk-empty">جاري تحميل حجوزاتك...</div>
     </div>
   </div>
 
@@ -247,6 +268,57 @@ function showDashboard(m) {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('dashScreen').style.display  = 'block';
   window.scrollTo(0, 0);
+  loadMyBookings(m.memberId || '');
+}
+
+/* ===== حجوزات المدرب من ورقة "طلبات الحجز" ===== */
+function statusInfo(st) {
+  st = String(st || '').trim();
+  if (st === 'تم')     return { label: 'تم الاعتماد ✓', cls: 'st-done' };
+  if (st === 'مرفوض')  return { label: 'مرفوض',          cls: 'st-reject' };
+  if (st === 'تنبيه')  return { label: 'تنبيه',          cls: 'st-warn' };
+  return { label: st || 'قيد المراجعة', cls: 'st-pending' };
+}
+
+function loadMyBookings(memberId) {
+  var box   = document.getElementById('bookingsBox');
+  var badge = document.getElementById('bkCount');
+  box.innerHTML = '<div class="bk-empty">جاري تحميل حجوزاتك...</div>';
+  badge.style.display = 'none';
+  if (!memberId) { box.innerHTML = '<div class="bk-empty">لا توجد حجوزات.</div>'; return; }
+
+  var cbName = 'cb_bk_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+  var timer  = setTimeout(function(){ if (done) return; done = true; cleanup(); fail(); }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    var list = (res && res.bookings) ? res.bookings : [];
+    if (!list.length) {
+      box.innerHTML = '<div class="bk-empty">لا توجد حجوزات بعد — قدّم طلب حجز من خدمة «حجز مواعيد الدورات» بالأعلى.</div>';
+      return;
+    }
+    badge.textContent = list.length; badge.style.display = 'inline-block';
+    box.innerHTML = list.map(function(b) {
+      var s = statusInfo(b.status);
+      var meta = [];
+      if (b.date)   meta.push('<span>📅 ' + b.date   + '</span>');
+      if (b.system) meta.push('<span>🖥️ ' + b.system + '</span>');
+      if (b.time)   meta.push('<span>🕐 ' + b.time   + '</span>');
+      return '<div class="bk-card"><div class="bk-top">' +
+               '<div class="bk-title">' + (b.course || 'دورة') + '</div>' +
+               '<span class="bk-status ' + s.cls + '">' + s.label + '</span>' +
+             '</div><div class="bk-meta">' + meta.join('') + '</div></div>';
+    }).join('');
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
+
+  function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل الحجوزات — حدّث الصفحة وحاول مجدداً.</div>'; }
+
+  script.src = SCRIPT_URL + '?action=myBookings&memberId=' + encodeURIComponent(memberId) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
 }
 
 function logout() {
