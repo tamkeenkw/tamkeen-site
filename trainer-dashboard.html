@@ -3,684 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة تحكم المدرب | معهد تمكين</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>معهد تمكين — لوحة تحكم المدرب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--cr:#5C0F0F;--cr2:#7A1414;--cream:#FAF7F2;--cream2:#F0E9E0;--text:#1A0808;--muted:#7A6060;--green:#1A7A3A}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;background:var(--cream);min-height:100vh}
-
-/* NAV */
-.nav{background:var(--cr);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.nav-brand{font-size:18px;font-weight:900;color:#fff}
-.nav-sub{font-size:11px;color:rgba(255,255,255,.45);font-weight:600}
-
-/* LOGIN SCREEN */
-.login-wrap{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:var(--cr);padding:40px 20px;position:relative;
+:root {
+  --crimson:   #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream:     #FAF7F2;
+  --text:      #1A0808;
+  --muted:     #7A6060;
 }
-.login-wrap::before{
-  content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+
+/* ===== شاشة الدخول ===== */
+.login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  background:var(--crimson);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;
 }
-.login-card{
-  position:relative;z-index:1;
-  background:var(--cream);border-radius:24px;
-  padding:clamp(28px,5vw,44px);
-  width:100%;max-width:420px;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
+.login-card { background:#fff; border-radius:24px; padding:44px 36px; max-width:420px; width:100%; box-shadow:0 16px 60px rgba(0,0,0,.25); text-align:center; animation:fadeUp .5s ease both; }
+.login-card .logo { font-size:26px; font-weight:900; color:var(--crimson); margin-bottom:6px; }
+.login-card .sub { font-size:14px; color:var(--muted); margin-bottom:30px; }
+.login-card h2 { font-size:19px; font-weight:800; margin-bottom:8px; }
+.login-card .desc { font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.7; }
+.login-card input { width:100%; padding:15px 18px; border:1.5px solid #DDD6C8; border-radius:14px; font-family:'Tajawal',sans-serif; font-size:17px; text-align:center; letter-spacing:.05em; background:var(--cream); outline:none; transition:all .22s; margin-bottom:8px; }
+.login-card input:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.08); background:#fff; }
+.login-card input.invalid { border-color:#dc2626; }
+.login-err { font-size:13px; color:#dc2626; min-height:20px; margin-bottom:8px; font-weight:600; }
+.login-btn { width:100%; padding:16px; background:var(--crimson); color:#fff; border:none; border-radius:14px; font-family:'Tajawal',sans-serif; font-size:18px; font-weight:900; cursor:pointer; transition:all .28s; box-shadow:0 8px 24px rgba(92,15,15,.22); display:flex; align-items:center; justify-content:center; gap:10px; }
+.login-btn:hover { background:var(--crimson-2); transform:translateY(-2px); }
+.login-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+.spinner { display:none; width:22px; height:22px; border:2.5px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ===== لوحة التحكم ===== */
+.dash { display:none; }
+.dash-hero { background:var(--crimson); padding:54px 24px 90px; position:relative; overflow:hidden;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;
 }
-.login-logo{text-align:center;margin-bottom:24px}
-.login-logo-name{font-size:22px;font-weight:900;color:var(--cr)}
-.login-logo-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.login-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;text-align:center}
-.login-desc{font-size:14px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.7}
-.field label{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:7px}
-.field input{
-  width:100%;background:#fff;border:1.5px solid rgba(92,15,15,.1);
-  border-radius:14px;padding:14px 18px;font-family:'Cairo',sans-serif;
-  font-size:16px;color:var(--text);outline:none;transition:all .25s;direction:ltr;text-align:center;
-  letter-spacing:2px;font-weight:700;
-}
-.field input:focus{border-color:var(--cr);box-shadow:0 0 0 3px rgba(92,15,15,.06)}
-.field input::placeholder{color:rgba(122,96,96,.35);letter-spacing:0;font-weight:400;direction:rtl}
-.err-msg{background:rgba(139,26,26,.08);border:1.5px solid rgba(139,26,26,.15);border-radius:12px;padding:11px 16px;font-size:13px;font-weight:600;color:#8B1A1A;margin-top:14px;display:none;text-align:center}
-.err-msg.show{display:block}
-.btn-login{
-  width:100%;background:var(--cr);color:#fff;font-family:'Cairo',sans-serif;
-  font-size:17px;font-weight:900;padding:16px;border-radius:100px;border:none;
-  cursor:pointer;transition:all .28s;box-shadow:0 6px 20px rgba(92,15,15,.25);
-  margin-top:18px;display:flex;align-items:center;justify-content:center;gap:10px;
-}
-.btn-login:hover{background:var(--cr2);transform:translateY(-2px)}
-.btn-login:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
+.dash-hero-inner { max-width:760px; margin:0 auto; position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; }
+.dash-hero .welcome { font-size:14px; color:rgba(255,255,255,.6); margin-bottom:4px; }
+.dash-hero .tname { font-size:clamp(22px,4vw,30px); font-weight:900; color:#fff; }
+.logout-btn { background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.2); color:rgba(255,255,255,.85); padding:9px 18px; border-radius:100px; font-family:'Tajawal',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all .25s; white-space:nowrap; }
+.logout-btn:hover { background:rgba(255,255,255,.18); color:#fff; }
 
-/* DASHBOARD */
-.dash{display:none}
-.dash-header{background:var(--cr);padding:clamp(28px,5vw,48px) clamp(20px,5vw,48px) clamp(40px,7vw,64px);position:relative;overflow:hidden}
-.dash-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%);background-size:44px 44px}
-.dash-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.dash-hi{font-size:14px;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:4px}
-.dash-name{font-size:clamp(22px,4vw,32px);font-weight:900;color:#fff}
-.dash-id{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
-.dash-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:8px 20px;font-size:12px;font-weight:700;color:rgba(255,255,255,.8)}
+.dash-body { max-width:760px; margin:-60px auto 0; padding:0 24px 60px; position:relative; z-index:3; }
 
-/* CARDS */
-.dash-body{max-width:900px;margin:-32px auto 0;padding:0 clamp(16px,3vw,32px) 60px;position:relative;z-index:2}
-.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:600px){.cards-grid{grid-template-columns:1fr}}
-.card{background:#fff;border-radius:20px;padding:24px;border:1.5px solid rgba(92,15,15,.07);box-shadow:0 4px 20px rgba(92,15,15,.06);cursor:pointer;transition:all .25s;display:flex;flex-direction:column}
-.card:hover{border-color:rgba(92,15,15,.2);transform:translateY(-3px);box-shadow:0 10px 32px rgba(92,15,15,.12)}
-.card-icon{width:52px;height:52px;border-radius:14px;background:rgba(92,15,15,.07);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-.card-icon svg{width:26px;height:26px;fill:var(--cr)}
-.card-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:6px}
-.card-desc{font-size:13px;color:var(--muted);line-height:1.7;flex:1}
-.card-arrow{margin-top:16px;font-size:13px;font-weight:700;color:var(--cr);display:flex;align-items:center;gap:6px}
+/* بطاقة بيانات العضوية */
+.member-card { background:#fff; border-radius:22px; padding:28px 30px; box-shadow:0 10px 40px rgba(92,15,15,.1); border:1.5px solid rgba(92,15,15,.07); margin-bottom:30px; }
+.member-card .mc-head { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.member-card .mc-head .dot { width:10px; height:10px; border-radius:50%; }
+.member-card .mc-head .lbl { font-size:13px; font-weight:800; }
+.badge-active { color:#1A7A3A; } .dot-active { background:#1A7A3A; }
+.badge-expired { color:#C62828; } .dot-expired { background:#C62828; }
+.mc-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
+@media (max-width:520px) { .mc-grid { grid-template-columns:1fr; gap:14px; } }
+.mc-item .k { font-size:12px; color:var(--muted); font-weight:700; margin-bottom:4px; }
+.mc-item .v { font-size:16px; font-weight:800; color:var(--text); }
 
-/* ─── FULL-PAGE SECTION ─── */
-.page-section{display:none;animation:fadeUp .35s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* بطاقات الإجراءات */
+.section-title { font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--crimson); margin:0 4px 16px; }
+.actions { display:grid; grid-template-columns:1fr; gap:14px; }
+.action-card { display:flex; align-items:center; gap:18px; background:#fff; border-radius:18px; padding:22px 24px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); text-decoration:none; color:inherit; transition:all .25s; cursor:pointer; }
+.action-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(92,15,15,.14); border-color:rgba(92,15,15,.18); }
+.action-card .ico { width:54px; height:54px; flex-shrink:0; background:var(--crimson); border-radius:14px; display:flex; align-items:center; justify-content:center; }
+.action-card .ico svg { width:26px; height:26px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.action-card .txt h3 { font-size:17px; font-weight:900; margin-bottom:3px; }
+.action-card .txt p { font-size:13px; color:var(--muted); line-height:1.6; }
+.action-card .arrow { margin-right:auto; color:var(--crimson); opacity:.4; transition:all .25s; }
+.action-card:hover .arrow { opacity:1; transform:translateX(-4px); }
 
-.page-hero{
-  background:var(--cr);padding:clamp(28px,5vw,48px) clamp(20px,5vw,48px);
-  position:relative;overflow:hidden;
-}
-.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%);background-size:44px 44px}
-.page-hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
-.back-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  color:rgba(255,255,255,.65);font-size:13px;font-weight:700;
-  border:1.5px solid rgba(255,255,255,.2);padding:8px 18px;border-radius:100px;
-  cursor:pointer;background:transparent;font-family:'Cairo',sans-serif;
-  margin-bottom:20px;transition:all .2s;
-}
-.back-btn:hover{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.07)}
-.page-tag{display:inline-block;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:5px 18px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:14px}
-.page-hero h1{font-size:clamp(26px,5vw,40px);font-weight:900;color:#fff;line-height:1.25;margin-bottom:8px}
-.page-hero p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.8}
-
-.page-body{max-width:700px;margin:0 auto;padding:clamp(32px,5vw,56px) clamp(16px,3vw,32px) 60px}
-
-/* FORM CARD */
-.form-card{background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(92,15,15,.09);border:1.5px solid rgba(92,15,15,.07);overflow:hidden}
-.form-card-head{background:var(--cr);padding:22px 32px;position:relative;overflow:hidden}
-.form-card-head::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%);background-size:36px 36px}
-.form-card-head>*{position:relative;z-index:1}
-.form-card-head h2{font-size:18px;font-weight:900;color:#fff;margin-bottom:3px}
-.form-card-head p{font-size:12px;color:rgba(255,255,255,.5)}
-.form-card-body{padding:clamp(20px,4vw,36px)}
-
-/* MEMBER BADGE */
-.member-badge{background:rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.mb-avatar{width:40px;height:40px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.mb-avatar svg{width:20px;height:20px;fill:#fff}
-.mb-name{font-size:15px;font-weight:900;color:var(--text)}
-.mb-id{font-size:12px;color:var(--muted);margin-top:2px}
-
-/* FIELDS */
-.mf{margin-bottom:17px}
-.mf label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
-.mf label .req{color:var(--cr);margin-left:2px}
-.mf input,.mf select,.mf textarea{width:100%;padding:13px 16px;border:1.5px solid rgba(92,15,15,.12);border-radius:12px;font-family:'Cairo',sans-serif;font-size:15px;color:var(--text);background:var(--cream);outline:none;transition:all .2s}
-.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--cr);box-shadow:0 0 0 3px rgba(92,15,15,.07);background:#fff}
-.mf input::placeholder,.mf textarea::placeholder{color:rgba(122,96,96,.4)}
-.mf textarea{resize:vertical;min-height:90px;line-height:1.7}
-.mf select{appearance:none;cursor:pointer}
-.mf.invalid input,.mf.invalid select,.mf.invalid textarea{border-color:#dc2626}
-.mf .err{font-size:12px;color:#dc2626;margin-top:4px;display:none}
-.mf.invalid .err{display:block}
-
-.section-sep{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--cr);margin:22px 0 15px;display:flex;align-items:center;gap:8px}
-.section-sep::after{content:'';flex:1;height:1px;background:rgba(92,15,15,.1)}
-
-/* FILE ZONE */
-.file-zone{border:2px dashed rgba(92,15,15,.18);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .25s;background:var(--cream);position:relative}
-.file-zone:hover,.file-zone.dragover{border-color:var(--cr);background:rgba(92,15,15,.03)}
-.file-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border:none;padding:0}
-.fz-icon{display:flex;justify-content:center;margin-bottom:10px}
-.fz-icon svg{width:34px;height:34px;stroke:var(--cr);stroke-width:1.5;fill:none}
-.file-zone p{font-size:14px;color:var(--muted);line-height:1.6}
-.file-zone p strong{color:var(--cr);font-weight:800}
-.file-picked{margin-top:12px;padding:10px 16px;background:rgba(92,15,15,.06);border-radius:10px;font-size:13px;font-weight:700;color:var(--cr);display:none;word-break:break-all}
-.file-picked.show{display:block}
-
-/* SUBMIT */
-.btn-submit-full{
-  width:100%;padding:16px;background:var(--cr);color:#fff;border:none;
-  border-radius:14px;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;
-  cursor:pointer;transition:all .28s;margin-top:8px;
-  box-shadow:0 8px 24px rgba(92,15,15,.2);
-  display:flex;align-items:center;justify-content:center;gap:10px;
-}
-.btn-submit-full:hover{background:var(--cr2);transform:translateY(-2px);box-shadow:0 14px 36px rgba(92,15,15,.28)}
-.btn-submit-full:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-spinner{display:none;width:22px;height:22px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-
-/* SUCCESS */
-.success-wrap{display:none;text-align:center;padding:44px 24px}
-.s-circle{width:76px;height:76px;background:linear-gradient(135deg,#1a5c32,#2d8a52);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 10px 28px rgba(26,92,50,.3)}
-.s-circle svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.s-title{font-size:24px;font-weight:900;color:#1a5c32;margin-bottom:8px}
-.s-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:20px}
-.btn-again{padding:13px 32px;background:var(--cr);color:#fff;border:none;border-radius:100px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .25s}
-.btn-again:hover{background:var(--cr2);transform:translateY(-2px)}
-
-/* DOWNLOAD */
-.download-card{background:var(--cream2);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-bottom:16px;text-decoration:none;transition:all .2s;border:1.5px solid rgba(92,15,15,.1)}
-.download-card:hover{border-color:var(--cr);background:#fff}
-.dl-icon{width:44px;height:44px;border-radius:12px;background:var(--cr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dl-icon svg{width:22px;height:22px;fill:#fff}
-.dl-name{font-size:15px;font-weight:800;color:var(--text)}
-.dl-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.dl-arr{margin-right:auto;font-size:18px;color:var(--cr);font-weight:700;flex-shrink:0}
-
-/* MODAL (download only) */
-.modal-overlay{position:fixed;inset:0;background:rgba(26,8,8,.6);z-index:100;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
-.modal-overlay.open{display:flex}
-@media(min-width:600px){.modal-overlay{align-items:center}}
-.modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;padding:clamp(24px,5vw,36px)}
-@media(min-width:600px){.modal{border-radius:24px}}
-.modal-handle{width:40px;height:4px;background:rgba(92,15,15,.15);border-radius:100px;margin:0 auto 20px}
-@media(min-width:600px){.modal-handle{display:none}}
-.modal-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px}
-.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7}
-.btn-cancel{width:100%;background:transparent;color:var(--muted);font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;padding:12px;border-radius:100px;border:1.5px solid rgba(92,15,15,.1);cursor:pointer;transition:all .2s;margin-top:8px}
-.btn-cancel:hover{border-color:rgba(92,15,15,.25)}
-
-footer{background:var(--cr);padding:20px;text-align:center;margin-top:0}
-footer p{font-size:11px;color:rgba(255,255,255,.3)}
-footer a{color:rgba(255,255,255,.4);text-decoration:none}
+footer { background:#3A0808; padding:24px; text-align:center; }
+footer p { font-size:13px; color:rgba(255,255,255,.28); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-brand">تمكين</div>
-  <div class="nav-sub">لوحة تحكم المدرب</div>
-</nav>
-
-<!-- ═══════════════ LOGIN ═══════════════ -->
-<div class="login-wrap" id="loginWrap">
+<!-- شاشة الدخول -->
+<div class="login-wrap" id="loginScreen">
   <div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-name">معهد تمكين</div>
-      <div class="login-logo-sub">إيديوكلاود للتدريب الأهلي</div>
-    </div>
-    <div class="login-title">أدخل رقم عضويتك</div>
-    <div class="login-desc">للوصول للوحة التحكم وإدارة دوراتك ومواد تدريبك</div>
-    <div class="field">
-      <label>رقم العضوية</label>
-      <input type="text" id="memberIdInput" placeholder="مثال: TM256-01" autocomplete="off"
-        onkeydown="if(event.key==='Enter') doLogin()">
-    </div>
-    <div class="err-msg" id="loginErr">رقم العضوية غير صحيح — تحقق وحاول مجدداً</div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">
-      <span id="loginTxt">دخول ←</span>
-      <div class="spin" id="loginSpin"></div>
+    <div class="logo">معهد تمكين</div>
+    <div class="sub">لوحة تحكم المدرب</div>
+    <h2>تسجيل الدخول</h2>
+    <p class="desc">أدخل رقم عضويتك للوصول إلى لوحتك</p>
+    <input type="text" id="memberInput" placeholder="رقم العضوية" autocomplete="off">
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">
+      <span id="loginTxt">دخول</span>
+      <div class="spinner" id="loginSpinner"></div>
     </button>
   </div>
 </div>
 
-<!-- ═══════════════ DASHBOARD ═══════════════ -->
-<div class="dash" id="dashboard">
-  <div class="dash-header">
-    <div class="dash-inner">
-      <div class="dash-welcome">
-        <div class="dash-hi">أهلاً وسهلاً</div>
-        <div class="dash-name" id="dashName">—</div>
-        <div class="dash-id" id="dashId">—</div>
+<!-- لوحة التحكم -->
+<div class="dash" id="dashScreen">
+  <div class="dash-hero">
+    <div class="dash-hero-inner">
+      <div>
+        <div class="welcome">مرحباً بك 👋</div>
+        <div class="tname" id="dashName">—</div>
       </div>
-      <div class="dash-badge">عضو معهد تمكين</div>
+      <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
     </div>
   </div>
 
   <div class="dash-body">
-    <div class="cards-grid">
-
-      <div class="card" onclick="showSection('booking')">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
-        </div>
-        <div class="card-title">حجز موعد دورة تدريبية</div>
-        <div class="card-desc">احجز موعدك في الدورات المتاحة — حضوري أو أونلاين</div>
-        <div class="card-arrow">احجز الآن ←</div>
+    <div class="member-card">
+      <div class="mc-head">
+        <span class="dot" id="statusDot"></span>
+        <span class="lbl" id="statusLbl"></span>
       </div>
-
-      <div class="card" onclick="showSection('material')">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
-        </div>
-        <div class="card-title">رفع مادة تدريبية</div>
-        <div class="card-desc">ارفع مادتك التدريبية لمراجعتها واعتمادها من معهد تمكين</div>
-        <div class="card-arrow">ارفع المادة ←</div>
+      <div class="mc-grid">
+        <div class="mc-item"><div class="k">اسم المدرب</div><div class="v" id="vName">—</div></div>
+        <div class="mc-item"><div class="k">رقم العضوية</div><div class="v" id="vId">—</div></div>
+        <div class="mc-item"><div class="k">تاريخ العضوية</div><div class="v" id="vStart">—</div></div>
+        <div class="mc-item"><div class="k">تاريخ الانتهاء</div><div class="v" id="vEnd">—</div></div>
       </div>
+    </div>
 
-      <div class="card" onclick="document.getElementById('modal-download').classList.add('open')">
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        </div>
-        <div class="card-title">نماذج الاعتماد</div>
-        <div class="card-desc">حمّل نماذج اعتماد المواد التدريبية الرسمية</div>
-        <div class="card-arrow">تحميل النماذج ←</div>
-      </div>
+    <div class="section-title">الخدمات</div>
+    <div class="actions">
+      <a class="action-card" id="cardBooking">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="txt"><h3>حجز مواعيد الدورات</h3><p>قدّم طلب حجز موعد لدورتك التدريبية</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
 
+      <a class="action-card" id="cardAttend">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="txt"><h3>حضور الجلسات التدريبية</h3><p>سجّل حضورك للجلسات التدريبية</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
+
+      <a class="action-card" id="cardMaterial">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg></div>
+        <div class="txt"><h3>المادة التدريبية</h3><p>ارفع مادتك التدريبية لاعتمادها</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
     </div>
   </div>
+
+  <footer><p>© 2026 معهد تمكين</p></footer>
 </div>
-
-<!-- ═══════════════ BOOKING SECTION ═══════════════ -->
-<div class="page-section" id="section-booking">
-  <div class="page-hero">
-    <div class="page-hero-inner">
-      <button class="back-btn" onclick="showDashboard()">→ لوحة التحكم</button>
-      <div class="page-tag">حجز الدورات</div>
-      <h1>حجز موعد دورة تدريبية</h1>
-      <p>احجز موعدك في الدورات المتاحة — حضوري أو أونلاين</p>
-    </div>
-  </div>
-  <div class="page-body">
-    <div class="form-card">
-      <div class="form-card-head">
-        <h2>بيانات الحجز</h2>
-        <p>تأكد من إدخال جميع البيانات بشكل صحيح</p>
-      </div>
-      <div class="form-card-body">
-
-        <!-- Member badge -->
-        <div class="member-badge">
-          <div class="mb-avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          </div>
-          <div>
-            <div class="mb-name" id="b-badge-name">—</div>
-            <div class="mb-id" id="b-badge-id">—</div>
-          </div>
-        </div>
-
-        <!-- Booking form -->
-        <div id="booking-form-wrap">
-          <div class="section-sep">بيانات الدورة</div>
-
-          <div class="mf" id="mf-b-course">
-            <label><span class="req">*</span> عنوان الدورة</label>
-            <input type="text" id="b-course" placeholder="عنوان الدورة التي ستقدمها">
-            <div class="err">يرجى إدخال عنوان الدورة</div>
-          </div>
-
-          <div class="mf" id="mf-b-type">
-            <label><span class="req">*</span> نوع الدورة</label>
-            <select id="b-type">
-              <option value="">اختر النوع</option>
-              <option>وفق الجدول</option>
-              <option>خاصة</option>
-            </select>
-            <div class="err">يرجى اختيار نوع الدورة</div>
-          </div>
-
-          <div class="mf" id="mf-b-system">
-            <label><span class="req">*</span> نظام التدريب</label>
-            <select id="b-system">
-              <option value="">اختر النظام</option>
-              <option>حضوري</option>
-              <option>أونلاين</option>
-            </select>
-            <div class="err">يرجى اختيار نظام التدريب</div>
-          </div>
-
-          <div class="section-sep">التوقيت والموعد</div>
-
-          <div class="mf">
-            <label>التوقيت المفضل</label>
-            <input type="text" id="b-time" placeholder="مثال: ٥–٧ مساءً">
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="mf">
-              <label>تاريخ البدء</label>
-              <input type="date" id="b-date-start">
-            </div>
-            <div class="mf">
-              <label>تاريخ الانتهاء</label>
-              <input type="date" id="b-date-end">
-            </div>
-          </div>
-
-          <div class="mf">
-            <label>ملاحظات إضافية</label>
-            <textarea id="b-notes" placeholder="أي تفاصيل أو متطلبات خاصة..."></textarea>
-          </div>
-
-          <button class="btn-submit-full" id="b-btn" onclick="submitBooking()">
-            <span id="b-txt">إرسال طلب الحجز ←</span>
-            <div class="btn-spinner" id="b-spin"></div>
-          </button>
-        </div>
-
-        <!-- Success -->
-        <div class="success-wrap" id="booking-success">
-          <div class="s-circle">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="s-title">تم إرسال طلب الحجز!</div>
-          <p class="s-desc">سيتواصل معك فريق تمكين لتأكيد الموعد</p>
-          <button class="btn-again" onclick="resetBooking()">حجز موعد آخر</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MATERIAL SECTION ═══════════════ -->
-<div class="page-section" id="section-material">
-  <div class="page-hero">
-    <div class="page-hero-inner">
-      <button class="back-btn" onclick="showDashboard()">→ لوحة التحكم</button>
-      <div class="page-tag">بوابة المدربين</div>
-      <h1>رفع المواد التدريبية</h1>
-      <p>ارفع مادتك التدريبية وسيتم مراجعتها وإضافتها لمنصة تمكين</p>
-    </div>
-  </div>
-  <div class="page-body">
-    <div class="form-card">
-      <div class="form-card-head">
-        <h2>بيانات المادة التدريبية</h2>
-        <p>تأكد من إدخال جميع البيانات بشكل صحيح</p>
-      </div>
-      <div class="form-card-body">
-
-        <!-- Member badge -->
-        <div class="member-badge">
-          <div class="mb-avatar">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-          </div>
-          <div>
-            <div class="mb-name" id="m-badge-name">—</div>
-            <div class="mb-id" id="m-badge-id">—</div>
-          </div>
-        </div>
-
-        <!-- Material form -->
-        <div id="material-form-wrap">
-          <div class="section-sep">بيانات المادة</div>
-
-          <div class="mf" id="mf-m-course">
-            <label><span class="req">*</span> اسم المادة التدريبية</label>
-            <input type="text" id="m-course" placeholder="مثال: مهارات القيادة الفعّالة">
-            <div class="err">يرجى إدخال اسم المادة</div>
-          </div>
-
-          <div class="mf" id="mf-m-hours">
-            <label><span class="req">*</span> عدد الساعات التدريبية</label>
-            <input type="number" id="m-hours" placeholder="مثال: 8" min="1">
-            <div class="err">يرجى إدخال عدد الساعات</div>
-          </div>
-
-          <div class="section-sep">ملف المادة</div>
-
-          <div class="mf" id="mf-m-file">
-            <label><span class="req">*</span> رفع ملف المادة</label>
-            <div class="file-zone" id="fileZone">
-              <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx,.mp4,.zip">
-              <div class="fz-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="16 16 12 12 8 16"/>
-                  <line x1="12" y1="12" x2="12" y2="21"/>
-                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
-                </svg>
-              </div>
-              <p><strong>اضغط لرفع الملف</strong> أو اسحب وأفلت هنا<br>
-              <small style="color:#b0aaa0;">PDF، PPT، Word، MP4، ZIP — حجم أقصى 10MB</small></p>
-            </div>
-            <div class="file-picked" id="filePicked"></div>
-            <div class="err">يرجى رفع ملف المادة</div>
-          </div>
-
-          <button class="btn-submit-full" id="m-btn" onclick="submitMaterial()">
-            <span id="m-txt">إرسال المادة التدريبية ←</span>
-            <div class="btn-spinner" id="m-spin"></div>
-          </button>
-        </div>
-
-        <!-- Success -->
-        <div class="success-wrap" id="material-success">
-          <div class="s-circle">
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="s-title">تم الإرسال بنجاح!</div>
-          <p class="s-desc">تم استلام مادتك التدريبية وسيتم مراجعتها من قِبل فريق تمكين</p>
-          <button class="btn-again" onclick="resetMaterial()">رفع مادة أخرى</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- DOWNLOAD MODAL -->
-<div class="modal-overlay" id="modal-download" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">نماذج الاعتماد</div>
-    <div class="modal-sub">حمّل النماذج الرسمية لاعتماد مواد التدريب</div>
-    <a href="https://drive.google.com/uc?export=download&id=1-cCOFIf2SusoKnObaxezJ-nJFyt1gM0J" class="download-card" target="_blank">
-      <div class="dl-icon"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
-      <div>
-        <div class="dl-name">نموذج اعتماد المادة التدريبية</div>
-        <div class="dl-sub">ملف PDF — يُرفع بعد التعبئة</div>
-      </div>
-      <div class="dl-arr">↓</div>
-    </a>
-    <button class="btn-cancel" onclick="document.getElementById('modal-download').classList.remove('open')">إغلاق</button>
-  </div>
-</div>
-
-<footer><p>معهد تمكين — <a href="https://tamkeenkuw.com">tamkeenkuw.com</a></p></footer>
 
 <script>
-const MAIN_SCRIPT   = 'https://script.google.com/macros/s/AKfycbxoFVtyySyJseEvtCnNvKZuwVSy_3p2E3_gzvYmMnGzfk9z6WvGlNH5otDFnBr679Kx/exec';
-const MATERIAL_SCRIPT = 'https://script.google.com/macros/s/AKfycbx3RZpK4s0hBnTunhT_l6_cS332IDsBoTPJOe9iJ_v3QwvDK5PBKbVhHR3fnwLZc1Gw/exec';
-let memberData = null;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
 
-/* ── LOGIN ── */
-async function doLogin(){
-  const id = document.getElementById('memberIdInput').value.trim().toUpperCase();
-  if(!id) return;
-  const err = document.getElementById('loginErr');
-  err.classList.remove('show');
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true;
-  document.getElementById('loginTxt').style.display = 'none';
-  document.getElementById('loginSpin').style.display = 'block';
-  try{
-    const res  = await fetch(`${MAIN_SCRIPT}?action=verify&memberId=${encodeURIComponent(id)}`);
-    const data = await res.json();
-    if(data.found){
-      memberData = data;
-      memberData.memberId = id;
-      showDashboard();
+/* ====== روابط صفحاتك الثلاث — عدّلها حسب أسماء ملفاتك ====== */
+const PAGES = {
+  booking:    'booking.html',     // حجز مواعيد الدورات
+  attendance: 'attendance.html',  // حضور الجلسات التدريبية
+  material:   'trainer.html'      // رفع / اعتماد المادة التدريبية
+};
+
+/* تمرير رقم العضوية للصفحة المقصودة (إن أرادت قراءته لاحقاً) */
+function goTo(url) {
+  var m = sessionStorage.getItem('tk_memberId') || '';
+  var sep = url.indexOf('?') > -1 ? '&' : '?';
+  window.location.href = m ? (url + sep + 'm=' + encodeURIComponent(m)) : url;
+}
+document.getElementById('cardBooking').addEventListener('click', function(){ goTo(PAGES.booking); });
+document.getElementById('cardAttend').addEventListener('click', function(){ goTo(PAGES.attendance); });
+document.getElementById('cardMaterial').addEventListener('click', function(){ goTo(PAGES.material); });
+
+/* السماح بالدخول بزر Enter */
+document.getElementById('memberInput').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
+  var input = document.getElementById('memberInput');
+  var err   = document.getElementById('loginErr');
+  var id    = input.value.trim();
+  input.classList.remove('invalid');
+  err.textContent = '';
+
+  if (!id) { input.classList.add('invalid'); err.textContent = 'يرجى إدخال رقم العضوية'; return; }
+
+  var btn = document.getElementById('loginBtn');
+  var txt = document.getElementById('loginTxt');
+  var sp  = document.getElementById('loginSpinner');
+  btn.disabled = true; sp.style.display = 'block'; txt.textContent = 'جاري التحقق...';
+
+  var cbName = 'cb_verify_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+
+  var timer = setTimeout(function(){
+    if (done) return; done = true; cleanup(); failLogin('انتهت مهلة الاتصال، حاول مجدداً');
+  }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    if (res && res.found) {
+      showDashboard(res);
     } else {
-      err.textContent = data.message || 'رقم العضوية غير صحيح';
-      err.classList.add('show');
-      btn.disabled = false;
-      document.getElementById('loginTxt').style.display  = 'block';
-      document.getElementById('loginSpin').style.display = 'none';
+      failLogin((res && res.message) ? res.message : 'رقم العضوية غير صحيح');
     }
-  } catch(e){
-    err.textContent = 'خطأ في الاتصال — حاول مجدداً';
-    err.classList.add('show');
-    btn.disabled = false;
-    document.getElementById('loginTxt').style.display  = 'block';
-    document.getElementById('loginSpin').style.display = 'none';
-  }
-}
-
-/* ── NAVIGATION ── */
-function showDashboard(){
-  document.getElementById('loginWrap').style.display    = 'none';
-  document.getElementById('dashboard').style.display    = 'block';
-  document.getElementById('section-booking').style.display  = 'none';
-  document.getElementById('section-material').style.display = 'none';
-  document.getElementById('dashName').textContent = memberData.name || '—';
-  document.getElementById('dashId').textContent   = 'رقم العضوية: ' + memberData.memberId;
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function showSection(name){
-  document.getElementById('dashboard').style.display    = 'none';
-  document.getElementById('section-booking').style.display  = 'none';
-  document.getElementById('section-material').style.display = 'none';
-  document.getElementById('section-' + name).style.display  = 'block';
-  // Fill member badge
-  const n = memberData.name || '—';
-  const id = memberData.memberId;
-  document.getElementById('b-badge-name').textContent = n;
-  document.getElementById('b-badge-id').textContent   = 'رقم العضوية: ' + id;
-  document.getElementById('m-badge-name').textContent = n;
-  document.getElementById('m-badge-id').textContent   = 'رقم العضوية: ' + id;
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-/* ── FILE UPLOAD ── */
-const fileZone  = document.getElementById('fileZone');
-const fileInput = document.getElementById('fileInput');
-const filePicked = document.getElementById('filePicked');
-
-fileZone.addEventListener('dragover',  e => { e.preventDefault(); fileZone.classList.add('dragover'); });
-fileZone.addEventListener('dragleave', () => fileZone.classList.remove('dragover'));
-fileZone.addEventListener('drop', e => {
-  e.preventDefault(); fileZone.classList.remove('dragover');
-  if(e.dataTransfer.files[0]){ fileInput.files = e.dataTransfer.files; pickFile(e.dataTransfer.files[0]); }
-});
-fileInput.addEventListener('change', () => {
-  if(!fileInput.files[0]) return;
-  if(fileInput.files[0].size > 10 * 1024 * 1024){ alert('حجم الملف كبير — الحد الأقصى 10MB'); fileInput.value=''; return; }
-  pickFile(fileInput.files[0]);
-});
-function pickFile(f){
-  filePicked.textContent = '📎 ' + f.name;
-  filePicked.classList.add('show');
-  document.getElementById('mf-m-file').classList.remove('invalid');
-}
-
-/* ── BOOKING SUBMIT ── */
-async function submitBooking(){
-  const course = document.getElementById('b-course').value.trim();
-  const type   = document.getElementById('b-type').value;
-  const system = document.getElementById('b-system').value;
-  let ok = true;
-  if(!course){ document.getElementById('mf-b-course').classList.add('invalid'); ok=false; }
-  else        { document.getElementById('mf-b-course').classList.remove('invalid'); }
-  if(!type){   document.getElementById('mf-b-type').classList.add('invalid');   ok=false; }
-  else        { document.getElementById('mf-b-type').classList.remove('invalid'); }
-  if(!system){ document.getElementById('mf-b-system').classList.add('invalid'); ok=false; }
-  else        { document.getElementById('mf-b-system').classList.remove('invalid'); }
-  if(!ok) return;
-
-  const btn = document.getElementById('b-btn');
-  btn.disabled = true;
-  document.getElementById('b-txt').style.display  = 'none';
-  document.getElementById('b-spin').style.display = 'block';
-
-  const payload = {
-    type:'حجز',
-    memberId:    memberData.memberId,
-    trainerName: memberData.name,
-    courseTitle: course,
-    courseType:  type,
-    system:      system,
-    time:        document.getElementById('b-time').value.trim() || '—',
-    dateStart:   document.getElementById('b-date-start').value || '—',
-    dateEnd:     document.getElementById('b-date-end').value   || '—',
-    message:     document.getElementById('b-notes').value.trim() || '—',
-    status:      'قيد المراجعة'
   };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); failLogin('تعذّر الاتصال بالخادم'); };
 
-  await fetch(MAIN_SCRIPT,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).catch(()=>{});
-  document.getElementById('booking-form-wrap').style.display = 'none';
-  document.getElementById('booking-success').style.display   = 'block';
-}
-
-function resetBooking(){
-  document.getElementById('b-course').value = '';
-  document.getElementById('b-type').value   = '';
-  document.getElementById('b-system').value = '';
-  document.getElementById('b-time').value   = '';
-  document.getElementById('b-date-start').value = '';
-  document.getElementById('b-date-end').value   = '';
-  document.getElementById('b-notes').value  = '';
-  document.getElementById('b-btn').disabled = false;
-  document.getElementById('b-txt').style.display  = 'block';
-  document.getElementById('b-spin').style.display = 'none';
-  document.getElementById('booking-form-wrap').style.display = 'block';
-  document.getElementById('booking-success').style.display   = 'none';
-}
-
-/* ── MATERIAL SUBMIT ── */
-async function submitMaterial(){
-  const course = document.getElementById('m-course').value.trim();
-  const hours  = document.getElementById('m-hours').value.trim();
-  const file   = fileInput.files[0];
-  let ok = true;
-  if(!course){ document.getElementById('mf-m-course').classList.add('invalid'); ok=false; }
-  else        { document.getElementById('mf-m-course').classList.remove('invalid'); }
-  if(!hours){  document.getElementById('mf-m-hours').classList.add('invalid');  ok=false; }
-  else        { document.getElementById('mf-m-hours').classList.remove('invalid'); }
-  if(!file){   document.getElementById('mf-m-file').classList.add('invalid');   ok=false; }
-  if(!ok) return;
-
-  const btn = document.getElementById('m-btn');
-  btn.disabled = true;
-  document.getElementById('m-txt').style.display  = 'none';
-  document.getElementById('m-spin').style.display = 'block';
-
-  try{
-    const fileBase64 = await toBase64(file);
-    const payload = {
-      type:         'مادة',
-      memberId:     memberData.memberId,
-      trainerName:  memberData.name,
-      courseName:   course,
-      hours:        hours,
-      fileName:     file.name,
-      fileMimeType: file.type,
-      fileBase64:   fileBase64.split(',')[1]
-    };
-    await fetch(MATERIAL_SCRIPT,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-    document.getElementById('material-form-wrap').style.display = 'none';
-    document.getElementById('material-success').style.display   = 'block';
-  } catch(e){
-    btn.disabled = false;
-    document.getElementById('m-txt').style.display  = 'block';
-    document.getElementById('m-spin').style.display = 'none';
-    alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مجدداً');
+  function cleanup() {
+    try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+    if (script.parentNode) script.parentNode.removeChild(script);
   }
+  function failLogin(msg) {
+    btn.disabled = false; sp.style.display = 'none'; txt.textContent = 'دخول';
+    input.classList.add('invalid'); err.textContent = msg;
+  }
+
+  script.src = SCRIPT_URL + '?action=verify&memberId=' + encodeURIComponent(id) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
 }
 
-function resetMaterial(){
-  document.getElementById('m-course').value = '';
-  document.getElementById('m-hours').value  = '';
-  fileInput.value = '';
-  filePicked.classList.remove('show');
-  filePicked.textContent = '';
-  document.getElementById('m-btn').disabled = false;
-  document.getElementById('m-txt').style.display  = 'block';
-  document.getElementById('m-spin').style.display = 'none';
-  document.getElementById('material-form-wrap').style.display = 'block';
-  document.getElementById('material-success').style.display   = 'none';
+function showDashboard(m) {
+  sessionStorage.setItem('tk_memberId', m.memberId || '');
+  document.getElementById('dashName').textContent = m.name || '—';
+  document.getElementById('vName').textContent  = m.name || '—';
+  document.getElementById('vId').textContent    = m.memberId || '—';
+  document.getElementById('vStart').textContent = m.startDate || '—';
+  document.getElementById('vEnd').textContent   = m.endDate || '—';
+
+  // حالة العضوية (سارية / منتهية) بناءً على تاريخ الانتهاء dd/MM/yyyy
+  var dot = document.getElementById('statusDot');
+  var lbl = document.getElementById('statusLbl');
+  var expired = false;
+  if (m.endDate) {
+    var p = String(m.endDate).split(/[\/\-]/);
+    if (p.length === 3) {
+      var d = new Date(p[2], p[1] - 1, p[0]); // يفترض dd/MM/yyyy
+      if (!isNaN(d.getTime())) expired = (d < new Date(new Date().toDateString()));
+    }
+  }
+  if (expired) {
+    dot.className = 'dot dot-expired'; lbl.className = 'lbl badge-expired'; lbl.textContent = '⚠ العضوية منتهية';
+  } else {
+    dot.className = 'dot dot-active'; lbl.className = 'lbl badge-active'; lbl.textContent = '● العضوية سارية';
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashScreen').style.display  = 'block';
+  window.scrollTo(0, 0);
 }
 
-function toBase64(file){
-  return new Promise((res,rej) => {
-    const r = new FileReader();
-    r.onload  = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  });
+function logout() {
+  sessionStorage.removeItem('tk_memberId');
+  document.getElementById('dashScreen').style.display  = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('memberInput').value = '';
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginTxt').textContent = 'دخول';
+  document.getElementById('loginSpinner').style.display = 'none';
 }
 </script>
 </body>
