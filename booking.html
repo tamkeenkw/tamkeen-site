@@ -399,7 +399,7 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
 const SHEET_ID   = '1ORUcqzkBKPKWkEuKT0cOdoV_qtbCD-d1XdslQILXx2g';
 const API_KEY    = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
-const SHEET_NAME = 'حجز الدورات';
+const SHEET_NAME = 'طلبات الحجز';
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -419,7 +419,7 @@ fetchBookings();
 
 function fetchBookings() {
   var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID +
-    '/values/' + encodeURIComponent(SHEET_NAME) + '!A:J?key=' + API_KEY;
+    '/values/' + encodeURIComponent(SHEET_NAME) + '!A:L?key=' + API_KEY;
 
   fetch(url)
     .then(function(res) { return res.json(); })
@@ -429,11 +429,11 @@ function fetchBookings() {
       // نتخطى السطر الأول (رؤوس الأعمدة)
       for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
-        var dateStart = row[7] || '';
-        var dateEnd   = row[8] || '';
-        var system    = row[5] || '';
-        var time      = row[6] || '';
-        var status    = row[9] || '';
+        var dateStart = row[8]  || '';   // I = تاريخ البدء
+        var dateEnd   = row[9]  || '';   // J = تاريخ الانتهاء
+        var system    = row[6]  || '';   // G = نظام الدورة
+        var time      = row[7]  || '';   // H = التوقيت
+        var status    = row[11] || '';   // L = حالة الطلب
 
         if (dateStart && status !== 'مرفوض') {
           var d   = new Date(dateStart + 'T00:00:00');
