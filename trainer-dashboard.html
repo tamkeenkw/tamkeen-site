@@ -259,6 +259,15 @@ function logout() {
   document.getElementById('loginTxt').textContent = 'دخول';
   document.getElementById('loginSpinner').style.display = 'none';
 }
+
+/* استعادة الدخول تلقائياً عند الرجوع من الصفحات الأخرى */
+(function restoreSession(){
+  var saved = sessionStorage.getItem('tk_memberId');
+  if (saved) {
+    document.getElementById('memberInput').value = saved;
+    doLogin();
+  }
+})();
 </script>
 </body>
 </html>
