@@ -308,7 +308,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div class="hero-divider"></div>
     <p>
       حضور أول دورة مجاناً — اختر الموضوع اللي يناسبك<br>
-      جميع الدورات أونلاين عبر زووم · مدة ساعتين
+      دورات أونلاين وحضورية · مدة ساعتين
     </p>
     <div class="options-row">
       <div class="option-chip">
@@ -407,7 +407,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   <div class="courses-inner">
     <div class="sec-tag" style="text-align:center">الدورات الشهرية</div>
     <h2 class="sec-title">اختر دورتك المجانية</h2>
-    <p class="sec-sub">دورات متخصصة هذا الشهر — جميعها أونلاين عبر زووم · حضور مجاني</p>
+    <p class="sec-sub">دورات متخصصة هذا الشهر — أونلاين وحضورية · حضور مجاني</p>
 
     <div class="month-header">
       <div class="month-badge" id="monthBadge">جاري التحميل...</div>
@@ -1059,6 +1059,13 @@ async function loadFreeCourses() {
     grid.innerHTML = courses.map(c => {
       const initial = (c.trainer||'').replace(/أ\.|د\.|\s/g,'').charAt(0) || '؟';
       const dateLabel = formatDateAr(c.date);
+      const isOnline = c.zoom && c.zoom.startsWith('https://');
+      const modeTag  = isOnline
+        ? '<span class="course-meta-item">💻 أونلاين</span>'
+        : '<span class="course-meta-item" style="color:#8B4513;">🏛️ حضوري</span>';
+      const locationInfo = !isOnline && c.zoom
+        ? `<div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;">${c.zoom}</div>`
+        : '';
       return `<div class="course-card on">
         <div class="course-card-top">
           <div class="course-date-row">
@@ -1075,8 +1082,9 @@ async function loadFreeCourses() {
           <div class="course-meta">
             <span class="course-meta-item">🕔 ${c.time}</span>
             <span class="course-meta-item">⏱ ساعتان</span>
-            <span class="course-meta-item">💻 زووم</span>
+            ${modeTag}
           </div>
+          ${locationInfo}
           <button class="course-register-btn" onclick="openCourseModal('${c.name}','${c.trainer}','${dateLabel}')">سجّل مجاناً</button>
         </div>
       </div>`;
