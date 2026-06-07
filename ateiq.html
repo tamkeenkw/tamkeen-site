@@ -1016,8 +1016,8 @@ async function bkConfirm(){
   const btn = document.getElementById('bkConfirmBtn');
   btn.disabled = true; btn.textContent = 'جاري الحجز...';
 
+  let raw = '', httpInfo = '';
   try {
-    // نرسل البيانات form-encoded — تملأ e.parameter في Apps Script وتشتغل مع أي doPost
     const body = new URLSearchParams({
       type: 'حجز_استشارة',
       name: name,
@@ -1027,14 +1027,12 @@ async function bkConfirm(){
     });
 
     const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: body });
-    const raw = await res.text();
+    httpInfo = 'HTTP ' + res.status;
+    raw = await res.text();
 
     let out;
     try { out = JSON.parse(raw); }
-    catch (e) {
-      console.error('رد السيرفر مو JSON:', raw);  // افتح Console لو تبي تشوف الرد الخام
-      throw new Error('bad_response');
-    }
+    catch (e) { throw new Error('bad_response'); }
 
     if (out && out.ok){
       const d = new Date(bkSelDate + 'T00:00:00');
@@ -1052,7 +1050,6 @@ async function bkConfirm(){
         </div>`;
       document.getElementById('bookingWrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
     } else if (out && out.taken){
-      // الموعد مكتمل — نعلّمه محلياً ونعيد عرض الأوقات
       if (window.__trainee){
         window.__trainee.bookedSlots = window.__trainee.bookedSlots || [];
         window.__trainee.bookedSlots.push(bkSelDate + '|' + bkSelSlot);
@@ -1062,11 +1059,15 @@ async function bkConfirm(){
       btn.textContent = 'تأكيد الحجز ←';
       bkSelectDate(bkSelDate);
     } else {
-      throw new Error('fail');
+      throw new Error('not_ok');
     }
   } catch (err){
+    const dbg = (raw || ('لا يوجد رد — ' + err.message)).toString().slice(0, 600);
     document.getElementById('bkMsg').innerHTML =
-      '<p style="color:#8B1A1A;font-size:14px;font-weight:700">تعذّر إتمام الحجز — تأكد إن السكريبت منشور بآخر نسخة وحاول مرة ثانية.</p>';
+      '<p style="color:#8B1A1A;font-size:14px;font-weight:700;margin-bottom:8px">تعذّر إتمام الحجز.</p>' +
+      '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رد السيرفر (' + httpInfo + '):</div>' +
+      '<pre style="background:var(--cream-2);border:1.5px solid rgba(92,15,15,.1);border-radius:10px;padding:12px;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left;max-height:200px;overflow:auto">' +
+      dbg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
     btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
   }
 }
