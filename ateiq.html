@@ -981,7 +981,7 @@ function bkSelectDate(key){
     return `<div class="bk-slot" data-slot="${s.v}" ${taken ? '' : `onclick="bkSelectSlot('${s.v}')"`}
       style="padding:13px;border-radius:12px;text-align:center;font-size:15px;font-weight:700;border:1.5px solid rgba(92,15,15,.12);
       ${taken ? 'background:var(--cream-2);color:var(--muted);cursor:not-allowed;text-decoration:line-through;opacity:.6'
-              : 'background:var(--cream);color:var(--text);cursor:pointer'}">${s.t}${taken ? '<div style="font-size:10px;margin-top:2px">محجوز</div>' : ''}</div>`;
+              : 'background:var(--cream);color:var(--text);cursor:pointer'}">${s.t}${taken ? '<div style="font-size:10px;margin-top:2px">مكتمل</div>' : ''}</div>`;
   }).join('');
 
   document.getElementById('bkSlots').innerHTML = slotsHTML;
@@ -1017,18 +1017,24 @@ async function bkConfirm(){
   btn.disabled = true; btn.textContent = 'جاري الحجز...';
 
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        type: 'حجز_استشارة',
-        name: name,
-        phone: phone,
-        date: bkSelDate,
-        time: bkSelSlot
-      })
+    // نرسل البيانات form-encoded — تملأ e.parameter في Apps Script وتشتغل مع أي doPost
+    const body = new URLSearchParams({
+      type: 'حجز_استشارة',
+      name: name,
+      phone: phone,
+      date: bkSelDate,
+      time: bkSelSlot
     });
-    const out = await res.json();
+
+    const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: body });
+    const raw = await res.text();
+
+    let out;
+    try { out = JSON.parse(raw); }
+    catch (e) {
+      console.error('رد السيرفر مو JSON:', raw);  // افتح Console لو تبي تشوف الرد الخام
+      throw new Error('bad_response');
+    }
 
     if (out && out.ok){
       const d = new Date(bkSelDate + 'T00:00:00');
@@ -1046,16 +1052,21 @@ async function bkConfirm(){
         </div>`;
       document.getElementById('bookingWrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
     } else if (out && out.taken){
+      // الموعد مكتمل — نعلّمه محلياً ونعيد عرض الأوقات
+      if (window.__trainee){
+        window.__trainee.bookedSlots = window.__trainee.bookedSlots || [];
+        window.__trainee.bookedSlots.push(bkSelDate + '|' + bkSelSlot);
+      }
       document.getElementById('bkMsg').innerHTML =
-        '<p style="color:#B85C00;font-size:14px;font-weight:700">هذا الموعد انحجز للتو — اختر وقت ثاني.</p>';
-      btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
-      bkSelectDate(bkSelDate); // يحدّث المواعيد المحجوزة
+        '<p style="color:#B85C00;font-size:14px;font-weight:700">هذا الموعد مكتمل — اختر وقت ثاني.</p>';
+      btn.textContent = 'تأكيد الحجز ←';
+      bkSelectDate(bkSelDate);
     } else {
       throw new Error('fail');
     }
   } catch (err){
     document.getElementById('bkMsg').innerHTML =
-      '<p style="color:#8B1A1A;font-size:14px;font-weight:700">تعذّر إتمام الحجز — حاول مرة ثانية.</p>';
+      '<p style="color:#8B1A1A;font-size:14px;font-weight:700">تعذّر إتمام الحجز — تأكد إن السكريبت منشور بآخر نسخة وحاول مرة ثانية.</p>';
     btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
   }
 }
