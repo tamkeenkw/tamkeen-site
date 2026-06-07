@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية تمكين رواد الأعمال — الربع الأول</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon:#5C0F0F;
+    --maroon-2:#7d2727;
+    --maroon-tint:#f1e2e2;
+    --cream:#FAF7F2;
+    --cream-2:#f2ece2;
+    --card:#ffffff;
+    --ink:#2b1717;
+    --ink-soft:#6e5454;
+    --line:#e7ddd1;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"Cairo",sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    padding:44px 20px 60px;
+  }
+  .wrap{max-width:1000px;margin:0 auto}
+
+  header{
+    position:relative;background:var(--maroon);color:var(--cream);
+    border-radius:18px;padding:34px 40px;overflow:hidden;margin-bottom:14px;
+  }
+  header::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(130% 150% at 100% 0%, rgba(255,255,255,.08), transparent 55%);}
+  .kick{font-size:14px;letter-spacing:2px;font-weight:600;opacity:.85;margin-bottom:8px;position:relative}
+  header h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;line-height:1.25;position:relative}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;position:relative}
+  .chips span{font-size:14px;font-weight:600;background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2);padding:7px 16px;border-radius:999px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 28px}
+  .legend span{font-size:13px;font-weight:600;padding:7px 16px;border-radius:999px;border:1px solid var(--line)}
+  .lg-1{background:var(--maroon);color:var(--cream);border-color:var(--maroon)}
+  .lg-2{background:var(--maroon-tint);color:var(--maroon)}
+  .lg-3{background:var(--cream);color:var(--maroon);border-color:var(--maroon)}
+
+  .month{margin-bottom:32px;opacity:0;transform:translateY(14px);animation:rise .6s ease forwards}
+  .month:nth-of-type(1){animation-delay:.04s}
+  .month:nth-of-type(2){animation-delay:.10s}
+  .month:nth-of-type(3){animation-delay:.16s}
+  .month:nth-of-type(4){animation-delay:.22s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  .m-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .m-badge{font-size:14px;font-weight:700;color:var(--cream);background:var(--maroon);
+    width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+  .m-name{font-size:23px;font-weight:700;color:var(--maroon)}
+  .m-theme{color:var(--ink-soft);font-size:15px;font-weight:500}
+  .m-rule{flex:1;height:1px;background:var(--line)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;display:flex;flex-direction:column;
+    transition:transform .2s ease, box-shadow .2s ease}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px -18px rgba(92,15,15,.5)}
+  .tag{align-self:flex-start;font-size:12px;font-weight:700;padding:5px 13px;border-radius:8px;margin-bottom:12px}
+  .tg-1{background:var(--maroon);color:var(--cream)}
+  .tg-2{background:var(--maroon-tint);color:var(--maroon)}
+  .tg-3{background:var(--cream-2);color:var(--maroon);border:1px solid var(--maroon)}
+  .card h3{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:auto;line-height:1.5}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;
+    border-top:1px dashed var(--line);font-size:13px;color:var(--ink-soft);font-weight:500;flex-wrap:wrap}
+  .price{font-weight:700;color:var(--maroon)}
+  .free{font-weight:700;color:var(--maroon)}
+  .dot{width:4px;height:4px;border-radius:50%;background:var(--line)}
+
+  footer{margin-top:16px;padding:22px 28px;background:var(--card);
+    border:1px solid var(--line);border-radius:14px;font-size:14px;color:var(--ink-soft)}
+  footer b{color:var(--maroon);font-weight:700}
+  footer .row{margin-bottom:9px}
+  footer .row:last-child{margin-bottom:0}
+
+  @media(max-width:720px){.grid{grid-template-columns:1fr}body{padding:26px 14px 46px}header{padding:26px 24px}}
+  @media print{body{background:#fff;padding:0}.card:hover{transform:none;box-shadow:none}
+    .month{opacity:1;transform:none;animation:none;break-inside:avoid}header{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kick">الخطة التدريبية · الربع الأول</div>
+    <h1>أكاديمية تمكين رواد الأعمال</h1>
+    <div class="chips">
+      <span>📅 أيام السبت فقط</span>
+      <span>🕔 الفترة المسائية ٥ – ٨ مساءً</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="lg-1">دورة · يوم – يومين · ٤٥ د.ك</span>
+    <span class="lg-2">ورشة عمل · يوم واحد · ٢٩ د.ك</span>
+    <span class="lg-3">جلسة مفتوحة · مجانية (بشرط التأمين)</span>
+  </div>
+
+  <section class="month">
+    <div class="m-head"><div class="m-badge">٠٩</div><div class="m-name">سبتمبر</div><div class="m-theme">التنظيم الإداري</div><div class="m-rule"></div></div>
+    <div class="grid">
+      <div class="card"><span class="tag tg-1">دورة</span>
+        <h3>من الفوضى إلى التنظيم الإداري</h3>
+        <div class="meta">يوم – يومين<span class="dot"></span><span class="price">٤٥ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-2">ورشة عمل</span>
+        <h3>كيف تحمي شركتك من خروج الموظفين</h3>
+        <div class="meta">يوم واحد<span class="dot"></span><span class="price">٢٩ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-3">جلسة مفتوحة</span>
+        <h3>نقاش مفتوح حول الإدارة وتنظيم العمل وحل مشكلات الحضور</h3>
+        <div class="meta"><span class="free">مجانية</span><span class="dot"></span>بشرط مبلغ التأمين</div></div>
+    </div>
+  </section>
+
+  <section class="month">
+    <div class="m-head"><div class="m-badge">١٠</div><div class="m-name">أكتوبر</div><div class="m-theme">الذكاء الاصطناعي لصاحب العمل</div><div class="m-rule"></div></div>
+    <div class="grid">
+      <div class="card"><span class="tag tg-1">دورة</span>
+        <h3>أدوات الذكاء الاصطناعي الأساسية لصاحب العمل</h3>
+        <div class="meta">يوم – يومين<span class="dot"></span><span class="price">٤٥ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-2">ورشة عمل</span>
+        <h3>كيف أبني نظام عمل إداري عبر أدوات الذكاء الاصطناعي</h3>
+        <div class="meta">يوم واحد<span class="dot"></span><span class="price">٢٩ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-3">جلسة مفتوحة</span>
+        <h3>أهمية تفعيل أدوات الذكاء الاصطناعي في شركتك</h3>
+        <div class="meta"><span class="free">مجانية</span><span class="dot"></span>بشرط مبلغ التأمين</div></div>
+    </div>
+  </section>
+
+  <section class="month">
+    <div class="m-head"><div class="m-badge">١١</div><div class="m-name">نوفمبر</div><div class="m-theme">التسويق</div><div class="m-rule"></div></div>
+    <div class="grid">
+      <div class="card"><span class="tag tg-1">دورة</span>
+        <h3>كيف أعدّ خطة تسويقية لمشروعي</h3>
+        <div class="meta">يوم – يومين<span class="dot"></span><span class="price">٤٥ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-2">ورشة عمل</span>
+        <h3>استخدامات أدوات الذكاء الاصطناعي في إعداد خطة تسويقية</h3>
+        <div class="meta">يوم واحد<span class="dot"></span><span class="price">٢٩ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-3">جلسة مفتوحة</span>
+        <h3>أكثر الأخطاء تكراراً التي تدمّر أي خطة تسويقية</h3>
+        <div class="meta"><span class="free">مجانية</span><span class="dot"></span>بشرط مبلغ التأمين</div></div>
+    </div>
+  </section>
+
+  <section class="month">
+    <div class="m-head"><div class="m-badge">١٢</div><div class="m-name">ديسمبر</div><div class="m-theme">التخطيط السنوي والإقفال</div><div class="m-rule"></div></div>
+    <div class="grid">
+      <div class="card"><span class="tag tg-1">دورة</span>
+        <h3>كيف تعدّ خطة سنوية لمشروعك</h3>
+        <div class="meta">يوم – يومين<span class="dot"></span><span class="price">٤٥ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-2">ورشة عمل</span>
+        <h3>استخدم أدوات الذكاء الاصطناعي لتحليل النتائج</h3>
+        <div class="meta">يوم واحد<span class="dot"></span><span class="price">٢٩ د.ك</span></div></div>
+      <div class="card"><span class="tag tg-3">جلسة مفتوحة</span>
+        <h3>أكثر الأخطاء تكراراً لفشل أي خطة سنوية</h3>
+        <div class="meta"><span class="free">مجانية</span><span class="dot"></span>بشرط مبلغ التأمين</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="row"><b>المواعيد:</b> جميع الأنشطة أيام السبت فقط، الفترة المسائية من ٥ إلى ٨ مساءً.</div>
+    <div class="row"><b>الأسعار:</b> الدورة ٤٥ د.ك · الورشة ٢٩ د.ك · الجلسة المفتوحة مجانية بشرط دفع مبلغ تأمين يُسترد عند الحضور.</div>
+  </footer>
+
+</div>
+</body>
+</html>
