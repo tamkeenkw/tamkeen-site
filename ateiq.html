@@ -823,6 +823,26 @@ function renderResult(data) {
       <div style="padding:24px">${steps}</div>
     </div>` : '';
 
+  /* نحفظ بيانات المتدرب عشان نظام حجز الاستشارات يستخدمها */
+  window.__trainee = {
+    name:  data.name,
+    phone: data.phone || '',
+    bookedSlots: data.bookedSlots || [],
+    appointment: data.appointment || null
+  };
+
+  /* بطاقة الموعد القادم (تظهر لو عند المتدرب حجز مؤكد) */
+  const appointmentBlock = buildAppointmentCard(data.appointment);
+
+  /* كتلة حجز الاستشارة */
+  const bookingBlock = `
+    <div id="bookingWrap" style="margin-top:16px;background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden">
+      <div style="padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase">حجز استشارة مع عتيق</div>
+      <div style="padding:24px">
+        <div id="bookingPanel"></div>
+      </div>
+    </div>`;
+
   el.innerHTML = `
     <div class="trainee-card">
       <div class="trainee-card-top">
@@ -836,9 +856,12 @@ function renderResult(data) {
         ${progressStat}
       </div>
     </div>
-    ${pathBlock}`;
+    ${appointmentBlock}
+    ${pathBlock}
+    ${bookingBlock}`;
 
   el.classList.add('show');
+  bookingInit();
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -846,6 +869,196 @@ function renderResult(data) {
 document.getElementById('searchInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
+</script>
+
+
+<!-- =====================================================
+     سكريبت حجز الاستشارات — يكتب في شيت عتيق عبر doPost
+     ===================================================== -->
+<script>
+/* ===== الإعدادات (عدّلها وقت ما تحب) ===== */
+// أيام الإتاحة: 6 = السبت ، 2 = الثلاثاء  (الأرقام حسب getDay: الأحد=0 ... السبت=6)
+const AVAIL_DAYS = [6, 2];
+// كم أسبوع نعرض من المواعيد القادمة
+const WEEKS_AHEAD = 3;
+// الأوقات المتاحة لكل يوم  (v = القيمة المخزّنة 24 ساعة ، t = نص العرض)
+const BK_SLOTS = [
+  { v:'17:00', t:'٥:٠٠ م' },
+  { v:'18:00', t:'٦:٠٠ م' },
+  { v:'19:00', t:'٧:٠٠ م' },
+];
+
+/* ===== أدوات مساعدة ===== */
+const BK_DAYNAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const BK_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function bkAr(s){ return String(s).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+function bkPad(n){ return n < 10 ? '0' + n : '' + n; }
+function bkKey(d){ return d.getFullYear() + '-' + bkPad(d.getMonth()+1) + '-' + bkPad(d.getDate()); } // YYYY-MM-DD
+function bkLabel(d){ return BK_DAYNAMES[d.getDay()] + ' ' + bkAr(d.getDate()) + ' ' + BK_MONTHS[d.getMonth()]; }
+function bkSlotText(v){ const s = BK_SLOTS.find(x => x.v === v); return s ? s.t : v; }
+
+/* يولّد قائمة التواريخ المتاحة القادمة (سبت + ثلاثاء) */
+function bkUpcomingDates(){
+  const out = [], today = new Date(); today.setHours(0,0,0,0);
+  const end = new Date(today); end.setDate(end.getDate() + WEEKS_AHEAD * 7);
+  for (let d = new Date(today); d <= end; d.setDate(d.getDate()+1)){
+    if (AVAIL_DAYS.includes(d.getDay())) out.push(new Date(d));
+  }
+  return out;
+}
+
+let bkSelDate = null, bkSelSlot = null;
+
+/* بطاقة "موعدك القادم" — تُبنى من renderResult */
+function buildAppointmentCard(appt){
+  if (!appt || !appt.date) return '';
+  const d = new Date(appt.date + 'T00:00:00');
+  const dayTxt = isNaN(d) ? (appt.dayLabel || '') : bkLabel(d);
+  return `
+    <div style="margin-top:16px;background:rgba(92,15,15,.04);border:1.5px solid rgba(92,15,15,.18);border-radius:20px;padding:22px 24px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px">📅 موعد استشارتك القادم</div>
+      <div style="font-size:19px;font-weight:900;color:var(--text);margin-bottom:4px">${dayTxt}</div>
+      <div style="font-size:15px;color:var(--muted)">الساعة ${bkSlotText(appt.time)} — ${appt.status || 'مؤكد'}</div>
+    </div>`;
+}
+
+/* تهيئة لوحة الحجز بعد عرض نتيجة البحث */
+function bookingInit(){
+  bkSelDate = null; bkSelSlot = null;
+  const panel = document.getElementById('bookingPanel');
+  if (!panel) return;
+
+  // لو عنده موعد محجوز أصلاً، نعرض خيار حجز موعد إضافي بزر فقط
+  const dates = bkUpcomingDates();
+
+  // شريط أيام الأسبوع — يبيّن إن باقي الأيام محجوزة
+  const weekStrip = BK_DAYNAMES.map((nm, i) => {
+    const open = AVAIL_DAYS.includes(i);
+    return `<div style="flex:1;min-width:60px;text-align:center;padding:10px 6px;border-radius:12px;font-size:12px;font-weight:800;
+      ${open ? 'background:rgba(92,15,15,.06);color:var(--crimson);border:1.5px solid rgba(92,15,15,.18)'
+             : 'background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.06)'}">
+      ${nm}${open ? '' : '<div style="font-size:10px;margin-top:2px;opacity:.7">محجوز</div>'}</div>`;
+  }).join('');
+
+  const dateCards = dates.map(d => {
+    const key = bkKey(d);
+    return `<div class="bk-date" data-date="${key}" onclick="bkSelectDate('${key}')"
+      style="padding:14px 18px;border-radius:14px;border:1.5px solid rgba(92,15,15,.12);background:var(--cream);
+      cursor:pointer;font-size:15px;font-weight:700;color:var(--text);transition:all .2s">${bkLabel(d)}</div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px">
+      الاستشارات متاحة أيام <b style="color:var(--crimson)">السبت والثلاثاء</b> فقط — باقي أيام الأسبوع محجوزة.</p>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px">${weekStrip}</div>
+
+    <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">١ — اختر اليوم</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px">${dateCards}</div>
+
+    <div id="bkSlotsWrap" style="display:none;margin-top:22px">
+      <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">٢ — اختر الوقت</div>
+      <div id="bkSlots" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px"></div>
+    </div>
+
+    <button id="bkConfirmBtn" class="search-btn" onclick="bkConfirm()" disabled
+      style="width:100%;justify-content:center;padding:15px;font-size:16px;border-radius:14px;margin-top:24px">
+      تأكيد الحجز ←</button>
+    <div id="bkMsg" style="margin-top:14px"></div>`;
+}
+
+function bkSelectDate(key){
+  bkSelDate = key; bkSelSlot = null;
+  document.querySelectorAll('.bk-date').forEach(el => {
+    const on = el.dataset.date === key;
+    el.style.borderColor = on ? 'var(--crimson)' : 'rgba(92,15,15,.12)';
+    el.style.background  = on ? 'rgba(92,15,15,.05)' : 'var(--cream)';
+    el.style.color       = on ? 'var(--crimson)' : 'var(--text)';
+  });
+
+  const booked = (window.__trainee && window.__trainee.bookedSlots) || [];
+  const slotsHTML = BK_SLOTS.map(s => {
+    const taken = booked.includes(key + '|' + s.v);
+    return `<div class="bk-slot" data-slot="${s.v}" ${taken ? '' : `onclick="bkSelectSlot('${s.v}')"`}
+      style="padding:13px;border-radius:12px;text-align:center;font-size:15px;font-weight:700;border:1.5px solid rgba(92,15,15,.12);
+      ${taken ? 'background:var(--cream-2);color:var(--muted);cursor:not-allowed;text-decoration:line-through;opacity:.6'
+              : 'background:var(--cream);color:var(--text);cursor:pointer'}">${s.t}${taken ? '<div style="font-size:10px;margin-top:2px">محجوز</div>' : ''}</div>`;
+  }).join('');
+
+  document.getElementById('bkSlots').innerHTML = slotsHTML;
+  document.getElementById('bkSlotsWrap').style.display = 'block';
+  document.getElementById('bkConfirmBtn').disabled = true;
+}
+
+function bkSelectSlot(v){
+  bkSelSlot = v;
+  document.querySelectorAll('.bk-slot').forEach(el => {
+    const on = el.dataset.slot === v;
+    if (el.style.cursor === 'not-allowed') return;
+    el.style.borderColor = on ? 'var(--crimson)' : 'rgba(92,15,15,.12)';
+    el.style.background  = on ? 'rgba(92,15,15,.05)' : 'var(--cream)';
+    el.style.color       = on ? 'var(--crimson)' : 'var(--text)';
+  });
+  document.getElementById('bkConfirmBtn').disabled = false;
+}
+
+async function bkConfirm(){
+  if (!bkSelDate || !bkSelSlot) return;
+  const t = window.__trainee || {};
+  const name = (t.name || '').trim();
+  const phone = (t.phone || document.getElementById('searchInput').value || '').trim();
+
+  if (!phone){
+    document.getElementById('bkMsg').innerHTML =
+      '<p style="color:#8B1A1A;font-size:14px">لازم تبحث برقم هاتفك أول عشان نربط الحجز فيك.</p>';
+    return;
+  }
+
+  const btn = document.getElementById('bkConfirmBtn');
+  btn.disabled = true; btn.textContent = 'جاري الحجز...';
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        type: 'حجز_استشارة',
+        name: name,
+        phone: phone,
+        date: bkSelDate,
+        time: bkSelSlot
+      })
+    });
+    const out = await res.json();
+
+    if (out && out.ok){
+      const d = new Date(bkSelDate + 'T00:00:00');
+      document.getElementById('bookingPanel').innerHTML = `
+        <div style="text-align:center;padding:20px 8px">
+          <div style="width:84px;height:84px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="#2e7d32"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <div style="font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px">تم تأكيد حجزك ✅</div>
+          <div style="font-size:16px;color:var(--text);font-weight:700;margin-bottom:4px">${bkLabel(d)}</div>
+          <div style="font-size:15px;color:var(--muted);margin-bottom:22px">الساعة ${bkSlotText(bkSelSlot)}</div>
+          <a href="https://wa.me/96597999768?text=${encodeURIComponent('السلام عليكم، أنا ' + name + ' — حجزت استشارة يوم ' + bkLabel(d) + ' الساعة ' + bkSlotText(bkSelSlot))}"
+            target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;padding:13px 30px;border-radius:100px;text-decoration:none">
+            تواصل مع عتيق للتأكيد</a>
+        </div>`;
+      document.getElementById('bookingWrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    } else if (out && out.taken){
+      document.getElementById('bkMsg').innerHTML =
+        '<p style="color:#B85C00;font-size:14px;font-weight:700">هذا الموعد انحجز للتو — اختر وقت ثاني.</p>';
+      btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
+      bkSelectDate(bkSelDate); // يحدّث المواعيد المحجوزة
+    } else {
+      throw new Error('fail');
+    }
+  } catch (err){
+    document.getElementById('bkMsg').innerHTML =
+      '<p style="color:#8B1A1A;font-size:14px;font-weight:700">تعذّر إتمام الحجز — حاول مرة ثانية.</p>';
+    btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
+  }
+}
 </script>
 
 
