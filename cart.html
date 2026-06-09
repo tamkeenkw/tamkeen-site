@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إتمام الاشتراك | EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0D5C48;--teal2:#0A4D3C;--teallt:#15705A;
+  --accent:#1A8F6F;--accentlt:#22B08A;
+  --cream:#F5FAF8;--cream2:#E8F4F0;
+  --text:#0A2620;--muted:#4A7A6E;
+  --lock:#C0392B;--free:#1A8F6F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--teal);min-height:100vh;padding:32px 16px 70px;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(26,143,111,.15) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(10,77,60,.3) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:24px;}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18);}
+.logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:100px;margin-bottom:16px;}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0;}
+h1{font-size:clamp(24px,7vw,34px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:6px;}
+h1 span{color:var(--accentlt);}
+.sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.8;}
+
+/* CARD */
+.card{background:var(--cream);border-radius:26px;padding:clamp(22px,5vw,30px);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.sec-label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;color:var(--teal);letter-spacing:.5px;margin-bottom:16px;}
+.sec-line{flex:1;height:1px;background:var(--cream2);}
+
+/* INVOICE */
+.inv-item{display:flex;align-items:flex-start;gap:14px;background:#fff;border:1.5px solid rgba(13,92,72,.1);border-radius:16px;padding:16px;margin-bottom:10px;}
+.inv-icon{width:46px;height:46px;border-radius:12px;background:rgba(13,92,72,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.inv-icon svg{width:24px;height:24px;stroke:var(--teal);}
+.inv-info{flex:1;min-width:0;}
+.inv-name{font-size:15px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.inv-desc{font-size:12px;color:var(--muted);line-height:1.7;}
+.inv-price{font-size:15px;font-weight:900;color:var(--teal);white-space:nowrap;}
+.inv-price small{font-size:11px;font-weight:700;color:var(--muted);}
+
+/* TOTAL */
+.total-box{background:rgba(13,92,72,.06);border-radius:14px;padding:16px 18px;margin:18px 0;}
+.total-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px;}
+.total-row.grand{margin-bottom:0;padding-top:10px;border-top:1px dashed rgba(13,92,72,.18);}
+.total-row.grand .lbl{font-size:15px;font-weight:900;color:var(--text);}
+.total-amount{font-size:24px;font-weight:900;color:var(--teal);}
+.total-amount small{font-size:13px;font-weight:700;color:var(--muted);margin-right:4px;}
+
+/* FIELDS */
+.field{display:grid;gap:7px;margin-bottom:14px;}
+.field label{font-size:13px;font-weight:800;color:var(--text);}
+.field input{width:100%;background:#fff;border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:14px 18px;font-family:'Cairo',sans-serif;font-size:15px;color:var(--text);outline:none;transition:all .25s;direction:rtl;}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,92,72,.07);}
+.field input::placeholder{color:rgba(74,122,110,.35);}
+.field input[type=tel]{direction:ltr;text-align:right;}
+
+/* BUTTONS */
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;padding:16px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(13,92,72,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn:hover{background:var(--teallt);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:1.5px solid rgba(13,92,72,.2);color:var(--teal);box-shadow:none;margin-top:10px;}
+.btn-secondary:hover{background:rgba(13,92,72,.05);}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.error-msg{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:var(--lock);font-size:13px;font-weight:700;padding:12px 16px;border-radius:12px;margin-bottom:14px;display:none;text-align:center;}
+
+/* SECURE NOTE */
+.secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;color:var(--muted);margin-top:16px;}
+.secure svg{width:14px;height:14px;stroke:var(--muted);}
+
+/* RESULT PANELS */
+.panel{display:none;}
+.panel.show{display:block;}
+.succ{text-align:center;padding:14px 0;}
+.succ-icon{width:74px;height:74px;border-radius:50%;background:rgba(13,92,72,.1);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+.succ-icon svg{width:36px;height:36px;stroke:var(--teal);}
+.succ-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:10px;}
+.succ-desc{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:6px;}
+.wa-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--teal);text-decoration:none;margin-top:6px;}
+.foot-link{display:block;text-align:center;font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;margin-top:20px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="logo-text">EDUCLOUD</div>
+    </div>
+    <div class="badge"><div class="badge-dot"></div> إتمام الاشتراك</div>
+    <h1>سلة <span>الدفع</span></h1>
+    <div class="sub">راجع تفاصيل اشتراكك قبل التأكيد</div>
+  </div>
+
+  <div class="card">
+
+    <!-- ===== MAIN (INVOICE + CHECKOUT) ===== -->
+    <div class="panel show" id="panelMain">
+
+      <div class="sec-label">ملخص الطلب <div class="sec-line"></div></div>
+
+      <div id="itemsWrap"><!-- يُبنى بالـ JS --></div>
+
+      <div class="total-box">
+        <div class="total-row"><span>عدد المواد</span><span id="itemCount">١</span></div>
+        <div class="total-row grand">
+          <span class="lbl">الإجمالي</span>
+          <span class="total-amount"><span id="grandTotal">—</span> <small>د.ك</small></span>
+        </div>
+      </div>
+
+      <div class="sec-label">بياناتك <div class="sec-line"></div></div>
+
+      <div class="error-msg" id="errMsg"></div>
+
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="custName" placeholder="اكتب اسمك" oninput="clearErr()">
+      </div>
+      <div class="field">
+        <label>رقم الواتساب</label>
+        <input type="tel" id="custPhone" placeholder="مثال: 99444335" oninput="clearErr()">
+      </div>
+
+      <button class="btn" id="btnPay" onclick="payNow()">
+        <span id="payTxt">ادفع الآن ←</span>
+        <div class="spin" id="paySpin"></div>
+      </button>
+
+      <button class="btn btn-secondary" id="btnInst" onclick="payInstallment()">
+        <span id="instTxt">الدفع بالتقسيط</span>
+        <div class="spin" id="instSpin" style="border-color:rgba(13,92,72,.3);border-top-color:var(--teal);"></div>
+      </button>
+
+      <div class="secure">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        دفع آمن عبر بوابة Tap — K-NET / مدى / بطاقات
+      </div>
+    </div>
+
+    <!-- ===== INSTALLMENT RESULT ===== -->
+    <div class="panel" id="panelInst">
+      <div class="succ">
+        <div class="succ-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="succ-title">تم استلام طلب التقسيط</div>
+        <div class="succ-desc">سيتم التواصل معك من قبل موظفينا<br>لترتيب خطة التقسيط وتفعيل اشتراكك.</div>
+        <a class="wa-link" id="waLink" href="https://wa.me/96597999768" target="_blank">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--teal)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2z"/></svg>
+          أو تواصل معنا مباشرة على الواتساب
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <a class="foot-link" id="backLink" href="#">→ الرجوع للمادة</a>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG — نفس سكربت الموقع الحالي
+// ═══════════════════════════════════════════════
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
+
+// كتالوج المواد — للعرض والرسوم الاحتياطية (المبلغ النهائي يتحقق في السكربت)
+const CATALOG = {
+  'جغرافيا ١١': { fee:'15', page:'geo11.html',   desc:'جميع محاضرات ومراجعات الجغرافيا — الصف الحادي عشر' },
+  'جغرافيا ١٢': { fee:'15', page:'geo12.html',   desc:'جميع محاضرات ومراجعات الجغرافيا — الصف الثاني عشر' },
+  'تاريخ ١٢':   { fee:'15', page:'history12.html', desc:'جميع محاضرات ومراجعات التاريخ — الصف الثاني عشر' }
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const params = new URLSearchParams(window.location.search);
+let items = [];          // [{course, fee, desc}]
+let backUrl = '';        // رابط صفحة المادة (يرجع له المستخدم بعد الدفع)
+
+function arNum(n){ return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+
+// ═══════════════════════════════════════════════
+// BUILD ITEMS من الرابط
+// يدعم: ?course=جغرافيا ١١   أو مستقبلاً ?course=جغرافيا ١١,تاريخ ١٢
+// ═══════════════════════════════════════════════
+function buildItems() {
+  const raw = (params.get('course') || '').trim();
+  const feeParam = params.get('fee');
+  backUrl = params.get('back') || '';
+
+  if (!raw) {
+    items = [];
+  } else {
+    items = raw.split(',').map(c => c.trim()).filter(Boolean).map((c, i) => {
+      const cat = CATALOG[c] || {};
+      // الرسوم: من الرابط (للمادة الأولى فقط) ثم الكتالوج ثم 15
+      const fee = (i === 0 && feeParam) ? feeParam : (cat.fee || '15');
+      return { course:c, fee:parseFloat(fee) || 15, desc: cat.desc || 'اشتراك في المادة' };
+    });
+  }
+
+  // رابط الرجوع الاحتياطي من الكتالوج
+  if (!backUrl && items.length) {
+    const cat = CATALOG[items[0].course];
+    if (cat && cat.page) backUrl = cat.page;
+  }
+
+  renderItems();
+}
+
+function renderItems() {
+  const wrap = document.getElementById('itemsWrap');
+  const back = document.getElementById('backLink');
+
+  if (!items.length) {
+    wrap.innerHTML = '<div class="inv-desc" style="text-align:center;padding:20px 0;">لم يتم تحديد مادة. ارجع لصفحة المادة واختر «اشترك الآن».</div>';
+    document.getElementById('btnPay').disabled = true;
+    document.getElementById('btnInst').disabled = true;
+    document.getElementById('grandTotal').textContent = arNum(0);
+    return;
+  }
+
+  wrap.innerHTML = items.map(it => `
+    <div class="inv-item">
+      <div class="inv-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div class="inv-info">
+        <div class="inv-name">${it.course}</div>
+        <div class="inv-desc">${it.desc}</div>
+      </div>
+      <div class="inv-price">${arNum(it.fee)} <small>د.ك</small></div>
+    </div>`).join('');
+
+  const total = items.reduce((s, it) => s + it.fee, 0);
+  document.getElementById('grandTotal').textContent = arNum(total);
+  document.getElementById('itemCount').textContent  = arNum(items.length);
+
+  if (backUrl) back.href = backUrl;
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function showErr(m){ const e=document.getElementById('errMsg'); e.textContent=m; e.style.display='block'; }
+function clearErr(){ document.getElementById('errMsg').style.display='none'; }
+function setBtn(txtId, spinId, btnId, loading){
+  document.getElementById(spinId).style.display = loading ? 'block' : 'none';
+  document.getElementById(txtId).style.opacity  = loading ? '.5' : '1';
+  document.getElementById(btnId).disabled = loading;
+}
+function showPanel(id){
+  ['panelMain','panelInst'].forEach(p => document.getElementById(p).classList.toggle('show', p===id));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function validate(){
+  const name  = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  if (!items.length){ showErr('لم يتم تحديد مادة'); return null; }
+  if (!name)  { showErr('أدخل اسمك'); return null; }
+  if (!phone) { showErr('أدخل رقم الواتساب'); return null; }
+  return { name, phone };
+}
+
+// المادة الأساسية (للدفع المفرد). مستقبلاً يمكن إرسال مصفوفة المواد.
+function primaryCourse(){ return items[0].course; }
+function totalFee(){ return items.reduce((s, it) => s + it.fee, 0); }
+
+// رابط صفحة المادة (نظيف) — السكربت هو اللي يضيف payment=success&phone&course
+function redirectTarget(){
+  let url = backUrl || (CATALOG[primaryCourse()] && CATALOG[primaryCourse()].page) || '';
+  if (!url) return window.location.href.split('?')[0];
+  return new URL(url, window.location.href).href.split('?')[0];
+}
+
+// ═══════════════════════════════════════════════
+// 1) ادفع الآن → Tap
+// ═══════════════════════════════════════════════
+async function payNow(){
+  clearErr();
+  const v = validate(); if (!v) return;
+  setBtn('payTxt','paySpin','btnPay', true);
+  try {
+    const res = await fetch(SCRIPT, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({
+        type:     'courseSubscribe',
+        payMode:  'now',
+        name:     v.name,
+        phone:    v.phone,
+        course:   primaryCourse(),
+        fee:      totalFee(),
+        redirect: redirectTarget()
+      })
+    });
+    const data = await res.json();
+    // السكربت يرجّع رابط Tap → نوديه للدفع
+    if (data && data.url) { window.location.href = data.url; return; }
+    showErr(data && data.message ? data.message : 'تعذّر فتح بوابة الدفع — حاول مرة ثانية');
+  } catch(e) {
+    showErr('حدث خطأ في الاتصال — حاول مرة ثانية');
+  }
+  setBtn('payTxt','paySpin','btnPay', false);
+}
+
+// ═══════════════════════════════════════════════
+// 2) الدفع بالتقسيط → تسجيل الطلب + رسالة تواصل
+// ═══════════════════════════════════════════════
+async function payInstallment(){
+  clearErr();
+  const v = validate(); if (!v) return;
+  setBtn('instTxt','instSpin','btnInst', true);
+  try {
+    await fetch(SCRIPT, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({
+        type:    'courseSubscribe',
+        payMode: 'installment',
+        name:    v.name,
+        phone:   v.phone,
+        course:  primaryCourse(),
+        fee:     totalFee()
+      })
+    });
+  } catch(e) { /* نعرض رسالة التواصل بأي حال */ }
+  // رابط واتساب معبّى مسبقاً
+  const msg = 'مرحباً، أرغب بالاشتراك في ' + primaryCourse() + ' عن طريق التقسيط. الاسم: ' + v.name;
+  document.getElementById('waLink').href = 'https://wa.me/96597999768?text=' + encodeURIComponent(msg);
+  showPanel('panelInst');
+  setBtn('instTxt','instSpin','btnInst', false);
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+buildItems();
+</script>
+</body>
+</html>
