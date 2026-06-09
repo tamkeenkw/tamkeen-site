@@ -253,7 +253,7 @@ h1 span{color:var(--accentlt);}
         <span id="accessTxt">تحقق من اشتراكي</span>
         <div class="spin" id="accessSpin"></div>
       </button>
-      <button class="btn btn-secondary" onclick="openModal('subscribe')">اشترك الآن ←</button>
+      <button class="btn btn-secondary" onclick="goToCart()">اشترك الآن ←</button>
     </div>
 
     <!-- SUBSCRIBE MODAL -->
@@ -374,7 +374,7 @@ function onVidClick(i) {
 
   if (!canWatch) {
     document.getElementById('feeAmount').textContent = SUB_FEE;
-    openModal('subscribe');
+    goToCart();
     return;
   }
 
@@ -489,6 +489,11 @@ async function submitSubscription() {
 // ═══════════════════════════════════════════════
 // MODAL HELPERS
 // ═══════════════════════════════════════════════
+function goToCart() {
+  location.href = 'cart.html?course=' + encodeURIComponent(COURSE)
+    + '&back=' + encodeURIComponent(location.origin + location.pathname);
+}
+
 function openModal(type) {
   document.getElementById('overlay').classList.add('show');
   document.getElementById('feeAmount').textContent = SUB_FEE;
@@ -877,29 +882,41 @@ async function checkPaymentReturn() {
   if (params.get('payment') !== 'success') return;
 
   const phone = params.get('phone') || '';
-  if (!phone) return;
+  const tapId = params.get('tap_id') || '';
 
-  // أبلّغ السكريبت بنجاح الدفع
+  // لازم يكون في tap_id من Tap
+  if (!tapId || !tapId.startsWith('chg_')) {
+    window.history.replaceState({}, '', window.location.pathname);
+    return;
+  }
+
   try {
-    await fetch(SCRIPT + '?payment=success&type=courseSubscribe&phone='
-      + encodeURIComponent(phone) + '&course=' + encodeURIComponent(COURSE));
-  } catch(e) {}
+    const res  = await fetch(SCRIPT + '?payment=success&type=courseSubscribe'
+      + '&phone='  + encodeURIComponent(phone)
+      + '&course=' + encodeURIComponent(COURSE)
+      + '&tap_id=' + encodeURIComponent(tapId));
+    const data = await res.json();
 
-  // فعّل الوصول فوراً
-  hasAccess = true;
-  updateAccessBar(phone);
-
-  // نظّف الـ URL
-  window.history.replaceState({}, '', window.location.pathname);
-
-  // أظهر رسالة نجاح
-  setTimeout(function() {
-    document.getElementById('overlay').classList.add('show');
-    showPane('modalSuccess');
-    document.getElementById('modalSuccess').querySelector('.succ-title').textContent = '🎉 تم الدفع بنجاح!';
-    document.getElementById('modalSuccess').querySelector('.succ-desc').textContent =
-      'اشتراكك مفعّل الآن — تقدر تشوف جميع المحاضرات.';
-  }, 500);
+    if (data.status === 'ok' && data.access) {
+      hasAccess = true;
+      updateAccessBar(phone);
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(function() {
+        document.getElementById('overlay').classList.add('show');
+        showPane('modalSuccess');
+        document.getElementById('modalSuccess').querySelector('.succ-title').textContent = '🎉 تم الدفع بنجاح!';
+        document.getElementById('modalSuccess').querySelector('.succ-desc').textContent =
+          'اشتراكك مفعّل الآن — تقدر تشوف جميع المحاضرات.';
+      }, 500);
+    } else {
+      // الدفع لم يكتمل — لا تفعيل، ونُعلم المستخدم
+      window.history.replaceState({}, '', window.location.pathname);
+      openModal('access');
+      showErr('accessError', 'لم يكتمل الدفع — لم يُفعّل اشتراكك. تقدر تحاول مرة ثانية.');
+    }
+  } catch(e) {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 }
 
 checkPaymentReturn();
