@@ -178,11 +178,10 @@ h1 span{color:var(--accentlt);}
 const SCRIPT = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
 
 // كتالوج المواد — للعرض والرسوم الاحتياطية (المبلغ النهائي يتحقق في السكربت)
-const CATALOG = {
-  'جغرافيا ١١': { fee:'15', page:'geo11.html',   desc:'جميع محاضرات ومراجعات الجغرافيا — الصف الحادي عشر' },
-  'جغرافيا ١٢': { fee:'15', page:'geo12.html',   desc:'جميع محاضرات ومراجعات الجغرافيا — الصف الثاني عشر' },
-  'تاريخ ١٢':   { fee:'15', page:'history12.html', desc:'جميع محاضرات ومراجعات التاريخ — الصف الثاني عشر' }
-};
+// لا توجد قائمة مواد ثابتة — كل البيانات تجي من الرابط (course/fee/desc/back)
+// أو تُجلب من الشيت (إعدادات) تلقائياً. ما يحتاج تعديل عند إضافة مادة جديدة.
+const DEFAULT_FEE = 15;
+function genDesc(course){ return 'جميع المحاضرات والمراجعات — ' + course; }
 
 // ═══════════════════════════════════════════════
 // STATE
@@ -192,34 +191,44 @@ let items = [];          // [{course, fee, desc}]
 let backUrl = '';        // رابط صفحة المادة (يرجع له المستخدم بعد الدفع)
 
 function arNum(n){ return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
+// يحوّل الأرقام العربية (٠-٩) والفارسية (۰-۹) لإنجليزية عشان parseFloat يفهمها
+function toEn(s){
+  return String(s == null ? '' : s)
+    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+}
 
 // ═══════════════════════════════════════════════
 // BUILD ITEMS من الرابط
 // يدعم: ?course=جغرافيا ١١   أو مستقبلاً ?course=جغرافيا ١١,تاريخ ١٢
 // ═══════════════════════════════════════════════
-function buildItems() {
-  const raw = (params.get('course') || '').trim();
+async function buildItems() {
+  const raw      = (params.get('course') || '').trim();
   const feeParam = params.get('fee');
+  const descParam= (params.get('desc') || '').trim();
   backUrl = params.get('back') || '';
 
-  if (!raw) {
-    items = [];
-  } else {
-    items = raw.split(',').map(c => c.trim()).filter(Boolean).map((c, i) => {
-      const cat = CATALOG[c] || {};
-      // الرسوم: من الرابط (للمادة الأولى فقط) ثم الكتالوج ثم 15
-      const fee = (i === 0 && feeParam) ? feeParam : (cat.fee || '15');
-      return { course:c, fee:parseFloat(fee) || 15, desc: cat.desc || 'اشتراك في المادة' };
-    });
-  }
+  if (!raw) { items = []; renderItems(); return; }
 
-  // رابط الرجوع الاحتياطي من الكتالوج
-  if (!backUrl && items.length) {
-    const cat = CATALOG[items[0].course];
-    if (cat && cat.page) backUrl = cat.page;
-  }
+  items = raw.split(',').map(c => c.trim()).filter(Boolean).map((c, i) => {
+    // الرسوم: من الرابط (للمادة الأولى) — تجي أصلاً من شيت إعدادات عبر صفحة المادة
+    const fee = (i === 0 && feeParam) ? parseFloat(toEn(feeParam)) : NaN;
+    return { course:c, fee: (fee || null), desc: (i===0 && descParam) ? descParam : genDesc(c) };
+  });
 
-  renderItems();
+  renderItems();   // اعرض فوراً (حتى لو الرسوم لسة ما وصلت)
+
+  // أي مادة بدون رسوم في الرابط → اجلبها من الشيت تلقائياً
+  await Promise.all(items.map(async it => {
+    if (it.fee) return;
+    try {
+      const res  = await fetch(SCRIPT + '?action=getCourseSettings&course=' + encodeURIComponent(it.course));
+      const data = await res.json();
+      it.fee = parseFloat(toEn(data.fee)) || DEFAULT_FEE;
+    } catch(e) { it.fee = DEFAULT_FEE; }
+  }));
+
+  renderItems();   // أعد العرض بالرسوم النهائية
 }
 
 function renderItems() {
@@ -243,12 +252,17 @@ function renderItems() {
         <div class="inv-name">${it.course}</div>
         <div class="inv-desc">${it.desc}</div>
       </div>
-      <div class="inv-price">${arNum(it.fee)} <small>د.ك</small></div>
+      <div class="inv-price">${it.fee ? arNum(it.fee) : '…'} <small>د.ك</small></div>
     </div>`).join('');
 
-  const total = items.reduce((s, it) => s + it.fee, 0);
-  document.getElementById('grandTotal').textContent = arNum(total);
+  const loaded = items.every(it => it.fee);
+  const total  = items.reduce((s, it) => s + (it.fee || 0), 0);
+  document.getElementById('grandTotal').textContent = loaded ? arNum(total) : '…';
   document.getElementById('itemCount').textContent  = arNum(items.length);
+
+  // لا تسمح بالدفع قبل معرفة الرسوم
+  document.getElementById('btnPay').disabled  = !loaded;
+  document.getElementById('btnInst').disabled = !loaded;
 
   if (backUrl) back.href = backUrl;
 }
@@ -282,9 +296,8 @@ function totalFee(){ return items.reduce((s, it) => s + it.fee, 0); }
 
 // رابط صفحة المادة (نظيف) — السكربت هو اللي يضيف payment=success&phone&course
 function redirectTarget(){
-  let url = backUrl || (CATALOG[primaryCourse()] && CATALOG[primaryCourse()].page) || '';
-  if (!url) return window.location.href.split('?')[0];
-  return new URL(url, window.location.href).href.split('?')[0];
+  if (!backUrl) return window.location.href.split('?')[0];
+  return new URL(backUrl, window.location.href).href.split('?')[0];
 }
 
 // ═══════════════════════════════════════════════
