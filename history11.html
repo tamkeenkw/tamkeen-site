@@ -1,0 +1,656 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تاريخ ١١ | EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0D5C48;--teal2:#0A4D3C;--teallt:#15705A;
+  --accent:#1A8F6F;--accentlt:#22B08A;
+  --cream:#F5FAF8;--cream2:#E8F4F0;
+  --text:#0A2620;--muted:#4A7A6E;
+  --lock:#C0392B;--free:#1A8F6F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--teal);min-height:100vh;padding:32px 16px 70px;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(26,143,111,.15) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(10,77,60,.3) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:28px;}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18);}
+.logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:100px;margin-bottom:18px;}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0;}
+h1{font-size:clamp(26px,7vw,38px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;}
+h1 span{color:var(--accentlt);}
+.sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.8;}
+
+/* CARD */
+.card{background:var(--cream);border-radius:26px;padding:clamp(20px,5vw,32px);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.sec-label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;}
+.sec-line{flex:1;height:1px;background:var(--cream2);}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:20px;}
+.tab{flex:1;padding:11px;border-radius:14px;border:1.5px solid rgba(13,92,72,.15);background:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center;}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* CHAPTERS */
+.chapter-block{margin-bottom:20px;}
+.chapter-header{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--teal);border-radius:16px;margin-bottom:10px;}
+.chapter-title{font-size:15px;font-weight:900;color:#fff;}
+.chapter-count{font-size:11px;font-weight:800;background:rgba(255,255,255,.2);color:#fff;padding:3px 10px;border-radius:100px;}
+
+/* QUESTIONS */
+.lesson-block{margin-bottom:10px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(13,92,72,.1);}
+.lesson-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;cursor:pointer;gap:10px;}
+.lesson-header:hover{background:rgba(13,92,72,.03);}
+.lesson-title{font-size:14px;font-weight:900;color:var(--teal);}
+.lesson-count{font-size:11px;font-weight:800;background:rgba(13,92,72,.08);color:var(--teal);padding:3px 10px;border-radius:100px;}
+.lesson-arrow{font-size:12px;color:var(--muted);transition:.2s;flex-shrink:0;}
+.lesson-block.open .lesson-arrow{transform:rotate(180deg);}
+.lesson-body{display:none;padding:4px 12px 12px;}
+.lesson-block.open .lesson-body{display:block;}
+.q-card{background:var(--cream);border-radius:12px;padding:14px 16px;margin-bottom:8px;}
+.q-type{font-size:10px;font-weight:900;padding:3px 10px;border-radius:100px;display:inline-block;margin-bottom:8px;}
+.q-type.موضوعية{background:#E3F2FD;color:#1565C0;}
+.q-type.مصطلح{background:#EDE7F6;color:#4527A0;}
+.q-type.تعليل{background:#FFF8E1;color:#F57F17;}
+.q-type.تعداد{background:#E8F5E9;color:#2E7D32;}
+.q-type.نتائج{background:#FCE4EC;color:#C62828;}
+.q-type.مقترحات{background:#E0F7FA;color:#006064;}
+.q-type.خرائط{background:#F3E5F5;color:#6A1B9A;}
+.q-question{font-size:13px;font-weight:800;color:var(--text);line-height:1.7;margin-bottom:8px;}
+.q-answer{font-size:13px;color:var(--muted);line-height:1.7;padding:10px 14px;background:#fff;border-radius:10px;border-right:3px solid var(--teal);}
+.q-answer-label{font-size:11px;font-weight:900;color:var(--teal);margin-bottom:4px;}
+
+
+
+/* ACCESS BAR */
+.access-bar{background:rgba(13,92,72,.06);border:1.5px solid rgba(13,92,72,.12);border-radius:16px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.access-bar-text{font-size:13px;color:var(--muted);}
+.access-bar-text strong{color:var(--teal);font-weight:800;}
+.btn-unlock{background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;padding:9px 18px;border-radius:100px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.btn-unlock:hover{background:var(--teallt);}
+.access-ok{background:rgba(26,143,111,.08);border-color:rgba(26,143,111,.2);}
+.access-ok .access-bar-text strong{color:var(--free);}
+
+/* VIDEO LIST */
+.vid-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.vid-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:1.5px solid rgba(13,92,72,.1);background:#fff;cursor:pointer;transition:all .22s;position:relative;}
+.vid-item:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(13,92,72,.1);}
+.vid-item.active{border-color:var(--teal);background:rgba(13,92,72,.04);box-shadow:0 0 0 3px rgba(13,92,72,.08);}
+.vid-item.locked{cursor:pointer;}
+.vid-item.locked .vid-thumb{background:rgba(192,57,43,.08);}
+.vid-num{width:34px;height:34px;border-radius:10px;background:rgba(13,92,72,.08);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--teal);flex-shrink:0;}
+.vid-item.locked .vid-num{background:rgba(192,57,43,.08);color:var(--lock);}
+.vid-item.active .vid-num{background:var(--teal);color:#fff;}
+.vid-info{flex:1;min-width:0;}
+.vid-title{font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vid-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;margin-top:4px;}
+.vid-badge.free{background:rgba(26,143,111,.1);color:var(--free);}
+.vid-badge.paid{background:rgba(192,57,43,.1);color:var(--lock);}
+.vid-badge.unlocked{background:rgba(26,143,111,.1);color:var(--free);}
+.vid-arrow{font-size:16px;color:var(--muted);flex-shrink:0;}
+
+/* VIDEO PLAYER — ثابت فوق */
+.player-wrap{margin-bottom:20px;display:block;}
+.player-placeholder{aspect-ratio:16/9;border-radius:18px;background:rgba(13,92,72,.08);border:2px dashed rgba(13,92,72,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+.player-placeholder-icon{font-size:36px;opacity:.4;}
+.player-placeholder-text{font-size:13px;color:var(--muted);font-weight:700;}
+.player-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.player-label-dot{width:8px;height:8px;border-radius:50%;background:var(--accentlt);flex-shrink:0;}
+.player-label-text{font-size:13px;font-weight:800;color:var(--teal);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-frame{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 12px 40px rgba(0,0,0,.3);}
+.player-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.player-title{font-size:15px;font-weight:800;color:var(--text);margin-top:12px;}
+
+/* LOCK OVERLAY */
+.lock-overlay{position:absolute;inset:0;background:rgba(13,92,72,.04);border-radius:14px;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+
+/* LOADING */
+.loading-wrap{text-align:center;padding:40px 20px;}
+.loading-spin{width:36px;height:36px;border:3px solid rgba(13,92,72,.15);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--muted);}
+
+/* EMPTY / ERROR */
+.empty{text-align:center;padding:40px 20px;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-text{font-size:14px;color:var(--muted);}
+
+/* MODAL OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(5,30,22,.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0;}
+.overlay.show{display:flex;}
+.modal{background:var(--cream);border-radius:28px 28px 0 0;padding:28px 24px 40px;width:100%;max-width:520px;animation:slideUp .3s ease;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:rgba(13,92,72,.15);margin:0 auto 22px;}
+.modal-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.7;}
+.field{display:grid;gap:7px;margin-bottom:14px;}
+.field label{font-size:13px;font-weight:800;color:var(--text);}
+.field input{width:100%;background:#fff;border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:14px 18px;font-family:'Cairo',sans-serif;font-size:15px;color:var(--text);outline:none;transition:all .25s;direction:rtl;}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,92,72,.07);}
+.field input::placeholder{color:rgba(74,122,110,.35);}
+.field input[type=tel]{direction:ltr;text-align:right;}
+.fee-box{background:rgba(13,92,72,.06);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.fee-label{font-size:13px;color:var(--muted);}
+.fee-amount{font-size:22px;font-weight:900;color:var(--teal);}
+.fee-currency{font-size:13px;font-weight:700;color:var(--muted);margin-right:4px;}
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;padding:16px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(13,92,72,.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn:hover{background:var(--teallt);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-secondary{background:transparent;border:1.5px solid rgba(13,92,72,.2);color:var(--teal);box-shadow:none;margin-top:10px;}
+.btn-secondary:hover{background:rgba(13,92,72,.05);}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none;}
+.modal-tabs{display:flex;gap:8px;margin-bottom:22px;}
+.modal-tab{flex:1;padding:11px;border-radius:12px;border:1.5px solid rgba(13,92,72,.15);background:#fff;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center;}
+.modal-tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+.succ{text-align:center;padding:20px 0;}
+.succ-icon{width:70px;height:70px;border-radius:50%;background:rgba(13,92,72,.1);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:30px;}
+.succ-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.succ-desc{font-size:13px;color:var(--muted);line-height:1.8;}
+.error-msg{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:var(--lock);font-size:13px;font-weight:700;padding:12px 16px;border-radius:12px;margin-bottom:14px;display:none;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="logo-text">EDUCLOUD</div>
+    </div>
+    <div class="badge"><div class="badge-dot"></div>محتوى حصري</div>
+    <h1>تاريخ <span>١١</span></h1>
+    <p class="sub">محاضرات مسجلة — تابعها في أي وقت</p>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="card">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('videos')">📹 المحاضرات</button>
+      <button class="tab" onclick="switchTab('questions')">❓ أهم الأسئلة</button>
+    </div>
+
+    <!-- TAB: VIDEOS -->
+    <div class="tab-pane active" id="pane-videos">
+
+    <!-- ACCESS BAR -->
+    <div class="access-bar" id="accessBar">
+      <div class="access-bar-text">
+        عندك اشتراك؟ <strong>ادخل رقمك لفتح المحتوى</strong>
+      </div>
+      <button class="btn-unlock" onclick="openModal('access')">دخول ↗</button>
+    </div>
+
+    <!-- VIDEO PLAYER — يظهر فقط بعد الاختيار -->
+    <div class="player-wrap" id="playerWrap" style="display:none;">
+      <div class="player-label">
+        <div class="player-label-dot"></div>
+        <div class="player-label-text" id="playerLabel"></div>
+      </div>
+      <div class="player-frame" id="playerFrame">
+        <iframe id="playerIframe" src="" allowfullscreen allow="autoplay; fullscreen" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+      </div>
+    </div>
+
+    <!-- VIDEO LIST -->
+    <div class="sec-label" style="margin-top:20px;"><span>قائمة المحاضرات</span><div class="sec-line"></div></div>
+
+    <div id="loadingWrap" class="loading-wrap">
+      <div class="loading-spin"></div>
+      <div class="loading-text">جاري تحميل المحاضرات...</div>
+    </div>
+
+    <div class="vid-list" id="vidList" style="display:none;"></div>
+    <div class="empty" id="emptyWrap" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <div class="empty-text">لا يوجد محتوى متاح حالياً</div>
+    </div>
+
+    </div><!-- end pane-videos -->
+
+    <!-- TAB: QUESTIONS -->
+    <div class="tab-pane" id="pane-questions">
+      <div id="lessonsContainer"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+
+    <!-- ACCESS MODAL (unlock existing subscriber) -->
+    <div id="modalAccess">
+      <div class="modal-title">🔓 فتح المحتوى</div>
+      <div class="modal-sub">أدخل رقم واتساب المسجّل لديك لفتح المحاضرات</div>
+      <div class="error-msg" id="accessError"></div>
+      <div class="field">
+        <label>رقم الواتساب</label>
+        <input type="tel" id="accessPhone" placeholder="مثال: 99444335" oninput="clearErr('accessError')">
+      </div>
+      <button class="btn" onclick="checkAccess()">
+        <span id="accessTxt">تحقق من اشتراكي</span>
+        <div class="spin" id="accessSpin"></div>
+      </button>
+      <button class="btn btn-secondary" onclick="goToCart()">اشترك الآن ←</button>
+    </div>
+
+    <!-- SUBSCRIBE MODAL -->
+    <div id="modalSubscribe" style="display:none;">
+      <div class="modal-title">📚 الاشتراك في المادة</div>
+      <div class="modal-sub">سجّل بياناتك وسيتم التواصل معك لتأكيد الدفع وتفعيل الاشتراك</div>
+      <div class="fee-box">
+        <div class="fee-label">رسوم الاشتراك</div>
+        <div><span class="fee-amount" id="feeAmount">—</span> <span class="fee-currency">د.ك</span></div>
+      </div>
+      <div class="error-msg" id="subError"></div>
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="subName" placeholder="اكتب اسمك">
+      </div>
+      <div class="field">
+        <label>رقم الواتساب</label>
+        <input type="tel" id="subPhone" placeholder="مثال: 99444335">
+      </div>
+      <button class="btn" onclick="submitSubscription()">
+        <span id="subTxt">أرسل طلب الاشتراك</span>
+        <div class="spin" id="subSpin"></div>
+      </button>
+      <button class="btn btn-secondary" onclick="openModal('access')">عندي اشتراك ←</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="modalSuccess" style="display:none;">
+      <div class="succ">
+        <div class="succ-icon">✅</div>
+        <div class="succ-title">تم استلام طلبك!</div>
+        <div class="succ-desc">سيتواصل معك فريق EDUCLOUD خلال ٢٤ ساعة<br>لتأكيد الدفع وتفعيل اشتراكك.</div>
+      </div>
+      <button class="btn" onclick="closeModalFull()">حسناً</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const SCRIPT   = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
+const COURSE   = 'تاريخ ١١';
+let SUB_FEE = '15'; // يُحدَّث تلقائياً من الشيت
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let videos       = [];
+let hasAccess    = false;
+let activeIndex  = -1;
+
+// ═══════════════════════════════════════════════
+// LOAD VIDEOS
+// ═══════════════════════════════════════════════
+async function loadVideos() {
+  // جلب الفيديوات والرسوم معاً
+  try {
+    const [vRes, sRes] = await Promise.all([
+      fetch(SCRIPT + '?action=getCourseVideos&course='  + encodeURIComponent(COURSE)),
+      fetch(SCRIPT + '?action=getCourseSettings&course=' + encodeURIComponent(COURSE))
+    ]);
+    const vData = await vRes.json();
+    const sData = await sRes.json();
+    videos   = vData.videos || [];
+    SUB_FEE  = sData.fee    || '15';
+    document.getElementById('feeAmount').textContent = SUB_FEE;
+  } catch(e) {
+    videos = [];
+  }
+  renderList();
+}
+
+function renderList() {
+  const loading = document.getElementById('loadingWrap');
+  const list    = document.getElementById('vidList');
+  const empty   = document.getElementById('emptyWrap');
+
+  loading.style.display = 'none';
+
+  if (!videos.length) {
+    empty.style.display = 'block';
+    return;
+  }
+
+  list.style.display = 'flex';
+  list.innerHTML = videos.map((v, i) => {
+    const isFree     = v.type === 'مجاني';
+    const isUnlocked = isFree || hasAccess;
+    const lockClass  = isUnlocked ? (isFree ? '' : 'unlocked') : 'locked';
+    const badge      = isFree
+      ? '<span class="vid-badge free">▶ مجاني</span>'
+      : isUnlocked
+        ? '<span class="vid-badge unlocked">🔓 متاح لك</span>'
+        : '<span class="vid-badge paid">🔒 يتطلب اشتراك</span>';
+    return `
+      <div class="vid-item ${lockClass} ${i===activeIndex?'active':''}" id="vid-${i}" onclick="onVidClick(${i})">
+        <div class="vid-num">${i+1}</div>
+        <div class="vid-info">
+          <div class="vid-title">${v.name}</div>
+          ${badge}
+        </div>
+        <div class="vid-arrow">${i===activeIndex ? '▼' : (isUnlocked ? '▶' : '🔒')}</div>
+        </div><!-- end chapter-lessons -->
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// VIDEO CLICK
+// ═══════════════════════════════════════════════
+function onVidClick(i) {
+  const v        = videos[i];
+  const isFree   = v.type === 'مجاني';
+  const canWatch = isFree || hasAccess;
+
+  if (!canWatch) {
+    document.getElementById('feeAmount').textContent = SUB_FEE;
+    goToCart();
+    return;
+  }
+
+  if (activeIndex === i) {
+    // نفس الفيديو — ما نسوي شيء
+    return;
+  }
+
+  activeIndex = i;
+  renderList();
+  playVideo(v);
+}
+
+function playVideo(v) {
+  const iframe = document.getElementById('playerIframe');
+  const label  = document.getElementById('playerLabel');
+  const wrap   = document.getElementById('playerWrap');
+
+  let src = v.url;
+  if (src.includes('vimeo.com') && !src.includes('player.vimeo.com')) {
+    const match = src.match(/vimeo\.com\/(\d+)(?:\/([a-zA-Z0-9]+))?/);
+    if (match) {
+      src = 'https://player.vimeo.com/video/' + match[1];
+      if (match[2]) src += '?h=' + match[2] + '&autoplay=1';
+      else src += '?autoplay=1';
+      src += '&color=0D5C48';
+    }
+  }
+
+  iframe.src         = src;
+  label.textContent  = v.name;
+  wrap.style.display = 'block';
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════════════
+// ACCESS CHECK
+// ═══════════════════════════════════════════════
+async function checkAccess() {
+  const phone = document.getElementById('accessPhone').value.trim();
+  if (!phone) { showErr('accessError', 'أدخل رقم الواتساب'); return; }
+
+  setBtnState('accessTxt', 'accessSpin', true);
+  try {
+    const res  = await fetch(SCRIPT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ type: 'checkCourseAccess', phone, course: COURSE })
+    });
+    const data = await res.json();
+    if (data.access) {
+      hasAccess = true;
+      updateAccessBar(phone);
+      closeModalFull();
+      renderList();
+    } else {
+      showErr('accessError', data.message || 'الرقم غير مشترك أو الاشتراك غير مفعّل بعد');
+    }
+  } catch(e) {
+    showErr('accessError', 'حدث خطأ — حاول مرة ثانية');
+  }
+  setBtnState('accessTxt', 'accessSpin', false);
+}
+
+function updateAccessBar(phone) {
+  const bar = document.getElementById('accessBar');
+  bar.className = 'access-bar access-ok';
+  bar.innerHTML = `
+    <div class="access-bar-text">✅ <strong>مرحباً!</strong> اشتراكك مفعّل</div>
+    <div style="font-size:12px;color:var(--free);font-weight:700;">${phone}</div>`;
+  buildQuestions(); // أعد بناء الأسئلة بعد تفعيل الوصول
+}
+
+// ═══════════════════════════════════════════════
+// SUBSCRIBE
+// ═══════════════════════════════════════════════
+async function submitSubscription() {
+  const name  = document.getElementById('subName').value.trim();
+  const phone = document.getElementById('subPhone').value.trim();
+  if (!name)  { showErr('subError', 'أدخل اسمك'); return; }
+  if (!phone) { showErr('subError', 'أدخل رقم الواتساب'); return; }
+
+  setBtnState('subTxt', 'subSpin', true);
+  try {
+    const res  = await fetch(SCRIPT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        type:     'courseSubscribe',
+        name,     phone,
+        course:   COURSE,
+        fee:      SUB_FEE,
+        redirect: window.location.origin + window.location.pathname
+      })
+    });
+    const data = await res.json();
+
+    // لو رجع رابط Tap → وجّه للدفع
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    // لو ما في رابط → سجّل بدون دفع إلكتروني
+    showPane('modalSuccess');
+  } catch(e) {
+    showPane('modalSuccess');
+  }
+  setBtnState('subTxt', 'subSpin', false);
+}
+
+// ═══════════════════════════════════════════════
+// MODAL HELPERS
+// ═══════════════════════════════════════════════
+function goToCart() {
+  location.href = 'cart.html?course=' + encodeURIComponent(COURSE)
+    + '&fee=' + encodeURIComponent(SUB_FEE)
+    + '&back=' + encodeURIComponent(location.origin + location.pathname);
+}
+
+function openModal(type) {
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('feeAmount').textContent = SUB_FEE;
+  if (type === 'access')    showPane('modalAccess');
+  if (type === 'subscribe') showPane('modalSubscribe');
+}
+
+function showPane(id) {
+  ['modalAccess','modalSubscribe','modalSuccess'].forEach(p => {
+    document.getElementById(p).style.display = p === id ? 'block' : 'none';
+  });
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('overlay')) closeModalFull();
+}
+function closeModalFull() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearErr(id) {
+  document.getElementById(id).style.display = 'none';
+}
+function setBtnState(txtId, spinId, loading) {
+  document.getElementById(txtId).style.display = loading ? 'none' : 'inline';
+  document.getElementById(spinId).style.display = loading ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('pane-' + tab).classList.add('active');
+}
+
+function toggleChapter(el, idx) {
+  // الأسئلة مجانية للجميع
+  const lessons = el.nextElementSibling;
+  const arrow   = el.querySelector('span:last-child');
+  const isOpen  = lessons.style.display !== 'none';
+  lessons.style.display = isOpen ? 'none' : 'block';
+  arrow.style.transform  = isOpen ? '' : 'rotate(180deg)';
+}
+
+function toggleLesson(el) {
+  el.closest('.lesson-block').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// QUESTIONS DATA
+// ═══════════════════════════════════════════════
+const CHAPTERS = [];
+
+
+
+
+
+function buildQuestions() {
+  const container = document.getElementById('lessonsContainer');
+  if (!container) return;
+  container.innerHTML = CHAPTERS.map((ch, ci) => {
+    const totalQ = ch.lessons.reduce((s, l) => s + l.items.length, 0);
+    return `
+    <div class="chapter-block">
+      <div class="chapter-header" onclick="toggleChapter(this, ${ci})" style="cursor:pointer;user-select:none;">
+        <span style="font-size:18px;">📚</span>
+        <div class="chapter-title" style="flex:1;">${ch.chapter}</div>
+        
+        <span class="chapter-count">${totalQ} سؤال</span>
+        <span style="color:rgba(255,255,255,.7);font-size:12px;margin-right:6px;">'▼'</span>
+      </div>
+      <div class="chapter-lessons" style="display:none;">
+      ${ch.lessons.map((lesson, li) => `
+        <div class="lesson-block" id="lesson-${ci}-${li}">
+          <div class="lesson-header" onclick="toggleLesson(this)">
+            <div class="lesson-title">📖 ${lesson.lesson}</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="lesson-count">${lesson.items.length} سؤال</span>
+              <span class="lesson-arrow">▼</span>
+            </div>
+          </div>
+          <div class="lesson-body">
+            ${lesson.items.map(item => `
+              <div class="q-card">
+                <span class="q-type ${item.type}">${item.type}</span>
+                <div class="q-question">س: ${item.q}</div>
+                <div class="q-answer">
+                  <div class="q-answer-label">الإجابة:</div>
+                  ${item.a}
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+      </div><!-- end chapter-lessons -->
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+
+// تحقق من رجوع بعد الدفع
+async function checkPaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') !== 'success') return;
+
+  const phone = params.get('phone') || '';
+  const tapId = params.get('tap_id') || '';
+
+  // لازم يكون في tap_id من Tap
+  if (!tapId || !tapId.startsWith('chg_')) {
+    window.history.replaceState({}, '', window.location.pathname);
+    return;
+  }
+
+  try {
+    const res  = await fetch(SCRIPT + '?payment=success&type=courseSubscribe'
+      + '&phone='  + encodeURIComponent(phone)
+      + '&course=' + encodeURIComponent(COURSE)
+      + '&tap_id=' + encodeURIComponent(tapId));
+    const data = await res.json();
+
+    if (data.status === 'ok' && data.access) {
+      hasAccess = true;
+      updateAccessBar(phone);
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(function() {
+        document.getElementById('overlay').classList.add('show');
+        showPane('modalSuccess');
+        document.getElementById('modalSuccess').querySelector('.succ-title').textContent = '🎉 تم الدفع بنجاح!';
+        document.getElementById('modalSuccess').querySelector('.succ-desc').textContent =
+          'اشتراكك مفعّل الآن — تقدر تشوف جميع المحاضرات.';
+      }, 500);
+    } else {
+      // الدفع لم يكتمل — لا تفعيل، ونُعلم المستخدم
+      window.history.replaceState({}, '', window.location.pathname);
+      openModal('access');
+      showErr('accessError', 'لم يكتمل الدفع — لم يُفعّل اشتراكك. تقدر تحاول مرة ثانية.');
+    }
+  } catch(e) {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+}
+
+checkPaymentReturn();
+loadVideos();
+buildQuestions();
+</script>
+</body>
+</html>
