@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معهد تمكين — لوحة تحكم المدرب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --crimson:   #5C0F0F;
+  --crimson-2: #6B1212;
+  --cream:     #FAF7F2;
+  --text:      #1A0808;
+  --muted:     #7A6060;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+
+/* ===== شاشة الدخول ===== */
+.login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  background:var(--crimson);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;
+}
+.login-card { background:#fff; border-radius:24px; padding:44px 36px; max-width:420px; width:100%; box-shadow:0 16px 60px rgba(0,0,0,.25); text-align:center; animation:fadeUp .5s ease both; }
+.login-card .logo { font-size:26px; font-weight:900; color:var(--crimson); margin-bottom:6px; }
+.login-card .sub { font-size:14px; color:var(--muted); margin-bottom:30px; }
+.login-card h2 { font-size:19px; font-weight:800; margin-bottom:8px; }
+.login-card .desc { font-size:14px; color:var(--muted); margin-bottom:24px; line-height:1.7; }
+.login-card input { width:100%; padding:15px 18px; border:1.5px solid #DDD6C8; border-radius:14px; font-family:'Tajawal',sans-serif; font-size:17px; text-align:center; letter-spacing:.05em; background:var(--cream); outline:none; transition:all .22s; margin-bottom:8px; }
+.login-card input:focus { border-color:var(--crimson); box-shadow:0 0 0 3px rgba(92,15,15,.08); background:#fff; }
+.login-card input.invalid { border-color:#dc2626; }
+.login-err { font-size:13px; color:#dc2626; min-height:20px; margin-bottom:8px; font-weight:600; }
+.login-btn { width:100%; padding:16px; background:var(--crimson); color:#fff; border:none; border-radius:14px; font-family:'Tajawal',sans-serif; font-size:18px; font-weight:900; cursor:pointer; transition:all .28s; box-shadow:0 8px 24px rgba(92,15,15,.22); display:flex; align-items:center; justify-content:center; gap:10px; }
+.login-btn:hover { background:var(--crimson-2); transform:translateY(-2px); }
+.login-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+.spinner { display:none; width:22px; height:22px; border:2.5px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ===== لوحة التحكم ===== */
+.dash { display:none; }
+.dash-hero { background:var(--crimson); padding:54px 24px 90px; position:relative; overflow:hidden;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;
+}
+.dash-hero-inner { max-width:760px; margin:0 auto; position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; }
+.dash-hero .welcome { font-size:14px; color:rgba(255,255,255,.6); margin-bottom:4px; }
+.dash-hero .tname { font-size:clamp(22px,4vw,30px); font-weight:900; color:#fff; }
+.logout-btn { background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.2); color:rgba(255,255,255,.85); padding:9px 18px; border-radius:100px; font-family:'Tajawal',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all .25s; white-space:nowrap; }
+.logout-btn:hover { background:rgba(255,255,255,.18); color:#fff; }
+
+.dash-body { max-width:760px; margin:-60px auto 0; padding:0 24px 60px; position:relative; z-index:3; }
+
+/* بطاقة بيانات العضوية */
+.member-card { background:#fff; border-radius:22px; padding:28px 30px; box-shadow:0 10px 40px rgba(92,15,15,.1); border:1.5px solid rgba(92,15,15,.07); margin-bottom:30px; }
+.member-card .mc-head { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.member-card .mc-head .dot { width:10px; height:10px; border-radius:50%; }
+.member-card .mc-head .lbl { font-size:13px; font-weight:800; }
+.badge-active { color:#1A7A3A; } .dot-active { background:#1A7A3A; }
+.badge-expired { color:#C62828; } .dot-expired { background:#C62828; }
+.mc-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
+@media (max-width:520px) { .mc-grid { grid-template-columns:1fr; gap:14px; } }
+.mc-item .k { font-size:12px; color:var(--muted); font-weight:700; margin-bottom:4px; }
+.mc-item .v { font-size:16px; font-weight:800; color:var(--text); }
+
+/* بطاقات الإجراءات */
+.section-title { font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--crimson); margin:0 4px 16px; }
+.actions { display:grid; grid-template-columns:1fr; gap:14px; }
+.action-card { display:flex; align-items:center; gap:18px; background:#fff; border-radius:18px; padding:22px 24px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); text-decoration:none; color:inherit; transition:all .25s; cursor:pointer; }
+.action-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(92,15,15,.14); border-color:rgba(92,15,15,.18); }
+.action-card .ico { width:54px; height:54px; flex-shrink:0; background:var(--crimson); border-radius:14px; display:flex; align-items:center; justify-content:center; }
+.action-card .ico svg { width:26px; height:26px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.action-card .txt h3 { font-size:17px; font-weight:900; margin-bottom:3px; }
+.action-card .txt p { font-size:13px; color:var(--muted); line-height:1.6; }
+.action-card .arrow { margin-right:auto; color:var(--crimson); opacity:.4; transition:all .25s; }
+.action-card:hover .arrow { opacity:1; transform:translateX(-4px); }
+
+/* حجوزاتي */
+.section-title .count-badge { display:inline-block; background:var(--crimson); color:#fff; font-size:12px; font-weight:800; border-radius:100px; padding:2px 11px; margin-right:8px; letter-spacing:0; }
+.bk-card { background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:12px; }
+.bk-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.bk-title { font-size:16px; font-weight:900; color:var(--text); }
+.bk-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); font-weight:600; }
+.bk-meta span { display:inline-flex; align-items:center; gap:5px; }
+.bk-status { font-size:12px; font-weight:800; padding:5px 13px; border-radius:100px; white-space:nowrap; }
+.st-done    { background:#e8f5e9; color:#1A7A3A; }
+.st-pending { background:#fff8e1; color:#B8860B; }
+.st-warn    { background:#fff3e0; color:#B85C00; }
+.st-reject  { background:#fdecea; color:#C62828; }
+.bk-empty { text-align:center; padding:26px; color:var(--muted); font-size:14px; font-weight:600; background:#fff; border-radius:16px; border:1.5px dashed rgba(92,15,15,.18); line-height:1.7; }
+
+/* دوراتي هذا الشهر */
+.crs-card { display:flex; align-items:center; gap:16px; background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:12px; }
+.crs-info { flex:1; min-width:0; }
+.crs-title { font-size:16px; font-weight:900; color:var(--text); margin-bottom:6px; }
+.crs-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); font-weight:600; }
+.crs-count { flex-shrink:0; text-align:center; background:var(--crimson); color:#fff; border-radius:14px; padding:10px 16px; min-width:78px; }
+.crs-count .n { font-size:24px; font-weight:900; line-height:1; }
+.crs-count .t { font-size:11px; font-weight:700; opacity:.85; margin-top:3px; }
+
+/* عملاء المدرب */
+.cl-card { display:flex; align-items:center; gap:12px; background:#fff; border-radius:14px; padding:13px 16px; box-shadow:0 4px 18px rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.07); margin-bottom:9px; }
+.cl-avatar { flex-shrink:0; width:40px; height:40px; border-radius:50%; background:rgba(92,15,15,.08); color:var(--crimson); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; }
+.cl-info { flex:1; min-width:0; }
+.cl-name { font-size:14px; font-weight:800; color:var(--text); margin-bottom:3px; }
+.cl-sub { font-size:12px; color:var(--muted); font-weight:600; display:flex; flex-wrap:wrap; gap:10px; }
+.cl-tags { flex-shrink:0; display:flex; flex-direction:column; gap:4px; align-items:flex-end; }
+.cl-tag { font-size:10.5px; font-weight:800; border-radius:100px; padding:2px 9px; white-space:nowrap; }
+.cl-tag.att { background:#E8F5E9; color:#2E7D32; }
+.cl-tag.cert { background:#FFF3E0; color:#E65100; }
+
+/* أيكونز مضمّنة بدل الإيموجي */
+.mi { width:14px; height:14px; vertical-align:-2px; margin-left:5px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; display:inline-block; }
+/* بطاقة عدد العملاء (بدون أسماء) */
+.stat-card { display:flex; align-items:center; gap:16px; background:#fff; border-radius:16px; padding:20px 22px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); }
+.stat-ico { flex-shrink:0; width:52px; height:52px; border-radius:14px; background:rgba(92,15,15,.07); color:var(--crimson); display:flex; align-items:center; justify-content:center; }
+.stat-ico svg { width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.stat-info .n { font-size:30px; font-weight:900; color:var(--crimson); line-height:1; }
+.stat-info .t { font-size:13px; font-weight:700; color:var(--muted); margin-top:5px; }
+
+/* زر الحصول على رابط التقييم داخل بطاقة الدورة */
+.crs-eval-btn {
+  margin-top:10px; display:inline-flex; align-items:center; gap:7px;
+  background:rgba(92,15,15,.06); color:var(--crimson); border:1.5px solid rgba(92,15,15,.15);
+  border-radius:100px; padding:7px 14px; font-family:'Tajawal',sans-serif; font-size:12.5px;
+  font-weight:800; cursor:pointer; transition:all .22s;
+}
+.crs-eval-btn:hover { background:var(--crimson); color:#fff; border-color:var(--crimson); }
+.crs-eval-btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.crs-eval-btn.copied { background:#E8F5E9; color:#1A7A3A; border-color:#1A7A3A; }
+
+/* آراء الحضور */
+.rv-card { background:#fff; border-radius:16px; padding:20px 22px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:14px; }
+.rv-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.rv-title { font-size:16px; font-weight:900; color:var(--text); }
+.rv-date  { font-size:12.5px; color:var(--muted); font-weight:600; margin-top:3px; display:inline-flex; align-items:center; gap:5px; }
+.rv-date svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.rv-score { flex-shrink:0; text-align:center; background:var(--crimson); color:#fff; border-radius:12px; padding:8px 14px; min-width:72px; }
+.rv-score .n { font-size:22px; font-weight:900; line-height:1; }
+.rv-score .s { font-size:11px; font-weight:700; opacity:.85; margin-top:3px; }
+.rv-qrows { display:grid; gap:8px; margin-bottom:6px; }
+.rv-qrow { display:flex; align-items:center; gap:10px; font-size:12.5px; }
+.rv-qrow .lbl { flex:1; color:var(--muted); font-weight:600; min-width:0; }
+.rv-qrow .bar { width:90px; height:6px; border-radius:3px; background:rgba(92,15,15,.08); overflow:hidden; flex-shrink:0; }
+.rv-qrow .bar i { display:block; height:100%; background:var(--gold,#C9A227); border-radius:3px; }
+.rv-qrow .val { width:30px; text-align:left; font-weight:800; color:var(--crimson); flex-shrink:0; }
+.rv-comments { margin-top:14px; border-top:1px solid rgba(92,15,15,.07); padding-top:12px; }
+.rv-comments .ch { font-size:12px; font-weight:800; color:var(--crimson); margin-bottom:10px; letter-spacing:.04em; }
+.rv-comment { background:var(--cream); border-radius:12px; padding:11px 14px; margin-bottom:8px; }
+.rv-comment .stars { color:var(--gold,#C9A227); font-size:13px; letter-spacing:1px; margin-bottom:4px; }
+.rv-comment .txt { font-size:13.5px; line-height:1.7; color:var(--text); }
+:root { --gold:#C9A227; }
+
+footer { background:#3A0808; padding:24px; text-align:center; }
+footer p { font-size:13px; color:rgba(255,255,255,.28); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<!-- شاشة الدخول -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-card">
+    <div class="logo">معهد تمكين</div>
+    <div class="sub">لوحة تحكم المدرب</div>
+    <h2>تسجيل الدخول</h2>
+    <p class="desc">أدخل رقم عضويتك للوصول إلى لوحتك</p>
+    <input type="text" id="memberInput" placeholder="رقم العضوية" autocomplete="off">
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">
+      <span id="loginTxt">دخول</span>
+      <div class="spinner" id="loginSpinner"></div>
+    </button>
+  </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div class="dash" id="dashScreen">
+  <div class="dash-hero">
+    <div class="dash-hero-inner">
+      <div>
+        <div class="welcome">مرحباً بك</div>
+        <div class="tname" id="dashName">—</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="member-card">
+      <div class="mc-head">
+        <span class="dot" id="statusDot"></span>
+        <span class="lbl" id="statusLbl"></span>
+      </div>
+      <div class="mc-grid">
+        <div class="mc-item"><div class="k">اسم المدرب</div><div class="v" id="vName">—</div></div>
+        <div class="mc-item"><div class="k">رقم العضوية</div><div class="v" id="vId">—</div></div>
+        <div class="mc-item"><div class="k">تاريخ العضوية</div><div class="v" id="vStart">—</div></div>
+        <div class="mc-item"><div class="k">تاريخ الانتهاء</div><div class="v" id="vEnd">—</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">الخدمات</div>
+    <div class="actions">
+      <a class="action-card" id="cardBooking">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="txt"><h3>حجز مواعيد الدورات</h3><p>قدّم طلب حجز موعد لدورتك التدريبية</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
+
+      <a class="action-card" id="cardAttend">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="txt"><h3>حضور الجلسات التدريبية</h3><p>سجّل حضورك للجلسات التدريبية</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
+
+      <a class="action-card" id="cardMaterial">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg></div>
+        <div class="txt"><h3>المادة التدريبية</h3><p>ارفع مادتك التدريبية لاعتمادها</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
+    </div>
+
+    <div class="section-title" style="margin-top:30px;">دوراتي هذا الشهر
+      <span class="count-badge" id="crsMonthLbl" style="display:none;"></span>
+    </div>
+    <div id="coursesBox">
+      <div class="bk-empty">جاري تحميل دورات هذا الشهر...</div>
+    </div>
+
+    <div class="section-title" style="margin-top:30px;">حجوزاتي
+      <span class="count-badge" id="bkCount" style="display:none;"></span>
+    </div>
+    <div id="bookingsBox">
+      <div class="bk-empty">جاري تحميل حجوزاتك...</div>
+    </div>
+
+    <div class="section-title" style="margin-top:30px;">آراء الحضور على دوراتك
+      <span class="count-badge" id="rvCount" style="display:none;"></span>
+    </div>
+    <div id="reviewsBox">
+      <div class="bk-empty">جاري تحميل آراء الحضور...</div>
+    </div>
+  </div>
+
+  <footer><p>© 2026 معهد تمكين</p></footer>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
+const MASAR_URL  = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+
+/* ====== روابط صفحاتك الثلاث — عدّلها حسب أسماء ملفاتك ====== */
+const PAGES = {
+  booking:    'booking.html',     // حجز مواعيد الدورات
+  attendance: 'attendance.html',  // حضور الجلسات التدريبية
+  material:   'trainer.html'      // رفع / اعتماد المادة التدريبية
+};
+
+/* صفحة تقييم الدورة العامة (تُبنى منها الروابط المشتركة للحضور) */
+const EVAL_PAGE = 'evaluate.html';
+
+/* تمرير رقم العضوية للصفحة المقصودة (إن أرادت قراءته لاحقاً) */
+function goTo(url) {
+  var m = sessionStorage.getItem('tk_memberId') || '';
+  var sep = url.indexOf('?') > -1 ? '&' : '?';
+  window.location.href = m ? (url + sep + 'm=' + encodeURIComponent(m)) : url;
+}
+document.getElementById('cardBooking').addEventListener('click', function(){ goTo(PAGES.booking); });
+document.getElementById('cardAttend').addEventListener('click', function(){ goTo(PAGES.attendance); });
+document.getElementById('cardMaterial').addEventListener('click', function(){ goTo(PAGES.material); });
+
+/* السماح بالدخول بزر Enter */
+document.getElementById('memberInput').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
+  var input = document.getElementById('memberInput');
+  var err   = document.getElementById('loginErr');
+  var id    = input.value.trim();
+  input.classList.remove('invalid');
+  err.textContent = '';
+
+  if (!id) { input.classList.add('invalid'); err.textContent = 'يرجى إدخال رقم العضوية'; return; }
+
+  var btn = document.getElementById('loginBtn');
+  var txt = document.getElementById('loginTxt');
+  var sp  = document.getElementById('loginSpinner');
+  btn.disabled = true; sp.style.display = 'block'; txt.textContent = 'جاري التحقق...';
+
+  var cbName = 'cb_verify_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+
+  var timer = setTimeout(function(){
+    if (done) return; done = true; cleanup(); failLogin('انتهت مهلة الاتصال، حاول مجدداً');
+  }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    if (res && res.found) {
+      showDashboard(res);
+    } else {
+      failLogin((res && res.message) ? res.message : 'رقم العضوية غير صحيح');
+    }
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); failLogin('تعذّر الاتصال بالخادم'); };
+
+  function cleanup() {
+    try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+  function failLogin(msg) {
+    btn.disabled = false; sp.style.display = 'none'; txt.textContent = 'دخول';
+    input.classList.add('invalid'); err.textContent = msg;
+  }
+
+  script.src = SCRIPT_URL + '?action=verify&memberId=' + encodeURIComponent(id) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+function showDashboard(m) {
+  sessionStorage.setItem('tk_memberId', m.memberId || '');
+  document.getElementById('dashName').textContent = m.name || '—';
+  document.getElementById('vName').textContent  = m.name || '—';
+  document.getElementById('vId').textContent    = m.memberId || '—';
+  document.getElementById('vStart').textContent = m.startDate || '—';
+  document.getElementById('vEnd').textContent   = m.endDate || '—';
+
+  // حالة العضوية (سارية / منتهية) بناءً على تاريخ الانتهاء dd/MM/yyyy
+  var dot = document.getElementById('statusDot');
+  var lbl = document.getElementById('statusLbl');
+  var expired = false;
+  if (m.endDate) {
+    var p = String(m.endDate).split(/[\/\-]/);
+    if (p.length === 3) {
+      var d = new Date(p[2], p[1] - 1, p[0]); // يفترض dd/MM/yyyy
+      if (!isNaN(d.getTime())) expired = (d < new Date(new Date().toDateString()));
+    }
+  }
+  if (expired) {
+    dot.className = 'dot dot-expired'; lbl.className = 'lbl badge-expired'; lbl.textContent = 'العضوية منتهية';
+  } else {
+    dot.className = 'dot dot-active'; lbl.className = 'lbl badge-active'; lbl.textContent = 'العضوية سارية';
+  }
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashScreen').style.display  = 'block';
+  window.scrollTo(0, 0);
+  loadMyBookings(m.memberId || '');
+  loadMyCourses(m.name || '');
+  loadMyReviews(m.memberId || '');
+}
+
+/* ===== أيكونز SVG مضمّنة (بدل الإيموجي) ===== */
+function ic(n) {
+  var m = {
+    cal:     '<svg class="mi" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+    clock:   '<svg class="mi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
+    monitor: '<svg class="mi" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    check:   '<svg class="mi" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+  };
+  return m[n] || '';
+}
+
+/* ===== دورات المدرب هذا الشهر من شيت مسار ===== */
+function loadMyCourses(trainerName) {
+  var box = document.getElementById('coursesBox');
+  var lbl = document.getElementById('crsMonthLbl');
+  box.innerHTML = '<div class="bk-empty">جاري تحميل دورات هذا الشهر...</div>';
+  lbl.style.display = 'none';
+  if (!trainerName) { box.innerHTML = '<div class="bk-empty">تعذّر تحديد اسم المدرب.</div>'; return; }
+
+  var cbName = 'cb_crs_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+  var timer  = setTimeout(function(){ if (done) return; done = true; cleanup(); fail(); }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    var list = (res && res.courses) ? res.courses : [];
+    if (!list.length) {
+      box.innerHTML = '<div class="bk-empty">لا توجد دورات مجدولة لك هذا الشهر.</div>';
+      return;
+    }
+    var total = list.reduce(function(s, c){ return s + (c.count || 0); }, 0);
+    lbl.textContent = total + ' مسجّل'; lbl.style.display = 'inline-block';
+    box.innerHTML = list.map(function(c) {
+      var meta = [];
+      if (c.date) meta.push('<span>' + ic('cal') + c.date + '</span>');
+      if (c.time) meta.push('<span>' + ic('clock') + c.time + '</span>');
+      var btn = '<button class="crs-eval-btn" type="button" data-course="' +
+                  encodeURIComponent(c.course || 'دورة') + '" data-date="' + encodeURIComponent(c.date || '') + '">' +
+                  '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' +
+                  'احصل على رابط تقييم الدورة</button>';
+      return '<div class="crs-card">' +
+               '<div class="crs-count"><div class="n">' + (c.count || 0) + '</div><div class="t">مسجّل</div></div>' +
+               '<div class="crs-info"><div class="crs-title">' + (c.course || 'دورة') + '</div>' +
+               '<div class="crs-meta">' + meta.join('') + '</div>' + btn + '</div>' +
+             '</div>';
+    }).join('');
+
+    // ربط أزرار "احصل على رابط التقييم"
+    box.querySelectorAll('.crs-eval-btn').forEach(function(b) {
+      b.addEventListener('click', function(){ copyEvalLink(this); });
+    });
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
+
+  function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل دورات الشهر — حدّث الصفحة.</div>'; }
+
+  script.src = MASAR_URL + '?action=trainerCourses&trainer=' + encodeURIComponent(trainerName) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+/* ===== بناء رابط التقييم ونسخه ===== */
+function copyEvalLink(btn) {
+  var memberId = sessionStorage.getItem('tk_memberId') || '';
+  var course   = decodeURIComponent(btn.getAttribute('data-course') || '');
+  var date     = decodeURIComponent(btn.getAttribute('data-date') || '');
+  if (!memberId) { alert('تعذّر تحديد رقم عضويتك، أعد تسجيل الدخول.'); return; }
+
+  var base = new URL(EVAL_PAGE, location.href).href; // رابط مطلق يعمل خارج الموقع
+  var link = base + '?m=' + encodeURIComponent(memberId) +
+             '&c=' + encodeURIComponent(course) +
+             (date ? '&d=' + encodeURIComponent(date) : '');
+
+  function flash() {
+    var orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم نسخ الرابط ✓';
+    setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = orig; }, 2200);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(flash).catch(function(){ fallbackCopy(link, flash); });
+  } else {
+    fallbackCopy(link, flash);
+  }
+}
+function fallbackCopy(text, cb) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); cb(); }
+  catch(e) { prompt('انسخ الرابط يدوياً:', text); }
+  document.body.removeChild(ta);
+}
+
+/* ===== آراء الحضور على دورات المدرب ===== */
+function loadMyReviews(memberId) {
+  var box = document.getElementById('reviewsBox');
+  var lbl = document.getElementById('rvCount');
+  box.innerHTML = '<div class="bk-empty">جاري تحميل آراء الحضور...</div>';
+  lbl.style.display = 'none';
+  if (!memberId) { box.innerHTML = '<div class="bk-empty">لا توجد آراء بعد.</div>'; return; }
+
+  var cbName = 'cb_rv_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+  var timer  = setTimeout(function(){ if (done) return; done = true; cleanup(); fail(); }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    var list = (res && res.reviews) ? res.reviews : [];
+    if (!list.length) {
+      box.innerHTML = '<div class="bk-empty">لا توجد آراء بعد — شارك رابط التقييم مع حضور دوراتك من قسم «دوراتي هذا الشهر».</div>';
+      return;
+    }
+    var total = list.reduce(function(s, r){ return s + (r.count || 0); }, 0);
+    lbl.textContent = total + ' تقييم'; lbl.style.display = 'inline-block';
+
+    var QL = ['وضوح الشرح', 'التمكّن من الموضوع', 'التفاعل مع الحضور', 'الاستفادة العملية', 'التقييم العام'];
+
+    box.innerHTML = list.map(function(r) {
+      var avg = (typeof r.avg === 'number') ? r.avg.toFixed(1) : '—';
+
+      // صفوف متوسط كل سؤال
+      var qrows = '';
+      if (r.q && r.q.length) {
+        qrows = '<div class="rv-qrows">' + r.q.map(function(v, i) {
+          var pct = Math.max(0, Math.min(100, (v / 5) * 100));
+          return '<div class="rv-qrow">' +
+                   '<span class="lbl">' + (QL[i] || ('سؤال ' + (i+1))) + '</span>' +
+                   '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
+                   '<span class="val">' + (typeof v === 'number' ? v.toFixed(1) : '—') + '</span>' +
+                 '</div>';
+        }).join('') + '</div>';
+      }
+
+      // التعليقات
+      var comments = '';
+      if (r.comments && r.comments.length) {
+        comments = '<div class="rv-comments"><div class="ch">تعليقات الحضور</div>' +
+          r.comments.map(function(c) {
+            var stars = (typeof c.rating === 'number') ?
+              ('★★★★★'.slice(0, c.rating) + '☆☆☆☆☆'.slice(0, 5 - c.rating)) : '';
+            return '<div class="rv-comment">' +
+                     (stars ? '<div class="stars">' + stars + '</div>' : '') +
+                     '<div class="txt">' + (c.text || '') + '</div>' +
+                   '</div>';
+          }).join('') + '</div>';
+      }
+
+      return '<div class="rv-card">' +
+               '<div class="rv-head">' +
+                 '<div><div class="rv-title">' + (r.course || 'دورة') + '</div>' +
+                   (r.date ? '<div class="rv-date">' + ic('cal') + r.date + '</div>' : '') + '</div>' +
+                 '<div class="rv-score"><div class="n">' + avg + '</div><div class="s">من 5 · ' + (r.count || 0) + ' تقييم</div></div>' +
+               '</div>' + qrows + comments +
+             '</div>';
+    }).join('');
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
+
+  function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل آراء الحضور — حدّث الصفحة.</div>'; }
+
+  script.src = SCRIPT_URL + '?action=courseReviews&memberId=' + encodeURIComponent(memberId) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+/* ===== عملاء المدرب من شيت مسار ===== */
+function loadMyClients(trainerName) {
+  var box = document.getElementById('clientsBox');
+  var lbl = document.getElementById('clCount');
+  box.innerHTML = '<div class="bk-empty">جاري تحميل العملاء...</div>';
+  lbl.style.display = 'none';
+  if (!trainerName) { box.innerHTML = '<div class="bk-empty">تعذّر تحديد اسم المدرب.</div>'; return; }
+
+  var cbName = 'cb_cl_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+  var timer  = setTimeout(function(){ if (done) return; done = true; cleanup(); fail(); }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    var count = (res && typeof res.count === 'number') ? res.count
+              : (res && res.clients ? res.clients.length : 0);
+    lbl.textContent = count; lbl.style.display = 'inline-block';
+    box.innerHTML =
+      '<div class="stat-card">' +
+        '<div class="stat-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>' +
+        '<div class="stat-info"><div class="n">' + count + '</div>' +
+        '<div class="t">إجمالي العملاء المسجّلين في دوراتك</div></div>' +
+      '</div>';
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
+
+  function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل العدد — حدّث الصفحة.</div>'; }
+
+  script.src = MASAR_URL + '?action=trainerClients&trainer=' + encodeURIComponent(trainerName) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+/* ===== حجوزات المدرب من ورقة "طلبات الحجز" ===== */
+function statusInfo(st) {
+  st = String(st || '').trim();
+  if (st === 'تم')     return { label: ic('check') + 'تم الاعتماد', cls: 'st-done' };
+  if (st === 'مرفوض')  return { label: 'مرفوض',          cls: 'st-reject' };
+  if (st === 'تنبيه')  return { label: 'تنبيه',          cls: 'st-warn' };
+  return { label: st || 'قيد المراجعة', cls: 'st-pending' };
+}
+
+function loadMyBookings(memberId) {
+  var box   = document.getElementById('bookingsBox');
+  var badge = document.getElementById('bkCount');
+  box.innerHTML = '<div class="bk-empty">جاري تحميل حجوزاتك...</div>';
+  badge.style.display = 'none';
+  if (!memberId) { box.innerHTML = '<div class="bk-empty">لا توجد حجوزات.</div>'; return; }
+
+  var cbName = 'cb_bk_' + Date.now();
+  var script = document.createElement('script');
+  var done   = false;
+  var timer  = setTimeout(function(){ if (done) return; done = true; cleanup(); fail(); }, 12000);
+
+  window[cbName] = function(res) {
+    if (done) return; done = true; clearTimeout(timer); cleanup();
+    var list = (res && res.bookings) ? res.bookings : [];
+    if (!list.length) {
+      box.innerHTML = '<div class="bk-empty">لا توجد حجوزات بعد — قدّم طلب حجز من خدمة «حجز مواعيد الدورات» بالأعلى.</div>';
+      return;
+    }
+    badge.textContent = list.length; badge.style.display = 'inline-block';
+    box.innerHTML = list.map(function(b) {
+      var s = statusInfo(b.status);
+      var meta = [];
+      if (b.date)   meta.push('<span>' + ic('cal')     + b.date   + '</span>');
+      if (b.system) meta.push('<span>' + ic('monitor') + b.system + '</span>');
+      if (b.time)   meta.push('<span>' + ic('clock')   + b.time   + '</span>');
+      return '<div class="bk-card"><div class="bk-top">' +
+               '<div class="bk-title">' + (b.course || 'دورة') + '</div>' +
+               '<span class="bk-status ' + s.cls + '">' + s.label + '</span>' +
+             '</div><div class="bk-meta">' + meta.join('') + '</div></div>';
+    }).join('');
+  };
+  script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
+
+  function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل الحجوزات — حدّث الصفحة وحاول مجدداً.</div>'; }
+
+  script.src = SCRIPT_URL + '?action=myBookings&memberId=' + encodeURIComponent(memberId) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+function logout() {
+  sessionStorage.removeItem('tk_memberId');
+  document.getElementById('dashScreen').style.display  = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('memberInput').value = '';
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginTxt').textContent = 'دخول';
+  document.getElementById('loginSpinner').style.display = 'none';
+}
+
+/* استعادة الدخول تلقائياً عند الرجوع من الصفحات الأخرى */
+(function restoreSession(){
+  var saved = sessionStorage.getItem('tk_memberId');
+  if (saved) {
+    document.getElementById('memberInput').value = saved;
+    doLogin();
+  }
+})();
+</script>
+</body>
+</html>
