@@ -69,6 +69,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .spin{display:none;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .note{font-size:12px;color:var(--muted);font-weight:600;line-height:1.7;margin-top:14px;text-align:center}
+.sec{border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;background:rgba(255,255,255,.4)}
+.sec-h{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:none;border:none;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:var(--maroon);cursor:pointer}
+.sec-h .chev{transition:transform .25s;font-size:12px;opacity:.7}
+.sec.open .sec-h .chev{transform:rotate(180deg)}
+.sec-b{padding:2px 16px 6px;display:none}
+.sec.open .sec-b{display:block}
 .msg{font-size:14px;font-weight:700;color:var(--muted);text-align:center;padding:30px 10px;line-height:1.8}
 
 .stage-wrap{display:flex;justify-content:center}
@@ -117,6 +123,9 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .p-chip.sys-online svg{stroke:var(--online)}
 .p-chip.sys-online .t{color:var(--online)}
 .p-chip.sys-offline{background:rgba(92,15,15,.08);border-color:rgba(92,15,15,.3)}
+.p-chip.free{background:var(--maroon);border-color:var(--maroon)}
+.p-chip.free .t{color:#fff}
+.p-chip.free svg{stroke:#fff}
 
 .p-foot{display:flex;align-items:center;justify-content:space-between;border-top:2px solid rgba(92,15,15,.12);padding-top:34px}
 .p-foot .reg{font-size:26px;font-weight:800;color:var(--maroon)}
@@ -152,6 +161,9 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .post.theme-maroon .p-chip.sys-online{background:rgba(159,214,232,.16);border-color:rgba(159,214,232,.4)}
 .post.theme-maroon .p-chip.sys-online svg{stroke:#9fd6e8}
 .post.theme-maroon .p-chip.sys-online .t{color:#9fd6e8}
+.post.theme-maroon .p-chip.free{background:#F5EAD8;border-color:#F5EAD8}
+.post.theme-maroon .p-chip.free .t{color:#5C0F0F}
+.post.theme-maroon .p-chip.free svg{stroke:#5C0F0F}
 .post.theme-maroon .p-foot{border-top-color:rgba(245,234,216,.15)}
 .post.theme-maroon .p-foot .reg{color:#FFF5E8}
 .post.theme-maroon .p-foot .ig{color:rgba(245,234,216,.5)}
@@ -180,6 +192,10 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
       <div class="msg" id="loadingMsg">جاري تحميل دوراتك...</div>
 
       <div id="controls" style="display:none">
+
+        <div class="sec open">
+          <button class="sec-h" data-acc>المحتوى<span class="chev">▾</span></button>
+          <div class="sec-b">
         <div class="fld">
           <label>اختر الدورة</label>
           <select id="courseSel"></select>
@@ -206,7 +222,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <input type="text" id="roleInput" value="عضو هيئة تدريب في تمكين" placeholder="مثال: عضو هيئة تدريب في تمكين">
           <div class="hint">تظهر أسفل اسم المدرب — اتركها فارغة لإخفائها.</div>
         </div>
+          </div>
+        </div>
 
+        <div class="sec">
+          <button class="sec-h" data-acc>الخيارات والثيم<span class="chev">▾</span></button>
+          <div class="sec-b">
         <div class="fld">
           <label>نوع البوست</label>
           <div class="seg" id="postTypeSeg">
@@ -214,6 +235,25 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             <button data-type="plain">منشور عام</button>
           </div>
           <div class="hint">«منشور عام» يخفي وسم «دورة تدريبية» وعبارة «يسرّنا دعوتكم».</div>
+        </div>
+
+        <div class="fld">
+          <label>سعر الدورة</label>
+          <div class="seg" id="freeSeg">
+            <button data-free="no" class="on">مدفوعة</button>
+            <button data-free="yes">مجانية</button>
+          </div>
+          <div class="hint">«مجانية» تضيف وسم «مجاناً» على البوستر.</div>
+        </div>
+
+        <div class="fld">
+          <label>نظام الحضور</label>
+          <div class="seg" id="sysSeg">
+            <button data-sys="auto" class="on">تلقائي</button>
+            <button data-sys="offline">حضوري</button>
+            <button data-sys="online">أونلاين</button>
+          </div>
+          <div class="hint">«تلقائي» يأخذه من بيانات الدورة، واختر يدوياً إذا ما ظهر.</div>
         </div>
 
         <div class="fld">
@@ -231,7 +271,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             <button data-size="story">ستوري</button>
           </div>
         </div>
+          </div>
+        </div>
 
+        <div class="sec">
+          <button class="sec-h" data-acc>الصورة<span class="chev">▾</span></button>
+          <div class="sec-b">
         <div class="fld photo-up">
           <label>صورتك (اختياري)</label>
           <label class="photo-drop" for="photoInput" id="photoDrop">اضغط لإضافة صورتك الشخصية</label>
@@ -254,11 +299,18 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <input type="range" id="photoZoom" min="100" max="260" step="5" value="100">
           <div class="hint">يقرّب الصورة داخل الدائرة بدون تغيير حجم الدائرة.</div>
         </div>
+          </div>
+        </div>
 
+        <div class="sec">
+          <button class="sec-h" data-acc>المحاور — بوست ثانٍ<span class="chev">▾</span></button>
+          <div class="sec-b">
         <div class="fld">
           <label>محاور الدورة — بوست ثانٍ (اختياري)</label>
           <textarea id="topicsInput" placeholder="اكتب كل محور في سطر مستقل&#10;مثال:&#10;مهارات العرض والإلقاء&#10;تصميم الحقائب التدريبية&#10;إدارة القاعة التدريبية"></textarea>
           <div class="hint">يُنشأ بوستر ثانٍ بنفس الثيم يعرض المحاور (حتى ٨ محاور).</div>
+        </div>
+          </div>
         </div>
 
         <div class="fld">
@@ -309,7 +361,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             </div>
             <div class="p-foot">
               <div class="reg">للتسجيل تواصل معنا</div>
-              <div class="ig">@BYMASAR</div>
+              <div class="ig">خدمة العملاء 97999768</div>
             </div>
           </div>
         </div>
@@ -332,7 +384,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             </div>
             <div class="p-foot">
               <div class="reg">للتسجيل تواصل معنا</div>
-              <div class="ig">@BYMASAR</div>
+              <div class="ig">خدمة العملاء 97999768</div>
             </div>
           </div>
         </div>
@@ -358,6 +410,8 @@ let curSize    = 'portrait';
 let curTheme   = 'cream';
 let curSlide   = 'main';
 let curType    = 'course';
+let curFree    = 'no';
+let curSys     = 'auto';
 let photoData  = null;
 
 function arNum(n){ return String(n).replace(/[0-9]/g,function(d){ return '٠١٢٣٤٥٦٧٨٩'[+d]; }); }
@@ -371,7 +425,8 @@ function ic(n){
   var m={
     cal:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
     clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
-    monitor:'<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>'
+    monitor:'<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    tag:'<svg viewBox="0 0 24 24"><path d="M3 12V3h9l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>'
   };
   return m[n]||'';
 }
@@ -457,11 +512,17 @@ function renderMain(){
   var chips=[];
   if(c.date) chips.push('<div class="p-chip">'+ic('cal')+'<span class="t">'+esc(prettyDate(c.date))+'</span></div>');
   if(c.time) chips.push('<div class="p-chip">'+ic('clock')+'<span class="t">'+esc(c.time)+'</span></div>');
-  var sysTxt=String(c.system||'').trim();
-  var hay=(sysTxt+' '+(c.course||''));
-  if(/أونلاين|اونلاين|online/i.test(hay)) chips.push('<div class="p-chip sys-online">'+ic('monitor')+'<span class="t">أونلاين</span></div>');
-  else if(/حضور/.test(hay)) chips.push('<div class="p-chip sys-offline">'+ic('monitor')+'<span class="t">حضوري</span></div>');
-  else if(sysTxt) chips.push('<div class="p-chip">'+ic('monitor')+'<span class="t">'+esc(sysTxt)+'</span></div>');
+  var sysLabel='', sysClass='';
+  if(curSys==='online'){ sysLabel='أونلاين'; sysClass='sys-online'; }
+  else if(curSys==='offline'){ sysLabel='حضوري'; sysClass='sys-offline'; }
+  else {
+    var sysTxt=String(c.system||'').trim(), hay=(sysTxt+' '+(c.course||''));
+    if(/أونلاين|اونلاين|online/i.test(hay)){ sysLabel='أونلاين'; sysClass='sys-online'; }
+    else if(/حضور/.test(hay)){ sysLabel='حضوري'; sysClass='sys-offline'; }
+    else if(sysTxt){ sysLabel=sysTxt; sysClass=''; }
+  }
+  if(sysLabel) chips.push('<div class="p-chip '+sysClass+'">'+ic('monitor')+'<span class="t">'+esc(sysLabel)+'</span></div>');
+  if(curFree==='yes') chips.push('<div class="p-chip free">'+ic('tag')+'<span class="t">مجاناً</span></div>');
   document.getElementById('pChips').innerHTML=chips.join('');
   if(photoData){ document.getElementById('pPhoto').src=photoData; document.getElementById('pPhotoWrap').style.display='block'; }
   else { document.getElementById('pPhotoWrap').style.display='none'; }
@@ -532,6 +593,21 @@ document.getElementById('postTypeSeg').addEventListener('click',function(e){
   curType=b.getAttribute('data-type');
   [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
   applyType();
+});
+document.getElementById('freeSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curFree=b.getAttribute('data-free');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  renderMain();
+});
+document.getElementById('sysSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curSys=b.getAttribute('data-sys');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  renderMain();
+});
+[].forEach.call(document.querySelectorAll('.sec-h'),function(hh){
+  hh.addEventListener('click',function(){ this.parentElement.classList.toggle('open'); fitStage(); });
 });
 
 function fitStage(){
