@@ -114,6 +114,8 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .p-trainer{font-size:40px;font-weight:800;color:var(--maroon3)}
 .p-role{font-size:28px;font-weight:700;color:var(--muted);margin-top:8px}
 .post.story .p-role{font-size:31px}
+.p-sub{font-size:36px;font-weight:700;color:var(--muted);line-height:1.45;max-width:880px;margin-top:14px}
+.post.story .p-sub{font-size:40px}
 
 .p-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:8px}
 .p-chip{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.6);border:2px solid rgba(92,15,15,.12);border-radius:100px;padding:16px 30px}
@@ -142,6 +144,8 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .t-num{width:62px;height:62px;border-radius:50%;background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;flex-shrink:0}
 .t-txt{font-size:34px;font-weight:800;color:var(--maroon);line-height:1.3;text-align:right}
 .post.story .t-txt{font-size:38px}
+.t-para{font-size:38px;font-weight:600;color:var(--maroon);line-height:1.85;text-align:right;background:rgba(255,255,255,.55);border:2px solid rgba(92,15,15,.1);border-radius:22px;padding:34px 38px;white-space:pre-wrap}
+.post.story .t-para{font-size:42px}
 
 /* ===== الثيم العنابي ===== */
 .post.theme-maroon .pbg{background:radial-gradient(ellipse 75% 50% at 0% 0%,#7a1717 0%,rgba(122,23,23,0) 55%),radial-gradient(ellipse 60% 45% at 100% 100%,#2e0606 0%,rgba(46,6,6,0) 50%),#4a0c0c}
@@ -154,6 +158,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .post.theme-maroon .p-title{color:#FFF5E8}
 .post.theme-maroon .p-trainer{color:#e8d0b8}
 .post.theme-maroon .p-role{color:rgba(245,234,216,.6)}
+.post.theme-maroon .p-sub{color:rgba(245,234,216,.7)}
 .post.theme-maroon .p-photo{border-color:rgba(245,234,216,.5);background:rgba(245,234,216,.08)}
 .post.theme-maroon .p-chip{background:rgba(245,234,216,.1);border-color:rgba(245,234,216,.25)}
 .post.theme-maroon .p-chip svg{stroke:#F5EAD8}
@@ -172,6 +177,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .post.theme-maroon .t-item{background:rgba(245,234,216,.1);border-color:rgba(245,234,216,.2)}
 .post.theme-maroon .t-num{background:#F5EAD8;color:#5C0F0F}
 .post.theme-maroon .t-txt{color:#FFF5E8}
+.post.theme-maroon .t-para{background:rgba(245,234,216,.1);border-color:rgba(245,234,216,.2);color:#FFF5E8}
 </style>
 </head>
 <body>
@@ -207,6 +213,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <div class="hint">يُعبّأ تلقائياً من الدورة، وتقدر تعدّله يدوياً.</div>
         </div>
 
+        <div class="fld" id="subFld" style="display:none">
+          <label>نص فرعي (اختياري)</label>
+          <input type="text" id="subInput" placeholder="نص صغير يظهر تحت العنوان">
+          <div class="hint">يظهر تحت العنوان في «منشور عام» فقط.</div>
+        </div>
+
         <div class="fld">
           <label>حجم العنوان <span class="val" id="titleSizeVal">84</span></label>
           <input type="range" id="titleSize" min="44" max="130" step="2" value="84">
@@ -234,10 +246,19 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             <button data-type="course" class="on">بوست دورة</button>
             <button data-type="plain">منشور عام</button>
           </div>
-          <div class="hint">«منشور عام» يخفي وسم «دورة تدريبية» وعبارة «يسرّنا دعوتكم».</div>
+          <div class="hint">«منشور عام» يعطيك حرية كاملة: عنوان ونص فرعي بدون بيانات الدورة.</div>
         </div>
 
-        <div class="fld">
+        <div class="fld" id="infoFld">
+          <label>بيانات الدورة على البوستر</label>
+          <div class="seg" id="infoSeg">
+            <button data-info="show" class="on">إظهار</button>
+            <button data-info="hide">إخفاء</button>
+          </div>
+          <div class="hint">«إخفاء» يشيل التاريخ والوقت والنظام و«مجاناً» من البوستر.</div>
+        </div>
+
+        <div class="fld" id="freeFld">
           <label>سعر الدورة</label>
           <div class="seg" id="freeSeg">
             <button data-free="no" class="on">مدفوعة</button>
@@ -246,7 +267,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <div class="hint">«مجانية» تضيف وسم «مجاناً» على البوستر.</div>
         </div>
 
-        <div class="fld">
+        <div class="fld" id="sysFld">
           <label>نظام الحضور</label>
           <div class="seg" id="sysSeg">
             <button data-sys="auto" class="on">تلقائي</button>
@@ -306,9 +327,25 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <button class="sec-h" data-acc>المحاور — بوست ثانٍ<span class="chev">▾</span></button>
           <div class="sec-b">
         <div class="fld">
-          <label>محاور الدورة — بوست ثانٍ (اختياري)</label>
-          <textarea id="topicsInput" placeholder="اكتب كل محور في سطر مستقل&#10;مثال:&#10;مهارات العرض والإلقاء&#10;تصميم الحقائب التدريبية&#10;إدارة القاعة التدريبية"></textarea>
-          <div class="hint">يُنشأ بوستر ثانٍ بنفس الثيم يعرض المحاور (حتى ٨ محاور).</div>
+          <label>عنوان البوست الثاني (اختياري)</label>
+          <input type="text" id="topics2Title" placeholder="يُعبّأ تلقائياً من العنوان الرئيسي">
+        </div>
+        <div class="fld">
+          <label>نوع المحتوى</label>
+          <div class="seg" id="topicsModeSeg">
+            <button data-mode="points" class="on">نقاط</button>
+            <button data-mode="para">فقرة</button>
+          </div>
+        </div>
+        <div class="fld" id="pointsFld">
+          <label>النقاط — كل نقطة بسطر (حتى ٨)</label>
+          <textarea id="topicsInput" placeholder="اكتب كل نقطة في سطر مستقل&#10;مثال:&#10;مهارات العرض والإلقاء&#10;تصميم الحقائب التدريبية&#10;إدارة القاعة التدريبية"></textarea>
+          <div class="hint">يُنشأ بوستر ثانٍ بنفس الثيم يعرض النقاط مرقّمة.</div>
+        </div>
+        <div class="fld" id="paraFld" style="display:none">
+          <label>الفقرة</label>
+          <textarea id="paraInput" placeholder="اكتب فقرة نصية تظهر في البوست الثاني"></textarea>
+          <div class="hint">تظهر كفقرة واحدة بدل النقاط المرقّمة.</div>
         </div>
           </div>
         </div>
@@ -352,6 +389,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
               <div>
                 <div class="p-kicker" id="pKicker">يسرّنا دعوتكم لحضور</div>
                 <div class="p-title" id="pTitle">اسم الدورة</div>
+                <div class="p-sub" id="pSub" style="display:none"></div>
               </div>
               <div>
                 <div class="p-trainer" id="pTrainer">المدرب</div>
@@ -375,12 +413,13 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
                 <div class="box"><img class="mlogo" alt="مسار"></div>
                 <div class="nm">أكاديمية مسار</div>
               </div>
-              <div class="p-tag"><span class="dot"></span><span class="txt">محاور الدورة</span></div>
+              <div class="p-tag" id="tTag"><span class="dot"></span><span class="txt">محاور الدورة</span></div>
             </div>
             <div class="t-body">
               <div class="t-course" id="tCourse">اسم الدورة</div>
-              <div class="t-h">المحاور التدريبية</div>
+              <div class="t-h" id="tH">المحاور التدريبية</div>
               <div class="t-list" id="tList"></div>
+              <div class="t-para" id="tPara" style="display:none"></div>
             </div>
             <div class="p-foot">
               <div class="reg">للتسجيل تواصل معنا</div>
@@ -410,6 +449,8 @@ let curSize    = 'portrait';
 let curTheme   = 'cream';
 let curSlide   = 'main';
 let curType    = 'course';
+let curMode    = 'points';
+let curInfo    = 'show';
 let curFree    = 'no';
 let curSys     = 'auto';
 let photoData  = null;
@@ -498,32 +539,59 @@ function applyType(){
   var course=(curType==='course');
   document.getElementById('pTag').style.display=course?'':'none';
   document.getElementById('pKicker').style.display=course?'':'none';
+  document.getElementById('subFld').style.display  = course?'none':'';
+  document.getElementById('infoFld').style.display = course?'':'none';
+  document.getElementById('freeFld').style.display = course?'':'none';
+  document.getElementById('sysFld').style.display  = course?'':'none';
 }
 
 /* ===== الرسم ===== */
 function renderMain(){
   var c=getCourse();
-  var title=document.getElementById('titleInput').value.trim()||c.course||'دورة تدريبية';
+  var plain=(curType==='plain');
+  var title=document.getElementById('titleInput').value.trim()||(plain?'عنوان البوست':(c.course||'دورة تدريبية'));
   document.getElementById('pTitle').textContent=title;
-  var nm=document.getElementById('trainerInput').value.trim()||trainerName||'—';
-  document.getElementById('pTrainer').textContent='المدرب: '+nm;
-  var role=document.getElementById('roleInput').value.trim();
-  var pr=document.getElementById('pRole'); pr.textContent=role; pr.style.display=role?'':'none';
-  var chips=[];
-  if(c.date) chips.push('<div class="p-chip">'+ic('cal')+'<span class="t">'+esc(prettyDate(c.date))+'</span></div>');
-  if(c.time) chips.push('<div class="p-chip">'+ic('clock')+'<span class="t">'+esc(c.time)+'</span></div>');
-  var sysLabel='', sysClass='';
-  if(curSys==='online'){ sysLabel='أونلاين'; sysClass='sys-online'; }
-  else if(curSys==='offline'){ sysLabel='حضوري'; sysClass='sys-offline'; }
-  else {
-    var sysTxt=String(c.system||'').trim(), hay=(sysTxt+' '+(c.course||''));
-    if(/أونلاين|اونلاين|online/i.test(hay)){ sysLabel='أونلاين'; sysClass='sys-online'; }
-    else if(/حضور/.test(hay)){ sysLabel='حضوري'; sysClass='sys-offline'; }
-    else if(sysTxt){ sysLabel=sysTxt; sysClass=''; }
+
+  // النص الفرعي (منشور عام فقط)
+  var sub=document.getElementById('subInput').value.trim();
+  var ps=document.getElementById('pSub');
+  if(plain && sub){ ps.textContent=sub; ps.style.display=''; }
+  else { ps.style.display='none'; }
+
+  // المدرب
+  var nmRaw=document.getElementById('trainerInput').value.trim();
+  var pt=document.getElementById('pTrainer');
+  if(plain){
+    if(nmRaw){ pt.textContent=nmRaw; pt.style.display=''; }
+    else { pt.style.display='none'; }
+  } else {
+    pt.textContent='المدرب: '+(nmRaw||trainerName||'—'); pt.style.display='';
   }
-  if(sysLabel) chips.push('<div class="p-chip '+sysClass+'">'+ic('monitor')+'<span class="t">'+esc(sysLabel)+'</span></div>');
-  if(curFree==='yes') chips.push('<div class="p-chip free">'+ic('tag')+'<span class="t">مجاناً</span></div>');
+
+  // الصفة
+  var role=document.getElementById('roleInput').value.trim();
+  var pr=document.getElementById('pRole'); pr.textContent=role;
+  pr.style.display=(role && pt.style.display!=='none')?'':'none';
+
+  // الشارات (بيانات الدورة) — فقط في وضع الدورة مع الإظهار
+  var chips=[];
+  if(!plain && curInfo==='show'){
+    if(c.date) chips.push('<div class="p-chip">'+ic('cal')+'<span class="t">'+esc(prettyDate(c.date))+'</span></div>');
+    if(c.time) chips.push('<div class="p-chip">'+ic('clock')+'<span class="t">'+esc(c.time)+'</span></div>');
+    var sysLabel='', sysClass='';
+    if(curSys==='online'){ sysLabel='أونلاين'; sysClass='sys-online'; }
+    else if(curSys==='offline'){ sysLabel='حضوري'; sysClass='sys-offline'; }
+    else {
+      var sysTxt=String(c.system||'').trim(), hay=(sysTxt+' '+(c.course||''));
+      if(/أونلاين|اونلاين|online/i.test(hay)){ sysLabel='أونلاين'; sysClass='sys-online'; }
+      else if(/حضور/.test(hay)){ sysLabel='حضوري'; sysClass='sys-offline'; }
+      else if(sysTxt){ sysLabel=sysTxt; sysClass=''; }
+    }
+    if(sysLabel) chips.push('<div class="p-chip '+sysClass+'">'+ic('monitor')+'<span class="t">'+esc(sysLabel)+'</span></div>');
+    if(curFree==='yes') chips.push('<div class="p-chip free">'+ic('tag')+'<span class="t">مجاناً</span></div>');
+  }
   document.getElementById('pChips').innerHTML=chips.join('');
+
   if(photoData){ document.getElementById('pPhoto').src=photoData; document.getElementById('pPhotoWrap').style.display='block'; }
   else { document.getElementById('pPhotoWrap').style.display='none'; }
   applySizes(); applyType();
@@ -531,14 +599,41 @@ function renderMain(){
 
 function renderTopics(){
   var c=getCourse();
-  document.getElementById('tCourse').textContent=(document.getElementById('titleInput').value.trim()||c.course||'دورة تدريبية');
-  var arr=document.getElementById('topicsInput').value.split('\n')
-            .map(function(s){ return s.trim(); }).filter(Boolean).slice(0,8);
-  document.getElementById('tList').innerHTML=arr.map(function(t,i){
-    return '<div class="t-item"><div class="t-num">'+arNum(i+1)+'</div><div class="t-txt">'+esc(t)+'</div></div>';
-  }).join('');
+  var mainTitle=document.getElementById('titleInput').value.trim()||c.course||'دورة تدريبية';
+  var t2=document.getElementById('topics2Title').value.trim();
+  document.getElementById('tCourse').textContent = t2 || mainTitle;
+
+  var tH=document.getElementById('tH'),
+      tList=document.getElementById('tList'),
+      tPara=document.getElementById('tPara'),
+      tTag=document.getElementById('tTag');
+  var hasContent=false;
+
+  if(curMode==='para'){
+    var para=document.getElementById('paraInput').value.trim();
+    tPara.textContent=para;
+    tPara.style.display = para?'':'none';
+    tList.style.display='none';
+    tH.style.display='none';
+    hasContent = !!para;
+  } else {
+    var arr=document.getElementById('topicsInput').value.split('\n')
+              .map(function(s){ return s.trim(); }).filter(Boolean).slice(0,8);
+    tList.innerHTML=arr.map(function(t,i){
+      return '<div class="t-item"><div class="t-num">'+arNum(i+1)+'</div><div class="t-txt">'+esc(t)+'</div></div>';
+    }).join('');
+    tList.style.display = arr.length?'':'none';
+    tPara.style.display='none';
+    tH.textContent = (curType==='course') ? 'المحاور التدريبية' : 'النقاط الرئيسية';
+    tH.style.display = arr.length?'':'none';
+    hasContent = arr.length>0;
+  }
+
+  // وسم البوست الثاني يظهر فقط في وضع الدورة + النقاط
+  tTag.style.display = (curType==='course' && curMode==='points') ? '' : 'none';
+
   var btn=document.getElementById('slideTopicsBtn');
-  if(arr.length){ btn.disabled=false; }
+  if(hasContent){ btn.disabled=false; }
   else { btn.disabled=true; if(curSlide==='topics') setSlide('main'); }
 }
 
@@ -592,7 +687,7 @@ document.getElementById('postTypeSeg').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return;
   curType=b.getAttribute('data-type');
   [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
-  applyType();
+  applyType(); renderAll();
 });
 document.getElementById('freeSeg').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return;
@@ -605,6 +700,23 @@ document.getElementById('sysSeg').addEventListener('click',function(e){
   curSys=b.getAttribute('data-sys');
   [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
   renderMain();
+});
+document.getElementById('subInput').addEventListener('input',renderMain);
+document.getElementById('topics2Title').addEventListener('input',renderTopics);
+document.getElementById('paraInput').addEventListener('input',renderTopics);
+document.getElementById('infoSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curInfo=b.getAttribute('data-info');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  renderMain();
+});
+document.getElementById('topicsModeSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curMode=b.getAttribute('data-mode');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  document.getElementById('pointsFld').style.display=(curMode==='points')?'':'none';
+  document.getElementById('paraFld').style.display=(curMode==='para')?'':'none';
+  renderTopics();
 });
 [].forEach.call(document.querySelectorAll('.sec-h'),function(hh){
   hh.addEventListener('click',function(){ this.parentElement.classList.toggle('open'); fitStage(); });
@@ -647,6 +759,16 @@ function removePhoto(){
 
 /* ===== التحميل ===== */
 async function downloadPoster(){
+  // ===== تحقق إلزامي =====
+  if(curSlide==='main'){
+    var vTitle=document.getElementById('titleInput').value.trim();
+    if(!vTitle){ alert(curType==='course'?'يرجى كتابة عنوان الدورة قبل التحميل.':'يرجى كتابة عنوان البوست قبل التحميل.'); return; }
+    if(curType==='course'){
+      var vNm=document.getElementById('trainerInput').value.trim()||trainerName;
+      if(!vNm){ alert('يرجى كتابة اسم المدرب قبل التحميل.'); return; }
+    }
+  }
+
   var btn=document.getElementById('dlBtn'), txt=document.getElementById('dlTxt'), sp=document.getElementById('dlSpin');
   btn.disabled=true; sp.style.display='block'; txt.textContent='جاري التجهيز...';
   try{
@@ -659,8 +781,8 @@ async function downloadPoster(){
       width:1080, height:H, windowWidth:1080, windowHeight:H,
       onclone:function(doc){ var p=doc.getElementById(id); if(p){ p.style.transform='none'; p.style.display='block'; } }
     });
-    var name=(getCourse().course||'دورة');
-    var slideLbl=(curSlide==='topics')?'المحاور':'الرئيسي';
+    var name=(document.getElementById('titleInput').value.trim()||getCourse().course||'بوست');
+    var slideLbl=(curSlide==='topics')?'الثاني':'الرئيسي';
     var a=document.createElement('a');
     a.download='بوستر-'+name.replace(/[\\/:*?"<>|]/g,'').slice(0,30)+'-'+slideLbl+'-'+(curSize==='story'?'ستوري':'عمودي')+'.png';
     a.href=canvas.toDataURL('image/png');
