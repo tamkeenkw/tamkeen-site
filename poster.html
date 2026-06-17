@@ -96,12 +96,15 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 
 .p-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:40px}
 .post.story .p-main{gap:60px}
-.p-photo{width:380px;height:380px;border-radius:50%;object-fit:cover;border:9px solid rgba(255,255,255,.7);box-shadow:0 14px 40px rgba(92,15,15,.2);background:rgba(92,15,15,.06)}
+.p-photo{width:380px;height:380px;border-radius:50%;overflow:hidden;position:relative;border:9px solid rgba(255,255,255,.7);box-shadow:0 14px 40px rgba(92,15,15,.2);background:rgba(92,15,15,.06)}
 .post.story .p-photo{width:460px;height:460px}
+.p-photo-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;object-fit:cover}
 .p-kicker{font-size:30px;font-weight:800;color:var(--muted)}
 .p-title{font-size:84px;font-weight:900;line-height:1.12;color:var(--maroon);max-width:900px}
 .post.story .p-title{font-size:96px}
 .p-trainer{font-size:40px;font-weight:800;color:var(--maroon3)}
+.p-role{font-size:28px;font-weight:700;color:var(--muted);margin-top:8px}
+.post.story .p-role{font-size:31px}
 
 .p-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-top:8px}
 .p-chip{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.6);border:2px solid rgba(92,15,15,.12);border-radius:100px;padding:16px 30px}
@@ -138,6 +141,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .post.theme-maroon .p-kicker{color:rgba(245,234,216,.55)}
 .post.theme-maroon .p-title{color:#FFF5E8}
 .post.theme-maroon .p-trainer{color:#e8d0b8}
+.post.theme-maroon .p-role{color:rgba(245,234,216,.6)}
 .post.theme-maroon .p-photo{border-color:rgba(245,234,216,.5);background:rgba(245,234,216,.08)}
 .post.theme-maroon .p-chip{background:rgba(245,234,216,.1);border-color:rgba(245,234,216,.25)}
 .post.theme-maroon .p-chip svg{stroke:#F5EAD8}
@@ -190,6 +194,26 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
         </div>
 
         <div class="fld">
+          <label>اسم المدرب</label>
+          <input type="text" id="trainerInput" placeholder="اسم المدرب">
+        </div>
+
+        <div class="fld">
+          <label>صفة المدرب</label>
+          <input type="text" id="roleInput" value="عضو هيئة تدريب في تمكين" placeholder="مثال: عضو هيئة تدريب في تمكين">
+          <div class="hint">تظهر أسفل اسم المدرب — اتركها فارغة لإخفائها.</div>
+        </div>
+
+        <div class="fld">
+          <label>نوع البوست</label>
+          <div class="seg" id="postTypeSeg">
+            <button data-type="course" class="on">بوست دورة</button>
+            <button data-type="plain">منشور عام</button>
+          </div>
+          <div class="hint">«منشور عام» يخفي وسم «دورة تدريبية» وعبارة «يسرّنا دعوتكم».</div>
+        </div>
+
+        <div class="fld">
           <label>ثيم البوستر</label>
           <div class="seg" id="themeSeg">
             <button data-theme="cream" class="on">حليبي</button>
@@ -219,7 +243,13 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
         <div class="fld">
           <label>حجم الصورة <span class="val" id="photoSizeVal">380</span></label>
           <input type="range" id="photoSize" min="220" max="560" step="10" value="380">
-          <div class="hint">يطبّق عند إضافة صورة.</div>
+          <div class="hint">حجم دائرة الصورة من الخارج.</div>
+        </div>
+
+        <div class="fld">
+          <label>تكبير الصورة داخل الدائرة <span class="val" id="photoZoomVal">100</span></label>
+          <input type="range" id="photoZoom" min="100" max="260" step="5" value="100">
+          <div class="hint">يقرّب الصورة داخل الدائرة بدون تغيير حجم الدائرة.</div>
         </div>
 
         <div class="fld">
@@ -260,15 +290,18 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
                 <div class="box"><img class="mlogo" alt="مسار"></div>
                 <div class="nm">أكاديمية مسار</div>
               </div>
-              <div class="p-tag"><span class="dot"></span><span class="txt">دورة تدريبية</span></div>
+              <div class="p-tag" id="pTag"><span class="dot"></span><span class="txt">دورة تدريبية</span></div>
             </div>
             <div class="p-main">
-              <img class="p-photo" id="pPhoto" alt="" style="display:none">
+              <div class="p-photo" id="pPhotoWrap" style="display:none"><img class="p-photo-img" id="pPhoto" alt=""></div>
               <div>
-                <div class="p-kicker">يسرّنا دعوتكم لحضور</div>
+                <div class="p-kicker" id="pKicker">يسرّنا دعوتكم لحضور</div>
                 <div class="p-title" id="pTitle">اسم الدورة</div>
               </div>
-              <div class="p-trainer" id="pTrainer">المدرب</div>
+              <div>
+                <div class="p-trainer" id="pTrainer">المدرب</div>
+                <div class="p-role" id="pRole">عضو هيئة تدريب في تمكين</div>
+              </div>
               <div class="p-chips" id="pChips"></div>
             </div>
             <div class="p-foot">
@@ -321,6 +354,7 @@ let courses    = [];
 let curSize    = 'portrait';
 let curTheme   = 'cream';
 let curSlide   = 'main';
+let curType    = 'course';
 let photoData  = null;
 
 function arNum(n){ return String(n).replace(/[0-9]/g,function(d){ return '٠١٢٣٤٥٦٧٨٩'[+d]; }); }
@@ -387,6 +421,7 @@ function fillCourses(){
   document.getElementById('controls').style.display='block';
   sel.addEventListener('change',function(){ syncTitleFromCourse(); renderAll(); });
   syncTitleFromCourse();
+  document.getElementById('trainerInput').value = trainerName || '';
   renderAll();
   setSlide('main');
 }
@@ -394,7 +429,14 @@ function syncTitleFromCourse(){ document.getElementById('titleInput').value = ge
 function applySizes(){
   document.getElementById('pTitle').style.fontSize = document.getElementById('titleSize').value+'px';
   var ps = document.getElementById('photoSize').value+'px';
-  var ph = document.getElementById('pPhoto'); ph.style.width=ps; ph.style.height=ps;
+  var wrap = document.getElementById('pPhotoWrap'); wrap.style.width=ps; wrap.style.height=ps;
+  var z = document.getElementById('photoZoom').value;
+  var img = document.getElementById('pPhoto'); img.style.width=z+'%'; img.style.height=z+'%';
+}
+function applyType(){
+  var course=(curType==='course');
+  document.getElementById('pTag').style.display=course?'':'none';
+  document.getElementById('pKicker').style.display=course?'':'none';
 }
 
 /* ===== الرسم ===== */
@@ -402,7 +444,10 @@ function renderMain(){
   var c=getCourse();
   var title=document.getElementById('titleInput').value.trim()||c.course||'دورة تدريبية';
   document.getElementById('pTitle').textContent=title;
-  document.getElementById('pTrainer').textContent='المدرب: '+(trainerName||'—');
+  var nm=document.getElementById('trainerInput').value.trim()||trainerName||'—';
+  document.getElementById('pTrainer').textContent='المدرب: '+nm;
+  var role=document.getElementById('roleInput').value.trim();
+  var pr=document.getElementById('pRole'); pr.textContent=role; pr.style.display=role?'':'none';
   var chips=[];
   if(c.date) chips.push('<div class="p-chip">'+ic('cal')+'<span class="t">'+esc(prettyDate(c.date))+'</span></div>');
   if(c.time) chips.push('<div class="p-chip">'+ic('clock')+'<span class="t">'+esc(c.time)+'</span></div>');
@@ -412,9 +457,9 @@ function renderMain(){
   else if(/حضور/.test(hay)) chips.push('<div class="p-chip sys-offline">'+ic('monitor')+'<span class="t">حضوري</span></div>');
   else if(sysTxt) chips.push('<div class="p-chip">'+ic('monitor')+'<span class="t">'+esc(sysTxt)+'</span></div>');
   document.getElementById('pChips').innerHTML=chips.join('');
-  var ph=document.getElementById('pPhoto');
-  if(photoData){ ph.src=photoData; ph.style.display='block'; } else { ph.style.display='none'; }
-  applySizes();
+  if(photoData){ document.getElementById('pPhoto').src=photoData; document.getElementById('pPhotoWrap').style.display='block'; }
+  else { document.getElementById('pPhotoWrap').style.display='none'; }
+  applySizes(); applyType();
 }
 
 function renderTopics(){
@@ -473,6 +518,15 @@ document.getElementById('topicsInput').addEventListener('input',renderTopics);
 document.getElementById('titleInput').addEventListener('input',renderAll);
 document.getElementById('titleSize').addEventListener('input',function(){ document.getElementById('titleSizeVal').textContent=this.value; applySizes(); });
 document.getElementById('photoSize').addEventListener('input',function(){ document.getElementById('photoSizeVal').textContent=this.value; applySizes(); });
+document.getElementById('photoZoom').addEventListener('input',function(){ document.getElementById('photoZoomVal').textContent=this.value; applySizes(); });
+document.getElementById('trainerInput').addEventListener('input',renderMain);
+document.getElementById('roleInput').addEventListener('input',renderMain);
+document.getElementById('postTypeSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curType=b.getAttribute('data-type');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  applyType();
+});
 
 function fitStage(){
   var stage=document.getElementById('stage');
