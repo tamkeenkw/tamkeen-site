@@ -108,6 +108,8 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .p-photo{width:380px;height:380px;border-radius:50%;overflow:hidden;position:relative;border:9px solid rgba(255,255,255,.7);box-shadow:0 14px 40px rgba(92,15,15,.2);background:rgba(92,15,15,.06)}
 .post.story .p-photo{width:460px;height:460px}
 .p-photo-img{position:absolute;top:50%;left:50%;object-fit:cover}
+.p-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--maroon)}
+.p-icon svg{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .p-kicker{font-size:30px;font-weight:800;color:var(--muted)}
 .p-title{font-size:84px;font-weight:900;line-height:1.12;color:var(--maroon);max-width:900px}
 .post.story .p-title{font-size:96px}
@@ -162,6 +164,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
 .post.theme-maroon .p-role{color:rgba(245,234,216,.6)}
 .post.theme-maroon .p-sub{color:rgba(245,234,216,.7)}
 .post.theme-maroon .p-photo{border-color:rgba(245,234,216,.5);background:rgba(245,234,216,.08)}
+.post.theme-maroon .p-icon{color:#FFF5E8}
 .post.theme-maroon .p-chip{background:rgba(245,234,216,.1);border-color:rgba(245,234,216,.25)}
 .post.theme-maroon .p-chip svg{stroke:#F5EAD8}
 .post.theme-maroon .p-chip .t{color:#FFF5E8}
@@ -300,7 +303,19 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
         <div class="sec">
           <button class="sec-h" data-acc>الصورة<span class="chev">▾</span></button>
           <div class="sec-b">
-        <div class="fld photo-up">
+        <div class="fld">
+          <label>محتوى الدائرة</label>
+          <div class="seg" id="mediaSeg">
+            <button data-media="photo" class="on">صورة</button>
+            <button data-media="icon">أيقونة كبيرة</button>
+          </div>
+          <div class="hint">تقدر تستبدل الصورة بأيقونة كبيرة في البوستر الرئيسي.</div>
+        </div>
+        <div class="fld" id="iconSelFld" style="display:none">
+          <label>اختر الأيقونة</label>
+          <select id="iconSel"></select>
+        </div>
+        <div class="fld photo-up" id="photoUpFld">
           <label>صورتك (اختياري)</label>
           <label class="photo-drop" for="photoInput" id="photoDrop">اضغط لإضافة صورتك الشخصية</label>
           <input type="file" id="photoInput" accept="image/*">
@@ -317,7 +332,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
           <div class="hint">حجم دائرة الصورة من الخارج.</div>
         </div>
 
-        <div class="fld">
+        <div class="fld" id="zoomFld">
           <label>تكبير الصورة داخل الدائرة <span class="val" id="photoZoomVal">100</span></label>
           <input type="range" id="photoZoom" min="100" max="260" step="5" value="100">
           <div class="hint">يقرّب الصورة داخل الدائرة بدون تغيير حجم الدائرة.</div>
@@ -346,6 +361,11 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
             <button data-bullet="icon">أيكونز تلقائية</button>
           </div>
           <div class="hint">«أيكونز تلقائية» تختار أيقونة مناسبة لكل نقطة حسب نصّها.</div>
+        </div>
+        <div class="fld" id="headFld">
+          <label>ترويسة القائمة (اختياري)</label>
+          <input type="text" id="listHeadInput" value="النقاط الرئيسية" placeholder="اتركه فارغاً لإخفاء الترويسة">
+          <div class="hint">العنوان فوق النقاط — عدّله أو امسحه لإخفائه.</div>
         </div>
         <div class="fld" id="pointsFld">
           <label>النقاط — كل نقطة بسطر (حتى ٨)</label>
@@ -395,7 +415,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);mi
               <div class="p-tag" id="pTag"><span class="dot"></span><span class="txt">دورة تدريبية</span></div>
             </div>
             <div class="p-main">
-              <div class="p-photo" id="pPhotoWrap" style="display:none"><img class="p-photo-img" id="pPhoto" alt=""></div>
+              <div class="p-photo" id="pPhotoWrap" style="display:none"><img class="p-photo-img" id="pPhoto" alt=""><div class="p-icon" id="pIcon" style="display:none"></div></div>
               <div>
                 <div class="p-kicker" id="pKicker">يسرّنا دعوتكم لحضور</div>
                 <div class="p-title" id="pTitle">اسم الدورة</div>
@@ -462,6 +482,8 @@ let curType    = 'course';
 let curMode    = 'points';
 let curBullet  = 'number';
 let curInfo    = 'show';
+let curMedia   = 'photo';
+let curIcon    = 'auto';
 let curFree    = 'no';
 let curSys     = 'auto';
 let photoData  = null;
@@ -552,6 +574,19 @@ function pickIcon(text){
   for(var i=0;i<ICON_RULES.length;i++){ if(ICON_RULES[i][0].test(t)) return ICONS[ICON_RULES[i][1]]; }
   return ICONS.sparkle;
 }
+var ICON_LABELS=[
+  ['auto','تلقائي (حسب العنوان)'],['bulb','فكرة / إبداع'],['target','هدف'],['chat','تواصل'],
+  ['mic','إلقاء / صوت'],['presentation','عرض تقديمي'],['team','فريق'],['leadership','قيادة'],
+  ['star','تميّز'],['trophy','إنجاز'],['clock','وقت'],['calendar','تقويم'],['chart','تحليل'],
+  ['growth','نمو'],['money','مالية'],['megaphone','تسويق'],['briefcase','أعمال'],['pen','تصميم'],
+  ['code','برمجة'],['book','تعلّم'],['gear','إدارة'],['shield','حماية / جودة'],['heart','خدمة عملاء'],
+  ['message','مراسلة'],['camera','تصوير'],['compass','استراتيجية'],['key','حلول'],['search','بحث'],['sparkle','لمعة / عام']
+];
+function fillIconSel(){
+  var sel=document.getElementById('iconSel');
+  if(!sel || sel.options.length) return;
+  sel.innerHTML=ICON_LABELS.map(function(p){ return '<option value="'+p[0]+'">'+p[1]+'</option>'; }).join('');
+}
 
 function getCourse(){ return courses[parseInt(document.getElementById('courseSel').value,10)]||{}; }
 
@@ -600,6 +635,7 @@ function fillCourses(){
   sel.innerHTML=courses.map(function(c,i){ return '<option value="'+i+'">'+esc(c.course||'دورة')+'</option>'; }).join('');
   document.getElementById('loadingMsg').style.display='none';
   document.getElementById('controls').style.display='block';
+  fillIconSel();
   sel.addEventListener('change',function(){ syncTitleFromCourse(); renderAll(); });
   syncTitleFromCourse();
   document.getElementById('trainerInput').value = trainerName || '';
@@ -616,6 +652,8 @@ function applySizes(){
   var img = document.getElementById('pPhoto');
   img.style.width=ipx+'px'; img.style.height=ipx+'px';
   img.style.marginLeft=(-ipx/2)+'px'; img.style.marginTop=(-ipx/2)+'px';
+  var icoSvg=document.querySelector('#pIcon svg');
+  if(icoSvg){ var ip=Math.round(wpx*0.5); icoSvg.setAttribute('width',ip); icoSvg.setAttribute('height',ip); icoSvg.style.width=ip+'px'; icoSvg.style.height=ip+'px'; }
 }
 function applyType(){
   var course=(curType==='course');
@@ -674,8 +712,17 @@ function renderMain(){
   }
   document.getElementById('pChips').innerHTML=chips.join('');
 
-  if(photoData){ document.getElementById('pPhoto').src=photoData; document.getElementById('pPhotoWrap').style.display='block'; }
-  else { document.getElementById('pPhotoWrap').style.display='none'; }
+  var wrap=document.getElementById('pPhotoWrap'),
+      img=document.getElementById('pPhoto'),
+      ico=document.getElementById('pIcon');
+  if(curMedia==='icon'){
+    ico.innerHTML=(curIcon==='auto')?pickIcon(title):(ICONS[curIcon]||ICONS.sparkle);
+    ico.style.display='flex'; img.style.display='none'; wrap.style.display='block';
+  } else {
+    ico.style.display='none'; ico.innerHTML='';
+    if(photoData){ img.src=photoData; img.style.display=''; wrap.style.display='block'; }
+    else { wrap.style.display='none'; }
+  }
   applySizes(); applyType();
 }
 
@@ -707,8 +754,9 @@ function renderTopics(){
     }).join('');
     tList.style.display = arr.length?'':'none';
     tPara.style.display='none';
-    tH.textContent = (curType==='course') ? 'المحاور التدريبية' : 'النقاط الرئيسية';
-    tH.style.display = arr.length?'':'none';
+    var head=document.getElementById('listHeadInput').value.trim();
+    tH.textContent = head;
+    tH.style.display = (arr.length && head) ? '' : 'none';
     hasContent = arr.length>0;
   }
 
@@ -787,6 +835,20 @@ document.getElementById('sysSeg').addEventListener('click',function(e){
 document.getElementById('subInput').addEventListener('input',renderMain);
 document.getElementById('topics2Title').addEventListener('input',renderTopics);
 document.getElementById('paraInput').addEventListener('input',renderTopics);
+document.getElementById('listHeadInput').addEventListener('input',renderTopics);
+document.getElementById('mediaSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  curMedia=b.getAttribute('data-media');
+  [].forEach.call(this.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); });
+  var icon=(curMedia==='icon');
+  document.getElementById('iconSelFld').style.display=icon?'':'none';
+  document.getElementById('photoUpFld').style.display=icon?'none':'';
+  document.getElementById('zoomFld').style.display=icon?'none':'';
+  renderMain();
+});
+document.getElementById('iconSel').addEventListener('change',function(){
+  curIcon=this.value; renderMain();
+});
 document.getElementById('infoSeg').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return;
   curInfo=b.getAttribute('data-info');
@@ -800,6 +862,7 @@ document.getElementById('topicsModeSeg').addEventListener('click',function(e){
   document.getElementById('pointsFld').style.display=(curMode==='points')?'':'none';
   document.getElementById('paraFld').style.display=(curMode==='para')?'':'none';
   document.getElementById('bulletFld').style.display=(curMode==='points')?'':'none';
+  document.getElementById('headFld').style.display=(curMode==='points')?'':'none';
   renderTopics();
 });
 document.getElementById('bulletSeg').addEventListener('click',function(e){
