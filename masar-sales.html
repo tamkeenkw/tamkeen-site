@@ -388,9 +388,17 @@ async function fLoad(){
   try{
     const res=await get('getLeads');
     console.log('getLeads response:',res);
-    if(!res||res.ok!==true){throw new Error((res&&res.error)||'الرد غير متوقع من الخادم');}
+    // ===== تشخيص مؤقت — يعرض شكل البيانات على الشاشة =====
+    var first=res&&res.data&&res.data[0];
+    var dbg='ok = '+JSON.stringify(res&&res.ok)+'\n'+
+      'نوع data = '+(Array.isArray(res&&res.data)?('مصفوفة، عدد='+res.data.length):('ليست مصفوفة → '+typeof(res&&res.data)))+'\n\n'+
+      'مفاتيح أول سجل:\n'+(first&&typeof first==='object'?Object.keys(first).join(' | '):'(لا يوجد)')+'\n\n'+
+      'أول سجل:\n'+JSON.stringify(first||null,null,1);
+    box.innerHTML='<pre style="white-space:pre-wrap;direction:ltr;text-align:left;font-size:12px;line-height:1.7;padding:16px;margin:0;color:#1A0808;font-family:monospace;">'+dbg.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</pre>';
     allLeads=Array.isArray(res.data)?res.data:[];
-    render();
+    // render();  // معطّل مؤقتاً للتشخيص — صوّر الناتج فوق
+    return;
+    // ===== نهاية التشخيص =====
   }catch(e){
     console.error('fLoad error:',e);
     box.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>'+
