@@ -187,9 +187,9 @@ tr:last-child td{border-bottom:none;}
         <table>
           <thead><tr>
             <th><input type="checkbox" id="chkAll" onchange="fTogAll(this)" style="width:14px;height:14px;accent-color:var(--crimson);cursor:pointer;"></th>
-            <th>الاسم</th><th>الواتساب</th><th>المصدر</th><th>شهادة</th><th>الدفع</th><th>حضر؟</th><th>نتيجة التواصل</th><th>آخر تواصل</th><th>تواصل</th>
+            <th>الاسم</th><th>الواتساب</th><th>المصدر</th><th>شهادة</th><th>الدفع</th><th>حضر؟</th><th>نتيجة التواصل</th><th>آخر تواصل</th><th>بواسطة</th><th>تواصل</th>
           </tr></thead>
-          <tbody id="ftbody"><tr><td colspan="10" class="empty">جاري التحميل...</td></tr></tbody>
+          <tbody id="ftbody"><tr><td colspan="11" class="empty">جاري التحميل...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -254,14 +254,21 @@ tr:last-child td{border-bottom:none;}
 
       <div class="field" style="margin-bottom:14px;">
         <label>الخدمة / المبلغ</label>
-        <select id="payPlan">
+        <select id="payPlan" onchange="togCustom()">
           <option value="دفع_شهادة|مشترك|15">شهادة معتمدة — ١٥ د.ك</option>
           <option value="دفع_اشتراك|اشتراك شهر — ١٥ د.ك|15">اشتراك شهر — ١٥ د.ك</option>
           <option value="دفع_اشتراك|اشتراك ٦ أشهر — ٤٠ د.ك|40">اشتراك ٦ أشهر — ٤٠ د.ك</option>
           <option value="دفع_اشتراك|اشتراك ١٢ شهر — ٧٠ د.ك|70">اشتراك ١٢ شهر — ٧٠ د.ك</option>
           <option value="دفع_اشتراك|باقة الذكاء الاصطناعي|45">باقة الذكاء الاصطناعي — ٤٥ د.ك</option>
           <option value="دفع_اشتراك|باقة فن الإدارة|45">باقة فن الإدارة — ٤٥ د.ك</option>
+          <option value="custom">✏️ مبلغ مخصص...</option>
         </select>
+      </div>
+      <div id="customFields" style="display:none;background:var(--cream);border-radius:14px;padding:14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">
+          <div class="field" id="pf-amount"><label>المبلغ (د.ك)</label><input id="payAmount" type="number" min="0.001" step="0.001" placeholder="مثال: 12.500" style="direction:ltr;text-align:left;"></div>
+          <div class="field" id="pf-desc"><label>وصف الخدمة</label><input id="payDesc" placeholder="مثال: باقة خاصة — عرض"></div>
+        </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
         <div class="field" id="pf-name"><label>اسم العميل</label><input id="payName" placeholder="الاسم الكامل"></div>
@@ -361,12 +368,12 @@ function switchTab(n){
 let allLeads=[], sel=new Set(), filter='all', q='';
 
 async function fLoad(){
-  document.getElementById('ftbody').innerHTML='<tr><td colspan="10" class="empty">جاري التحميل...</td></tr>';
+  document.getElementById('ftbody').innerHTML='<tr><td colspan="11" class="empty">جاري التحميل...</td></tr>';
   try{
     const res=await get('getLeads');
     if(!res.ok)throw new Error(res.error||'خطأ');
     allLeads=res.data||[]; render();
-  }catch(e){document.getElementById('ftbody').innerHTML='<tr><td colspan="10" class="empty">خطأ: '+e.message+'</td></tr>';}
+  }catch(e){document.getElementById('ftbody').innerHTML='<tr><td colspan="11" class="empty">خطأ: '+e.message+'</td></tr>';}
 }
 
 function applyFilter(){
@@ -389,7 +396,7 @@ function render(){
   document.getElementById('s4').textContent=toA(allLeads.filter(r=>r.contactResult==='سجّل'||r.status==='تم الدفع').length);
 
   const tb=document.getElementById('ftbody');
-  if(!d.length){tb.innerHTML='<tr><td colspan="10" class="empty">لا توجد سجلات</td></tr>';updSelCnt();return;}
+  if(!d.length){tb.innerHTML='<tr><td colspan="11" class="empty">لا توجد سجلات</td></tr>';updSelCnt();return;}
   tb.innerHTML=d.map(r=>`
     <tr style="${sel.has(r.rowIndex)?'background:rgba(92,15,15,.04)':''}">
       <td style="text-align:center;"><input type="checkbox" ${sel.has(r.rowIndex)?'checked':''} onchange="fTog(${r.rowIndex},this)" style="accent-color:var(--crimson);width:14px;height:14px;cursor:pointer;"></td>
@@ -401,6 +408,7 @@ function render(){
       <td><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;${r.attended==='نعم حضر'?'background:#E8F5E9;color:#2E7D32;':'background:#FFF3E0;color:#E65100;'}">${r.attended==='نعم حضر'?'✓ حضر':'لم يحضر'}</span></td>
       <td>${resultSel(r.rowIndex,r.contactResult)}</td>
       <td style="font-size:12px;font-weight:${r.lastContact===TODAY?'900':'400'};color:${r.lastContact===TODAY?'var(--green)':'var(--muted)'};">${r.lastContact===TODAY?'اليوم ✓':(r.lastContact||'—')}</td>
+      <td style="font-size:12px;color:var(--muted);">${r.agent?`<span style="display:inline-flex;align-items:center;gap:4px;"><span class="avatar" style="width:20px;height:20px;font-size:10px;">${r.agent.charAt(0)}</span>${r.agent}</span>`:'—'}</td>
       <td>${waBtn(r.phone,r.name)}</td>
     </tr>`).join('');
   updSelCnt();
@@ -590,23 +598,41 @@ function prefillPay(name,phone,email){
 // ════════════════════════════════════
 //  TAB 4 — رابط دفع
 // ════════════════════════════════════
-let lastPayUrl='', lastPayPhone='', lastPayName='';
+let lastPayUrl='', lastPayPhone='', lastPayName='', lastPayDesc='', lastPayAmt=0;
+function togCustom(){
+  const isC=document.getElementById('payPlan').value==='custom';
+  document.getElementById('customFields').style.display=isC?'block':'none';
+}
 async function genPayLink(btn){
   const name=document.getElementById('payName').value.trim();
   const phone=document.getElementById('payPhone').value.trim();
   const email=document.getElementById('payEmail').value.trim();
   let ok=true;
   [['pf-name',name],['pf-phone',phone],['pf-email',email&&email.includes('@')]].forEach(([id,v])=>{document.getElementById(id).classList.toggle('invalid',!v);if(!v)ok=false;});
-  if(!ok){toast('عبّي بيانات العميل والإيميل','w');return;}
 
-  const [type,plan,amount]=document.getElementById('payPlan').value.split('|');
+  const planVal=document.getElementById('payPlan').value;
+  let type,plan,amount;
+  if(planVal==='custom'){
+    type='دفع_مخصص';
+    amount=Number(document.getElementById('payAmount').value);
+    plan=document.getElementById('payDesc').value.trim()||'خدمة مخصصة';
+    const amtBad=!(amount>0);
+    document.getElementById('pf-amount').classList.toggle('invalid',amtBad);
+    if(amtBad)ok=false;
+  }else{
+    [type,plan,amount]=planVal.split('|');amount=Number(amount);
+  }
+  if(!ok){toast('عبّي بيانات العميل والمبلغ','w');return;}
+
   btn.disabled=true;btn.querySelector('span').style.display='none';document.getElementById('paySpin').style.display='block';
   try{
-    const body={type,name,phone,email,amount:Number(amount)};
-    if(type==='دفع_اشتراك')body.plan=plan; else body.courseType=plan;
+    const body={type,name,phone,email,amount,description:plan};
+    if(type==='دفع_اشتراك')body.plan=plan;
+    else if(type==='دفع_شهادة')body.courseType=plan;
+    else body.plan=plan; // دفع_مخصص
     const res=await post(body);
     if(res.status==='ok'&&res.url){
-      lastPayUrl=res.url;lastPayPhone=cleanNum(phone);lastPayName=name;
+      lastPayUrl=res.url;lastPayPhone=cleanNum(phone);lastPayName=name;lastPayDesc=plan;lastPayAmt=amount;
       document.getElementById('payUrl').value=res.url;
       document.getElementById('payOut').style.display='block';
       toast('✓ تم توليد رابط الدفع','s');
@@ -617,7 +643,8 @@ async function genPayLink(btn){
 function copyPayUrl(){navigator.clipboard.writeText(lastPayUrl).then(()=>toast('✓ تم نسخ الرابط','s'));}
 function sendPayWa(){
   if(!lastPayUrl||!lastPayPhone)return;
-  const msg=`السلام عليكم ${lastPayName} 👋\n\nهذا رابط الدفع الخاص بك — أكاديمية مسار 🎓\n\n${lastPayUrl}`;
+  const detail=lastPayDesc?`\n${lastPayDesc} — ${toA(lastPayAmt)} د.ك`:'';
+  const msg=`السلام عليكم ${lastPayName} 👋${detail}\n\nهذا رابط الدفع الخاص بك — أكاديمية مسار 🎓\n\n${lastPayUrl}`;
   window.open('https://wa.me/'+lastPayPhone+'?text='+encodeURIComponent(msg),'_blank');
 }
 
