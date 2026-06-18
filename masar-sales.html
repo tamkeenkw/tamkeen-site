@@ -274,7 +274,7 @@ tr:last-child td{border-bottom:none;}
         <div class="field" id="pf-name"><label>اسم العميل</label><input id="payName" placeholder="الاسم الكامل"></div>
         <div class="field" id="pf-phone"><label>رقم الهاتف</label><input id="payPhone" placeholder="99887766" style="direction:ltr;text-align:left;"></div>
       </div>
-      <div class="field" id="pf-email" style="margin-bottom:16px;"><label>الإيميل (مطلوب للدفع)</label><input id="payEmail" placeholder="name@email.com" style="direction:ltr;text-align:left;"></div>
+      <div class="field" id="pf-email" style="margin-bottom:16px;"><label>الإيميل (اختياري)</label><input id="payEmail" placeholder="name@email.com — اختياري" style="direction:ltr;text-align:left;"></div>
 
       <button class="btn" id="payBtn" onclick="genPayLink(this)"><span>توليد رابط الدفع ←</span><div class="spinner" id="paySpin"></div></button>
 
@@ -608,7 +608,8 @@ async function genPayLink(btn){
   const phone=document.getElementById('payPhone').value.trim();
   const email=document.getElementById('payEmail').value.trim();
   let ok=true;
-  [['pf-name',name],['pf-phone',phone],['pf-email',email&&email.includes('@')]].forEach(([id,v])=>{document.getElementById(id).classList.toggle('invalid',!v);if(!v)ok=false;});
+  [['pf-name',name],['pf-phone',phone]].forEach(([id,v])=>{document.getElementById(id).classList.toggle('invalid',!v);if(!v)ok=false;});
+  document.getElementById('pf-email').classList.remove('invalid');
 
   const planVal=document.getElementById('payPlan').value;
   let type,plan,amount;
@@ -622,7 +623,7 @@ async function genPayLink(btn){
   }else{
     [type,plan,amount]=planVal.split('|');amount=Number(amount);
   }
-  if(!ok){toast('عبّي بيانات العميل والمبلغ','w');return;}
+  if(!ok){toast('عبّي اسم العميل ورقمه','w');return;}
 
   btn.disabled=true;btn.querySelector('span').style.display='none';document.getElementById('paySpin').style.display='block';
   try{
