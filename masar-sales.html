@@ -383,12 +383,22 @@ function switchTab(n){
 let allLeads=[], sel=new Set(), filter='all', q='';
 
 async function fLoad(){
-  document.getElementById('fcards').innerHTML='<div class="empty">جاري التحميل...</div>';
+  const box=document.getElementById('fcards');
+  box.innerHTML='<div class="empty"><div class="empty-icon">⏳</div>جاري تحميل العملاء...</div>';
   try{
     const res=await get('getLeads');
-    if(!res.ok)throw new Error(res.error||'خطأ');
-    allLeads=res.data||[]; render();
-  }catch(e){document.getElementById('fcards').innerHTML='<div class="empty">خطأ: '+e.message+'</div>';}
+    console.log('getLeads response:',res);
+    if(!res||res.ok!==true){throw new Error((res&&res.error)||'الرد غير متوقع من الخادم');}
+    allLeads=Array.isArray(res.data)?res.data:[];
+    render();
+  }catch(e){
+    console.error('fLoad error:',e);
+    box.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>'+
+      '<div style="font-weight:800;color:var(--text);">تعذّر تحميل البيانات</div>'+
+      '<div style="font-size:12px;margin-top:6px;">'+(e.message||'خطأ غير معروف')+'</div>'+
+      '<button class="btn" style="margin-top:14px;padding:8px 20px;font-size:13px;" onclick="fLoad()">↻ إعادة المحاولة</button>'+
+      '</div>';
+  }
 }
 
 function applyFilter(){
@@ -410,6 +420,7 @@ function payClass(status){
 }
 
 function render(){
+  try{
   let d=applyFilter();
 
   document.getElementById('s1').textContent=toA(allLeads.length);
@@ -418,7 +429,15 @@ function render(){
   document.getElementById('s4').textContent=toA(allLeads.filter(r=>r.contactResult==='سجّل'||r.status==='تم الدفع').length);
 
   const box=document.getElementById('fcards');
-  if(!d.length){box.innerHTML='<div class="empty">لا توجد سجلات</div>';updSelCnt();return;}
+  if(!allLeads.length){
+    box.innerHTML='<div class="empty"><div class="empty-icon">📭</div>'+
+      '<div style="font-weight:800;color:var(--text);">ما في عملاء في القائمة بعد</div>'+
+      '<div style="font-size:12px;margin-top:6px;">اسحب المسجّلين من ورقة التسجيلات أو أضفهم يدوياً.</div>'+
+      '<button class="btn" style="margin-top:14px;padding:8px 20px;font-size:13px;" onclick="switchTab(2)">➕ إضافة واستيراد</button>'+
+      '</div>';
+    updSelCnt();return;
+  }
+  if(!d.length){box.innerHTML='<div class="empty"><div class="empty-icon">🔍</div>لا توجد نتائج لهذا الفلتر</div>';updSelCnt();return;}
 
   box.innerHTML=d.map(r=>{
     const p=payClass(r.status);
@@ -457,6 +476,10 @@ function render(){
     </div>`;
   }).join('');
   updSelCnt();
+  }catch(err){
+    console.error('render error:',err);
+    document.getElementById('fcards').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>خطأ في العرض: '+(err.message||err)+'</div>';
+  }
 }
 
 function srcStyle(s){
