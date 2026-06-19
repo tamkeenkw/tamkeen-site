@@ -147,6 +147,46 @@ table.sched tr:hover td{background:var(--cream);}
 
 footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 
+/* ===== SUBBAR ===== */
+.subbar{background:#fff;border-bottom:1.5px solid var(--line);position:sticky;top:74px;z-index:15;display:none;}
+.subbar.show{display:block;}
+.subbar-inner{max-width:1100px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;}
+.back-btn{background:var(--cream);border:1.5px solid var(--line);border-radius:10px;padding:9px 15px;font-family:inherit;font-weight:800;font-size:13px;color:var(--crimson);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;}
+.back-btn:hover{background:var(--cream-2);border-color:var(--crimson);}
+.back-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.6;}
+.subbar-title{font-size:16px;font-weight:900;color:var(--crimson);}
+
+/* ===== HOME MENU ===== */
+.home-hero{margin-bottom:22px;}
+.home-hero-title{font-size:24px;font-weight:900;}
+.home-hero-sub{font-size:14px;color:var(--muted);font-weight:600;margin-top:4px;}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:860px){.menu-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.menu-grid{grid-template-columns:1fr;}}
+.menu-card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;transition:.2s;position:relative;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.menu-card:hover{transform:translateY(-3px);border-color:var(--crimson);box-shadow:0 12px 28px rgba(92,15,15,.13);}
+.menu-card .mc-ico{width:50px;height:50px;border-radius:14px;background:var(--cream);display:flex;align-items:center;justify-content:center;margin-bottom:13px;}
+.menu-card .mc-ico svg{width:25px;height:25px;stroke:var(--crimson);fill:none;stroke-width:2;}
+.menu-card .mc-title{font-size:17px;font-weight:900;}
+.menu-card .mc-desc{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.6;margin-top:5px;}
+.menu-card .mc-badge{position:absolute;top:18px;left:18px;background:var(--crimson);color:#fff;font-size:12px;font-weight:900;min-width:24px;height:24px;border-radius:100px;display:flex;align-items:center;justify-content:center;padding:0 7px;}
+
+/* ===== DESIGN STUDIO ===== */
+.seg{display:flex;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:4px;margin-bottom:18px;}
+.seg button{flex:1;padding:11px 8px;border:none;border-radius:9px;background:none;font-family:inherit;font-size:13.5px;font-weight:800;color:var(--muted);cursor:pointer;transition:.15s;}
+.seg button.on{background:var(--crimson);color:#fff;}
+.studio{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start;}
+@media(max-width:880px){.studio{grid-template-columns:1fr;}}
+.studio-panel{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:20px;}
+.design-hint{font-size:12px;color:var(--muted);font-weight:600;line-height:1.6;margin:4px 0 14px;}
+.stage-col{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.stage-scroll{width:100%;display:flex;gap:16px;overflow-x:auto;padding:6px 2px 14px;justify-content:flex-start;}
+.stage{flex:0 0 auto;}
+.stage-note{font-size:12px;color:var(--muted);font-weight:700;}
+/* البوستر بحجمه الحقيقي 1080×1350 ثم نصغّره للمعاينة عبر transform */
+.poster{width:1080px;height:1350px;position:relative;overflow:hidden;transform-origin:top right;font-family:'Tajawal',sans-serif;}
+.poster *{box-sizing:border-box;}
+
 /* PRINT */
 @media print{
   body{background:#fff;}
@@ -192,23 +232,63 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
   </div>
 </div>
 
-<!-- ===== TABS ===== -->
-<div class="tabs">
-  <div class="tabs-inner" id="tabBar">
-    <button class="tab on" data-tab="overview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>نظرة عامة</button>
-    <button class="tab" data-tab="bookings"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>طلبات الحجز <span class="pill" id="pill-bookings" style="display:none">0</span></button>
-    <button class="tab" data-tab="materials"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>اعتماد المواد <span class="pill" id="pill-materials" style="display:none">0</span></button>
-    <button class="tab" data-tab="attendance"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>الراغبون في الحضور</button>
-    <button class="tab" data-tab="joins"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>طلبات الانضمام <span class="pill" id="pill-joins" style="display:none">0</span></button>
-    <button class="tab" data-tab="schedule"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>الجدول التدريبي</button>
-    <button class="tab" data-tab="institutional"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>الدورات المؤسسية</button>
+<!-- ===== SUBBAR (back to menu) ===== -->
+<div class="subbar" id="subbar">
+  <div class="subbar-inner">
+    <button class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>القائمة الرئيسية</button>
+    <div class="subbar-title" id="subbarTitle"></div>
   </div>
 </div>
 
 <div class="main">
 
+  <!-- ===== HOME (card menu) ===== -->
+  <div class="panel on" id="p-home">
+    <div class="home-hero">
+      <div class="home-hero-title">أهلاً بك في لوحة العمليات</div>
+      <div class="home-hero-sub">اختر القسم الذي تريد متابعته أو اعتماده</div>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="openSection('overview')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
+        <div class="mc-title">نظرة عامة</div><div class="mc-desc">ملخص لحظي لكل ما يحتاج متابعتك</div>
+      </div>
+      <div class="menu-card" onclick="openSection('bookings')">
+        <span class="mc-badge" id="badge-bookings" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="mc-title">طلبات الحجز</div><div class="mc-desc">اعتماد أو رفض مواعيد الدورات</div>
+      </div>
+      <div class="menu-card" onclick="openSection('materials')">
+        <span class="mc-badge" id="badge-materials" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="mc-title">اعتماد المواد</div><div class="mc-desc">مراجعة المواد المرفوعة من المدربين</div>
+      </div>
+      <div class="menu-card" onclick="openSection('attendance')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <div class="mc-title">الراغبون في الحضور</div><div class="mc-desc">بيانات المسجّلين لحضور الجلسات</div>
+      </div>
+      <div class="menu-card" onclick="openSection('joins')">
+        <span class="mc-badge" id="badge-joins" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+        <div class="mc-title">طلبات الانضمام</div><div class="mc-desc">الراغبون في الانضمام وحالتهم</div>
+      </div>
+      <div class="menu-card" onclick="openSection('schedule')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div class="mc-title">الجدول التدريبي</div><div class="mc-desc">اعتماد الجدول وتصديره PDF</div>
+      </div>
+      <div class="menu-card" onclick="openSection('designs')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="mc-title">التصاميم والبوسترات</div><div class="mc-desc">بوستر الجدول · بوستر لكل دورة · كاروسيل</div>
+      </div>
+      <div class="menu-card" onclick="openSection('institutional')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
+        <div class="mc-title">الدورات المؤسسية</div><div class="mc-desc">إنشاء خطة وإرسال رابط للمدربين</div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== OVERVIEW ===== -->
-  <div class="panel on" id="p-overview">
+  <div class="panel" id="p-overview">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>نظرة عامة</div><div class="sec-desc">ملخص لحظي لكل ما يحتاج متابعتك</div></div></div>
     <div class="stats" id="statsBox">
       <div class="stat c-amber"><div class="ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="n" id="s-bookings">—</div><div class="l">طلبات حجز قيد المراجعة</div></div>
@@ -307,10 +387,60 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     <div class="list" id="applicantsList"><div class="empty">لا توجد طلبات بعد.</div></div>
   </div>
 
+  <!-- ===== DESIGNS STUDIO ===== -->
+  <div class="panel" id="p-designs">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>التصاميم والبوسترات</div><div class="sec-desc">صمّم بوستر للجدول أو لكل دورة أو كاروسيل — وحمّله صورة جاهزة للنشر</div></div></div>
+
+    <div class="seg" id="designSeg">
+      <button class="on" data-d="schedule" onclick="setDesign(this,'schedule')">بوستر الجدول</button>
+      <button data-d="carousel" onclick="setDesign(this,'carousel')">كاروسيل الدورات</button>
+      <button data-d="single" onclick="setDesign(this,'single')">بوستر دورة</button>
+      <button data-d="free" onclick="setDesign(this,'free')">بوست حر</button>
+    </div>
+
+    <div class="studio">
+      <div class="studio-panel">
+        <div class="fld"><label>الثيم</label>
+          <div class="seg" style="margin-bottom:0;">
+            <button class="on" data-th="cream" onclick="setTheme(this,'cream')">كريمي</button>
+            <button data-th="maroon" onclick="setTheme(this,'maroon')">عنابي</button>
+          </div>
+        </div>
+        <div class="fld" id="fld-single" style="display:none;"><label>اختر الدورة</label><select id="designCourse" onchange="renderDesign()"></select></div>
+        <div class="fld"><label>العنوان (اختياري)</label><input id="designTitle" placeholder="مثال: جدول دورات يونيو" oninput="renderDesign()"></div>
+        <div class="fld" id="fld-free-sub" style="display:none;"><label>نص فرعي (اختياري)</label><input id="freeSub" placeholder="سطر تحت العنوان" oninput="renderDesign()"></div>
+        <div class="fld" id="fld-free-body" style="display:none;"><label>النص (سطر = نقطة)</label><textarea id="freeBody" placeholder="اكتب كل فكرة في سطر..." oninput="renderDesign()"></textarea></div>
+        <div class="fld" id="fld-cta" style="display:none;"><label>نص الزر (اختياري)</label><input id="designCta" placeholder="سجّل الآن" oninput="renderDesign()"></div>
+        <div id="fld-free-opts" style="display:none;">
+          <div class="fld"><label>المقاس</label>
+            <div class="seg" style="margin-bottom:0;">
+              <button class="on" data-sz="portrait" onclick="setSize(this,'portrait')">طولي ٤:٥</button>
+              <button data-sz="square" onclick="setSize(this,'square')">مربع ١:١</button>
+            </div>
+          </div>
+          <div class="fld"><label>صورة (اختياري)</label>
+            <input type="file" id="freeImgInput" accept="image/*" onchange="onFreeImg(event)" style="width:100%;font-family:inherit;font-size:13px;padding:10px;border:1.5px solid var(--line);border-radius:12px;background:var(--cream);">
+            <button id="rmImgBtn" onclick="clearFreeImg()" style="display:none;margin-top:8px;background:var(--red-bg);color:var(--red);border:none;border-radius:10px;padding:8px 14px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer;">إزالة الصورة</button>
+          </div>
+          <label style="display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:14px;"><input type="checkbox" id="freeBrand" checked onchange="renderDesign()" style="width:18px;height:18px;accent-color:var(--crimson);">إظهار شعار «معهد تمكين»</label>
+        </div>
+        <div class="design-hint" id="designHint"></div>
+        <button class="btn btn-primary" id="dlBtn" onclick="downloadDesign()" style="width:100%;justify-content:center;margin-top:6px;"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تحميل التصميم PNG</button>
+      </div>
+
+      <div class="stage-col">
+        <div class="stage-scroll" id="stageScroll"><div class="stage" id="stage"></div></div>
+        <div class="stage-note">المعاينة مصغّرة — التحميل بالجودة الكاملة</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
 <div id="printArea"></div>
+<!-- CAPTURE STAGE (full-size poster render for PNG export) -->
+<div id="captureStage" style="position:fixed;left:-99999px;top:0;"></div>
 
 <div class="toast" id="toast"></div>
 <footer>© 2026 معهد تمكين — لوحة العمليات</footer>
@@ -343,14 +473,30 @@ function checkPin(){
 document.getElementById('pin').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPin(); });
 function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 
-/* ============ تبويبات ============ */
-document.getElementById('tabBar').addEventListener('click',e=>{
-  const t = e.target.closest('.tab'); if(!t) return;
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+/* ============ تنقّل (بطاقات) ============ */
+const SECTION_TITLES = {
+  overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
+  attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية'
+};
+function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
-  t.classList.add('on');
-  document.getElementById('p-'+t.dataset.tab).classList.add('on');
-});
+  const p=document.getElementById('p-'+id); if(p) p.classList.add('on');
+  document.getElementById('subbarTitle').textContent = SECTION_TITLES[id]||'';
+  document.getElementById('subbar').classList.add('show');
+  window.scrollTo(0,0);
+  if(id==='designs') initDesigns();
+}
+function goHome(){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-home').classList.add('on');
+  document.getElementById('subbar').classList.remove('show');
+  window.scrollTo(0,0);
+}
+function updateBadge(id,n){
+  const el=document.getElementById('badge-'+id); if(!el) return;
+  el.style.display = n>0?'flex':'none'; el.textContent=n;
+}
 
 /* ============ أدوات ============ */
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
@@ -467,7 +613,7 @@ function renderBookings(){
     return true;
   });
   const pend=DATA.bookings.data.map(r=>mapBooking(h,r)).filter(r=>statusClass(r.status)==='st-pending').length;
-  const pill=document.getElementById('pill-bookings'); pill.style.display=pend?'inline-flex':'none'; pill.textContent=pend;
+  updateBadge('bookings', pend);
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد طلبات مطابقة.</div>'; return; }
   box.innerHTML = rows.map(r=>bookingCard(r,DATA.bookings.tab)).join('');
 }
@@ -529,7 +675,7 @@ function renderMaterials(){
   const fileI=colIdx(h,'ملف','رابط','مادة');
   let rows=DATA.bookings.data.map(r=>mapBooking(h,r)).reverse().filter(r=>r.file && String(r.file).trim()!=='');
   const pend=rows.filter(r=>statusClass(r.status)==='st-pending').length;
-  const pill=document.getElementById('pill-materials'); pill.style.display=pend?'inline-flex':'none'; pill.textContent=pend;
+  updateBadge('materials', pend);
   if(fileI<0){
     box.innerHTML='<div class="banner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>لا يوجد عمود لرابط/اسم الملف في تبويب الحجز. المواد المرفوعة من المدربين تُخزَّن كـ Base64 في السكريبت — لعرض رابط الملف هنا نحتاج تعديل بسيط في السكريبت لحفظ رابط Drive في عمود مخصّص.</div></div>';
     return;
@@ -594,13 +740,13 @@ function setJnFilter(btn,f){ document.querySelectorAll('#jn-filter button').forE
 function renderJoins(){
   const box=document.getElementById('joinsList');
   if(!DATA.joins){ return; }
-  if(!DATA.joins.tab){ box.innerHTML='<div class="empty">لم يُعثر على تبويب «هيئة التدريب» — يُنشأ تلقائياً عند أول طلب انضمام.</div>'; const p=document.getElementById('pill-joins'); p.style.display='none'; return; }
+  if(!DATA.joins.tab){ box.innerHTML='<div class="empty">لم يُعثر على تبويب «هيئة التدريب» — يُنشأ تلقائياً عند أول طلب انضمام.</div>'; updateBadge('joins',0); return; }
   const h=DATA.joins.headers;
   const nameI=colIdx(h,'اسم'), phoneI=colIdx(h,'هاتف','جوال','واتس'), mailI=colIdx(h,'إيميل','بريد','ايميل'), specI=colIdx(h,'تخصص','مجال'), dateI=colIdx(h,'تاريخ'), scI=statusCol(h);
   const q=(document.getElementById('jn-search').value||'').trim();
   let rows=DATA.joins.data.map(r=>r).reverse();
   const pend=rows.filter(r=>statusClass(cell(r,scI))==='st-pending').length;
-  const p=document.getElementById('pill-joins'); p.style.display=pend?'inline-flex':'none'; p.textContent=pend;
+  updateBadge('joins', pend);
   rows=rows.filter(r=>{
     const sc=statusClass(cell(r,scI));
     if(jnFilter==='pending'&&sc!=='st-pending') return false;
@@ -724,6 +870,220 @@ function generateInstLink(){
   toast('تم توليد الرابط ✓');
 }
 function copyLink(t){ navigator.clipboard.writeText(t).then(()=>toast('تم النسخ ✓')).catch(()=>toast('انسخ الرابط يدوياً')); }
+
+/* ============ استوديو التصاميم ============ */
+let designMode='schedule', designTheme='cream', freeImg=null, freeSize='portrait';
+const THEME={
+  cream:{ bg:'#FAF7F2', bg2:'#EFE6D8', ink:'#5C0F0F', text:'#2a1010', sub:'#8a6f6f', card:'#ffffff', cb:'rgba(92,15,15,.12)', chip:'#F4ECE2' },
+  maroon:{ bg:'#54100F', bg2:'#2c0606', ink:'#F5EAD8', text:'#F5EAD8', sub:'rgba(245,234,216,.72)', card:'rgba(245,234,216,.08)', cb:'rgba(245,234,216,.22)', chip:'rgba(245,234,216,.12)' }
+};
+function posterH(){ return (designMode==='free' && freeSize==='square') ? 1080 : 1350; }
+function onFreeImg(e){
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ freeImg=r.result; document.getElementById('rmImgBtn').style.display='inline-block'; renderDesign(); }; r.readAsDataURL(f);
+}
+function clearFreeImg(){ freeImg=null; document.getElementById('freeImgInput').value=''; document.getElementById('rmImgBtn').style.display='none'; renderDesign(); }
+function setSize(btn,sz){ freeSize=sz; document.querySelectorAll('[data-sz]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderDesign(); }
+function getScheduleCourses(){
+  if(!DATA.bookings||!DATA.bookings.tab) return [];
+  const h=DATA.bookings.headers;
+  return DATA.bookings.data.map(r=>mapBooking(h,r))
+    .filter(r=>statusClass(r.status)!=='st-reject' && (r.start||r.course))
+    .sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+}
+function dateParts(v){
+  const m=String(v||'').match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(m){ const d=new Date(+m[1],+m[2]-1,+m[3]); if(!isNaN(d)) return {dow:DAYS_AR[d.getDay()],day:+m[3],mon:MONTHS_AR[+m[2]-1]}; }
+  return {dow:'',day:String(v||'').slice(0,6),mon:''};
+}
+function initDesigns(){
+  const sel=document.getElementById('designCourse');
+  const courses=getScheduleCourses();
+  sel.innerHTML = courses.length
+    ? courses.map((c,i)=>`<option value="${i}">${esc(c.course||'دورة')} ${c.start?'— '+esc(fmtDate(c.start)):''}</option>`).join('')
+    : '<option value="">لا توجد دورات في الجدول</option>';
+  renderDesign();
+}
+function setDesign(btn,mode){
+  designMode=mode;
+  document.querySelectorAll('#designSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  const free = mode==='free';
+  document.getElementById('fld-single').style.display = mode==='single'?'block':'none';
+  document.getElementById('fld-cta').style.display    = (mode==='single'||mode==='carousel'||free)?'block':'none';
+  ['fld-free-sub','fld-free-body','fld-free-opts'].forEach(id=>document.getElementById(id).style.display = free?'block':'none');
+  document.getElementById('designHint').textContent =
+    mode==='schedule' ? 'بوستر واحد يجمع كل دورات الجدول.' :
+    mode==='single'   ? 'بوستر مستقل للدورة المختارة.' :
+    mode==='carousel' ? 'كاروسيل: غلاف + شريحة لكل دورة، تُحمّل صوراً متتابعة.' :
+                        'بوست حر بأي محتوى — غير مرتبط بالدورات. أضف عنواناً ونصاً وصورة إن رغبت.';
+  renderDesign();
+}
+function setTheme(btn,th){ designTheme=th; document.querySelectorAll('[data-th]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderDesign(); }
+
+/* ===== بناة البوسترات (حجم كامل 1080×1350) ===== */
+function brandBadge(t){
+  return `<div style="display:inline-flex;align-items:center;gap:14px;background:${t.chip};border:2px solid ${t.cb};border-radius:100px;padding:13px 30px;font-size:30px;font-weight:900;color:${t.ink};">
+    <span style="width:14px;height:14px;border-radius:50%;background:${t.ink};display:inline-block;"></span>معهد تمكين</div>`;
+}
+function chipHtml(t,txt){ return `<span style="display:inline-flex;align-items:center;background:${t.chip};border:2px solid ${t.cb};border-radius:100px;padding:14px 30px;font-size:30px;font-weight:800;color:${t.text};">${esc(txt)}</span>`; }
+function posterShell(t,inner,h){
+  h=h||1350;
+  return `<div class="poster" style="height:${h}px;background:radial-gradient(ellipse 80% 55% at 100% 0%, ${t.bg2} 0%, ${t.bg} 55%), ${t.bg};color:${t.text};padding:74px;display:flex;flex-direction:column;">${inner}</div>`;
+}
+function buildFreePoster(o){
+  const t=THEME[designTheme];
+  const h = freeSize==='square'?1080:1350;
+  const img = freeImg ? `<div style="width:100%;height:${freeSize==='square'?'38%':'42%'};border-radius:30px;overflow:hidden;margin-bottom:38px;border:3px solid ${t.cb};flex:0 0 auto;"><img src="${freeImg}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>` : '';
+  const lines=(o.body||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  let bodyHtml='';
+  if(lines.length>1){
+    bodyHtml=`<div style="display:flex;flex-direction:column;gap:22px;margin-top:30px;">`+lines.map(l=>
+      `<div style="display:flex;align-items:flex-start;gap:18px;font-size:38px;font-weight:700;color:${t.text};line-height:1.4;"><span style="flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:${t.ink};margin-top:13px;"></span><span>${esc(l.replace(/^[-•*]\s*/,''))}</span></div>`).join('')+`</div>`;
+  } else if(lines.length===1){
+    bodyHtml=`<div style="font-size:42px;font-weight:600;color:${t.text};line-height:1.6;margin-top:26px;">${esc(lines[0])}</div>`;
+  }
+  const brand = o.brand ? `<div style="margin-bottom:34px;flex:0 0 auto;">${brandBadge(t)}</div>` : '';
+  const sub   = o.sub   ? `<div style="font-size:40px;font-weight:700;color:${t.sub};margin-top:14px;">${esc(o.sub)}</div>` : '';
+  const cta   = o.cta   ? `<div style="background:${t.ink};color:${designTheme==='cream'?'#fff':'#54100F'};text-align:center;font-size:42px;font-weight:900;border-radius:24px;padding:30px;margin-top:36px;flex:0 0 auto;">${esc(o.cta)}</div>` : '';
+  const inner = `${brand}${img}
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;">
+      <div style="font-size:90px;font-weight:900;color:${t.ink};line-height:1.08;">${esc(o.title||'عنوان البوست')}</div>
+      ${sub}${bodyHtml}
+    </div>${cta}`;
+  return posterShell(t,inner,h);
+}
+function buildSchedulePoster(courses,title){
+  const t=THEME[designTheme];
+  const n=courses.length;
+  const nameSize = n<=5?42 : n<=8?34 : 28;
+  const pad      = n<=5?28 : n<=8?20 : 14;
+  const gap      = n<=5?18 : n<=8?13 : 9;
+  const shown=courses.slice(0,9);
+  const extra=n-shown.length;
+  const rows=shown.map(c=>{
+    const dp=dateParts(c.start);
+    return `<div style="display:flex;align-items:center;gap:26px;background:${t.card};border:2px solid ${t.cb};border-radius:26px;padding:${pad}px 30px;">
+      <div style="flex:0 0 130px;text-align:center;line-height:1;">
+        <div style="font-size:24px;font-weight:700;color:${t.sub};">${esc(dp.dow)}</div>
+        <div style="font-size:54px;font-weight:900;color:${t.ink};margin:4px 0;">${esc(String(dp.day))}</div>
+        <div style="font-size:24px;font-weight:700;color:${t.sub};">${esc(dp.mon)}</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:${nameSize}px;font-weight:900;color:${t.text};">${esc(c.course||'دورة')}</div>
+        <div style="font-size:26px;font-weight:700;color:${t.sub};margin-top:6px;">${esc(c.trainer||'')}${c.system?' · '+esc(c.system):''}${c.time?' · '+esc(c.time):''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const extraRow = extra>0?`<div style="text-align:center;font-size:30px;font-weight:800;color:${t.sub};margin-top:6px;">+ ${extra} دورة أخرى</div>`:'';
+  const inner=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:34px;">${brandBadge(t)}
+      <div style="text-align:left;font-size:26px;font-weight:800;color:${t.sub};">tamkeenkuw.com</div></div>
+    <div style="font-size:88px;font-weight:900;color:${t.ink};line-height:1.05;">${esc(title||'الجدول التدريبي')}</div>
+    <div style="font-size:34px;font-weight:700;color:${t.sub};margin:10px 0 34px;">${n} دورة قادمة</div>
+    <div style="display:flex;flex-direction:column;gap:${gap}px;flex:1;justify-content:flex-start;">${rows}${extraRow}</div>`;
+  return posterShell(t,inner);
+}
+function buildCoursePoster(c,title,cta){
+  const t=THEME[designTheme];
+  const dp=dateParts(c.start);
+  const chips=[];
+  if(c.start) chips.push(chipHtml(t,(dp.dow?dp.dow+' ':'')+dp.day+' '+dp.mon));
+  if(c.system) chips.push(chipHtml(t,c.system));
+  if(c.time) chips.push(chipHtml(t,c.time+' مساءً'));
+  const inner=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">${brandBadge(t)}
+      <div style="text-align:left;font-size:26px;font-weight:800;color:${t.sub};">tamkeenkuw.com</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div style="font-size:34px;font-weight:800;color:${t.sub};margin-bottom:14px;">${esc(title||'دورة تدريبية')}</div>
+      <div style="font-size:96px;font-weight:900;color:${t.ink};line-height:1.1;">${esc(c.course||'')}</div>
+      <div style="font-size:42px;font-weight:800;color:${t.text};margin-top:26px;">${esc(c.trainer||'')}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:18px;margin-top:40px;">${chips.join('')}</div>
+    </div>
+    <div style="background:${t.ink};color:${designTheme==='cream'?'#fff':'#54100F'};text-align:center;font-size:42px;font-weight:900;border-radius:24px;padding:30px;">${esc(cta||'سجّل الآن')}</div>`;
+  return posterShell(t,inner);
+}
+function buildCover(courses,title){
+  const t=THEME[designTheme];
+  const inner=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">${brandBadge(t)}
+      <div style="text-align:left;font-size:26px;font-weight:800;color:${t.sub};">tamkeenkuw.com</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+      <div style="font-size:36px;font-weight:800;color:${t.sub};">الدورات التدريبية القادمة</div>
+      <div style="font-size:110px;font-weight:900;color:${t.ink};line-height:1.05;margin:18px 0;">${esc(title||'جدول الدورات')}</div>
+      <div style="font-size:40px;font-weight:800;color:${t.text};background:${t.chip};border:2px solid ${t.cb};border-radius:100px;padding:18px 46px;">${courses.length} دورة</div>
+    </div>
+    <div style="text-align:center;font-size:32px;font-weight:800;color:${t.sub};">اسحب لاستعراض الدورات ←</div>`;
+  return posterShell(t,inner);
+}
+
+/* ===== المعاينة ===== */
+function renderDesign(){
+  const stage=document.getElementById('stage');
+  const title=(document.getElementById('designTitle').value||'').trim();
+  const cta=(document.getElementById('designCta')?document.getElementById('designCta').value:'').trim();
+  const courses=getScheduleCourses();
+  let posters=[], h=posterH();
+  if(designMode==='schedule'){ posters=[buildSchedulePoster(courses,title)]; }
+  else if(designMode==='single'){
+    const idx=parseInt(document.getElementById('designCourse').value,10);
+    if(courses[idx]) posters=[buildCoursePoster(courses[idx],title,cta)];
+    else posters=[`<div class="poster" style="background:#FAF7F2;color:#7A6060;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;">لا توجد دورة مختارة</div>`];
+  } else if(designMode==='carousel'){
+    posters=[buildCover(courses,title)].concat(courses.slice(0,10).map(c=>buildCoursePoster(c,title,cta)));
+  } else { // free
+    posters=[buildFreePoster({
+      title, cta,
+      sub:(document.getElementById('freeSub').value||'').trim(),
+      body:(document.getElementById('freeBody').value||''),
+      brand:document.getElementById('freeBrand').checked
+    })];
+  }
+  const s = designMode==='carousel'?0.26:0.46;
+  stage.parentNode.style.justifyContent = designMode==='carousel'?'flex-start':'center';
+  stage.outerHTML = `<div class="stage" id="stage" style="display:flex;gap:16px;">`+
+    posters.map(p=>`<div style="width:${Math.round(1080*s)}px;height:${Math.round(h*s)}px;overflow:hidden;flex:0 0 auto;border-radius:18px;box-shadow:0 8px 22px rgba(92,15,15,.14);">
+      <div style="transform:scale(${s});transform-origin:top right;">${p}</div></div>`).join('')+`</div>`;
+}
+
+/* ===== التحميل PNG ===== */
+async function capture(html,filename,h){
+  if(typeof html2canvas==='undefined'){ toast('مكتبة التصدير لم تُحمّل — تأكد من الاتصال'); return; }
+  h=h||1350;
+  const host=document.getElementById('captureStage');
+  host.innerHTML=html;
+  const node=host.querySelector('.poster');
+  await new Promise(r=>setTimeout(r,80)); // مهلة لتحميل الخط/الصورة
+  const canvas=await html2canvas(node,{scale:1,width:1080,height:h,backgroundColor:null,useCORS:true});
+  const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download=filename; a.click();
+  host.innerHTML='';
+}
+async function downloadDesign(){
+  const title=(document.getElementById('designTitle').value||'').trim();
+  const cta=(document.getElementById('designCta')?document.getElementById('designCta').value:'').trim();
+  const courses=getScheduleCourses();
+  const btn=document.getElementById('dlBtn'); const orig=btn.innerHTML; btn.innerHTML='جاري التجهيز...'; btn.disabled=true;
+  try{
+    if(designMode==='schedule'){ await capture(buildSchedulePoster(courses,title),'الجدول-التدريبي.png',1350); }
+    else if(designMode==='single'){
+      const idx=parseInt(document.getElementById('designCourse').value,10);
+      if(!courses[idx]){ toast('لا توجد دورة'); }
+      else await capture(buildCoursePoster(courses[idx],title,cta),(courses[idx].course||'دورة')+'.png',1350);
+    } else if(designMode==='carousel'){
+      if(!courses.length){ toast('لا توجد دورات'); }
+      else{
+        await capture(buildCover(courses,title),'01-الغلاف.png',1350);
+        const slides=courses.slice(0,10);
+        for(let i=0;i<slides.length;i++){ await capture(buildCoursePoster(slides[i],title,cta), String(i+2).padStart(2,'0')+'-'+(slides[i].course||'دورة')+'.png',1350); }
+        toast('تم تحميل '+(slides.length+1)+' صورة ✓');
+      }
+    } else { // free
+      const fp=buildFreePoster({ title, cta, sub:(document.getElementById('freeSub').value||'').trim(), body:(document.getElementById('freeBody').value||''), brand:document.getElementById('freeBrand').checked });
+      await capture(fp,(title||'بوست')+'.png',posterH());
+    }
+  }catch(e){ toast('تعذّر التصدير'); }
+  btn.innerHTML=orig; btn.disabled=false;
+}
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
