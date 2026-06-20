@@ -350,7 +350,9 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         </div>
         <div>
           <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">رقم اعتماد المادة *</label>
-          <input id="issueMaterialCode" placeholder="مثال: TM-2026-014" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;">
+          <input id="issueMaterialCode" list="materialsDatalist" placeholder="اختر المادة أو اكتب الرقم" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;">
+          <datalist id="materialsDatalist"></datalist>
+          <div id="materialsHint" style="font-size:11px;color:var(--muted);margin-top:5px;font-weight:600;"></div>
         </div>
         <div>
           <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">المدرب</label>
@@ -787,9 +789,42 @@ async function sendReminder(){
 }
 
 /* ============ ISSUE CERTIFICATES (إصدار الشهادات) ============ */
-let issueStudents = [], issueSel = new Set(), issueCourse = null;
+let issueStudents = [], issueSel = new Set(), issueCourse = null, materialsLoaded = false;
+
+/* شيت مدربين تمكين — ورقة "بيانات المواد التدريبية" (نفس مفتاح لوحة العمليات) */
+const TAMKEEN_SHEET_ID = '1ORUcqzkBKPKWkEuKT0cOdoV_qtbCD-d1XdslQILXx2g';
+const TAMKEEN_API_KEY  = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
+const MATERIALS_TAB    = 'بيانات المواد التدريبية';
+
+async function loadMaterials(){
+  if(materialsLoaded) return;
+  const hint=document.getElementById('materialsHint');
+  try{
+    const url='https://sheets.googleapis.com/v4/spreadsheets/'+TAMKEEN_SHEET_ID+'/values/'+encodeURIComponent(MATERIALS_TAB)+'!A:C?key='+TAMKEEN_API_KEY;
+    const r=await fetch(url); const d=await r.json();
+    const rows=d.values||[];
+    if(!rows.length){ hint.textContent='تعذّر قراءة ورقة المواد — اكتب الرقم يدوياً.'; return; }
+    // تخطّي صف العنوان لو كان نصاً وصفياً
+    const dataRows = rows.slice(1).filter(row=>row[0] && String(row[0]).trim());
+    const dl=document.getElementById('materialsDatalist');
+    dl.innerHTML='';
+    dataRows.forEach(row=>{
+      const code=String(row[0]).trim();
+      const label=(row[1]||row[2]||'').toString().trim();
+      const o=document.createElement('option');
+      o.value=code;
+      if(label) o.textContent=label;
+      dl.appendChild(o);
+    });
+    materialsLoaded=true;
+    hint.textContent='✓ '+toAr(dataRows.length)+' مادة محمّلة من شيت تمكين — اختر من القائمة أو اكتب يدوياً.';
+  }catch(e){
+    hint.textContent='تعذّر الاتصال بشيت المواد — اكتب الرقم يدوياً.';
+  }
+}
 
 async function initIssue(){
+  loadMaterials();
   // تأكد من تحميل الدورات (مشتركة مع قسم التذكير)
   if(coursesData.length===0){
     try{
