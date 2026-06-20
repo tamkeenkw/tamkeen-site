@@ -421,7 +421,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     <div class="studio">
       <div class="studio-panel">
 <div class="acc open">
-          <button class="acc-head" onclick="toggleAcc(this)">المحتوى والشكل<span class="acc-ico">\u25be</span></button>
+          <button class="acc-head" onclick="toggleAcc(this)">المحتوى والشكل<span class="acc-ico">▾</span></button>
           <div class="acc-body">
             <div class="fld" id="fld-single" style="display:none;"><label>اختر الدورة</label><select id="designCourse" onchange="renderDesign()"></select></div>
             <div class="fld" id="fld-title"><label>العنوان (اختياري)</label><input id="designTitle" placeholder="عنوان التصميم" oninput="renderDesign()"></div>
@@ -434,7 +434,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
               </div>
               <div class="fld"><label>حجم العنوان <span class="val" id="tsVal">90</span></label><input type="range" id="titleSize" class="range-in" min="50" max="150" value="90" oninput="document.getElementById('tsVal').textContent=this.value;renderDesign()"></div>
               <div class="fld"><label>المقاس</label>
-                <div class="seg" style="margin-bottom:0;"><button class="on" data-sz="portrait" onclick="setSize(this,'portrait')">طولي \u0664:\u0665</button><button data-sz="square" onclick="setSize(this,'square')">مربع \u0661:\u0661</button></div>
+                <div class="seg" style="margin-bottom:0;"><button class="on" data-sz="portrait" onclick="setSize(this,'portrait')">طولي ٤:٥</button><button data-sz="square" onclick="setSize(this,'square')">مربع ١:١</button></div>
               </div>
             </div>
             <div id="fld-sched-opts" style="display:none;">
@@ -451,7 +451,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
                 <div class="seg" style="margin-bottom:0;"><button class="on" data-sc="1" onclick="setSchedCols(this,1)">عمود واحد</button><button data-sc="2" onclick="setSchedCols(this,2)">عمودين</button></div>
               </div>
               <div class="fld"><label>مقاس البوست</label>
-                <div class="seg" style="margin-bottom:0;"><button class="on" data-ss="45" onclick="setSchedSize(this,'45')">\u0664:\u0665</button><button data-ss="916" onclick="setSchedSize(this,'916')">ستوري \u0669:\u0661\u0666</button></div>
+                <div class="seg" style="margin-bottom:0;"><button class="on" data-ss="45" onclick="setSchedSize(this,'45')">٤:٥</button><button data-ss="916" onclick="setSchedSize(this,'916')">ستوري ٩:١٦</button></div>
               </div>
               <div class="fld"><label>المعلومات المعروضة</label>
                 <div style="display:flex;flex-direction:column;gap:8px;">
@@ -461,7 +461,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
                   <label class="ck"><input type="checkbox" id="schFFree" onchange="renderDesign()">إظهار وسم «مجاني» (تحدّده بالقائمة تحت)</label>
                 </div>
               </div>
-              <div class="fld"><label style="display:flex;justify-content:space-between;align-items:center;">الدورات المعروضة (\u2713 إظهار · أخضر = مجاني)
+              <div class="fld"><label style="display:flex;justify-content:space-between;align-items:center;">الدورات المعروضة (✓ إظهار · أخضر = مجاني)
                 <span><button class="mini-btn" onclick="schedSelectAll(true)">الكل</button><button class="mini-btn" onclick="schedSelectAll(false)">لا شيء</button></span></label>
                 <div id="schedCourses" class="sched-picker"></div>
               </div>
@@ -488,7 +488,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         </div>
 
         <div class="acc">
-          <button class="acc-head" onclick="toggleAcc(this)">الثيم والألوان والشعار<span class="acc-ico">\u25be</span></button>
+          <button class="acc-head" onclick="toggleAcc(this)">الثيم والألوان والشعار<span class="acc-ico">▾</span></button>
           <div class="acc-body">
             <div class="fld"><label>الثيم</label>
               <div class="seg" style="margin-bottom:0;">
@@ -508,7 +508,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         </div>
 
         <div class="acc">
-          <button class="acc-head" onclick="toggleAcc(this)">الصور والخلفية<span class="acc-ico">\u25be</span></button>
+          <button class="acc-head" onclick="toggleAcc(this)">الصور والخلفية<span class="acc-ico">▾</span></button>
           <div class="acc-body">
             <div class="studio-divider" style="border-top:none;padding-top:0;margin-top:0;">صورة خلفية (خلف النص)</div>
             <div class="fld">
@@ -1016,7 +1016,10 @@ function initDesigns(){
     ? courses.map((c,i)=>'<option value="'+i+'">'+esc(c.course||'دورة')+(c.start?' — '+esc(fmtDate(c.start)):'')+'</option>').join('')
     : '<option value="">لا توجد دورات في الجدول</option>';
   buildSchedCourseList();
-  applyThemeColors(); renderDesign();
+  applyThemeColors();
+  const activeBtn=document.querySelector('#designSeg button.on');
+  if(activeBtn) setDesign(activeBtn, activeBtn.dataset.d);
+  else renderDesign();
 }
 function buildSchedCourseList(){
   const box=document.getElementById('schedCourses'); if(!box) return;
