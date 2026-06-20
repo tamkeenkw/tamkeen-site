@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية مسار — لوحة موظف المتابعة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515; --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060; --white:#fff;
+  --green:#2E7D32; --green-bg:#E8F5E9; --yellow:#B26A00; --yellow-bg:#FFF8E1;
+  --blue:#1565C0; --blue-bg:#E3F2FD; --red:#C62828; --red-bg:#FDECEC;
+  --wa:#25D366; --line:rgba(92,15,15,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+
+/* ===== LOGIN GATE ===== */
+.gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
+.gate-card{background:#fff;border-radius:24px;padding:40px 34px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.gate-card .badge{display:inline-block;background:var(--cream);color:var(--crimson);font-size:12px;font-weight:800;letter-spacing:2px;padding:6px 18px;border-radius:100px;margin-bottom:18px;}
+.gate-card h1{font-size:22px;font-weight:900;margin-bottom:6px;}
+.gate-card p{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.gate-card input{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:14px;font-family:inherit;font-size:18px;text-align:center;letter-spacing:6px;outline:none;margin-bottom:14px;background:var(--cream);}
+.gate-card input:focus{border-color:var(--crimson);background:#fff;}
+.gate-card button{width:100%;padding:14px;background:var(--crimson);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:900;cursor:pointer;}
+.gate-err{color:var(--red);font-size:13px;font-weight:700;min-height:18px;margin-bottom:8px;}
+
+/* ===== HEADER ===== */
+.header{background:var(--crimson);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:20;}
+.h-logo{display:flex;align-items:center;gap:12px;}
+.h-logo .mark{width:42px;height:42px;border-radius:12px;background:var(--cream);color:var(--crimson);font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center;}
+.h-title{font-size:18px;font-weight:900;color:#fff;line-height:1.2;}
+.h-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:2px;}
+.h-right{display:flex;align-items:center;gap:10px;}
+.h-btn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);padding:8px 16px;border-radius:100px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;}
+.h-btn:hover{background:rgba(255,255,255,.22);}
+.h-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;}
+
+/* ===== SUBBAR ===== */
+.subbar{background:#fff;border-bottom:1.5px solid var(--line);position:sticky;top:74px;z-index:15;display:none;}
+.subbar.show{display:block;}
+.subbar-inner{max-width:1100px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:14px;}
+.back-btn{background:var(--cream);border:1.5px solid var(--line);border-radius:10px;padding:9px 15px;font-family:inherit;font-weight:800;font-size:13px;color:var(--crimson);cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;}
+.back-btn:hover{background:var(--cream-2);border-color:var(--crimson);}
+.back-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.6;}
+.subbar-title{font-size:16px;font-weight:900;color:var(--crimson);}
+
+/* ===== MAIN ===== */
+.main{max-width:1100px;margin:0 auto;padding:26px 18px 80px;}
+.panel{display:none;animation:fade .25s ease;}
+.panel.on{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.sec-title{font-size:20px;font-weight:900;display:flex;align-items:center;gap:10px;}
+.sec-title svg{width:22px;height:22px;stroke:var(--crimson);fill:none;stroke-width:2;}
+.sec-desc{font-size:13px;color:var(--muted);font-weight:600;margin-top:2px;}
+
+/* HOME MENU */
+.home-hero{margin-bottom:22px;}
+.home-hero-title{font-size:24px;font-weight:900;}
+.home-hero-sub{font-size:14px;color:var(--muted);font-weight:600;margin-top:4px;}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:860px){.menu-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:520px){.menu-grid{grid-template-columns:1fr;}}
+.menu-card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:22px;cursor:pointer;transition:.2s;position:relative;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.menu-card:hover{transform:translateY(-3px);border-color:var(--crimson);box-shadow:0 12px 28px rgba(92,15,15,.13);}
+.menu-card .mc-ico{width:50px;height:50px;border-radius:14px;background:var(--cream);display:flex;align-items:center;justify-content:center;margin-bottom:13px;}
+.menu-card .mc-ico svg{width:25px;height:25px;stroke:var(--crimson);fill:none;stroke-width:2;}
+.menu-card .mc-title{font-size:17px;font-weight:900;}
+.menu-card .mc-desc{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.6;margin-top:5px;}
+.menu-card .mc-badge{position:absolute;top:18px;left:18px;background:var(--crimson);color:#fff;font-size:12px;font-weight:900;min-width:24px;height:24px;border-radius:100px;display:flex;align-items:center;justify-content:center;padding:0 7px;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px;}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);}}
+.stat{background:#fff;border-radius:18px;padding:18px;border:1.5px solid var(--line);box-shadow:0 2px 12px rgba(92,15,15,.04);cursor:pointer;transition:.15s;}
+.stat:hover{border-color:var(--crimson);}
+.stat .ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.stat .ico svg{width:20px;height:20px;stroke-width:2;fill:none;}
+.stat .n{font-size:30px;font-weight:900;color:var(--crimson);line-height:1;}
+.stat .l{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:6px;}
+.stat.c-amber .ico{background:var(--yellow-bg);} .stat.c-amber .ico svg{stroke:var(--yellow);}
+.stat.c-blue .ico{background:var(--blue-bg);} .stat.c-blue .ico svg{stroke:var(--blue);}
+.stat.c-green .ico{background:var(--green-bg);} .stat.c-green .ico svg{stroke:var(--green);}
+.stat.c-red .ico{background:var(--red-bg);} .stat.c-red .ico svg{stroke:var(--red);}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.search-box{flex:1;min-width:200px;position:relative;}
+.search-box input{width:100%;padding:11px 40px 11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:#fff;outline:none;}
+.search-box input:focus{border-color:var(--crimson);}
+.search-box svg{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:2;}
+.filter{display:flex;gap:4px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:3px;flex-wrap:wrap;}
+.filter button{padding:8px 14px;font-family:inherit;font-size:13px;font-weight:800;color:var(--muted);background:none;border:none;border-radius:9px;cursor:pointer;transition:.15s;}
+.filter button.on{background:var(--crimson);color:#fff;}
+.btn{padding:11px 18px;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.2s;}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;}
+.btn-primary{background:var(--crimson);color:#fff;} .btn-primary:hover{background:var(--crimson-2);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-ghost{background:#fff;color:var(--crimson);border:1.5px solid var(--line);} .btn-ghost:hover{border-color:var(--crimson);}
+.btn-wa{background:var(--wa);color:#fff;} .btn-wa:hover{filter:brightness(.95);}
+
+/* TABLE */
+.tbl-card{background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:680px;}
+th{background:var(--cream-2);font-size:12px;font-weight:800;color:var(--muted);padding:12px 14px;text-align:right;white-space:nowrap;}
+td{padding:12px 14px;border-top:1px solid var(--line);font-size:13.5px;vertical-align:middle;}
+.name-cell{display:flex;align-items:center;gap:10px;}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--crimson);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.nm{font-weight:800;}
+.sub{font-size:11px;color:var(--muted);font-family:monospace;letter-spacing:.5px;direction:ltr;text-align:right;}
+.course-tag{font-size:10px;color:var(--muted);background:var(--cream-2);padding:2px 8px;border-radius:10px;display:inline-block;margin-top:2px;}
+.status{font-size:11.5px;font-weight:900;padding:5px 11px;border-radius:100px;white-space:nowrap;display:inline-block;}
+.st-paid{background:var(--green-bg);color:var(--green);}
+.st-pending{background:var(--yellow-bg);color:var(--yellow);}
+.st-unpaid{background:var(--red-bg);color:var(--red);}
+.st-attend{background:var(--green-bg);color:var(--green);}
+.st-noattend{background:var(--yellow-bg);color:var(--yellow);}
+.cert-yes{background:var(--green-bg);color:var(--green);font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:14px;}
+.cert-no{color:var(--muted);font-size:12px;}
+.wa-mini{display:inline-flex;align-items:center;gap:5px;background:var(--wa);color:#fff;font-size:12.5px;font-weight:800;padding:7px 13px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;}
+.wa-mini svg{width:14px;height:14px;fill:#fff;}
+
+/* RESULT SELECT */
+.res-sel{font-family:inherit;font-size:12px;font-weight:800;padding:5px 8px;border-radius:9px;border:1.5px solid var(--line);cursor:pointer;outline:none;background:var(--cream);}
+
+/* TEXTAREA / REMINDER */
+.card-block{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:16px;}
+.card-block h3{font-size:16px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.card-block .hint{font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:600;}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;font-size:14px;font-family:inherit;resize:vertical;min-height:120px;line-height:1.8;color:var(--text);background:var(--cream);outline:none;}
+textarea:focus{border-color:var(--crimson);}
+.send-result{margin-top:12px;padding:12px;border-radius:10px;font-size:14px;font-weight:800;text-align:center;display:none;}
+.send-result.ok{background:var(--green-bg);color:var(--green);display:block;}
+
+/* COURSE META */
+.badge-today{display:inline-flex;align-items:center;gap:6px;background:var(--crimson);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:20px;margin-bottom:12px;}
+.course-name{font-size:22px;font-weight:900;line-height:1.4;margin-bottom:14px;color:var(--crimson);}
+.meta-grid{display:flex;flex-wrap:wrap;gap:16px;}
+.meta{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--muted);}
+.meta b{color:var(--text);font-weight:800;}
+.meta svg{width:18px;height:18px;stroke:var(--crimson);fill:none;stroke-width:2;flex-shrink:0;}
+select.course-select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;font-size:15px;font-family:inherit;background:var(--cream);color:var(--text);font-weight:700;outline:none;}
+select.course-select:focus{border-color:var(--crimson);}
+
+/* STATES */
+.state{text-align:center;padding:48px 20px;color:var(--muted);}
+.state .ic{font-size:40px;margin-bottom:12px;}
+.state h3{font-size:17px;color:var(--text);margin-bottom:6px;font-weight:900;}
+.state p{font-size:14px;}
+.spinner{width:34px;height:34px;border:3px solid var(--cream-2);border-top-color:var(--crimson);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* WA POPUP */
+#waPopup{display:none;position:fixed;z-index:9999;background:#fff;border:1px solid rgba(92,15,15,.12);border-radius:16px;padding:16px;width:310px;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.wa-tpl{background:var(--cream-2);border:1.5px solid transparent;border-radius:20px;padding:5px 11px;font-family:inherit;font-size:11px;font-weight:800;color:var(--crimson);cursor:pointer;}
+.wa-tpl.active{background:var(--crimson)!important;color:#fff!important;border-color:var(--crimson)!important;}
+
+footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+
+@media(max-width:560px){
+  .main{padding:18px 12px 60px;}
+  .header{padding:14px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN GATE ===== -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="badge">أكاديمية مسار</div>
+    <h1>لوحة موظف المتابعة</h1>
+    <p>أدخل رمز الدخول للوصول إلى أدوات المتابعة</p>
+    <div class="gate-err" id="gateErr"></div>
+    <input type="password" id="pin" inputmode="numeric" placeholder="••••" maxlength="8" autocomplete="off">
+    <button onclick="checkPin()">دخول</button>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <div class="h-logo">
+    <div class="mark">م</div>
+    <div>
+      <div class="h-title">لوحة موظف المتابعة</div>
+      <div class="h-sub">أكاديمية مسار</div>
+    </div>
+  </div>
+  <div class="h-right">
+    <button class="h-btn" onclick="refreshAll()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    <button class="h-btn" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>خروج</button>
+  </div>
+</div>
+
+<!-- ===== SUBBAR ===== -->
+<div class="subbar" id="subbar">
+  <div class="subbar-inner">
+    <button class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>القائمة الرئيسية</button>
+    <div class="subbar-title" id="subbarTitle"></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ===== HOME ===== -->
+  <div class="panel on" id="p-home">
+    <div class="home-hero">
+      <div class="home-hero-title">أهلاً بك في لوحة المتابعة</div>
+      <div class="home-hero-sub" id="homeDate">اختر المهمة التي تريد متابعتها</div>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="openSection('overview')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
+        <div class="mc-title">نظرة عامة</div><div class="mc-desc">ملخص لحظي لكل ما يحتاج متابعتك اليوم</div>
+      </div>
+      <div class="menu-card" onclick="openSection('reminders')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="mc-title">تذكير بمواعيد الدورات</div><div class="mc-desc">دورة اليوم · تذكير جماعي بالإيميل · واتساب لكل متدرب</div>
+      </div>
+      <div class="menu-card" onclick="openSection('payments')">
+        <span class="mc-badge" id="badge-payments" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="mc-title">متابعة الدفع</div><div class="mc-desc">العملاء الذين لم يدفعوا أو قيد الدفع · رسائل تذكير</div>
+      </div>
+      <div class="menu-card" onclick="openSection('certs')">
+        <span class="mc-badge" id="badge-certs" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg></div>
+        <div class="mc-title">متابعة الشهادات</div><div class="mc-desc">من يريد شهادة · بانتظار الدفع أو جاهز للإصدار</div>
+      </div>
+      <div class="menu-card" onclick="openSection('crm')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="mc-title">كل العملاء (CRM)</div><div class="mc-desc">قائمة كاملة · بحث · واتساب · تسجيل نتيجة التواصل</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== OVERVIEW ===== -->
+  <div class="panel" id="p-overview">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>نظرة عامة</div><div class="sec-desc">اضغط أي بطاقة للانتقال لمتابعتها</div></div></div>
+    <div class="stats">
+      <div class="stat c-red" onclick="openSection('payments')"><div class="ico"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="n" id="s-unpaid">—</div><div class="l">لم يدفعوا بعد</div></div>
+      <div class="stat c-amber" onclick="openSection('payments')"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="n" id="s-pending">—</div><div class="l">قيد الدفع</div></div>
+      <div class="stat c-green" onclick="openSection('certs')"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg></div><div class="n" id="s-cert">—</div><div class="l">يريدون شهادة</div></div>
+      <div class="stat c-blue" onclick="openSection('crm')"><div class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="n" id="s-nocontact">—</div><div class="l">لم نتواصل معهم اليوم</div></div>
+    </div>
+    <div class="card-block">
+      <h3>⚡ يحتاجون متابعة عاجلة</h3>
+      <p class="hint">عملاء لم يدفعوا ولم نتواصل معهم اليوم — ابدأ بهم.</p>
+      <div class="tbl-scroll"><table id="urgentTable"><tbody><tr><td style="text-align:center;padding:30px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- ===== REMINDERS (today's course) ===== -->
+  <div class="panel" id="p-reminders">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>تذكير بمواعيد الدورات</div><div class="sec-desc">دورة اليوم تظهر تلقائياً — أو اختر دورة أخرى</div></div></div>
+
+    <div id="rmLoading" class="card-block state"><div class="spinner"></div><p>جارٍ تحميل الدورات…</p></div>
+
+    <div class="card-block" id="rmPicker" style="display:none;">
+      <h3>اختر الدورة</h3>
+      <p class="hint" id="rmPickerHint">اختر الدورة من القائمة:</p>
+      <select class="course-select" id="courseSelect" onchange="pickCourse(this.value)"><option value="">— اختر الدورة —</option></select>
+    </div>
+
+    <div id="rmMain" style="display:none;">
+      <div class="card-block">
+        <span class="badge-today" id="todayBadge">● دورة اليوم</span>
+        <div class="course-name" id="courseName">—</div>
+        <div class="meta-grid">
+          <div class="meta" id="metaTrainer" style="display:none;"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg><span>المدرب: <b id="trainerVal">—</b></span></div>
+          <div class="meta" id="metaTime" style="display:none;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>الوقت: <b id="timeVal">—</b></span></div>
+          <div class="meta"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span>التاريخ: <b id="dateVal">—</b></span></div>
+          <div class="meta"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>المسجلون: <b id="countVal">—</b></span></div>
+        </div>
+      </div>
+
+      <div class="card-block">
+        <h3>📧 تذكير جماعي بالإيميل</h3>
+        <p class="hint">يُرسل لكل المسجلين دفعة واحدة. عدّل النص لو تبي:</p>
+        <textarea id="reminderText"></textarea>
+        <button class="btn btn-primary" id="sendBtn" onclick="sendReminder()" style="width:100%;margin-top:14px;">
+          <span id="sendTxt">إرسال التذكير للجميع</span>
+          <span id="sendSpin" style="display:none;">جارٍ الإرسال…</span>
+        </button>
+        <div class="send-result" id="sendResult"></div>
+      </div>
+
+      <div class="tbl-card">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-size:16px;font-weight:900;">المسجلون</h3>
+          <span class="sec-desc" id="listCount" style="margin:0;">—</span>
+        </div>
+        <div class="tbl-scroll"><table><thead><tr><th>#</th><th>المتدرب</th><th>شهادة</th><th>واتساب</th></tr></thead><tbody id="studentsBody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAYMENTS ===== -->
+  <div class="panel" id="p-payments">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>متابعة الدفع</div><div class="sec-desc">تابع العملاء الذين لم يكملوا الدفع وذكّرهم</div></div></div>
+    <div class="toolbar">
+      <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="pay-search" placeholder="بحث بالاسم أو الرقم أو الدورة..." oninput="renderPayments()"></div>
+      <div class="filter">
+        <button class="on" data-f="all" onclick="setPayFilter(this,'all')">الكل</button>
+        <button data-f="unpaid" onclick="setPayFilter(this,'unpaid')">لم يدفع</button>
+        <button data-f="pending" onclick="setPayFilter(this,'pending')">قيد الدفع</button>
+      </div>
+    </div>
+    <div class="tbl-card"><div class="tbl-scroll"><table id="paymentsTable"><thead><tr><th>المتدرب</th><th>المصدر</th><th>الدفع</th><th>شهادة</th><th>آخر تواصل</th><th>واتساب</th></tr></thead><tbody id="paymentsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+  </div>
+
+  <!-- ===== CERTS ===== -->
+  <div class="panel" id="p-certs">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>متابعة الشهادات</div><div class="sec-desc">العملاء الذين يريدون شهادة — تابع الدفع ثم الإصدار</div></div></div>
+    <div class="toolbar">
+      <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="cert-search" placeholder="بحث بالاسم أو الرقم..." oninput="renderCerts()"></div>
+      <div class="filter">
+        <button class="on" data-f="all" onclick="setCertFilter(this,'all')">الكل</button>
+        <button data-f="ready" onclick="setCertFilter(this,'ready')">جاهز للإصدار (دفع)</button>
+        <button data-f="await" onclick="setCertFilter(this,'await')">بانتظار الدفع</button>
+      </div>
+    </div>
+    <div class="tbl-card"><div class="tbl-scroll"><table id="certsTable"><thead><tr><th>المتدرب</th><th>الدفع</th><th>الحضور</th><th>الحالة</th><th>واتساب</th></tr></thead><tbody id="certsBody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+  </div>
+
+  <!-- ===== CRM ===== -->
+  <div class="panel" id="p-crm">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>كل العملاء</div><div class="sec-desc">القائمة الكاملة مع كل أدوات المتابعة</div></div>
+      <button class="btn btn-ghost" onclick="markContactedSelected()" id="crmContactBtn" disabled><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تحديث آخر تواصل (<span id="crmSelCount">0</span>)</button>
+    </div>
+    <div class="toolbar">
+      <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="crm-search" placeholder="بحث بالاسم أو الرقم أو الدورة..." oninput="renderCrm()"></div>
+      <div class="filter">
+        <button class="on" data-f="all" onclick="setCrmFilter(this,'all')">الكل</button>
+        <button data-f="nc" onclick="setCrmFilter(this,'nc')">لم نتواصل اليوم</button>
+        <button data-f="cert" onclick="setCrmFilter(this,'cert')">يبي شهادة</button>
+      </div>
+    </div>
+    <div class="tbl-card"><div class="tbl-scroll"><table id="crmTable"><thead><tr><th style="width:30px;"><input type="checkbox" onchange="crmToggleAll(this)" style="accent-color:var(--crimson);"></th><th>المتدرب</th><th>المصدر</th><th>الدفع</th><th>شهادة</th><th>الحضور</th><th>نتيجة التواصل</th><th>آخر تواصل</th><th>واتساب</th></tr></thead><tbody id="crmBody"><tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+  </div>
+
+</div>
+
+<!-- WA POPUP -->
+<div id="waPopup">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <div style="font-size:13px;font-weight:900;">رسالة واتساب</div>
+    <button onclick="closeWa()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);">✕</button>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+    <button class="wa-tpl" onclick="setWaTpl(this,'تذكير')">📅 تذكير</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'دفع')">💳 دفع</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'شهادة')">🎓 شهادة</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'متابعة')">💬 متابعة</button>
+    <button class="wa-tpl" onclick="setWaTpl(this,'ترحيب')">👋 ترحيب</button>
+  </div>
+  <textarea id="waMsg" rows="6" placeholder="اكتب رسالتك أو اختر قالب..." style="min-height:auto;font-size:12.5px;"></textarea>
+  <button class="btn btn-wa" onclick="sendWa()" style="width:100%;margin-top:8px;border-radius:100px;">فتح واتساب ←</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>© 2026 أكاديمية مسار — لوحة المتابعة</footer>
+
+<script>
+/* ============ إعدادات ============ */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+const FOLLOW_PIN = '2026';   // ← غيّر رمز الدخول هنا
+
+const DAYS_AR   = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const TODAY_ISO = new Date().toISOString().split('T')[0];
+
+let LEADS = [];
+let coursesData = [];
+let current = { name:'', trainer:'', zoom:'', time:'', date:'' };
+let payFilter='all', certFilter='all', crmFilter='all';
+let crmSel = new Set();
+
+/* ============ دخول ============ */
+if(sessionStorage.getItem('mfollow_ok')==='1'){ document.getElementById('gate').style.display='none'; init(); }
+function checkPin(){
+  const v=document.getElementById('pin').value.trim();
+  if(v===FOLLOW_PIN){ sessionStorage.setItem('mfollow_ok','1'); document.getElementById('gate').style.display='none'; init(); }
+  else { document.getElementById('gateErr').textContent='رمز غير صحيح'; }
+}
+document.getElementById('pin').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPin(); });
+function logout(){ sessionStorage.removeItem('mfollow_ok'); location.reload(); }
+
+/* ============ تنقّل ============ */
+const TITLES = { overview:'نظرة عامة', reminders:'تذكير بمواعيد الدورات', payments:'متابعة الدفع', certs:'متابعة الشهادات', crm:'كل العملاء' };
+function openSection(id){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.getElementById('subbarTitle').textContent = TITLES[id]||'';
+  document.getElementById('subbar').classList.add('show');
+  window.scrollTo(0,0);
+  if(id==='reminders' && coursesData.length===0) loadCourses();
+}
+function goHome(){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-home').classList.add('on');
+  document.getElementById('subbar').classList.remove('show');
+  window.scrollTo(0,0);
+}
+function updateBadge(id,n){ const el=document.getElementById('badge-'+id); if(!el)return; el.style.display=n>0?'flex':'none'; el.textContent=n; }
+
+/* ============ أدوات ============ */
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600); }
+function toAr(n){ return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[+d]); }
+function normDigits(s){ return String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function waNum(phone){ const c=String(phone||'').replace(/\D/g,''); return c.startsWith('965')?c:'965'+c; }
+
+async function fGet(action){ const r=await fetch(SCRIPT_URL+'?action='+action); return r.json(); }
+async function fPost(body){ const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); return r.json(); }
+
+/* ============ INIT ============ */
+function init(){
+  const t=new Date();
+  document.getElementById('homeDate').textContent = DAYS_AR[t.getDay()]+' '+toAr(t.getDate())+' '+MONTHS_AR[t.getMonth()]+' '+toAr(t.getFullYear());
+  loadLeads();
+}
+function refreshAll(){ LEADS=[]; coursesData=[]; crmSel.clear(); loadLeads(); document.getElementById('rmMain').style.display='none'; document.getElementById('rmPicker').style.display='none'; document.getElementById('rmLoading').style.display='block'; toast('يتم التحديث…'); }
+
+async function loadLeads(){
+  try{
+    const res = await fGet('getLeads');
+    if(!res.ok) throw new Error(res.error||'خطأ');
+    LEADS = res.data||[];
+    renderOverview(); renderPayments(); renderCerts(); renderCrm();
+  }catch(e){
+    document.getElementById('urgentTable').querySelector('tbody').innerHTML='<tr><td style="text-align:center;padding:24px;color:var(--red);">خطأ في تحميل البيانات</td></tr>';
+  }
+}
+
+/* ============ OVERVIEW ============ */
+function renderOverview(){
+  const unpaid  = LEADS.filter(r=>r.status!=='تم الدفع' && (!r.status||r.status==='لم يدفع'||r.status==='مهتم')).length;
+  const pending = LEADS.filter(r=>r.status==='قيد الدفع').length;
+  const cert    = LEADS.filter(r=>r.cert==='نعم').length;
+  const noContact = LEADS.filter(r=>r.lastContact!==TODAY_ISO).length;
+
+  document.getElementById('s-unpaid').textContent   = toAr(unpaid);
+  document.getElementById('s-pending').textContent  = toAr(pending);
+  document.getElementById('s-cert').textContent     = toAr(cert);
+  document.getElementById('s-nocontact').textContent= toAr(noContact);
+  updateBadge('payments', unpaid+pending);
+  updateBadge('certs', cert);
+
+  // عاجل: لم يدفع + لم نتواصل اليوم
+  const urgent = LEADS.filter(r=>r.status!=='تم الدفع' && r.lastContact!==TODAY_ISO).slice(0,12);
+  const tb = document.getElementById('urgentTable').querySelector('tbody');
+  if(!urgent.length){ tb.innerHTML='<tr><td style="text-align:center;padding:30px;color:var(--muted);">ما فيه متابعات عاجلة — كل شي تمام ✅</td></tr>'; return; }
+  tb.innerHTML = urgent.map(r=>rowCells(r,['name','status','course','wa'])).join('');
+}
+
+/* ============ صف موحّد ============ */
+function payPill(st){
+  st = st||'لم يدفع';
+  const cls = st==='تم الدفع'?'st-paid':st==='قيد الدفع'?'st-pending':'st-unpaid';
+  return `<span class="status ${cls}">${esc(st)}</span>`;
+}
+function attendPill(a){
+  return a==='نعم حضر' ? '<span class="status st-attend">✓ حضر</span>' : '<span class="status st-noattend">لم يحضر</span>';
+}
+function certCell(c){ return c==='نعم' ? '<span class="cert-yes">نعم ✓</span>' : '<span class="cert-no">—</span>'; }
+function nameCell(r){
+  return `<div class="name-cell"><div class="avatar">${esc((r.name||'؟').charAt(0))}</div>
+    <div><div class="nm">${esc(r.name||'—')}</div><div class="sub">${esc(r.phone||'')}</div>
+    ${r.course?`<span class="course-tag">${esc(r.course)}</span>`:''}</div></div>`;
+}
+function waMiniBtn(r){
+  const wIcon='<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.5 15.3L2 22l4.8-1.5A10 10 0 1012 2zm5.5 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.1-.8-2.6-1.1-4.2-3.8-4.3-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.6-.1l1.9.9c.3.1.4.2.5.3.1.2.1.6-.1 1z"/></svg>';
+  return `<button class="wa-mini" onclick="openWa('${waNum(r.phone)}','${esc(r.name||'').replace(/'/g,"\\'")}',this)">${wIcon}واتساب</button>`;
+}
+function lastContactCell(r){
+  const today = r.lastContact===TODAY_ISO;
+  return `<span style="font-size:12px;font-weight:${today?'900':'600'};color:${today?'var(--green)':'var(--muted)'};">${today?'اليوم ✓':(r.lastContact||'—')}</span>`;
+}
+function rowCells(r, cols){
+  const map = {
+    name: `<td>${nameCell(r)}</td>`,
+    status: `<td>${payPill(r.status)}</td>`,
+    course: `<td style="font-size:12px;color:var(--muted);">${esc(r.course||'—')}</td>`,
+    wa: `<td>${waMiniBtn(r)}</td>`,
+  };
+  return '<tr>'+cols.map(c=>map[c]).join('')+'</tr>';
+}
+
+/* ============ PAYMENTS ============ */
+function setPayFilter(btn,f){ payFilter=f; btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderPayments(); }
+function renderPayments(){
+  const q = (document.getElementById('pay-search')?.value||'').trim().toLowerCase();
+  let d = LEADS.filter(r=>r.status!=='تم الدفع');
+  if(payFilter==='unpaid')  d=d.filter(r=>!r.status||r.status==='لم يدفع'||r.status==='مهتم');
+  if(payFilter==='pending') d=d.filter(r=>r.status==='قيد الدفع');
+  if(q) d=d.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.phone||'').includes(q)||(r.course||'').toLowerCase().includes(q));
+
+  const tb=document.getElementById('paymentsBody');
+  if(!d.length){ tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">لا توجد سجلات</td></tr>'; return; }
+  tb.innerHTML = d.map(r=>`<tr>
+    <td>${nameCell(r)}</td>
+    <td style="font-size:11px;color:var(--muted);">${esc(r.source||'—')}</td>
+    <td>${payPill(r.status)}</td>
+    <td>${certCell(r.cert)}</td>
+    <td>${lastContactCell(r)}</td>
+    <td>${waMiniBtn(r)}</td></tr>`).join('');
+}
+
+/* ============ CERTS ============ */
+function setCertFilter(btn,f){ certFilter=f; btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderCerts(); }
+function renderCerts(){
+  const q=(document.getElementById('cert-search')?.value||'').trim().toLowerCase();
+  let d = LEADS.filter(r=>r.cert==='نعم');
+  if(certFilter==='ready') d=d.filter(r=>r.status==='تم الدفع');
+  if(certFilter==='await') d=d.filter(r=>r.status!=='تم الدفع');
+  if(q) d=d.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.phone||'').includes(q));
+
+  const tb=document.getElementById('certsBody');
+  if(!d.length){ tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">لا توجد سجلات</td></tr>'; return; }
+  tb.innerHTML = d.map(r=>{
+    const ready = r.status==='تم الدفع';
+    const stateLbl = ready ? '<span class="status st-paid">جاهز للإصدار</span>' : '<span class="status st-pending">بانتظار الدفع</span>';
+    return `<tr>
+      <td>${nameCell(r)}</td>
+      <td>${payPill(r.status)}</td>
+      <td>${attendPill(r.attended)}</td>
+      <td>${stateLbl}</td>
+      <td>${waMiniBtn(r)}</td></tr>`;
+  }).join('');
+}
+
+/* ============ CRM ============ */
+const RESULTS=[
+  {val:'',label:'— نتيجة —'},{val:'لم يرد',label:'📵 لم يرد'},{val:'يفكر',label:'🤔 يفكر'},
+  {val:'طلب معلومات',label:'📋 طلب معلومات'},{val:'سجّل',label:'✅ سجّل'},{val:'مو مهتم',label:'❌ مو مهتم'},{val:'تواصل لاحقاً',label:'📅 لاحقاً'},
+];
+function setCrmFilter(btn,f){ crmFilter=f; crmSel.clear(); btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderCrm(); }
+function renderCrm(){
+  const q=(document.getElementById('crm-search')?.value||'').trim().toLowerCase();
+  let d=LEADS.slice();
+  if(crmFilter==='nc')   d=d.filter(r=>r.lastContact!==TODAY_ISO);
+  if(crmFilter==='cert') d=d.filter(r=>r.cert==='نعم');
+  if(q) d=d.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.phone||'').includes(q)||(r.course||'').toLowerCase().includes(q));
+
+  const tb=document.getElementById('crmBody');
+  if(!d.length){ tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);">لا توجد سجلات</td></tr>'; updateCrmBtn(); return; }
+  tb.innerHTML = d.map(r=>{
+    const opts=RESULTS.map(o=>`<option value="${o.val}" ${o.val===r.contactResult?'selected':''}>${o.label}</option>`).join('');
+    return `<tr>
+      <td style="text-align:center;"><input type="checkbox" ${crmSel.has(r.rowIndex)?'checked':''} onchange="crmTog(${r.rowIndex},this)" style="accent-color:var(--crimson);"></td>
+      <td>${nameCell(r)}</td>
+      <td style="font-size:11px;color:var(--muted);">${esc(r.source||'—')}</td>
+      <td>${payPill(r.status)}</td>
+      <td>${certCell(r.cert)}</td>
+      <td>${attendPill(r.attended)}</td>
+      <td><select class="res-sel" onchange="crmResult(${r.rowIndex},this)">${opts}</select></td>
+      <td>${lastContactCell(r)}</td>
+      <td>${waMiniBtn(r)}</td></tr>`;
+  }).join('');
+  updateCrmBtn();
+}
+function crmTog(idx,cb){ cb.checked?crmSel.add(idx):crmSel.delete(idx); updateCrmBtn(); }
+function crmToggleAll(cb){ if(cb.checked){ document.querySelectorAll('#crmBody input[type=checkbox]').forEach(x=>{x.checked=true;}); LEADS.forEach(r=>crmSel.add(r.rowIndex)); } else { crmSel.clear(); document.querySelectorAll('#crmBody input[type=checkbox]').forEach(x=>x.checked=false); } updateCrmBtn(); }
+function updateCrmBtn(){ const n=crmSel.size; document.getElementById('crmSelCount').textContent=n; document.getElementById('crmContactBtn').disabled=n===0; }
+async function crmResult(rowIndex,sel){
+  try{
+    await fPost({action:'updateResult', rowIndex, contactResult:sel.value});
+    const lead=LEADS.find(r=>r.rowIndex===rowIndex);
+    if(lead){ lead.contactResult=sel.value; lead.lastContact=TODAY_ISO; }
+    toast('تم حفظ النتيجة ✓'); renderOverview(); renderCrm();
+  }catch(e){ toast('خطأ في الحفظ'); }
+}
+async function markContactedSelected(){
+  if(!crmSel.size) return;
+  const btn=document.getElementById('crmContactBtn'); btn.disabled=true;
+  try{
+    const res=await fPost({action:'updateContact', rowIndices:Array.from(crmSel)});
+    LEADS.forEach(r=>{ if(crmSel.has(r.rowIndex)) r.lastContact=TODAY_ISO; });
+    toast('تم تحديث '+(res.data?.updated||crmSel.size)+' سجل ✓');
+    crmSel.clear(); renderOverview(); renderCrm();
+  }catch(e){ toast('خطأ في التحديث'); btn.disabled=false; }
+}
+
+/* ============ REMINDERS (دورة اليوم) ============ */
+function isToday(dateStr){
+  if(!dateStr) return false;
+  const t=new Date(), day=t.getDate(), month=t.getMonth();
+  const s=normDigits(dateStr);
+  const iso=s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(iso) return (+iso[1]===t.getFullYear() && +iso[2]===month+1 && +iso[3]===day);
+  const nums=(s.match(/\d+/g)||[]).map(Number);
+  return nums.includes(day) && (nums.includes(month+1)||s.includes(MONTHS_AR[month]));
+}
+async function loadCourses(){
+  document.getElementById('rmLoading').style.display='block';
+  document.getElementById('rmPicker').style.display='none';
+  document.getElementById('rmMain').style.display='none';
+  try{
+    const [r1,r2]=await Promise.all([
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'))
+    ]);
+    const [d1,d2]=await Promise.all([r1.json(),r2.json()]);
+    coursesData=[...(d1.courses||[]),...(d2.courses||[])];
+    const todays=coursesData.filter(c=>isToday(c.date));
+    if(todays.length===1){ selectCourse(todays[0]); }
+    else if(todays.length>1){ showPicker(todays,'فيه أكثر من دورة اليوم — اختر وحدة:'); }
+    else { showPicker(coursesData,'ما لقينا دورة بتاريخ اليوم — اختر الدورة من القائمة:'); }
+  }catch(e){
+    document.getElementById('rmLoading').innerHTML='<div class="ic">⚠️</div><h3>خطأ في الاتصال</h3><p>حدّث الصفحة وحاول مرة ثانية.</p>';
+  }
+}
+function showPicker(list,msg){
+  document.getElementById('rmLoading').style.display='none';
+  document.getElementById('rmPickerHint').textContent=msg;
+  const sel=document.getElementById('courseSelect');
+  sel.innerHTML='<option value="">— اختر الدورة —</option>';
+  list.forEach(c=>{ const i=coursesData.indexOf(c); const o=document.createElement('option'); o.value=i; o.textContent=c.name+' — '+c.date+(c.time?' ('+c.time+')':'')+(c.system==='خاصة'?' 🔒':''); sel.appendChild(o); });
+  document.getElementById('rmPicker').style.display='block';
+}
+function pickCourse(idx){ if(idx==='')return; document.getElementById('rmPicker').style.display='none'; document.getElementById('rmLoading').style.display='block'; document.getElementById('rmLoading').innerHTML='<div class="spinner"></div><p>جارٍ تحميل المسجلين…</p>'; selectCourse(coursesData[parseInt(idx)]); }
+
+async function selectCourse(c){
+  current={name:c.name,trainer:c.trainer||'',zoom:c.zoom||'',time:c.time||'',date:c.date||''};
+  try{
+    const res=await fetch(SCRIPT_URL+'?action=getStudents&course='+encodeURIComponent(c.name)+'&date='+encodeURIComponent(c.date));
+    const data=await res.json();
+    document.getElementById('rmLoading').style.display='none';
+    renderCourseHead(c, (data.students||[]).length);
+    renderStudents(data.students||[]);
+    document.getElementById('rmMain').style.display='block';
+  }catch(e){
+    document.getElementById('rmLoading').innerHTML='<div class="ic">⚠️</div><h3>خطأ في تحميل المسجلين</h3><p>حدّث وحاول مرة ثانية.</p>';
+  }
+}
+function renderCourseHead(c,count){
+  document.getElementById('courseName').textContent=c.name;
+  document.getElementById('dateVal').textContent=c.date||'—';
+  document.getElementById('countVal').textContent=toAr(count);
+  if(c.trainer){ document.getElementById('trainerVal').textContent=c.trainer; document.getElementById('metaTrainer').style.display='flex'; } else document.getElementById('metaTrainer').style.display='none';
+  if(c.time){ document.getElementById('timeVal').textContent=c.time; document.getElementById('metaTime').style.display='flex'; } else document.getElementById('metaTime').style.display='none';
+  document.getElementById('todayBadge').textContent = isToday(c.date)?'● دورة اليوم':'● الدورة المختارة';
+  const zoomLine=c.zoom?('رابط زووم: '+c.zoom+'\n\n'):'';
+  const timeLine=c.time?(' الساعة '+c.time):'';
+  document.getElementById('reminderText').value='السلام عليكم،\n\nنذكّركم بموعد دورة "'+c.name+'" اليوم'+timeLine+'.\n\n'+zoomLine+'حضوركم يهمنا 🎓\nأكاديمية مسار';
+}
+function renderStudents(students){
+  document.getElementById('listCount').textContent=toAr(students.length)+' مسجل';
+  document.getElementById('sendBtn').disabled = students.length===0;
+  const tb=document.getElementById('studentsBody');
+  if(!students.length){ tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--muted);">ما فيه مسجلين بعد</td></tr>'; return; }
+  const wIcon='<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-8.5 15.3L2 22l4.8-1.5A10 10 0 1012 2zm5.5 14.1c-.2.6-1.2 1.2-1.7 1.2-.4 0-1 .1-3.1-.8-2.6-1.1-4.2-3.8-4.3-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.6-.1l1.9.9c.3.1.4.2.5.3.1.2.1.6-.1 1z"/></svg>';
+  tb.innerHTML=students.map((s,i)=>{
+    let waCell='—';
+    if(s.phone){
+      const timeLine=current.time?(' الساعة '+current.time):'';
+      const zoomLine=current.zoom?('\n\nرابط زووم: '+current.zoom):'';
+      const m='السلام عليكم '+(s.name||'')+' 👋\n\nتذكير بموعد دورتك "'+current.name+'" اليوم'+timeLine+'.'+zoomLine+'\n\nنراكم على خير 🎓\nأكاديمية مسار';
+      waCell='<a class="wa-mini" target="_blank" href="https://wa.me/'+waNum(s.phone)+'?text='+encodeURIComponent(m)+'">'+wIcon+'مراسلة</a>';
+    }
+    const email=s.email?`<div class="sub">${esc(s.email)}</div>`:'';
+    return `<tr>
+      <td style="color:var(--muted);font-weight:700;">${toAr(i+1)}</td>
+      <td><div class="name-cell"><div class="avatar">${esc((s.name||'؟').charAt(0))}</div><div><div class="nm">${esc(s.name||'—')}</div><div class="sub">${esc(s.phone||'')}</div>${email}</div></div></td>
+      <td>${certCell(s.cert)}</td>
+      <td>${waCell}</td></tr>`;
+  }).join('');
+}
+async function sendReminder(){
+  const msg=document.getElementById('reminderText').value.trim();
+  if(!msg){ document.getElementById('reminderText').style.borderColor='#C62828'; return; }
+  document.getElementById('reminderText').style.borderColor='';
+  if(!confirm('سيُرسل التذكير بالإيميل لكل المسجلين في "'+current.name+'". متأكد؟')) return;
+  const btn=document.getElementById('sendBtn'); btn.disabled=true;
+  document.getElementById('sendTxt').style.display='none'; document.getElementById('sendSpin').style.display='inline';
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({type:'رسالة جماعية',course:current.name,message:msg,trainer:current.trainer,zoomLink:current.zoom,timestamp:new Date().toLocaleString('ar-SA')})}).catch(()=>{});
+  document.getElementById('sendSpin').style.display='none'; document.getElementById('sendTxt').style.display='inline'; btn.disabled=false;
+  const r=document.getElementById('sendResult'); r.textContent='✅ تم إرسال التذكير للجميع بنجاح'; r.className='send-result ok';
+}
+
+/* ============ WHATSAPP POPUP ============ */
+let waCur={num:'',name:''};
+function openWa(num,name,btn){
+  waCur={num,name};
+  const p=document.getElementById('waPopup'); p.style.display='block';
+  const rect=btn.getBoundingClientRect();
+  let top=rect.bottom+8, left=rect.left-260+rect.width;
+  if(left<10) left=10;
+  if(top+320>window.innerHeight) top=rect.top-330;
+  p.style.top=Math.max(10,top)+'px'; p.style.left=left+'px';
+  document.getElementById('waMsg').value='';
+  document.querySelectorAll('.wa-tpl').forEach(t=>t.classList.remove('active'));
+}
+function closeWa(){ document.getElementById('waPopup').style.display='none'; }
+function setWaTpl(el,key){
+  const n=waCur.name;
+  const T={
+    'تذكير':`السلام عليكم ${n} 👋\n\nتذكير بموعد دورتك القادمة الساعة 5:00 م\n\nرابط الزووم يصلك قبل البداية\n\nأكاديمية مسار 🎓`,
+    'دفع':`السلام عليكم ${n} 👋\n\nمكانك بالدورة محجوز ✨ ولإتمام التسجيل يتبقى فقط إكمال الدفع.\n\nنكمّل لك التسجيل؟\n\nأكاديمية مسار 🎓`,
+    'شهادة':`السلام عليكم ${n} 👋\n\nشهادتك المعتمدة جاهزة للإصدار بعد إتمام رسوم الاعتماد (15 د.ك).\n\nنصدرها لك؟ ✅\n\nأكاديمية مسار 🎓`,
+    'متابعة':`السلام عليكم ${n} 👋\n\nحبينا نطمئن عليك — عندك أي استفسار عن الدورات؟ 😊\nإحنا بالخدمة.\n\nأكاديمية مسار 🎓`,
+    'ترحيب':`السلام عليكم ${n} 👋\n\nأهلاً فيك بأكاديمية مسار 🎓\nتقدر تشوف دوراتنا من هنا:\ntamkeenkuw.com/masar-free\n\nأي استفسار إحنا حاضرين!`
+  };
+  document.querySelectorAll('.wa-tpl').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('waMsg').value=T[key]||'';
+}
+function sendWa(){
+  const msg=document.getElementById('waMsg').value.trim();
+  if(!msg||!waCur.num) return;
+  window.open('https://wa.me/'+waCur.num+'?text='+encodeURIComponent(msg),'_blank');
+  closeWa();
+}
+document.addEventListener('click',e=>{
+  const p=document.getElementById('waPopup');
+  if(p.style.display==='block' && !p.contains(e.target) && !e.target.closest('.wa-mini')) closeWa();
+});
+</script>
+</body>
+</html>
