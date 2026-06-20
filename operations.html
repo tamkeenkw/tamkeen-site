@@ -452,6 +452,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
               <button data-sl="numbered" onclick="setSchedLayout(this,'numbered')">مرقّم</button>
             </div>
           </div>
+          <div class="fld"><label>عدد الدورات في البوست <span class="val" id="scVal">8</span></label><input type="range" id="schedCount" class="range-in" min="4" max="20" value="8" oninput="document.getElementById('scVal').textContent=this.value;renderDesign()"></div>
           <div class="fld"><label>المعلومات المعروضة</label>
             <div style="display:flex;flex-direction:column;gap:8px;">
               <label class="ck"><input type="checkbox" id="schFTrainer" checked onchange="renderDesign()">اسم المدرب</label>
@@ -1059,27 +1060,33 @@ function buildSchedulePoster(S,allCourses,title){
   const fT=chk('schFTrainer'), fS=chk('schFSystem'), fTime=chk('schFTime');
   const sub=(val('schedSub')||'').trim();
   const metaOf=c=>{ const m=[]; if(fT&&c.trainer)m.push(esc(c.trainer)); if(fS&&c.system)m.push(esc(c.system)); if(fTime&&c.time)m.push(esc(c.time)); return m.join('  ·  '); };
-  const nameSize=n<=5?42:n<=8?34:28, pad=n<=5?26:n<=8?19:13, gap=n<=5?16:n<=8?12:8;
-  const shown=courses.slice(0,9), extra=n-shown.length;
+  const lim=parseInt(val('schedCount')||'8',10);
+  const shown=courses.slice(0,lim), extra=n-shown.length;
+  const N=shown.length;
+  const SZ = N<=5 ?{name:42,date:54,dm:24,meta:26,pad:26,gap:16,circle:78,cnum:38,listd:30}
+          : N<=8 ?{name:34,date:48,dm:23,meta:24,pad:19,gap:12,circle:72,cnum:36,listd:28}
+          : N<=11?{name:30,date:42,dm:21,meta:22,pad:14,gap:10,circle:64,cnum:32,listd:26}
+          : N<=15?{name:26,date:36,dm:19,meta:20,pad:11,gap:8, circle:56,cnum:28,listd:23}
+          :       {name:22,date:30,dm:17,meta:18,pad:8, gap:6, circle:48,cnum:24,listd:20};
 
   let rows='';
   if(schedLayout==='list'){
     rows=shown.map(c=>{ const dp=dateParts(c.start); const mt=metaOf(c);
-      return '<div style="display:flex;align-items:baseline;gap:22px;padding:'+pad+'px 4px;border-bottom:2px solid '+t.cb+';">'+
-        '<div style="flex:0 0 210px;font-size:30px;font-weight:900;color:'+t.ink+';">'+esc(dp.day+' '+dp.mon)+' <span style="font-size:22px;font-weight:700;color:'+t.sub+';">'+esc(dp.dow)+'</span></div>'+
-        '<div style="flex:1;min-width:0;"><div style="font-size:'+nameSize+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div>'+(mt?'<div style="font-size:24px;font-weight:700;color:'+t.sub+';margin-top:4px;">'+mt+'</div>':'')+'</div></div>';
+      return '<div style="display:flex;align-items:baseline;gap:22px;padding:'+SZ.pad+'px 4px;border-bottom:2px solid '+t.cb+';">'+
+        '<div style="flex:0 0 210px;font-size:'+SZ.listd+'px;font-weight:900;color:'+t.ink+';">'+esc(dp.day+' '+dp.mon)+' <span style="font-size:'+(SZ.listd-8)+'px;font-weight:700;color:'+t.sub+';">'+esc(dp.dow)+'</span></div>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:'+SZ.name+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div>'+(mt?'<div style="font-size:'+(SZ.meta-2)+'px;font-weight:700;color:'+t.sub+';margin-top:4px;">'+mt+'</div>':'')+'</div></div>';
     }).join('');
   } else if(schedLayout==='numbered'){
     rows=shown.map((c,i)=>{ const dp=dateParts(c.start); const mt=metaOf(c);
-      return '<div style="display:flex;align-items:center;gap:24px;padding:'+pad+'px 0;border-bottom:2px solid '+t.cb+';">'+
-        '<div style="flex:0 0 78px;height:78px;border-radius:50%;background:'+t.ink+';color:'+contrastColor(t.ink)+';display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;">'+(i+1)+'</div>'+
-        '<div style="flex:1;min-width:0;"><div style="font-size:'+nameSize+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div><div style="font-size:24px;font-weight:700;color:'+t.sub+';margin-top:4px;">'+esc(dp.dow+' '+dp.day+' '+dp.mon)+(mt?'  ·  '+mt:'')+'</div></div></div>';
+      return '<div style="display:flex;align-items:center;gap:24px;padding:'+SZ.pad+'px 0;border-bottom:2px solid '+t.cb+';">'+
+        '<div style="flex:0 0 '+SZ.circle+'px;height:'+SZ.circle+'px;border-radius:50%;background:'+t.ink+';color:'+contrastColor(t.ink)+';display:flex;align-items:center;justify-content:center;font-size:'+SZ.cnum+'px;font-weight:900;">'+(i+1)+'</div>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:'+SZ.name+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div><div style="font-size:'+(SZ.meta-2)+'px;font-weight:700;color:'+t.sub+';margin-top:4px;">'+esc(dp.dow+' '+dp.day+' '+dp.mon)+(mt?'  ·  '+mt:'')+'</div></div></div>';
     }).join('');
   } else { // cards
     rows=shown.map(c=>{ const dp=dateParts(c.start); const mt=metaOf(c);
-      return '<div style="display:flex;align-items:center;gap:26px;background:'+t.card+';border:2px solid '+t.cb+';border-radius:26px;padding:'+pad+'px 30px;">'+
-        '<div style="flex:0 0 130px;text-align:center;line-height:1;"><div style="font-size:24px;font-weight:700;color:'+t.sub+';">'+esc(dp.dow)+'</div><div style="font-size:54px;font-weight:900;color:'+t.ink+';margin:4px 0;">'+esc(String(dp.day))+'</div><div style="font-size:24px;font-weight:700;color:'+t.sub+';">'+esc(dp.mon)+'</div></div>'+
-        '<div style="flex:1;min-width:0;"><div style="font-size:'+nameSize+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div>'+(mt?'<div style="font-size:26px;font-weight:700;color:'+t.sub+';margin-top:6px;">'+mt+'</div>':'')+'</div></div>';
+      return '<div style="display:flex;align-items:center;gap:26px;background:'+t.card+';border:2px solid '+t.cb+';border-radius:22px;padding:'+SZ.pad+'px 30px;">'+
+        '<div style="flex:0 0 130px;text-align:center;line-height:1;"><div style="font-size:'+SZ.dm+'px;font-weight:700;color:'+t.sub+';">'+esc(dp.dow)+'</div><div style="font-size:'+SZ.date+'px;font-weight:900;color:'+t.ink+';margin:4px 0;">'+esc(String(dp.day))+'</div><div style="font-size:'+SZ.dm+'px;font-weight:700;color:'+t.sub+';">'+esc(dp.mon)+'</div></div>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:'+SZ.name+'px;font-weight:900;color:'+t.text+';">'+esc(c.course||'دورة')+'</div>'+(mt?'<div style="font-size:'+SZ.meta+'px;font-weight:700;color:'+t.sub+';margin-top:6px;">'+mt+'</div>':'')+'</div></div>';
     }).join('');
   }
   const extraRow=extra>0?'<div style="text-align:center;font-size:30px;font-weight:800;color:'+t.sub+';margin-top:10px;">+ '+extra+' دورة أخرى</div>':'';
