@@ -237,6 +237,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg></div>
         <div class="mc-title">متابعة الشهادات</div><div class="mc-desc">من يريد شهادة · بانتظار الدفع أو جاهز للإصدار</div>
       </div>
+      <div class="menu-card" onclick="openSection('issue')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
+        <div class="mc-title">إصدار الشهادات</div><div class="mc-desc">إصدار شهادات PDF معتمدة للمتدربين وتحميلها</div>
+      </div>
       <div class="menu-card" onclick="openSection('crm')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <div class="mc-title">كل العملاء (CRM)</div><div class="mc-desc">قائمة كاملة · بحث · واتساب · تسجيل نتيجة التواصل</div>
@@ -316,7 +320,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <button data-f="pending" onclick="setPayFilter(this,'pending')">قيد الدفع</button>
       </div>
     </div>
-    <div class="tbl-card"><div class="tbl-scroll"><table id="paymentsTable"><thead><tr><th>المتدرب</th><th>المصدر</th><th>الدفع</th><th>شهادة</th><th>آخر تواصل</th><th>واتساب</th></tr></thead><tbody id="paymentsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+    <div class="tbl-card"><div class="tbl-scroll"><table id="paymentsTable"><thead><tr><th>المتدرب</th><th>المصدر</th><th>الدفع</th><th>شهادة</th><th>آخر تواصل</th><th>إجراءات</th></tr></thead><tbody id="paymentsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
   </div>
 
   <!-- ===== CERTS ===== -->
@@ -330,7 +334,56 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <button data-f="await" onclick="setCertFilter(this,'await')">بانتظار الدفع</button>
       </div>
     </div>
-    <div class="tbl-card"><div class="tbl-scroll"><table id="certsTable"><thead><tr><th>المتدرب</th><th>الدفع</th><th>الحضور</th><th>الحالة</th><th>واتساب</th></tr></thead><tbody id="certsBody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+    <div class="tbl-card"><div class="tbl-scroll"><table id="certsTable"><thead><tr><th>المتدرب</th><th>الدفع</th><th>الحضور</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="certsBody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">جارٍ التحميل…</td></tr></tbody></table></div></div>
+  </div>
+
+  <!-- ===== ISSUE CERTIFICATES ===== -->
+  <div class="panel" id="p-issue">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>إصدار الشهادات</div><div class="sec-desc">اختر الدورة، حدّد المتدربين، وأصدر الشهادات المعتمدة PDF</div></div></div>
+
+    <div class="card-block">
+      <h3>① بيانات الدورة</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;" class="issue-grid">
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">الدورة</label>
+          <select class="course-select" id="issueCourseSelect" onchange="issuePickCourse(this.value)"><option value="">— اختر الدورة —</option></select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">رقم اعتماد المادة *</label>
+          <input id="issueMaterialCode" placeholder="مثال: TM-2026-014" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">المدرب</label>
+          <input id="issueTrainer" placeholder="اسم المدرب" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px;">تاريخ الدورة</label>
+          <input id="issueDate" placeholder="يُعبّأ تلقائياً" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;">
+        </div>
+      </div>
+    </div>
+
+    <div id="issueStudentsCard" style="display:none;">
+      <div class="tbl-card" style="margin-bottom:16px;">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <h3 style="font-size:16px;font-weight:900;">② حدّد المتدربين</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="sec-desc" id="issueSelCount" style="margin:0;">٠ محدد</span>
+            <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="issueSelectAll(true)">الكل</button>
+            <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="issueSelectAll(false)">لا شيء</button>
+          </div>
+        </div>
+        <div class="tbl-scroll"><table><thead><tr><th style="width:36px;"></th><th>المتدرب</th><th>يبي شهادة</th></tr></thead><tbody id="issueStudentsBody"></tbody></table></div>
+      </div>
+      <button class="btn btn-primary" id="issueBtn" onclick="issueCertificates()" style="width:100%;background:var(--green);">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span id="issueBtnTxt">إصدار الشهادات المحددة</span>
+        <span id="issueBtnSpin" style="display:none;">جارٍ الإصدار…</span>
+      </button>
+      <div class="send-result" id="issueResult"></div>
+    </div>
+
+    <div id="issueLoading" class="card-block state" style="display:none;"><div class="spinner"></div><p>جارٍ تحميل المسجلين…</p></div>
   </div>
 
   <!-- ===== CRM ===== -->
@@ -369,6 +422,48 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- PAYMENT LINK POPUP -->
+<div id="payPopup" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid rgba(92,15,15,.12);border-radius:16px;padding:18px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,.18);">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div style="font-size:14px;font-weight:900;">💳 إنشاء رابط دفع</div>
+    <button onclick="closePay()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);">✕</button>
+  </div>
+  <div id="payName" style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:12px;"></div>
+
+  <div id="payForm">
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div style="flex:1;">
+        <label style="font-size:11px;font-weight:800;color:var(--muted);display:block;margin-bottom:5px;">المبلغ (د.ك)</label>
+        <input id="payAmount" type="number" value="15" min="1" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;direction:ltr;text-align:center;">
+      </div>
+      <div style="flex:1.3;">
+        <label style="font-size:11px;font-weight:800;color:var(--muted);display:block;margin-bottom:5px;">الغرض</label>
+        <select id="payPurpose" onchange="payPurposeChg()" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;background:var(--cream);outline:none;">
+          <option value="شهادة" data-amt="15">شهادة معتمدة</option>
+          <option value="اشتراك شهر" data-amt="15">اشتراك شهر</option>
+          <option value="اشتراك 6 أشهر" data-amt="40">اشتراك 6 أشهر</option>
+          <option value="اشتراك سنة" data-amt="70">اشتراك سنة</option>
+          <option value="أخرى" data-amt="">مبلغ آخر</option>
+        </select>
+      </div>
+    </div>
+    <input id="payEmail" placeholder="الإيميل (اختياري — لإيصال الدفع)" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;background:var(--cream);outline:none;direction:ltr;text-align:right;margin-bottom:10px;">
+    <button class="btn btn-primary" onclick="genPayLink()" id="payGenBtn" style="width:100%;">
+      <span id="payGenTxt">إنشاء الرابط</span><span id="payGenSpin" style="display:none;">جارٍ الإنشاء…</span>
+    </button>
+  </div>
+
+  <div id="payResult" style="display:none;margin-top:12px;">
+    <div style="background:var(--cream);border:1.5px dashed var(--crimson);border-radius:10px;padding:10px;font-size:12px;word-break:break-all;color:var(--crimson);font-weight:700;direction:ltr;text-align:left;" id="payLinkText"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-ghost" onclick="copyPayLink()" style="flex:1;padding:10px;font-size:13px;">📋 نسخ</button>
+      <button class="btn btn-wa" onclick="sendPayWa()" style="flex:1.4;padding:10px;font-size:13px;border-radius:12px;">إرسال بالواتساب ←</button>
+    </div>
+    <button onclick="payReset()" style="background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;text-decoration:underline;">إنشاء رابط جديد</button>
+  </div>
+</div>
+
 <footer>© 2026 أكاديمية مسار — لوحة المتابعة</footer>
 
 <script>
@@ -397,7 +492,7 @@ document.getElementById('pin').addEventListener('keydown',e=>{ if(e.key==='Enter
 function logout(){ sessionStorage.removeItem('mfollow_ok'); location.reload(); }
 
 /* ============ تنقّل ============ */
-const TITLES = { overview:'نظرة عامة', reminders:'تذكير بمواعيد الدورات', payments:'متابعة الدفع', certs:'متابعة الشهادات', crm:'كل العملاء' };
+const TITLES = { overview:'نظرة عامة', reminders:'تذكير بمواعيد الدورات', payments:'متابعة الدفع', certs:'متابعة الشهادات', issue:'إصدار الشهادات', crm:'كل العملاء' };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
   document.getElementById('p-'+id).classList.add('on');
@@ -405,6 +500,7 @@ function openSection(id){
   document.getElementById('subbar').classList.add('show');
   window.scrollTo(0,0);
   if(id==='reminders' && coursesData.length===0) loadCourses();
+  if(id==='issue') initIssue();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -514,7 +610,7 @@ function renderPayments(){
     <td>${payPill(r.status)}</td>
     <td>${certCell(r.cert)}</td>
     <td>${lastContactCell(r)}</td>
-    <td>${waMiniBtn(r)}</td></tr>`).join('');
+    <td style="white-space:nowrap;display:flex;gap:6px;">${payLinkBtn(r)}${waMiniBtn(r)}</td></tr>`).join('');
 }
 
 /* ============ CERTS ============ */
@@ -536,7 +632,7 @@ function renderCerts(){
       <td>${payPill(r.status)}</td>
       <td>${attendPill(r.attended)}</td>
       <td>${stateLbl}</td>
-      <td>${waMiniBtn(r)}</td></tr>`;
+      <td style="white-space:nowrap;display:flex;gap:6px;">${!ready?payLinkBtn(r):''}${waMiniBtn(r)}</td></tr>`;
   }).join('');
 }
 
@@ -690,6 +786,101 @@ async function sendReminder(){
   const r=document.getElementById('sendResult'); r.textContent='✅ تم إرسال التذكير للجميع بنجاح'; r.className='send-result ok';
 }
 
+/* ============ ISSUE CERTIFICATES (إصدار الشهادات) ============ */
+let issueStudents = [], issueSel = new Set(), issueCourse = null;
+
+async function initIssue(){
+  // تأكد من تحميل الدورات (مشتركة مع قسم التذكير)
+  if(coursesData.length===0){
+    try{
+      const [r1,r2]=await Promise.all([
+        fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+        fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'))
+      ]);
+      const [d1,d2]=await Promise.all([r1.json(),r2.json()]);
+      coursesData=[...(d1.courses||[]),...(d2.courses||[])];
+    }catch(e){}
+  }
+  const sel=document.getElementById('issueCourseSelect');
+  if(sel.options.length<=1){
+    coursesData.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=c.name+' — '+c.date+(c.system==='خاصة'?' 🔒':''); sel.appendChild(o); });
+  }
+}
+
+async function issuePickCourse(idx){
+  if(idx===''){ document.getElementById('issueStudentsCard').style.display='none'; return; }
+  issueCourse = coursesData[parseInt(idx)];
+  document.getElementById('issueTrainer').value = issueCourse.trainer||'';
+  document.getElementById('issueDate').value = issueCourse.date||'';
+  document.getElementById('issueStudentsCard').style.display='none';
+  document.getElementById('issueLoading').style.display='block';
+  try{
+    const res=await fetch(SCRIPT_URL+'?action=getStudents&course='+encodeURIComponent(issueCourse.name)+'&date='+encodeURIComponent(issueCourse.date));
+    const data=await res.json();
+    issueStudents = data.students||[];
+    issueSel = new Set(issueStudents.map((s,i)=>i).filter(i=>issueStudents[i].cert==='نعم')); // افتراضياً: من يبي شهادة
+    renderIssueStudents();
+    document.getElementById('issueLoading').style.display='none';
+    document.getElementById('issueStudentsCard').style.display='block';
+    document.getElementById('issueResult').className='send-result';
+  }catch(e){
+    document.getElementById('issueLoading').innerHTML='<div class="ic">⚠️</div><h3>خطأ في تحميل المسجلين</h3>';
+  }
+}
+
+function renderIssueStudents(){
+  const tb=document.getElementById('issueStudentsBody');
+  if(!issueStudents.length){ tb.innerHTML='<tr><td colspan="3" style="text-align:center;padding:30px;color:var(--muted);">ما فيه مسجلين بهذه الدورة</td></tr>'; }
+  else {
+    tb.innerHTML=issueStudents.map((s,i)=>`<tr>
+      <td style="text-align:center;"><input type="checkbox" ${issueSel.has(i)?'checked':''} onchange="issueTog(${i},this)" style="accent-color:var(--crimson);width:16px;height:16px;cursor:pointer;"></td>
+      <td><div class="name-cell"><div class="avatar">${esc((s.name||'؟').charAt(0))}</div><div><div class="nm">${esc(s.name||'—')}</div><div class="sub">${esc(s.phone||'')}</div></div></div></td>
+      <td>${certCell(s.cert)}</td></tr>`).join('');
+  }
+  document.getElementById('issueSelCount').textContent=toAr(issueSel.size)+' محدد';
+}
+function issueTog(i,cb){ cb.checked?issueSel.add(i):issueSel.delete(i); document.getElementById('issueSelCount').textContent=toAr(issueSel.size)+' محدد'; }
+function issueSelectAll(on){ issueSel = on ? new Set(issueStudents.map((s,i)=>i)) : new Set(); renderIssueStudents(); }
+
+async function issueCertificates(){
+  const code=document.getElementById('issueMaterialCode').value.trim();
+  if(!code){ document.getElementById('issueMaterialCode').style.borderColor='#C62828'; toast('أدخل رقم اعتماد المادة'); return; }
+  document.getElementById('issueMaterialCode').style.borderColor='';
+  if(!issueSel.size){ toast('حدّد متدرب واحد على الأقل'); return; }
+  if(!issueCourse) return;
+
+  const checked = [...issueSel].map(i=>issueStudents[i]);
+  if(!confirm('سيتم إصدار '+checked.length+' شهادة لدورة "'+issueCourse.name+'". متابعة؟')) return;
+
+  const btn=document.getElementById('issueBtn'); btn.disabled=true;
+  document.getElementById('issueBtnTxt').style.display='none';
+  document.getElementById('issueBtnSpin').style.display='inline';
+
+  try{
+    const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({
+        type:'إصدار شهادات',
+        course: issueCourse.name,
+        date: document.getElementById('issueDate').value.trim(),
+        trainer: document.getElementById('issueTrainer').value.trim(),
+        materialCode: code,
+        students: checked,
+        timestamp:new Date().toLocaleString('ar-SA')
+      })});
+    let data={}; try{ data=await res.json(); }catch(e){}
+    const count=data.count||checked.length;
+    const url=data.downloadUrl||data.folderUrl||'https://drive.google.com/drive/folders/1YakqQyj3KSj8VvMwbUlrmVeqD3MB6eG1';
+    const r=document.getElementById('issueResult');
+    r.className='send-result ok';
+    r.innerHTML='✅ تم إصدار '+toAr(count)+' شهادة بنجاح — <a href="'+url+'" target="_blank" style="color:var(--green);text-decoration:underline;font-weight:900;">📥 تحميل الشهادات</a>';
+  }catch(e){ toast('حدث خطأ في الإصدار'); }
+  finally{
+    btn.disabled=false;
+    document.getElementById('issueBtnTxt').style.display='inline';
+    document.getElementById('issueBtnSpin').style.display='none';
+  }
+}
+
 /* ============ WHATSAPP POPUP ============ */
 let waCur={num:'',name:''};
 function openWa(num,name,btn){
@@ -726,6 +917,75 @@ function sendWa(){
 document.addEventListener('click',e=>{
   const p=document.getElementById('waPopup');
   if(p.style.display==='block' && !p.contains(e.target) && !e.target.closest('.wa-mini')) closeWa();
+});
+
+/* ============ PAYMENT LINK (رابط الدفع) ============ */
+let payCur={name:'',phone:'',course:'',date:''}, payUrl='';
+function payLinkBtn(r){
+  return `<button class="wa-mini" style="background:var(--crimson);" onclick="openPay('${esc((r.name||'').replace(/'/g,"\\'"))}','${waNum(r.phone)}','${esc((r.course||'').replace(/'/g,"\\'"))}',this)">💳 دفع</button>`;
+}
+function openPay(name,num,course,btn){
+  payCur={name,phone:num,course,date:''}; payUrl='';
+  document.getElementById('payName').textContent='للعميل: '+name+(course?' — '+course:'');
+  document.getElementById('payForm').style.display='block';
+  document.getElementById('payResult').style.display='none';
+  document.getElementById('payAmount').value='15';
+  document.getElementById('payPurpose').value='شهادة';
+  document.getElementById('payEmail').value='';
+  const p=document.getElementById('payPopup'); p.style.display='block';
+  const rect=btn.getBoundingClientRect();
+  let top=rect.bottom+8, left=rect.left-280+rect.width;
+  if(left<10) left=10;
+  if(top+330>window.innerHeight) top=Math.max(10,rect.top-340);
+  p.style.top=top+'px'; p.style.left=left+'px';
+}
+function closePay(){ document.getElementById('payPopup').style.display='none'; }
+function payPurposeChg(){
+  const opt=document.getElementById('payPurpose').selectedOptions[0];
+  const amt=opt.getAttribute('data-amt');
+  if(amt) document.getElementById('payAmount').value=amt;
+}
+function payReset(){ document.getElementById('payForm').style.display='block'; document.getElementById('payResult').style.display='none'; payUrl=''; }
+
+async function genPayLink(){
+  const amount=parseFloat(document.getElementById('payAmount').value)||0;
+  if(amount<=0){ toast('أدخل مبلغ صحيح'); return; }
+  const purpose=document.getElementById('payPurpose').value;
+  const email=document.getElementById('payEmail').value.trim();
+  const btn=document.getElementById('payGenBtn'); btn.disabled=true;
+  document.getElementById('payGenTxt').style.display='none'; document.getElementById('payGenSpin').style.display='inline';
+  try{
+    const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({
+        type:'دفع_شهادة',
+        name:payCur.name, phone:payCur.phone.replace(/^965/,''), email,
+        course:payCur.course||purpose, courseDate:'',
+        courseType:purpose, amount,
+        notes:'رابط دفع من لوحة المتابعة — '+purpose
+      })});
+    const data=await res.json();
+    if(data.status==='ok' && data.url){
+      payUrl=data.url;
+      document.getElementById('payLinkText').textContent=payUrl;
+      document.getElementById('payForm').style.display='none';
+      document.getElementById('payResult').style.display='block';
+    } else { toast('تعذّر إنشاء الرابط — تأكد من البيانات'); }
+  }catch(e){ toast('خطأ في الاتصال بنظام الدفع'); }
+  finally{ btn.disabled=false; document.getElementById('payGenTxt').style.display='inline'; document.getElementById('payGenSpin').style.display='none'; }
+}
+function copyPayLink(){
+  navigator.clipboard?.writeText(payUrl).then(()=>toast('تم نسخ الرابط ✓')).catch(()=>toast('انسخه يدوياً'));
+}
+function sendPayWa(){
+  if(!payUrl) return;
+  const purpose=document.getElementById('payPurpose').value;
+  const amount=document.getElementById('payAmount').value;
+  const msg='السلام عليكم '+payCur.name+' 👋\n\nتفضل رابط الدفع لـ'+purpose+' ('+amount+' د.ك):\n'+payUrl+'\n\nبعد إتمام الدفع نكمّل لك الباقي ✅\nأكاديمية مسار 🎓';
+  window.open('https://wa.me/'+payCur.phone+'?text='+encodeURIComponent(msg),'_blank');
+}
+document.addEventListener('click',e=>{
+  const p=document.getElementById('payPopup');
+  if(p.style.display==='block' && !p.contains(e.target) && !e.target.closest('.wa-mini')) closePay();
 });
 </script>
 </body>
