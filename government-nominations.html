@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الترشيحات الحكومية — معهد تمكين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F;
+  --crimson-2:#7a1717;
+  --cream:#FAF7F2;
+  --ink:#2b1a1a;
+  --muted:#8a7a7a;
+  --line:rgba(92,15,15,.12);
+  --line-2:rgba(92,15,15,.22);
+  --ok:#1c7d3f;
+  --shadow:0 18px 50px rgba(92,15,15,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Cairo',sans-serif;
+  background:
+    radial-gradient(1200px 600px at 90% -10%, rgba(92,15,15,.06), transparent 60%),
+    var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  padding:22px 14px 60px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto}
+
+/* ===== الترويسة ===== */
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 22px}
+.brand .logo{
+  width:46px;height:46px;border-radius:14px;
+  background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:20px;box-shadow:var(--shadow)
+}
+.brand .t b{display:block;font-size:18px;color:var(--crimson);font-weight:900;line-height:1.2}
+.brand .t span{font-size:12px;color:var(--muted);font-weight:600}
+
+/* ===== البطاقات ===== */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--shadow);padding:26px 22px;margin-bottom:18px
+}
+.hero{
+  background:linear-gradient(135deg,var(--crimson),var(--crimson-2));
+  color:#fff;border:none;text-align:center
+}
+.hero h1{font-size:23px;font-weight:900;margin-bottom:8px}
+.hero p{font-size:13.5px;opacity:.9;line-height:1.9;max-width:520px;margin:0 auto}
+
+/* ===== الدخول ===== */
+.login-lbl{font-size:14px;font-weight:700;color:var(--crimson);margin-bottom:10px;display:block}
+.login-row{display:flex;gap:10px;flex-wrap:wrap}
+.inp{
+  width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+  background:var(--cream);border:1.5px solid var(--line);border-radius:14px;
+  padding:13px 15px;transition:.15s;outline:none
+}
+.inp:focus{border-color:var(--crimson);background:#fff}
+.inp.invalid{border-color:#c0392b;background:#fff5f4}
+.login-row .inp{flex:1;min-width:180px;text-align:center;letter-spacing:1px;font-weight:700}
+.btn{
+  font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;border:none;
+  border-radius:14px;padding:13px 26px;transition:.15s;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px
+}
+.btn-primary{background:var(--crimson);color:#fff}
+.btn-primary:hover{background:var(--crimson-2)}
+.btn-primary:disabled{opacity:.55;cursor:default}
+.err{color:#c0392b;font-size:13px;font-weight:600;margin-top:10px;min-height:18px}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== شريط المدرب ===== */
+.who{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--cream);
+  border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:18px}
+.who .av{width:42px;height:42px;border-radius:12px;background:var(--crimson);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+.who .nm{font-weight:800;font-size:15px;color:var(--crimson)}
+.who .id{font-size:12.5px;color:var(--muted);font-weight:600}
+.who .badge{margin-inline-start:auto;background:rgba(28,125,63,.1);color:var(--ok);
+  font-size:12px;font-weight:800;padding:6px 12px;border-radius:30px}
+
+/* ===== حقول النموذج ===== */
+.field{margin-bottom:18px}
+.field > label{display:block;font-size:14px;font-weight:800;color:var(--crimson);margin-bottom:8px}
+.field .hint{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:8px;margin-top:-4px}
+textarea.inp{resize:vertical;min-height:84px;line-height:1.8;text-align:right}
+.sec-title{display:flex;align-items:center;gap:10px;margin:6px 0 14px}
+.sec-title b{font-size:16px;color:var(--crimson);font-weight:900}
+.sec-title .ln{flex:1;height:1px;background:var(--line)}
+
+/* ===== أيام المحاور ===== */
+.day{border:1.5px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:14px;background:#fff}
+.day-head{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;
+  background:var(--cream);user-select:none;transition:.15s}
+.day-head:hover{background:#f3ece4}
+.day-head .chev{width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  color:var(--crimson);transition:transform .2s;font-size:13px}
+.day.open .chev{transform:rotate(90deg)}
+.day-head .ttl{font-weight:900;font-size:15px;color:var(--crimson)}
+.day-head .cnt{font-size:11.5px;color:var(--muted);font-weight:700}
+.day-head .del-day{margin-inline-start:auto;background:transparent;border:1px solid var(--line-2);
+  color:var(--muted);width:28px;height:28px;border-radius:9px;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1;transition:.15s}
+.day-head .del-day:hover{border-color:#c0392b;color:#c0392b}
+.day-body{display:none;padding:14px}
+.day.open .day-body{display:block}
+
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px}
+table.mh{border-collapse:collapse;width:100%;min-width:680px}
+table.mh th{background:var(--crimson);color:#fff;font-size:12px;font-weight:800;
+  padding:10px 8px;text-align:center;white-space:nowrap}
+table.mh th:first-child{width:34px}
+table.mh td{border-top:1px solid var(--line);padding:6px;vertical-align:top}
+table.mh td.num{text-align:center;font-weight:900;color:var(--muted);font-size:12px;vertical-align:middle}
+table.mh td.act{text-align:center;vertical-align:middle;width:36px}
+.cell-inp{width:100%;min-width:120px;font-family:inherit;font-size:13px;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:9px;padding:9px 10px;outline:none;background:#fff;
+  resize:vertical;line-height:1.7;min-height:40px}
+.cell-inp:focus{border-color:var(--crimson)}
+.del-row{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:17px;
+  width:26px;height:26px;border-radius:7px;line-height:1;transition:.15s}
+.del-row:hover{color:#c0392b;background:#fff5f4}
+.del-row:disabled{opacity:.25;cursor:default}
+
+.btn-ghost{background:#fff;border:1.5px dashed var(--line-2);color:var(--crimson);
+  font-family:inherit;font-weight:800;font-size:13.5px;cursor:pointer;border-radius:12px;
+  padding:11px 16px;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-ghost:hover{background:var(--cream);border-color:var(--crimson)}
+.btn-ghost:disabled{opacity:.4;cursor:default}
+.add-row-wrap{margin-top:12px}
+.add-day-wrap{margin:4px 0 22px}
+
+/* ===== الإرسال ===== */
+.submit-row{display:flex;gap:12px;margin-top:8px}
+.submit-row .btn-primary{flex:1;padding:16px}
+.form-err{color:#c0392b;font-size:13.5px;font-weight:700;margin-top:12px;text-align:center;min-height:18px}
+
+/* ===== النجاح ===== */
+.success{text-align:center;padding:40px 22px;display:none}
+.success .ic{width:78px;height:78px;border-radius:50%;background:rgba(28,125,63,.1);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.success .ic svg{width:40px;height:40px;color:var(--ok)}
+.success h2{font-size:21px;color:var(--crimson);font-weight:900;margin-bottom:10px}
+.success p{font-size:14px;color:var(--muted);line-height:1.9;max-width:420px;margin:0 auto}
+
+.hidden{display:none!important}
+@media(max-width:520px){
+  .card{padding:22px 16px}
+  .hero h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">ت</div>
+    <div class="t"><b>معهد تمكين</b><span>الترشيحات الحكومية للمدربين</span></div>
+  </div>
+
+  <!-- الترويسة التعريفية -->
+  <div class="card hero">
+    <h1>الترشيحات الحكومية</h1>
+    <p>عند طلب جهة حكومية تنفيذ برنامج تدريبي بنظام التعاقد، يقدّم المدرب المرشّح مقترحه عبر هذا النموذج. أدخل رقم عضويتك للبدء.</p>
+  </div>
+
+  <!-- بطاقة الدخول -->
+  <div class="card" id="loginCard">
+    <label class="login-lbl">رقم العضوية</label>
+    <div class="login-row">
+      <input class="inp" id="memberInput" inputmode="numeric" placeholder="مثال: 1024" autocomplete="off">
+      <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+        <span id="loginTxt">دخول</span>
+        <span class="spinner" id="loginSpinner"></span>
+      </button>
+    </div>
+    <div class="err" id="loginErr"></div>
+  </div>
+
+  <!-- النموذج -->
+  <div id="formCard" class="hidden">
+
+    <!-- شريط المدرب -->
+    <div class="who">
+      <div class="av" id="whoAv">م</div>
+      <div>
+        <div class="nm" id="whoName">—</div>
+        <div class="id" id="whoId">رقم العضوية: —</div>
+      </div>
+      <div class="badge">✓ عضوية فعّالة</div>
+    </div>
+
+    <div class="card">
+      <!-- بيانات البرنامج -->
+      <div class="field">
+        <label>اسم البرنامج المراد التقديم له</label>
+        <input class="inp" id="fProgram" placeholder="اكتب اسم البرنامج التدريبي">
+      </div>
+
+      <div class="field">
+        <label>الهدف العام من البرنامج</label>
+        <textarea class="inp" id="fObjective" placeholder="صف الهدف العام الذي يحققه البرنامج لدى المتدربين"></textarea>
+      </div>
+
+      <div class="field">
+        <label>مدة البرنامج</label>
+        <input class="inp" id="fDuration" placeholder="مثال: ٥ أيام — ٢٠ ساعة تدريبية" style="text-align:right">
+      </div>
+
+      <div class="field">
+        <label>تاريخ بدء البرنامج</label>
+        <input class="inp" id="fStart" type="date" style="text-align:right">
+      </div>
+
+      <div class="sec-title">
+        <b>محاور البرنامج</b><div class="ln"></div>
+      </div>
+      <p class="hint" style="margin-bottom:14px">قسّم المحاور على أيام البرنامج. كل يوم يبدأ بـ٣ محاور ويمكنك إضافة حتى ٥ محاور.</p>
+
+      <div id="daysWrap"></div>
+
+      <div class="add-day-wrap">
+        <button class="btn-ghost" data-action="add-day">＋ أضف يوماً</button>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">
+          <span id="submitTxt">تقديم الترشيح</span>
+          <span class="spinner" id="submitSpinner"></span>
+        </button>
+      </div>
+      <div class="form-err" id="formErr"></div>
+    </div>
+  </div>
+
+  <!-- النجاح -->
+  <div class="card success" id="successCard">
+    <div class="ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>تم استلام ترشيحك بنجاح</h2>
+    <p>وصلنا مقترحك للبرنامج التدريبي وسيُراجَع من قبل فريق المعهد. سيتم التواصل معك في حال اعتماد الترشيح. شكراً لك.</p>
+  </div>
+
+</div>
+
+<script>
+/* ====== ثوابت ====== */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
+
+var DAY_NAMES = ['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر',
+                 'الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر'];
+var MIN_ROWS = 3, MAX_ROWS = 5;
+
+var trainer = { name:'', memberId:'' };
+/* الحالة: مصفوفة أيام، كل يوم {open, rows:[{topic,dur,system,methods,criteria}]} */
+var state = { days:[] };
+
+/* ====== أدوات ====== */
+function $(id){ return document.getElementById(id); }
+function dayLabel(i){ return 'اليوم ' + (DAY_NAMES[i] || (i+1)); }
+function newRow(){ return { topic:'', dur:'', system:'', methods:'', criteria:'' }; }
+function newDay(){ return { open:true, rows:[ newRow(), newRow(), newRow() ] }; }
+
+/* ====== الدخول والتحقق ====== */
+$('memberInput').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+function doLogin(){
+  var input=$('memberInput'), err=$('loginErr');
+  var id=(input.value||'').trim();
+  input.classList.remove('invalid'); err.textContent='';
+  if(!id){ input.classList.add('invalid'); err.textContent='يرجى إدخال رقم العضوية'; return; }
+
+  var btn=$('loginBtn'), txt=$('loginTxt'), sp=$('loginSpinner');
+  btn.disabled=true; sp.style.display='block'; txt.textContent='جاري التحقق...';
+  verify(id, function(res){
+    btn.disabled=false; sp.style.display='none'; txt.textContent='دخول';
+    if(res && res.found){
+      trainer.name = res.name || '';
+      trainer.memberId = res.memberId || id;
+      openForm();
+    } else {
+      input.classList.add('invalid');
+      err.textContent = (res && res.message) ? res.message : 'رقم العضوية غير صحيح';
+    }
+  });
+}
+
+function verify(id, cb){
+  var cbName='cb_verify_'+Date.now(), script=document.createElement('script'), done=false;
+  var timer=setTimeout(function(){ if(done)return; done=true; cleanup(); cb(null); },12000);
+  window[cbName]=function(res){ if(done)return; done=true; clearTimeout(timer); cleanup(); cb(res); };
+  script.onerror=function(){ if(done)return; done=true; clearTimeout(timer); cleanup(); cb(null); };
+  function cleanup(){ try{ delete window[cbName]; }catch(e){ window[cbName]=undefined; } if(script.parentNode) script.parentNode.removeChild(script); }
+  script.src = SCRIPT_URL + '?action=verify&memberId=' + encodeURIComponent(id) + '&callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
+}
+
+function openForm(){
+  $('loginCard').classList.add('hidden');
+  $('formCard').classList.remove('hidden');
+  var nm = trainer.name || '—';
+  $('whoName').textContent = nm;
+  $('whoId').textContent = 'رقم العضوية: ' + (trainer.memberId || '—');
+  $('whoAv').textContent = nm.trim() ? nm.trim().charAt(0) : 'م';
+  if(!state.days.length) state.days.push(newDay());
+  renderDays();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ====== رسم الأيام والمحاور ====== */
+function renderDays(){
+  var wrap=$('daysWrap'), html='';
+  state.days.forEach(function(day, di){
+    var rowsHtml='';
+    day.rows.forEach(function(r, ri){
+      rowsHtml +=
+        '<tr>'+
+          '<td class="num">'+(ri+1)+'</td>'+
+          '<td><textarea class="cell-inp" data-d="'+di+'" data-r="'+ri+'" data-f="topic" rows="1" placeholder="اسم المحور"></textarea></td>'+
+          '<td><textarea class="cell-inp" data-d="'+di+'" data-r="'+ri+'" data-f="dur" rows="1" placeholder="مثال: ٣ ساعات"></textarea></td>'+
+          '<td><textarea class="cell-inp" data-d="'+di+'" data-r="'+ri+'" data-f="system" rows="1" placeholder="حضوري / عن بُعد / مدمج"></textarea></td>'+
+          '<td><textarea class="cell-inp" data-d="'+di+'" data-r="'+ri+'" data-f="methods" rows="1" placeholder="محاضرة، نقاش، تطبيق عملي..."></textarea></td>'+
+          '<td><textarea class="cell-inp" data-d="'+di+'" data-r="'+ri+'" data-f="criteria" rows="1" placeholder="معيار قياس التحقق"></textarea></td>'+
+          '<td class="act"><button class="del-row" data-action="del-row" data-d="'+di+'" data-r="'+ri+'" '+(day.rows.length<=MIN_ROWS?'disabled':'')+' title="حذف السطر">×</button></td>'+
+        '</tr>';
+    });
+
+    var addDisabled = day.rows.length>=MAX_ROWS ? 'disabled' : '';
+    html +=
+      '<div class="day '+(day.open?'open':'')+'" data-day="'+di+'">'+
+        '<div class="day-head" data-action="toggle" data-d="'+di+'">'+
+          '<span class="chev">▶</span>'+
+          '<span class="ttl">'+dayLabel(di)+'</span>'+
+          '<span class="cnt">('+day.rows.length+' محاور)</span>'+
+          (state.days.length>1 ? '<button class="del-day" data-action="del-day" data-d="'+di+'" title="حذف اليوم">×</button>' : '')+
+        '</div>'+
+        '<div class="day-body">'+
+          '<div class="tbl-scroll"><table class="mh">'+
+            '<thead><tr>'+
+              '<th>#</th><th>اسم المحور</th><th>مدة المحور</th><th>نظام التدريب</th><th>وسائل التدريب المستخدمة</th><th>معيار التقييم</th><th></th>'+
+            '</tr></thead>'+
+            '<tbody>'+rowsHtml+'</tbody>'+
+          '</table></div>'+
+          '<div class="add-row-wrap"><button class="btn-ghost" data-action="add-row" data-d="'+di+'" '+addDisabled+'>＋ أضف سطراً'+(day.rows.length>=MAX_ROWS?' (الحد الأقصى ٥)':'')+'</button></div>'+
+        '</div>'+
+      '</div>';
+  });
+  wrap.innerHTML = html;
+
+  /* تعبئة القيم من الحالة */
+  wrap.querySelectorAll('.cell-inp').forEach(function(el){
+    var d=+el.getAttribute('data-d'), r=+el.getAttribute('data-r'), f=el.getAttribute('data-f');
+    el.value = state.days[d].rows[r][f] || '';
+    autoGrow(el);
+  });
+}
+
+function autoGrow(el){ el.style.height='auto'; el.style.height=(el.scrollHeight)+'px'; }
+
+/* تفويض الأحداث */
+$('daysWrap').addEventListener('input', function(e){
+  var el=e.target;
+  if(el.classList.contains('cell-inp')){
+    var d=+el.getAttribute('data-d'), r=+el.getAttribute('data-r'), f=el.getAttribute('data-f');
+    state.days[d].rows[r][f] = el.value;
+    autoGrow(el);
+  }
+});
+$('daysWrap').addEventListener('click', function(e){
+  var t=e.target.closest('[data-action]');
+  if(!t) return;
+  var act=t.getAttribute('data-action');
+  var d=t.getAttribute('data-d')!=null ? +t.getAttribute('data-d') : null;
+  var r=t.getAttribute('data-r')!=null ? +t.getAttribute('data-r') : null;
+
+  if(act==='toggle'){ state.days[d].open=!state.days[d].open; renderDays(); }
+  else if(act==='add-row'){ if(state.days[d].rows.length<MAX_ROWS){ state.days[d].rows.push(newRow()); renderDays(); } }
+  else if(act==='del-row'){ if(state.days[d].rows.length>MIN_ROWS){ state.days[d].rows.splice(r,1); renderDays(); } }
+  else if(act==='del-day'){ if(state.days.length>1){ state.days.splice(d,1); renderDays(); } }
+});
+
+document.querySelector('[data-action="add-day"]').addEventListener('click', function(){
+  state.days.push(newDay()); renderDays();
+  var last=$('daysWrap').lastElementChild; if(last) last.scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+/* ====== بناء نص المحاور للشيت ====== */
+function buildTopicsText(){
+  var out=[];
+  state.days.forEach(function(day, di){
+    var lines=[];
+    day.rows.forEach(function(r, ri){
+      if(!(r.topic||'').trim()) return;
+      lines.push('  '+(ri+1)+') '+r.topic.trim()+
+        ' | المدة: '+(r.dur||'-')+
+        ' | نظام التدريب: '+(r.system||'-')+
+        ' | الوسائل: '+(r.methods||'-')+
+        ' | معيار التقييم: '+(r.criteria||'-'));
+    });
+    if(lines.length){ out.push('▪ '+dayLabel(di)+':'); out.push(lines.join('\n')); out.push(''); }
+  });
+  return out.join('\n').trim();
+}
+
+/* ====== الإرسال ====== */
+function submitForm(){
+  var err=$('formErr'); err.textContent='';
+  var program=($('fProgram').value||'').trim();
+  var objective=($('fObjective').value||'').trim();
+  var duration=($('fDuration').value||'').trim();
+  var start=($('fStart').value||'').trim();
+
+  [['fProgram',program],['fObjective',objective],['fDuration',duration],['fStart',start]]
+    .forEach(function(p){ $(p[0]).classList.toggle('invalid', !p[1]); });
+
+  if(!program||!objective||!duration||!start){ err.textContent='يرجى تعبئة جميع بيانات البرنامج.'; return; }
+
+  /* لازم محور واحد على الأقل في اليوم الأول */
+  var anyTopic = state.days.some(function(d){ return d.rows.some(function(r){ return (r.topic||'').trim(); }); });
+  if(!anyTopic){ err.textContent='أضف محوراً واحداً على الأقل قبل التقديم.'; if(!state.days[0].open){state.days[0].open=true;renderDays();} return; }
+
+  var topicsText = buildTopicsText();
+
+  var btn=$('submitBtn'), txt=$('submitTxt'), sp=$('submitSpinner');
+  btn.disabled=true; sp.style.display='block'; txt.textContent='جاري التقديم...';
+
+  var payload = {
+    type:'ترشيح حكومي',
+    memberId: trainer.memberId,
+    trainerName: trainer.name,
+    programName: program,
+    objective: objective,
+    duration: duration,
+    startDate: start,
+    topicsText: topicsText
+  };
+
+  fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(){
+    $('formCard').classList.add('hidden');
+    $('successCard').style.display='block';
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }).catch(function(){
+    btn.disabled=false; sp.style.display='none'; txt.textContent='تقديم الترشيح';
+    err.textContent='حدث خطأ أثناء التقديم، يرجى المحاولة مجدداً.';
+  });
+}
+
+/* ====== دخول تلقائي عبر ?m= ====== */
+(function(){
+  var m=new URLSearchParams(location.search).get('m');
+  if(m){ $('memberInput').value=m; doLogin(); }
+})();
+</script>
+</body>
+</html>
