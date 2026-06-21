@@ -156,6 +156,64 @@ table.mh td.act{text-align:center;vertical-align:middle;width:36px}
   .card{padding:22px 16px}
   .hero h1{font-size:20px}
 }
+
+/* ===== زر الطباعة في شاشة النجاح ===== */
+.print-btn{margin-top:22px;background:#fff;border:1.5px solid var(--crimson);color:var(--crimson);
+  font-family:inherit;font-weight:800;font-size:14.5px;cursor:pointer;border-radius:14px;
+  padding:13px 26px;transition:.15s;display:inline-flex;align-items:center;gap:9px}
+.print-btn:hover{background:var(--crimson);color:#fff}
+
+/* ===== مستند الطباعة الرسمي ===== */
+#printDoc{display:none}
+.pdoc{font-family:'Cairo',sans-serif;color:#241616;direction:rtl}
+.pdoc-head{background:var(--crimson);color:#fff;padding:22px 26px;border-radius:12px;
+  display:flex;align-items:center;gap:16px;margin-bottom:18px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-head .lg{width:54px;height:54px;border-radius:14px;background:#fff;color:var(--crimson);
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:26px;flex:0 0 auto}
+.pdoc-head h1{font-size:21px;font-weight:900;margin-bottom:4px}
+.pdoc-head p{font-size:13px;opacity:.92}
+.pdoc-title{text-align:center;font-size:17px;font-weight:900;color:var(--crimson);
+  border-block:2px solid var(--crimson);padding:10px 0;margin-bottom:20px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-meta{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line-2);
+  border-radius:10px;overflow:hidden;margin-bottom:18px}
+.pdoc-meta .mrow{display:flex;border-bottom:1px solid var(--line);min-height:42px}
+.pdoc-meta .mrow:nth-last-child(-n+1){border-bottom:none}
+.pdoc-meta .mk{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:12.5px;
+  padding:10px 12px;width:130px;flex:0 0 auto;display:flex;align-items:center;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-meta .mv{padding:10px 12px;font-size:13px;font-weight:600;display:flex;align-items:center;flex:1}
+.pdoc-meta .full{grid-column:1 / -1}
+.pdoc-obj{margin-bottom:20px}
+.pdoc-obj .lbl{font-size:13.5px;font-weight:900;color:var(--crimson);margin-bottom:6px}
+.pdoc-obj .val{font-size:13px;line-height:1.9;background:#faf7f2;border:1px solid var(--line);
+  border-radius:10px;padding:12px 14px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-sec{font-size:14.5px;font-weight:900;color:var(--crimson);margin:0 0 12px}
+.pday{margin-bottom:16px;break-inside:avoid}
+.pday-h{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:13.5px;
+  padding:8px 14px;border-radius:8px 8px 0 0;border:1px solid var(--line-2);border-bottom:none;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.pmh{border-collapse:collapse;width:100%;table-layout:fixed}
+table.pmh th{background:var(--crimson);color:#fff;font-size:11.5px;font-weight:800;
+  padding:8px 6px;text-align:center;border:1px solid var(--crimson);
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.pmh th:first-child{width:28px}
+table.pmh td{border:1px solid var(--line-2);padding:8px 7px;font-size:12px;
+  vertical-align:top;line-height:1.6;word-wrap:break-word}
+table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
+.pdoc-foot{margin-top:28px;display:flex;justify-content:space-between;gap:20px;break-inside:avoid}
+.pdoc-foot .sign{flex:1;text-align:center;font-size:12.5px;color:var(--muted)}
+.pdoc-foot .sign .ln{margin-top:34px;border-top:1px solid var(--line-2);padding-top:6px}
+.pdoc-stamp{text-align:center;font-size:11px;color:var(--muted);margin-top:22px}
+
+@media print{
+  body{background:#fff;padding:0;margin:0}
+  body *{visibility:hidden}
+  #printDoc,#printDoc *{visibility:visible}
+  #printDoc{display:block;position:absolute;inset:0;width:100%}
+  @page{size:A4;margin:13mm}
+}
 </style>
 </head>
 <body>
@@ -248,9 +306,16 @@ table.mh td.act{text-align:center;vertical-align:middle;width:36px}
     </div>
     <h2>تم استلام ترشيحك بنجاح</h2>
     <p>وصلنا مقترحك للبرنامج التدريبي وسيُراجَع من قبل فريق المعهد. سيتم التواصل معك في حال اعتماد الترشيح. شكراً لك.</p>
+    <button class="print-btn" onclick="printNomination()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      طباعة الترشيح / حفظ PDF
+    </button>
   </div>
 
 </div>
+
+<!-- مستند الطباعة الرسمي (يُبنى ديناميكياً) -->
+<div id="printDoc"></div>
 
 <script>
 /* ====== ثوابت ====== */
@@ -261,6 +326,7 @@ var DAY_NAMES = ['الأول','الثاني','الثالث','الرابع','ال
 var MIN_ROWS = 3, MAX_ROWS = 5;
 
 var trainer = { name:'', memberId:'' };
+var lastSubmission = null;
 /* الحالة: مصفوفة أيام، كل يوم {open, rows:[{topic,dur,system,methods,criteria}]} */
 var state = { days:[] };
 
@@ -430,6 +496,13 @@ function submitForm(){
 
   var topicsText = buildTopicsText();
 
+  /* حفظ نسخة للطباعة قبل الإرسال */
+  lastSubmission = {
+    name: trainer.name, memberId: trainer.memberId,
+    program: program, objective: objective, duration: duration, start: start,
+    days: JSON.parse(JSON.stringify(state.days))
+  };
+
   var btn=$('submitBtn'), txt=$('submitTxt'), sp=$('submitSpinner');
   btn.disabled=true; sp.style.display='block'; txt.textContent='جاري التقديم...';
 
@@ -456,6 +529,74 @@ function submitForm(){
     btn.disabled=false; sp.style.display='none'; txt.textContent='تقديم الترشيح';
     err.textContent='حدث خطأ أثناء التقديم، يرجى المحاولة مجدداً.';
   });
+}
+
+/* ====== الطباعة الرسمية ====== */
+function escp(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function prettyDate(s){
+  var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return s||'';
+  var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  return (+m[3])+' '+months[(+m[2])-1]+' '+m[1];
+}
+
+function buildPrintDoc(d){
+  if(!d) return;
+  var daysHtml='';
+  d.days.forEach(function(day, di){
+    var rows=day.rows.filter(function(r){ return (r.topic||'').trim(); });
+    if(!rows.length) return;
+    var trs=rows.map(function(r, ri){
+      return '<tr>'+
+        '<td class="n">'+(ri+1)+'</td>'+
+        '<td>'+escp(r.topic)+'</td>'+
+        '<td>'+escp(r.dur)+'</td>'+
+        '<td>'+escp(r.system)+'</td>'+
+        '<td>'+escp(r.methods)+'</td>'+
+        '<td>'+escp(r.criteria)+'</td>'+
+      '</tr>';
+    }).join('');
+    daysHtml +=
+      '<div class="pday">'+
+        '<div class="pday-h">'+dayLabel(di)+'</div>'+
+        '<table class="pmh"><thead><tr>'+
+          '<th>#</th><th>اسم المحور</th><th>مدة المحور</th><th>نظام التدريب</th><th>وسائل التدريب المستخدمة</th><th>معيار التقييم</th>'+
+        '</tr></thead><tbody>'+trs+'</tbody></table>'+
+      '</div>';
+  });
+
+  var today=new Date();
+  var todayStr=today.getDate()+' '+['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][today.getMonth()]+' '+today.getFullYear();
+
+  $('printDoc').innerHTML =
+    '<div class="pdoc">'+
+      '<div class="pdoc-head">'+
+        '<div class="lg">ت</div>'+
+        '<div><h1>معهد تمكين</h1><p>أول حاضنة للمدربين في الكويت — tamkeenkuw.com</p></div>'+
+      '</div>'+
+      '<div class="pdoc-title">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
+      '<div class="pdoc-meta">'+
+        '<div class="mrow"><div class="mk">اسم المدرب</div><div class="mv">'+escp(d.name||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">رقم العضوية</div><div class="mv">'+escp(d.memberId||'—')+'</div></div>'+
+        '<div class="mrow full"><div class="mk">اسم البرنامج</div><div class="mv">'+escp(d.program||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">مدة البرنامج</div><div class="mv">'+escp(d.duration||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">تاريخ البدء</div><div class="mv">'+escp(prettyDate(d.start))+'</div></div>'+
+      '</div>'+
+      '<div class="pdoc-obj"><div class="lbl">الهدف العام من البرنامج</div><div class="val">'+escp(d.objective||'—')+'</div></div>'+
+      '<div class="pdoc-sec">محاور البرنامج التدريبي</div>'+
+      daysHtml+
+      '<div class="pdoc-foot">'+
+        '<div class="sign">مقدّم الترشيح (المدرب)<div class="ln">'+escp(d.name||'')+'</div></div>'+
+        '<div class="sign">اعتماد المعهد<div class="ln">&nbsp;</div></div>'+
+      '</div>'+
+      '<div class="pdoc-stamp">صدر هذا المستند بتاريخ '+todayStr+' — معهد تمكين · tamkeenkuw.com</div>'+
+    '</div>';
+}
+
+function printNomination(){
+  if(!lastSubmission){ return; }
+  buildPrintDoc(lastSubmission);
+  window.print();
 }
 
 /* ====== دخول تلقائي عبر ?m= ====== */
