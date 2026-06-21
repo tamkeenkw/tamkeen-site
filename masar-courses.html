@@ -245,6 +245,48 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .footer-logo-plate{ display:inline-flex; background:rgba(255,255,255,.96); border-radius:18px; padding:14px 26px; margin-bottom:16px; }
 .footer-logo-plate .brand-logo{ width:190px; height:58px; }
 @media(max-width:480px){ .logo-plate{ padding:18px 28px; } .logo-plate .brand-logo{ width:230px; height:72px; } }
+
+/* ─── CART ─── */
+.cart-fab{ position:fixed; bottom:22px; left:22px; z-index:900; background:var(--crimson); color:#fff; border:none; cursor:pointer; border-radius:100px; padding:14px 22px; display:flex; align-items:center; gap:9px; font-family:'Tajawal',sans-serif; font-weight:900; font-size:15px; box-shadow:0 10px 30px rgba(92,15,15,.4); transition:transform .2s; }
+.cart-fab:hover{ transform:translateY(-2px); }
+.cart-fab .ic{ width:20px; height:20px; }
+.cart-fab .cart-count{ background:#fff; color:var(--crimson); min-width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; padding:0 6px; }
+.cart-fab.empty{ display:none; }
+.cart-box{ max-width:480px; }
+.cart-items{ display:flex; flex-direction:column; gap:10px; margin:4px 0 14px; }
+.cart-empty{ text-align:center; color:var(--muted); padding:28px 10px; font-weight:600; }
+.cart-item{ display:flex; align-items:center; gap:12px; background:var(--cream); border:1.5px solid rgba(92,15,15,.08); border-radius:14px; padding:12px 14px; }
+.cart-item .ci-body{ flex:1; min-width:0; }
+.cart-item .ci-tag{ font-size:10px; font-weight:800; letter-spacing:.5px; color:var(--crimson); }
+.cart-item .ci-title{ font-size:14px; font-weight:900; color:var(--text); margin:2px 0; line-height:1.4; }
+.cart-item .ci-sub{ font-size:12px; color:var(--muted); }
+.cart-item .ci-price{ font-size:15px; font-weight:900; color:var(--crimson); white-space:nowrap; }
+.cart-item .ci-free{ font-size:13px; font-weight:800; color:var(--green); white-space:nowrap; }
+.cart-item .ci-remove{ background:none; border:none; cursor:pointer; color:var(--muted); font-size:15px; line-height:1; padding:4px; }
+.cart-item .ci-remove:hover{ color:var(--crimson); }
+.cart-total{ display:flex; align-items:center; justify-content:space-between; padding:13px 16px; background:var(--crimson); border-radius:14px; margin-bottom:16px; }
+.cart-total .ct-l{ font-size:14px; font-weight:800; color:rgba(255,255,255,.85); }
+.cart-total .ct-v{ font-size:22px; font-weight:900; color:#fff; }
+.cart-hint{ font-size:12.5px; color:var(--text); background:rgba(92,15,15,.05); border-radius:12px; padding:11px 13px; margin-bottom:14px; line-height:1.6; display:flex; gap:8px; align-items:flex-start; }
+.cart-hint .ch-add{ color:var(--crimson); font-weight:800; cursor:pointer; text-decoration:underline; }
+.choice{ display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--cream); border:1.5px solid rgba(92,15,15,.1); border-radius:14px; padding:14px 16px; cursor:pointer; transition:all .2s; margin-bottom:10px; }
+.choice:hover{ border-color:var(--crimson); background:#fff; }
+.choice .ch-t{ font-size:14px; font-weight:900; color:var(--text); }
+.choice .ch-s{ font-size:12px; color:var(--muted); margin-top:2px; }
+.choice .ch-p{ font-size:16px; font-weight:900; color:var(--crimson); white-space:nowrap; }
+.choice .ch-p.free{ color:var(--green); }
+.activate-card{ background:var(--crimson); border-radius:22px; padding:24px; margin-bottom:34px; }
+.activate-card .ac-h{ font-size:18px; font-weight:900; color:#fff; margin-bottom:6px; }
+.activate-card .ac-p{ font-size:13px; color:rgba(255,255,255,.72); margin-bottom:16px; line-height:1.6; }
+.plan-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+@media(max-width:480px){ .plan-row{ grid-template-columns:1fr; } }
+.plan-opt{ background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.2); border-radius:14px; padding:14px 10px; text-align:center; cursor:pointer; transition:all .2s; }
+.plan-opt:hover{ background:rgba(255,255,255,.2); transform:translateY(-2px); }
+.plan-opt .po-n{ font-size:13px; font-weight:700; color:rgba(255,255,255,.85); margin-bottom:4px; }
+.plan-opt .po-p{ font-size:21px; font-weight:900; color:#fff; }
+.plan-opt .po-add{ font-size:11px; color:rgba(255,255,255,.62); margin-top:6px; }
+.toast{ position:fixed; bottom:84px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:#fff; padding:12px 24px; border-radius:100px; font-weight:800; font-size:14px; opacity:0; pointer-events:none; transition:all .3s; z-index:1100; box-shadow:0 8px 24px rgba(0,0,0,.3); }
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
@@ -281,12 +323,12 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         <div class="step">
           <div class="step-n">١</div>
           <div class="step-t">سجّل برقمك</div>
-          <div class="step-d">اختر دورتك واكتب رقم الواتساب — التسجيل الأول <strong>مجاني</strong></div>
+          <div class="step-d">أضف دوراتك للسلة — أول دورة <strong>مجاناً</strong> بدون تفعيل</div>
         </div>
         <div class="step">
           <div class="step-n">٢</div>
           <div class="step-t">فعّل حسابك</div>
-          <div class="step-d">رسوم تفعيل شهرية <strong>١٥ د.ك</strong> تفتح لك جميع الدورات المجانية</div>
+          <div class="step-d">أضف تفعيل <strong>١٥ د.ك</strong> للسلة — يفتح جميع الدورات المجانية</div>
         </div>
         <div class="step">
           <div class="step-n">٣</div>
@@ -296,8 +338,18 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
         <div class="step">
           <div class="step-n">٤</div>
           <div class="step-t">استخرج شهادتك</div>
-          <div class="step-d">شهادة معتمدة لأي دورة بـ <strong>١٥ د.ك</strong> عند الطلب</div>
+          <div class="step-d">أضف شهادة معتمدة بـ <strong>١٥ د.ك</strong> لأي دورة عند الإضافة</div>
         </div>
+      </div>
+    </div>
+
+    <div class="activate-card">
+      <div class="ac-h">فعّل حسابك واحضر كل الدورات</div>
+      <div class="ac-p">تفعيل شهري يفتح لك جميع الدورات المجانية. أضفه للسلة مع دوراتك وادفع دفعة وحدة:</div>
+      <div class="plan-row">
+        <div class="plan-opt" onclick="addSub('شهر',15)"><div class="po-n">شهر واحد</div><div class="po-p">١٥ د.ك</div><div class="po-add">أضف للسلة</div></div>
+        <div class="plan-opt" onclick="addSub('٦ أشهر',40)"><div class="po-n">٦ أشهر</div><div class="po-p">٤٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
+        <div class="plan-opt" onclick="addSub('١٢ شهر',70)"><div class="po-n">١٢ شهر</div><div class="po-p">٧٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
       </div>
     </div>
 
@@ -316,7 +368,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   <div class="sec-inner">
     <div class="sec-tag">الدورات الخاصة</div>
     <h2 class="sec-title">دورات متخصصة مدفوعة</h2>
-    <p class="sec-sub">دورات احترافية مركّزة مع نخبة المدربين — احجز مقعدك وادفع أونلاين بأمان، وتصلك شهادة معتمدة.</p>
+    <p class="sec-sub">دورات احترافية مركّزة مع نخبة المدربين — أضفها للسلة وادفع كل تسجيلاتك دفعة وحدة، وتصلك شهادة معتمدة.</p>
 
     <div class="month-header">
       <span class="month-badge">الدورات المتاحة</span>
@@ -413,179 +465,82 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
   </div>
 </div>
 
-<!-- ════════ MODAL: FREE COURSE ════════ -->
-<div class="modal-overlay" id="freeModal">
+<!-- ════════ CART FAB + TOAST ════════ -->
+<button class="cart-fab empty" id="cartFab" onclick="openCart()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.3l2 12.4a1.5 1.5 0 0 0 1.5 1.3h9.2a1.5 1.5 0 0 0 1.5-1.2L21 7H5.3"/></svg> السلة <span class="cart-count" id="cartCount">٠</span></button>
+<div class="toast" id="toast"></div>
+
+<!-- ════════ MODAL: ADD FREE COURSE ════════ -->
+<div class="modal-overlay" id="freeAddModal">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('freeModal')">✕</button>
-    <div class="modal-course-tag" id="fModalTag">دورة مجانية</div>
-    <div class="modal-title" id="fModalTitle">سجّل في الدورة</div>
+    <button class="modal-close" onclick="closeModal('freeAddModal')">✕</button>
+    <div class="modal-course-tag">دورة مجانية</div>
+    <div class="modal-title" id="faTitle">—</div>
     <div class="modal-info-row">
-      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> <span id="fModalTrainer"></span></div>
-      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/></svg> <span id="fModalDate"></span></div>
+      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> <span id="faTrainer"></span></div>
+      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/></svg> <span id="faDate"></span></div>
     </div>
-    <input type="hidden" id="fCourseName">
-    <input type="hidden" id="fCourseDate">
-
-    <!-- STEP 1: phone -->
-    <div id="fStep1">
-      <div class="modal-sub">اكتب رقم واتسابك ونكمل معك</div>
-      <div class="mf" id="mf-fphone">
-        <label><span class="req">*</span> رقم الواتساب</label>
-        <input type="tel" id="fStepPhone" placeholder="XXXXXXXX">
-        <div class="err">يرجى إدخال رقم صحيح</div>
-      </div>
-      <button class="modal-submit" id="fStep1Btn" onclick="checkPhone()">
-        <span id="fStep1Txt">متابعة</span>
-        <div class="modal-spinner" id="fStep1Spin" style="display:none;"></div>
-      </button>
+    <div class="modal-sub">اختر طريقة الإضافة للسلة:</div>
+    <div class="choice" onclick="addFreeToCart(true)">
+      <div><div class="ch-t">حضور + شهادة معتمدة</div><div class="ch-s">شهادة رسمية لهالدورة</div></div>
+      <div class="ch-p">١٥ د.ك</div>
     </div>
+    <div class="choice" onclick="addFreeToCart(false)">
+      <div><div class="ch-t">حضور فقط</div><div class="ch-s">بدون شهادة</div></div>
+      <div class="ch-p free">مجاني</div>
+    </div>
+  </div>
+</div>
 
-    <!-- first time form -->
-    <form id="fNewForm" style="display:none;" novalidate>
-      <div class="modal-sub">أول دورة لك معنا — <strong style="color:var(--crimson)">مجاناً</strong> <svg class="ic" style="color:var(--crimson)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg></div>
-      <input type="hidden" id="fNewPhone">
-      <div class="mf" id="mf-fname">
-        <label><span class="req">*</span> الاسم الكامل</label>
-        <input type="text" name="fullName" placeholder="الاسم الكامل">
-        <div class="err">يرجى إدخال اسمك</div>
-      </div>
-      <div class="mf" id="mf-femail">
-        <label><span class="req">*</span> الإيميل</label>
-        <input type="email" name="email" placeholder="example@email.com">
-        <div class="err">يرجى إدخال إيميل صحيح</div>
-      </div>
-      <div class="mf" id="mf-fcert">
-        <label style="margin-bottom:8px;"><span class="req">*</span> تبي شهادة معتمدة بـ ١٥ د.ك؟</label>
-        <div style="display:flex;gap:10px;">
-          <label class="radio-option" id="lbl-fcert-yes" style="flex:1;">
-            <input type="radio" name="wantCert" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="hlCert('f','yes')">نعم، أبي شهادة
-          </label>
-          <label class="radio-option" id="lbl-fcert-no" style="flex:1;">
-            <input type="radio" name="wantCert" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="hlCert('f','no')">لا، حضور فقط
-          </label>
-        </div>
-        <div class="err">يرجى اختيار إجابة</div>
-      </div>
-      <button type="submit" class="modal-submit" id="fNewBtn">
-        <span id="fNewTxt">سجّل الآن</span>
-        <div class="modal-spinner" id="fNewSpin" style="display:none;"></div>
-      </button>
-    </form>
+<!-- ════════ MODAL: ADD SPECIAL COURSE ════════ -->
+<div class="modal-overlay" id="specialAddModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('specialAddModal')">✕</button>
+    <div class="modal-course-tag">دورة خاصة</div>
+    <div class="modal-title" id="saTitle">—</div>
+    <div class="modal-info-row">
+      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> <span id="saTrainer"></span></div>
+      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/></svg> <span id="saDate"></span></div>
+    </div>
+    <div class="pay-summary"><span class="ps-l">رسوم الدورة</span><span class="ps-p" id="saPrice">—</span></div>
+    <button class="modal-submit" onclick="addSpecialToCart()">أضف للسلة</button>
+  </div>
+</div>
 
-    <!-- active subscriber -->
-    <div id="fActive" style="display:none;">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 5 2 9l10 4 10-4Z"/><path d="M6 10.5V16c0 1.2 2.7 2.5 6 2.5s6-1.3 6-2.5v-5.5"/><path d="M22 9v5"/></svg></div>
-      <h3 style="color:var(--green);text-align:center;margin-bottom:6px;">اشتراكك فعّال!</h3>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;text-align:center;margin-bottom:16px;">أكمل بياناتك ونرسل لك لينك زووم فوراً</p>
-      <div class="mf" id="mf-faname"><label><span class="req">*</span> الاسم الكامل</label><input type="text" id="faName" placeholder="الاسم الكامل"></div>
-      <div class="mf" id="mf-faemail"><label><span class="req">*</span> الإيميل</label><input type="email" id="faEmail" placeholder="example@email.com"></div>
-      <div class="mf" id="mf-facert">
-        <label style="margin-bottom:8px;"><span class="req">*</span> تبي شهادة معتمدة بـ ١٥ د.ك؟</label>
-        <div style="display:flex;gap:10px;">
-          <label class="radio-option" id="lbl-facert-yes" style="flex:1;"><input type="radio" name="faCert" value="نعم" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="hlCert('fa','yes')">نعم، أبي شهادة</label>
-          <label class="radio-option" id="lbl-facert-no" style="flex:1;"><input type="radio" name="faCert" value="لا" style="accent-color:#5C0F0F;width:18px;height:18px;" onchange="hlCert('fa','no')">لا، حضور فقط</label>
-        </div>
-        <div class="err">يرجى اختيار إجابة</div>
-      </div>
-      <button class="modal-submit" id="faBtn" onclick="submitActive()"><span id="faTxt">سجّل الآن</span><div class="modal-spinner" id="faSpin" style="display:none;"></div></button>
+<!-- ════════ MODAL: CART / CHECKOUT ════════ -->
+<div class="modal-overlay" id="cartModal">
+  <div class="modal-box cart-box">
+    <button class="modal-close" onclick="closeModal('cartModal')">✕</button>
+    <div class="modal-title">سلة التسجيل</div>
+    <div class="modal-sub">راجع طلبك وأكمل الدفع دفعة وحدة</div>
+    <div id="cartItems" class="cart-items"></div>
+    <div id="cartHint" class="cart-hint" style="display:none;">
+      <svg class="ic" style="color:var(--crimson)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg>
+      <div>عندك دورات بدون تفعيل. <span class="ch-add" onclick="quickAddSub()">فعّل حسابك (١٥ د.ك)</span> عشان تحضر جميع الدورات المجانية.</div>
+    </div>
+    <div class="cart-total" id="cartTotalRow"><span class="ct-l">الإجمالي</span><span class="ct-v" id="cartTotal">٠ د.ك</span></div>
+
+    <div id="checkoutForm">
+      <div class="mf" id="mf-coname"><label><span class="req">*</span> الاسم الكامل</label><input type="text" id="coName" placeholder="الاسم الكامل"><div class="err">يرجى إدخال اسمك</div></div>
+      <div class="mf" id="mf-cophone"><label><span class="req">*</span> رقم الواتساب</label><input type="tel" id="coPhone" placeholder="XXXXXXXX"><div class="err">يرجى إدخال رقم صحيح</div></div>
+      <div class="mf" id="mf-coemail"><label><span class="req">*</span> الإيميل</label><input type="email" id="coEmail" placeholder="example@email.com"><div class="err">يرجى إدخال إيميل صحيح</div></div>
+      <button class="modal-submit" id="coBtn" onclick="checkout()"><span id="coTxt">إتمام التسجيل والدفع</span><div class="modal-spinner" id="coSpin" style="display:none;"></div></button>
     </div>
 
-    <!-- needs subscription (already used free) -->
-    <div id="fNeedSub" style="display:none;">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.7-1.5"/></svg></div>
-      <h3 style="color:var(--crimson);text-align:center;margin-bottom:6px;">فعّل حسابك لتكمل</h3>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;text-align:center;margin-bottom:14px;">سبق سجّلت في دورة مجانية. التسجيل المجاني <strong style="color:var(--text)">لمرة وحدة</strong> — فعّل حسابك وتفتح لك جميع الدورات.</p>
-      <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid rgba(92,15,15,.08);">
-        <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:8px;">التفعيل يشمل:</div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <div style="font-size:12px;color:var(--muted);">· حضور جميع دورات الشهر بلا حدود</div>
-          <div style="font-size:12px;color:var(--muted);">· لينك زووم قبل كل دورة</div>
-          <div style="font-size:12px;color:var(--muted);">· شهادة معتمدة لأي دورة بـ ١٥ د.ك عند الطلب</div>
-        </div>
-      </div>
-      <div style="background:var(--cream);border-radius:16px;padding:14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);">
-        <div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:10px;text-align:center;">اختر مدة التفعيل</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="plan-pick" onclick="pickPlan('شهر',15,this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:11px 14px;border:2px solid transparent;cursor:pointer;transition:all .2s;">
-            <span style="font-size:13px;font-weight:700;">شهر واحد</span><span style="font-size:16px;font-weight:900;color:var(--crimson);">١٥ د.ك</span>
-          </div>
-          <div class="plan-pick" onclick="pickPlan('6 أشهر',40,this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:11px 14px;border:2px solid transparent;cursor:pointer;transition:all .2s;">
-            <span style="font-size:13px;font-weight:700;">٦ أشهر</span><span style="font-size:16px;font-weight:900;color:var(--crimson);">٤٠ د.ك</span>
-          </div>
-          <div class="plan-pick" onclick="pickPlan('12 شهر',70,this)" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:10px;padding:11px 14px;border:2px solid rgba(92,15,15,.2);cursor:pointer;transition:all .2s;">
-            <span style="font-size:13px;font-weight:700;">١٢ شهر <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.6 6.7 19.1l1-5.8-4.2-4.1 5.9-.9L12 3Z"/></svg></span><span style="font-size:16px;font-weight:900;color:var(--crimson);">٧٠ د.ك</span>
-          </div>
-        </div>
-      </div>
-      <div id="fSubForm" style="display:none;">
-        <div class="mf" id="mf-fsname"><label><span class="req">*</span> الاسم الكامل</label><input type="text" id="fsName" placeholder="الاسم الكامل"></div>
-        <div class="mf" id="mf-fsemail"><label><span class="req">*</span> الإيميل</label><input type="email" id="fsEmail" placeholder="example@email.com"></div>
-        <button class="modal-submit" id="fsBtn" onclick="payActivation()" style="margin-bottom:10px;"><span id="fsTxt">فعّل وادفع الآن</span><div class="modal-spinner" id="fsSpin" style="display:none;"></div></button>
-      </div>
-      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أفعّل حسابي في أكاديمية مسار" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--crimson);font-size:13px;font-weight:700;padding:10px;border-radius:100px;text-decoration:none;border:1.5px solid rgba(92,15,15,.2);">أو تواصل معنا على الواتساب</a>
-    </div>
-
-    <!-- expired -->
-    <div id="fExpired" style="display:none;">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12"/><path d="M7 3c0 4 4 5 5 9 1-4 5-5 5-9M7 21c0-4 4-5 5-9 1 4 5 5 5 9"/></svg></div>
-      <h3 style="color:var(--crimson);text-align:center;margin-bottom:6px;">انتهى تفعيلك</h3>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;text-align:center;margin-bottom:16px;">جدّد التفعيل للاستمرار في حضور الدورات</p>
-      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أجدّد تفعيل حسابي في أكاديمية مسار" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--crimson);color:#fff;font-size:15px;font-weight:900;padding:14px;border-radius:100px;text-decoration:none;">جدّد التفعيل الآن</a>
-    </div>
-
-    <!-- success -->
-    <div id="fSuccess" style="display:none;" class="modal-state">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.3 12 2.6 2.6 5-5.2"/></svg></div>
-      <h3>تم تسجيل طلبك!</h3>
-      <p>يوصلك لينك زووم على إيميلك قبل الدورة<br>نشوفك هناك</p>
-    </div>
-    <!-- sub sent -->
-    <div id="fSubSent" style="display:none;" class="modal-state">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.3 12 2.6 2.6 5-5.2"/></svg></div>
+    <div id="cartSuccess" style="display:none;" class="modal-state">
+      <div class="s-icon" style="color:var(--green)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.3 12 2.6 2.6 5-5.2"/></svg></div>
       <h3>تم استلام طلبك!</h3>
-      <p>يتواصل معك فريقنا خلال ٢٤ ساعة لإتمام التفعيل</p>
+      <p id="cartSuccessMsg">—</p>
     </div>
   </div>
 </div>
 
-<!-- ════════ MODAL: SPECIAL COURSE ════════ -->
-<div class="modal-overlay" id="specialModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('specialModal')">✕</button>
-    <div class="modal-course-tag" id="sModalTag">دورة خاصة</div>
-    <div class="modal-title" id="sModalTitle">احجز مقعدك</div>
-    <div class="modal-info-row">
-      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> <span id="sModalTrainer"></span></div>
-      <div class="modal-info-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/></svg> <span id="sModalDate"></span></div>
-    </div>
-    <input type="hidden" id="sCourseName">
-    <input type="hidden" id="sCourseDate">
-    <input type="hidden" id="sCoursePrice">
-
-    <form id="sForm" novalidate>
-      <div class="pay-summary" id="sPaySummary">
-        <span class="ps-l">رسوم الدورة</span>
-        <span class="ps-p" id="sPriceLabel">—</span>
-      </div>
-      <div class="mf" id="mf-sname"><label><span class="req">*</span> الاسم الكامل</label><input type="text" name="fullName" placeholder="الاسم الكامل"><div class="err">يرجى إدخال اسمك</div></div>
-      <div class="mf" id="mf-sphone"><label><span class="req">*</span> رقم الواتساب</label><input type="tel" name="phone" placeholder="XXXXXXXX"><div class="err">يرجى إدخال رقم صحيح</div></div>
-      <div class="mf" id="mf-semail"><label><span class="req">*</span> الإيميل</label><input type="email" name="email" placeholder="example@email.com"><div class="err">يرجى إدخال إيميل صحيح</div></div>
-      <button type="submit" class="modal-submit" id="sBtn"><span id="sBtnTxt">تأكيد الحجز والدفع</span><div class="modal-spinner" id="sSpin" style="display:none;"></div></button>
-    </form>
-
-    <div id="sSuccess" style="display:none;" class="modal-state">
-      <div class="s-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.3 12 2.6 2.6 5-5.2"/></svg></div>
-      <h3>تم استلام حجزك!</h3>
-      <p id="sSuccessMsg">يتواصل معك فريق مسار خلال ٢٤ ساعة لإتمام الحجز</p>
-    </div>
-  </div>
-</div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec';
 const PAGE_URL   = 'https://tamkeenkuw.com/masar-courses';
 
 /* ───── TABS ───── */
+let specialLoaded=false;
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -599,20 +554,7 @@ function openModal(id){ document.getElementById(id).classList.add('open'); docum
 function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
 document.querySelectorAll('.modal-overlay').forEach(el=>{ el.addEventListener('click', function(e){ if(e.target===this) closeModal(this.id); }); });
 
-function showFree(id){
-  ['fStep1','fNewForm','fActive','fNeedSub','fExpired','fSuccess','fSubSent'].forEach(x=>{
-    const el=document.getElementById(x); if(el) el.style.display = x===id?'':'none';
-  });
-}
-function hlCert(prefix, which){
-  document.getElementById('lbl-'+prefix+'cert-yes').style.borderColor = which==='yes'?'var(--crimson)':'rgba(92,15,15,.1)';
-  document.getElementById('lbl-'+prefix+'cert-yes').style.background  = which==='yes'?'rgba(92,15,15,.05)':'';
-  document.getElementById('lbl-'+prefix+'cert-no').style.borderColor  = which==='no'?'var(--crimson)':'rgba(92,15,15,.1)';
-  document.getElementById('lbl-'+prefix+'cert-no').style.background   = which==='no'?'rgba(92,15,15,.05)':'';
-  document.getElementById('mf-'+prefix+'cert').classList.remove('invalid');
-}
-
-/* ───── DATE FORMAT ───── */
+/* ───── UTILS ───── */
 function formatDateAr(dateStr){
   if(!dateStr) return '';
   const dp=dateStr.split('-'); if(dp.length<3) return dateStr;
@@ -622,8 +564,152 @@ function formatDateAr(dateStr){
   return days[d.getDay()]+' '+dp[0]+' '+months[parseInt(dp[1])];
 }
 function esc(s){ return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function ar(n){ return String(n).replace(/[0-9]/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1700); }
+function setBtn(btn, txt, spin, loading){
+  document.getElementById(btn).disabled=loading;
+  document.getElementById(txt).style.display=loading?'none':'block';
+  document.getElementById(spin).style.display=loading?'block':'none';
+}
 
-/* ═══════════ FREE COURSES ═══════════ */
+/* ═══════════ CART ═══════════ */
+let cart=[]; let cid=1;
+function cartTotalAmount(){ return cart.reduce((s,i)=>s+(i.amount||0),0); }
+function updateFab(){
+  const fab=document.getElementById('cartFab');
+  fab.classList.toggle('empty', cart.length===0);
+  document.getElementById('cartCount').textContent=ar(cart.length);
+}
+function addToCart(item){ item.id=cid++; cart.push(item); updateFab(); renderCart(); toast('أُضيف للسلة ✓'); }
+function removeItem(id){ cart=cart.filter(i=>i.id!==id); updateFab(); renderCart(); }
+function renderCart(){
+  const box=document.getElementById('cartItems');
+  if(!cart.length){
+    box.innerHTML='<div class="cart-empty">السلة فاضية — أضف دوراتك من الأعلى</div>';
+  } else {
+    box.innerHTML=cart.map(i=>{
+      let priceHtml;
+      if(i.kind==='special' && i.amount===0) priceHtml='<span class="ci-price" style="font-size:12px;color:var(--muted);">حسب الدورة</span>';
+      else if(i.amount>0) priceHtml='<span class="ci-price">'+ar(i.amount)+' د.ك</span>';
+      else priceHtml='<span class="ci-free">مجاني</span>';
+      return '<div class="cart-item"><div class="ci-body"><div class="ci-tag">'+i.tag+'</div><div class="ci-title">'+i.title+'</div>'+(i.sub?'<div class="ci-sub">'+i.sub+'</div>':'')+'</div>'+priceHtml+'<button class="ci-remove" onclick="removeItem('+i.id+')">✕</button></div>';
+    }).join('');
+  }
+  document.getElementById('cartTotal').textContent=ar(cartTotalAmount())+' د.ك';
+  const hasFree=cart.some(i=>i.kind==='free' && !i.cert);
+  const hasSub =cart.some(i=>i.kind==='sub');
+  document.getElementById('cartHint').style.display=(hasFree && !hasSub)?'':'none';
+}
+function openCart(){
+  document.getElementById('cartItems').style.display='';
+  document.getElementById('cartTotalRow').style.display='';
+  document.getElementById('checkoutForm').style.display='';
+  document.getElementById('cartSuccess').style.display='none';
+  setBtn('coBtn','coTxt','coSpin',false);
+  renderCart();
+  openModal('cartModal');
+}
+
+/* ───── ADD: FREE ───── */
+let curFree=null;
+function addFree(name,trainer,date){
+  curFree={name,trainer,date};
+  document.getElementById('faTitle').textContent=name;
+  document.getElementById('faTrainer').textContent=trainer;
+  document.getElementById('faDate').textContent=date;
+  openModal('freeAddModal');
+}
+function addFreeToCart(withCert){
+  closeModal('freeAddModal');
+  if(cart.some(i=>i.kind==='free' && i.course===curFree.name)){ toast('الدورة موجودة بالسلة'); return; }
+  addToCart({ kind:'free', cert:withCert, amount: withCert?15:0,
+    tag: withCert?'حضور + شهادة':'حضور مجاني', title: curFree.name,
+    sub: curFree.date+' · '+curFree.trainer, course: curFree.name, date: curFree.date });
+}
+
+/* ───── ADD: SPECIAL ───── */
+let curSpecial=null;
+function addSpecial(name,trainer,date,price){
+  curSpecial={name,trainer,date,price:parseFloat(price)||0};
+  document.getElementById('saTitle').textContent=name;
+  document.getElementById('saTrainer').textContent=trainer;
+  document.getElementById('saDate').textContent=date;
+  document.getElementById('saPrice').textContent = curSpecial.price>0 ? ar(curSpecial.price)+' د.ك' : 'حسب الدورة';
+  openModal('specialAddModal');
+}
+function addSpecialToCart(){
+  closeModal('specialAddModal');
+  if(cart.some(i=>i.kind==='special' && i.course===curSpecial.name)){ toast('الدورة موجودة بالسلة'); return; }
+  addToCart({ kind:'special', amount: curSpecial.price, tag:'دورة خاصة', title: curSpecial.name,
+    sub: curSpecial.date+' · '+curSpecial.trainer, course: curSpecial.name, date: curSpecial.date });
+}
+
+/* ───── ADD: SUBSCRIPTION ───── */
+function addSub(plan, amount){
+  cart=cart.filter(i=>i.kind!=='sub');
+  addToCart({ kind:'sub', amount:amount, tag:'تفعيل الحساب', title:'اشتراك '+plan,
+    sub:'حضور جميع الدورات المجانية', plan:'اشتراك '+plan+' — '+ar(amount)+' د.ك' });
+}
+function quickAddSub(){ addSub('شهر',15); }
+
+/* ───── CHECKOUT ───── */
+async function checkout(){
+  const name=document.getElementById('coName').value.trim();
+  const phone=document.getElementById('coPhone').value.trim();
+  const email=document.getElementById('coEmail').value.trim();
+  let ok=true;
+  if(!name){document.getElementById('mf-coname').classList.add('invalid');ok=false;}else document.getElementById('mf-coname').classList.remove('invalid');
+  if(!phone||phone.length<7){document.getElementById('mf-cophone').classList.add('invalid');ok=false;}else document.getElementById('mf-cophone').classList.remove('invalid');
+  if(!email||!email.includes('@')){document.getElementById('mf-coemail').classList.add('invalid');ok=false;}else document.getElementById('mf-coemail').classList.remove('invalid');
+  if(!cart.length){ toast('السلة فاضية'); return; }
+  if(!ok) return;
+  setBtn('coBtn','coTxt','coSpin',true);
+  const ts=new Date().toLocaleString('ar-SA');
+
+  // 1) سجّل كل عنصر في الشيت
+  for(const i of cart){
+    let body=null;
+    if(i.kind==='free'){
+      body={ type:'تسجيل دورة مجانية', name, phone, email, course:i.course, courseDate:i.date,
+        wantCert: i.cert?'نعم':'لا', courseType:'مجاني', notes:'طلب من السلة', timestamp:ts };
+    } else if(i.kind==='sub'){
+      body={ type:'اشتراك مسار', name, phone, email, plan:i.plan, timestamp:ts };
+    } else if(i.kind==='special'){
+      body={ type:'دورة خاصة', name, phone, email, course:i.course, courseDate:i.date, courseType:'دورة خاصة',
+        notes: i.amount>0?('رسوم: '+i.amount+' د.ك'):'بانتظار تحديد الرسوم', timestamp:ts };
+    }
+    if(body) await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)}).catch(()=>{});
+  }
+  if(typeof fbq!=='undefined') fbq('track','Lead');
+
+  const total=cartTotalAmount();
+  // 2) ادفع الإجمالي عبر Tap (سلة)
+  if(total>0){
+    const itemsTxt=cart.filter(i=>i.amount>0).map(i=>i.title+' ('+i.amount+'د.ك)').join(' + ');
+    try{
+      const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({ type:'دفع_سلة', name, phone, email, amount:total, items:itemsTxt,
+          redirect: PAGE_URL+'?payment=success&type=سلة&phone='+encodeURIComponent(phone) })});
+      const data=await res.json();
+      if(data && data.status==='ok' && data.url){ window.location.href=data.url; return; }
+    }catch(err){}
+    finishCart('تم تسجيل طلبك ('+ar(total)+' د.ك). يتواصل معك الفريق لإتمام الدفع، أو ادفع عبر الواتساب 97999768.');
+  } else {
+    finishCart('تم تسجيل دوراتك المجانية! يوصلك لينك زووم على إيميلك قبل كل دورة.');
+  }
+}
+function finishCart(msg){
+  document.getElementById('cartItems').style.display='none';
+  document.getElementById('cartHint').style.display='none';
+  document.getElementById('cartTotalRow').style.display='none';
+  document.getElementById('checkoutForm').style.display='none';
+  document.getElementById('cartSuccessMsg').textContent=msg;
+  document.getElementById('cartSuccess').style.display='block';
+  cart=[]; updateFab();
+}
+
+/* ═══════════ LOAD FREE COURSES ═══════════ */
 async function loadFreeCourses(){
   try{
     const res=await fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني'));
@@ -647,7 +733,7 @@ async function loadFreeCourses(){
         <div class="course-card-bottom">
           <div class="course-trainer"><div class="trainer-avatar">${initial}</div><div><div class="trainer-name">${c.trainer}</div><div class="trainer-label">مدرب معتمد</div></div></div>
           <div class="course-meta"><span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg> ${c.time||''}</span><span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9.5M9.5 2h5M18.5 5.5 20 4"/></svg> ساعتان</span>${mode}</div>
-          <button class="course-register-btn" onclick="openFreeModal('${esc(c.name)}','${esc(c.trainer)}','${esc(dateLabel)}')">سجّل مجاناً</button>
+          <button class="course-register-btn" onclick="addFree('${esc(c.name)}','${esc(c.trainer)}','${esc(dateLabel)}')">أضف للسلة</button>
         </div>
       </div>`;
     }).join('');
@@ -656,138 +742,13 @@ async function loadFreeCourses(){
   }
 }
 
-function openFreeModal(course, trainer, date){
-  document.getElementById('fModalTag').textContent='دورة مجانية';
-  document.getElementById('fModalTitle').textContent=course;
-  document.getElementById('fModalTrainer').textContent=trainer;
-  document.getElementById('fModalDate').textContent=date;
-  document.getElementById('fCourseName').value=course;
-  document.getElementById('fCourseDate').value=date;
-  document.getElementById('fStepPhone').value='';
-  document.getElementById('fSubForm').style.display='none';
-  selectedPlan=''; selectedPlanAmount=0;
-  showFree('fStep1');
-  openModal('freeModal');
-}
+/* ═══════════ LOAD SPECIAL COURSES ═══════════ */
+/* دورات خاصة لها صفحات تسجيل مخصصة — تفتح صفحتها بدل السلة */
+const SPECIAL_PAGES = [
+  { match:'مدرب معتمد', url:'https://tamkeenkuw.com/certified-trainer' }
+];
+function specialPageFor(name){ const f=SPECIAL_PAGES.find(p=>(name||'').includes(p.match)); return f?f.url:null; }
 
-async function checkPhone(){
-  const phone=document.getElementById('fStepPhone').value.trim();
-  if(!phone||phone.length<7){ document.getElementById('mf-fphone').classList.add('invalid'); return; }
-  document.getElementById('mf-fphone').classList.remove('invalid');
-  document.getElementById('fStep1Btn').disabled=true;
-  document.getElementById('fStep1Txt').style.display='none';
-  document.getElementById('fStep1Spin').style.display='block';
-  try{
-    const res=await fetch(SCRIPT_URL+'?action=check&phone='+encodeURIComponent(phone));
-    const data=await res.json();
-    if(data.status==='first_time'){ document.getElementById('fNewPhone').value=phone; document.querySelectorAll('#fNewForm input[name="wantCert"]').forEach(r=>r.checked=false); hlCert('f',''); showFree('fNewForm'); }
-    else if(data.status==='active'){ showFree('fActive'); }
-    else if(data.status==='expired'){ showFree('fExpired'); }
-    else { showFree('fNeedSub'); }
-  }catch(err){ document.getElementById('fNewPhone').value=phone; showFree('fNewForm'); }
-  finally{
-    document.getElementById('fStep1Btn').disabled=false;
-    document.getElementById('fStep1Txt').style.display='block';
-    document.getElementById('fStep1Spin').style.display='none';
-  }
-}
-
-/* first-time free registration */
-document.getElementById('fNewForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const f=this;
-  const wantCert=document.querySelector('#fNewForm input[name="wantCert"]:checked')?.value||'';
-  let ok=true;
-  if(!f.fullName.value.trim()){ document.getElementById('mf-fname').classList.add('invalid'); ok=false; } else document.getElementById('mf-fname').classList.remove('invalid');
-  if(!f.email.value.trim()||!f.email.value.includes('@')){ document.getElementById('mf-femail').classList.add('invalid'); ok=false; } else document.getElementById('mf-femail').classList.remove('invalid');
-  if(!wantCert){ document.getElementById('mf-fcert').classList.add('invalid'); ok=false; }
-  if(!ok) return;
-  setBtn('fNewBtn','fNewTxt','fNewSpin',true);
-  const phone=document.getElementById('fNewPhone').value;
-  const course=document.getElementById('fCourseName').value;
-  const courseDate=document.getElementById('fCourseDate').value;
-
-  if(wantCert==='نعم'){
-    try{
-      const res=await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({ type:'دفع_شهادة', name:f.fullName.value, phone, email:f.email.value, course, courseDate, courseType:'مجاني', amount:15, notes:courseDate?'تاريخ الدورة: '+courseDate:'' }) });
-      const data=await res.json();
-      if(data.status==='ok'&&data.url){ window.location.href=data.url; return; }
-    }catch(err){}
-  }
-  await fetch(SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({ type:'تسجيل دورة مجانية', name:f.fullName.value, phone, email:f.email.value, course, courseDate, wantCert, courseType:'مجاني', timestamp:new Date().toLocaleString('ar-SA') }) }).catch(()=>{});
-  if(typeof fbq!=='undefined') fbq('track','Lead');
-  showFree('fSuccess');
-});
-
-/* active subscriber registration */
-async function submitActive(){
-  const name=document.getElementById('faName').value.trim();
-  const email=document.getElementById('faEmail').value.trim();
-  const phone=document.getElementById('fStepPhone').value.trim();
-  const course=document.getElementById('fCourseName').value;
-  const courseDate=document.getElementById('fCourseDate').value;
-  const wantCert=document.querySelector('input[name="faCert"]:checked')?.value||'';
-  let ok=true;
-  if(!name){ document.getElementById('mf-faname').classList.add('invalid'); ok=false; } else document.getElementById('mf-faname').classList.remove('invalid');
-  if(!email||!email.includes('@')){ document.getElementById('mf-faemail').classList.add('invalid'); ok=false; } else document.getElementById('mf-faemail').classList.remove('invalid');
-  if(!wantCert){ document.getElementById('mf-facert').classList.add('invalid'); ok=false; } else document.getElementById('mf-facert').classList.remove('invalid');
-  if(!ok) return;
-  setBtn('faBtn','faTxt','faSpin',true);
-  if(wantCert==='نعم'){
-    try{
-      const res=await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({ type:'دفع_شهادة', name, phone, email, course, courseDate, courseType:'مشترك', amount:15, notes:courseDate?'تاريخ الدورة: '+courseDate:'' }) });
-      const data=await res.json();
-      if(data.status==='ok'&&data.url){ window.location.href=data.url; return; }
-    }catch(err){}
-  }
-  await fetch(SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({ type:'تسجيل دورة مجانية', name, phone, email, course, courseType:'مشترك', wantCert, courseDate, timestamp:new Date().toLocaleString('ar-SA') }) }).catch(()=>{});
-  if(typeof fbq!=='undefined') fbq('track','Lead');
-  showFree('fSuccess');
-}
-
-/* activation / subscription */
-let selectedPlan=''; let selectedPlanAmount=0;
-function pickPlan(plan, amount, el){
-  selectedPlan=plan; selectedPlanAmount=amount;
-  document.querySelectorAll('.plan-pick').forEach(p=>p.style.border='2px solid transparent');
-  el.style.border='2px solid var(--crimson)';
-  document.getElementById('fSubForm').style.display='';
-}
-async function payActivation(){
-  const name=document.getElementById('fsName').value.trim();
-  const email=document.getElementById('fsEmail').value.trim();
-  const phone=document.getElementById('fStepPhone').value.trim();
-  if(!name||!email||!email.includes('@')||!selectedPlan){
-    if(!name) document.getElementById('mf-fsname').classList.add('invalid');
-    if(!email||!email.includes('@')) document.getElementById('mf-fsemail').classList.add('invalid');
-    return;
-  }
-  document.getElementById('mf-fsname').classList.remove('invalid');
-  document.getElementById('mf-fsemail').classList.remove('invalid');
-  setBtn('fsBtn','fsTxt','fsSpin',true);
-  const planLabel = selectedPlan==='شهر'?'اشتراك شهر — ١٥ د.ك':(selectedPlan==='6 أشهر'?'اشتراك ٦ أشهر — ٤٠ د.ك':'اشتراك ١٢ شهر — ٧٠ د.ك');
-  // try Tap
-  try{
-    const res=await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ type:'دفع_اشتراك', name, phone, email, plan:planLabel, amount:selectedPlanAmount,
-        redirect: PAGE_URL+'?payment=success&type=اشتراك&plan='+encodeURIComponent(planLabel)+'&phone='+encodeURIComponent(phone) }) });
-    const data=await res.json();
-    if(data.status==='ok'&&data.url){ window.location.href=data.url; return; }
-  }catch(err){}
-  // fallback: pending request
-  await fetch(SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({ type:'اشتراك مسار', name, phone, email, plan:planLabel, timestamp:new Date().toLocaleString('ar-SA') }) }).catch(()=>{});
-  if(typeof fbq!=='undefined') fbq('track','Lead');
-  showFree('fSubSent');
-}
-
-/* ═══════════ SPECIAL COURSES ═══════════ */
-let specialLoaded=false;
-function ar(n){ return String(n).replace(/[0-9]/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
 async function loadSpecialCourses(){
   try{
     const res=await fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'));
@@ -801,10 +762,15 @@ async function loadSpecialCourses(){
       const online=c.zoom && c.zoom.startsWith('https://');
       const mode=online?'<span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/></svg> أونلاين</span>':'<span class="course-meta-item" style="color:#8B4513;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-5 9 5"/><path d="M4 9v10M9 9v10M15 9v10M20 9v10"/><path d="M2 21h20"/></svg> حضوري</span>';
       const price=parseFloat(c.price)||0;
+      const pageUrl=specialPageFor(c.name);
       const priceBlock = price>0
         ? `<div class="course-price-row"><span class="course-price">${ar(price)}</span><span class="course-price-cur">د.ك</span></div>`
-        : `<div class="course-price-row"><span class="course-price" style="font-size:16px;">حسب الدورة</span></div>`;
-      const btnLabel = price>0 ? 'احجز وادفع' : 'احجز مقعدك';
+        : (pageUrl
+            ? `<div class="course-price-row"><span class="course-price" style="font-size:15px;">صفحة تسجيل خاصة</span></div>`
+            : `<div class="course-price-row"><span class="course-price" style="font-size:16px;">حسب الدورة</span></div>`);
+      const sBtn = pageUrl
+        ? `<a class="course-register-btn" href="${pageUrl}" style="display:block;text-align:center;text-decoration:none;">التفاصيل والتسجيل ←</a>`
+        : `<button class="course-register-btn" onclick="addSpecial('${esc(c.name)}','${esc(c.trainer)}','${esc(dateLabel)}',${price})">أضف للسلة</button>`;
       return `<div class="course-card">
         <div class="course-card-top">
           <div class="course-date-row"><span class="course-date">${dateLabel}</span><span class="course-tag paid">دورة خاصة</span></div>
@@ -814,7 +780,7 @@ async function loadSpecialCourses(){
           <div class="course-trainer"><div class="trainer-avatar">${initial}</div><div><div class="trainer-name">${c.trainer}</div><div class="trainer-label">مدرب معتمد</div></div></div>
           <div class="course-meta"><span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg> ${c.time||''}</span>${mode}</div>
           ${priceBlock}
-          <button class="course-register-btn" onclick="openSpecialModal('${esc(c.name)}','${esc(c.trainer)}','${esc(dateLabel)}',${price})">${btnLabel}</button>
+          ${sBtn}
         </div>
       </div>`;
     }).join('');
@@ -823,72 +789,7 @@ async function loadSpecialCourses(){
   }
 }
 
-function openSpecialModal(course, trainer, date, price){
-  document.getElementById('sModalTitle').textContent=course;
-  document.getElementById('sModalTrainer').textContent=trainer;
-  document.getElementById('sModalDate').textContent=date;
-  document.getElementById('sCourseName').value=course;
-  document.getElementById('sCourseDate').value=date;
-  document.getElementById('sCoursePrice').value=price||0;
-  const sForm=document.getElementById('sForm');
-  sForm.reset(); sForm.style.display='';
-  document.getElementById('sSuccess').style.display='none';
-  setBtn('sBtn','sBtnTxt','sSpin',false);
-  if(price>0){
-    document.getElementById('sPaySummary').style.display='';
-    document.getElementById('sPriceLabel').textContent=ar(price)+' د.ك';
-    document.getElementById('sBtnTxt').textContent='تأكيد الحجز والدفع';
-  } else {
-    document.getElementById('sPaySummary').style.display='none';
-    document.getElementById('sBtnTxt').textContent='تأكيد الحجز';
-  }
-  openModal('specialModal');
-}
-
-document.getElementById('sForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const f=this;
-  let ok=true;
-  if(!f.fullName.value.trim()){ document.getElementById('mf-sname').classList.add('invalid'); ok=false; } else document.getElementById('mf-sname').classList.remove('invalid');
-  if(!f.phone.value.trim()){ document.getElementById('mf-sphone').classList.add('invalid'); ok=false; } else document.getElementById('mf-sphone').classList.remove('invalid');
-  if(!f.email.value.trim()||!f.email.value.includes('@')){ document.getElementById('mf-semail').classList.add('invalid'); ok=false; } else document.getElementById('mf-semail').classList.remove('invalid');
-  if(!ok) return;
-  setBtn('sBtn','sBtnTxt','sSpin',true);
-  const name=f.fullName.value.trim(), phone=f.phone.value.trim(), email=f.email.value.trim();
-  const course=document.getElementById('sCourseName').value;
-  const courseDate=document.getElementById('sCourseDate').value;
-  const price=parseFloat(document.getElementById('sCoursePrice').value)||0;
-
-  if(price>0){
-    try{
-      const res=await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({ type:'دورة خاصة', name, phone, email, course, courseDate, amount:price,
-          redirect: PAGE_URL+'?payment=success&type=دورة خاصة&course='+encodeURIComponent(course)+'&phone='+encodeURIComponent(phone),
-          timestamp:new Date().toLocaleString('ar-SA') }) });
-      const data=await res.json();
-      if(data.url){ window.location.href=data.url; return; }
-    }catch(err){}
-  }
-  // fallback / no-price: register interest
-  await fetch(SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify({ type:'دورة خاصة', name, phone, email, course, courseDate, courseType:'دورة خاصة',
-      notes: price>0?('رسوم: '+price+' د.ك'):'بانتظار تحديد الرسوم', timestamp:new Date().toLocaleString('ar-SA') }) }).catch(()=>{});
-  if(typeof fbq!=='undefined') fbq('track','Lead');
-  f.style.display='none';
-  document.getElementById('sSuccessMsg').textContent = price>0
-    ? 'سُجّل حجزك — يتواصل معك الفريق لإتمام الدفع'
-    : 'يتواصل معك فريق مسار خلال ٢٤ ساعة لإتمام الحجز والدفع';
-  document.getElementById('sSuccess').style.display='block';
-});
-
-/* ───── shared button spinner ───── */
-function setBtn(btn, txt, spin, loading){
-  document.getElementById(btn).disabled=loading;
-  document.getElementById(txt).style.display=loading?'none':'block';
-  document.getElementById(spin).style.display=loading?'block':'none';
-}
-
-/* ───── payment return ───── */
+/* ───── PAYMENT RETURN ───── */
 (function(){
   const p=new URLSearchParams(window.location.search);
   if(p.get('payment')==='success'){
@@ -900,8 +801,9 @@ function setBtn(btn, txt, spin, loading){
   }
 })();
 
-/* ───── init ───── */
+/* ───── INIT ───── */
 loadFreeCourses();
+updateFab();
 </script>
 </body>
 </html>
