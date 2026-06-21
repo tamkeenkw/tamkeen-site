@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة طباعة الترشيحات الحكومية — معهد تمكين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7a1717; --cream:#FAF7F2; --ink:#2b1a1a;
+  --muted:#8a7a7a; --line:rgba(92,15,15,.12); --line-2:rgba(92,15,15,.22);
+  --ok:#1c7d3f; --warn:#b85c00; --rej:#c0392b;
+  --shadow:0 14px 40px rgba(92,15,15,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;
+  padding:18px 14px 60px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto}
+
+/* شريط علوي */
+.topbar{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
+  border-radius:18px;padding:14px 18px;box-shadow:var(--shadow);margin-bottom:18px;flex-wrap:wrap}
+.topbar .lg{height:42px;display:flex;align-items:center}
+.topbar .lg img{height:42px;width:auto}
+.topbar .lg .fb{height:42px;padding:0 14px;border-radius:11px;background:var(--crimson);color:#fff;
+  font-weight:900;font-size:18px;display:flex;align-items:center}
+.topbar .t b{display:block;font-size:16px;color:var(--crimson);font-weight:900}
+.topbar .t span{font-size:12px;color:var(--muted);font-weight:600}
+.topbar .sp{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+.btn{font-family:inherit;font-weight:800;font-size:13.5px;cursor:pointer;border:none;border-radius:12px;
+  padding:10px 18px;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+.btn-line{background:#fff;border:1.5px solid var(--line-2);color:var(--crimson)}
+.btn-line:hover{background:var(--cream);border-color:var(--crimson)}
+.btn-primary{background:var(--crimson);color:#fff}
+.btn-primary:hover{background:var(--crimson-2)}
+
+/* بحث + فلاتر */
+.tools{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.search{flex:1;min-width:200px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;
+  border:1.5px solid var(--line);border-radius:13px;padding:12px 15px;outline:none}
+.search:focus{border-color:var(--crimson)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;border:1.5px solid var(--line);
+  background:#fff;color:var(--muted);border-radius:30px;padding:9px 15px;transition:.15s}
+.filters button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+
+/* كروت الترشيحات */
+.count{font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:12px}
+.cards{display:grid;gap:13px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;
+  box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.card .main{flex:1;min-width:200px}
+.card .prog{font-size:15.5px;font-weight:900;color:var(--crimson);margin-bottom:6px;line-height:1.5}
+.card .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-weight:600}
+.card .meta b{color:var(--ink);font-weight:800}
+.card .side{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.badge{font-size:11.5px;font-weight:800;padding:5px 12px;border-radius:30px;white-space:nowrap}
+.b-new{background:rgba(92,15,15,.08);color:var(--crimson)}
+.b-ok{background:rgba(28,125,63,.1);color:var(--ok)}
+.b-rej{background:rgba(192,57,43,.1);color:var(--rej)}
+.card .acts{display:flex;gap:8px;flex-wrap:wrap;width:100%;margin-top:4px;justify-content:flex-end}
+.empty{background:#fff;border:1px dashed var(--line-2);border-radius:16px;padding:40px 20px;
+  text-align:center;color:var(--muted);font-weight:600}
+.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--crimson);
+  border-radius:50%;animation:sp .7s linear infinite;margin:30px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* قفل PIN */
+.lock{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:50}
+.lock .box{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+  padding:34px 28px;text-align:center;max-width:340px;width:100%}
+.lock h2{font-size:18px;color:var(--crimson);font-weight:900;margin:14px 0 6px}
+.lock p{font-size:13px;color:var(--muted);margin-bottom:18px}
+.lock input{width:100%;text-align:center;letter-spacing:8px;font-size:22px;font-weight:800;
+  border:1.5px solid var(--line);border-radius:13px;padding:12px;outline:none;font-family:inherit}
+.lock input:focus{border-color:var(--crimson)}
+.lock .err{color:var(--rej);font-size:12.5px;font-weight:700;min-height:16px;margin-top:8px}
+.lock .lg img{height:46px}
+.lock .lg .fb{display:inline-flex;height:46px;padding:0 16px;border-radius:12px;background:var(--crimson);
+  color:#fff;font-weight:900;font-size:20px;align-items:center}
+
+/* ===== مستند الطباعة الرسمي (فورمة تمكين) ===== */
+#printDoc{display:none}
+.pdoc{font-family:'Cairo',sans-serif;color:#241616;direction:rtl}
+.pdoc-head{display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--crimson);
+  padding-bottom:16px;margin-bottom:6px}
+.pdoc-head .lg img{height:62px;width:auto}
+.pdoc-head .lg .fb{height:60px;padding:0 18px;border-radius:14px;background:var(--crimson);color:#fff;
+  display:flex;align-items:center;font-weight:900;font-size:28px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-head .org{flex:1}
+.pdoc-head .org h1{font-size:22px;font-weight:900;color:var(--crimson);margin-bottom:3px}
+.pdoc-head .org p{font-size:12.5px;color:#5a4a4a;line-height:1.7}
+.pdoc-title{text-align:center;font-size:16px;font-weight:900;color:var(--crimson);
+  background:#f6efe9;padding:11px;border-radius:8px;margin:16px 0 18px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-meta{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.pdoc-meta .mrow{display:flex;border-bottom:1px solid var(--line)}
+.pdoc-meta .mrow:last-child{border-bottom:none}
+.pdoc-meta .mk{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:12.5px;
+  padding:10px 13px;width:140px;flex:0 0 auto;display:flex;align-items:center;
+  border-inline-start:1px solid var(--line);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-meta .mv{padding:10px 13px;font-size:13px;font-weight:600;display:flex;align-items:center;flex:1}
+.pdoc-obj{margin-bottom:20px}
+.pdoc-obj .lbl{font-size:13.5px;font-weight:900;color:var(--crimson);margin-bottom:6px}
+.pdoc-obj .val{font-size:13px;line-height:1.95;background:#faf7f2;border:1px solid var(--line);
+  border-radius:10px;padding:12px 15px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pdoc-sec{font-size:14.5px;font-weight:900;color:var(--crimson);margin:0 0 12px;
+  border-inline-start:4px solid var(--crimson);padding-inline-start:10px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pday{margin-bottom:15px;break-inside:avoid}
+.pday-h{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:13px;padding:8px 14px;
+  border-radius:8px 8px 0 0;border:1px solid var(--line-2);border-bottom:none;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.pmh{border-collapse:collapse;width:100%;table-layout:fixed}
+table.pmh th{background:var(--crimson);color:#fff;font-size:11.5px;font-weight:800;padding:8px 6px;
+  text-align:center;border:1px solid var(--crimson);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.pmh th:first-child{width:28px}
+table.pmh td{border:1px solid var(--line-2);padding:8px 7px;font-size:12px;vertical-align:top;
+  line-height:1.6;word-wrap:break-word}
+table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
+.pdoc-foot{margin-top:30px;display:flex;justify-content:space-between;gap:30px;break-inside:avoid}
+.pdoc-foot .sign{flex:1;text-align:center;font-size:12.5px;color:#5a4a4a;font-weight:700}
+.pdoc-foot .sign .ln{margin-top:40px;border-top:1.5px solid var(--line-2);padding-top:6px}
+.pdoc-stamp{text-align:center;font-size:11px;color:var(--muted);margin-top:26px;
+  border-top:1px solid var(--line);padding-top:12px;line-height:1.8}
+
+@media print{
+  body{background:#fff;padding:0;margin:0}
+  body *{visibility:hidden}
+  #printDoc,#printDoc *{visibility:visible}
+  #printDoc{display:block;position:absolute;inset:0;width:100%}
+  @page{size:A4;margin:13mm}
+}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- قفل الدخول -->
+<div class="lock" id="lock">
+  <div class="box">
+    <div class="lg"><img src="Untitled_design__2_.png" alt="تمكين" onerror="this.outerHTML='<span class=\'fb\'>تمكين</span>'"></div>
+    <h2>لوحة طباعة الترشيحات</h2>
+    <p>أدخل الرمز للدخول</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••" autocomplete="off">
+    <div class="err" id="pinErr"></div>
+  </div>
+</div>
+
+<!-- اللوحة -->
+<div class="wrap hidden" id="app">
+  <div class="topbar">
+    <div class="lg"><img src="Untitled_design__2_.png" alt="تمكين" onerror="this.outerHTML='<span class=\'fb\'>تمكين</span>'"></div>
+    <div class="t"><b>الترشيحات الحكومية</b><span>لوحة الطباعة الإدارية</span></div>
+    <div class="sp">
+      <button class="btn btn-line" onclick="loadData()">↻ تحديث</button>
+    </div>
+  </div>
+
+  <div class="tools">
+    <input class="search" id="search" placeholder="ابحث باسم البرنامج أو المدرب أو رقم العضوية..." oninput="render()">
+    <div class="filters" id="filters">
+      <button class="on" data-f="all" onclick="setFilter(this,'all')">الكل</button>
+      <button data-f="جديد" onclick="setFilter(this,'جديد')">جديد</button>
+      <button data-f="مقبول" onclick="setFilter(this,'مقبول')">مقبول</button>
+      <button data-f="مرفوض" onclick="setFilter(this,'مرفوض')">مرفوض</button>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="cards" id="cards"><div class="spin"></div></div>
+</div>
+
+<!-- مستند الطباعة -->
+<div id="printDoc"></div>
+
+<script>
+/* ====== ثوابت ====== */
+var SHEET_ID = '1ORUcqzkBKPKWkEuKT0cOdoV_qtbCD-d1XdslQILXx2g';
+var API_KEY  = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
+var PIN      = '1990'; // غيّره لرقمك الخاص
+var LOGO_SRC = 'Untitled_design__2_.png';
+
+var ROWS = [];        // الترشيحات
+var filter = 'all';
+
+var DAY_NAMES = ['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر',
+                 'الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر'];
+function dayLabel(i){ return 'اليوم ' + (DAY_NAMES[i] || (i+1)); }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+/* ====== القفل ====== */
+$('pin').addEventListener('keydown', function(e){ if(e.key==='Enter') tryPin(); });
+$('pin').addEventListener('input', function(){
+  $('pinErr').textContent='';
+  if(this.value.length>=PIN.length) tryPin();
+});
+function tryPin(){
+  if($('pin').value===PIN){
+    $('lock').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    loadData();
+  } else {
+    $('pinErr').textContent='الرمز غير صحيح';
+    $('pin').value=''; $('pin').focus();
+  }
+}
+
+/* ====== قراءة الشيت ====== */
+function loadData(){
+  $('cards').innerHTML='<div class="spin"></div>';
+  $('count').textContent='';
+  var tab = 'ترشيحات الحكومية';
+  var url = 'https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+
+            '/values/'+encodeURIComponent(tab)+'!A:J?key='+API_KEY;
+  fetch(url).then(function(r){ return r.json(); }).then(function(d){
+    if(d.error){ $('cards').innerHTML='<div class="empty">تعذّر القراءة: '+esc(d.error.message)+'</div>'; return; }
+    var rows = d.values||[];
+    var body = rows.slice(1); // تجاهل العنوان
+    ROWS = body.map(function(c, i){
+      return {
+        _row: i+2,
+        date:    c[0]||'',
+        memberId:c[1]||'',
+        trainer: c[2]||'',
+        program: c[3]||'',
+        objective:c[4]||'',
+        duration:c[5]||'',
+        start:   String(c[6]||'').replace(/^'/,''),
+        topics:  c[7]||'',
+        status:  c[8]||'جديد',
+        json:    c[9]||''
+      };
+    }).reverse(); // الأحدث أولاً
+    render();
+  }).catch(function(){
+    $('cards').innerHTML='<div class="empty">تعذّر الاتصال — تأكد من إتاحة الشيت للقراءة وحدّث.</div>';
+  });
+}
+
+function setFilter(btn, f){
+  filter=f;
+  document.querySelectorAll('#filters button').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  render();
+}
+
+function statusBadge(st){
+  st=String(st||'جديد').trim();
+  if(st==='مقبول') return '<span class="badge b-ok">مقبول</span>';
+  if(st==='مرفوض') return '<span class="badge b-rej">مرفوض</span>';
+  return '<span class="badge b-new">'+esc(st||'جديد')+'</span>';
+}
+
+function render(){
+  var q=($('search').value||'').trim().toLowerCase();
+  var list=ROWS.filter(function(r){
+    if(filter!=='all' && String(r.status||'جديد').trim()!==filter) return false;
+    if(q){
+      var hay=(r.program+' '+r.trainer+' '+r.memberId).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  });
+
+  $('count').textContent = list.length + ' ترشيح';
+  if(!list.length){ $('cards').innerHTML='<div class="empty">لا توجد ترشيحات مطابقة.</div>'; return; }
+
+  $('cards').innerHTML = list.map(function(r){
+    var idx = ROWS.indexOf(r);
+    return '<div class="card">'+
+      '<div class="main">'+
+        '<div class="prog">'+esc(r.program||'برنامج بدون عنوان')+'</div>'+
+        '<div class="meta">'+
+          '<span>المدرب: <b>'+esc(r.trainer||'—')+'</b></span>'+
+          '<span>العضوية: <b>'+esc(r.memberId||'—')+'</b></span>'+
+          '<span>المدة: <b>'+esc(r.duration||'—')+'</b></span>'+
+          '<span>البدء: <b>'+esc(prettyDate(r.start))+'</b></span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="side">'+statusBadge(r.status)+'</div>'+
+      '<div class="acts">'+
+        '<button class="btn btn-primary" onclick="printRow('+idx+')">🖨️ طباعة بفورمة تمكين</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+/* ====== الطباعة ====== */
+function prettyDate(s){
+  var m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return s||'';
+  var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  return (+m[3])+' '+months[(+m[2])-1]+' '+m[1];
+}
+
+function parseDays(r){
+  // أولاً JSON المنظّم
+  if(r.json){
+    try{
+      var arr=JSON.parse(r.json);
+      if(Array.isArray(arr)) return arr;
+    }catch(e){}
+  }
+  // fallback: تحليل النص (للترشيحات القديمة قبل عمود JSON)
+  if(r.topics){
+    var days=[];
+    r.topics.split('▪').forEach(function(block){
+      block=block.trim();
+      if(!block) return;
+      var lines=block.split('\n');
+      var rows=[];
+      lines.slice(1).forEach(function(ln){
+        ln=ln.trim();
+        var m=ln.match(/^\d+\)\s*(.*)$/);
+        if(!m) return;
+        var parts=m[1].split('|').map(function(x){return x.trim();});
+        rows.push({
+          topic:    (parts[0]||''),
+          dur:      (parts[1]||'').replace(/^المدة:\s*/,''),
+          system:   (parts[2]||'').replace(/^نظام التدريب:\s*/,''),
+          methods:  (parts[3]||'').replace(/^الوسائل:\s*/,''),
+          criteria: (parts[4]||'').replace(/^معيار التقييم:\s*/,'')
+        });
+      });
+      if(rows.length) days.push({rows:rows});
+    });
+    return days;
+  }
+  return [];
+}
+
+function logoHtml(big){
+  return '<div class="lg"><img src="'+LOGO_SRC+'" alt="تمكين" '+
+    'onerror="this.outerHTML=\'<span class=&quot;fb&quot;>تمكين</span>\'"></div>';
+}
+
+function printRow(idx){
+  var r=ROWS[idx];
+  if(!r) return;
+  var days=parseDays(r);
+
+  var daysHtml='';
+  days.forEach(function(day, di){
+    var rows=(day.rows||[]).filter(function(x){ return (x.topic||'').trim(); });
+    if(!rows.length) return;
+    var trs=rows.map(function(x, ri){
+      return '<tr><td class="n">'+(ri+1)+'</td>'+
+        '<td>'+esc(x.topic)+'</td><td>'+esc(x.dur)+'</td><td>'+esc(x.system)+'</td>'+
+        '<td>'+esc(x.methods)+'</td><td>'+esc(x.criteria)+'</td></tr>';
+    }).join('');
+    daysHtml+='<div class="pday"><div class="pday-h">'+dayLabel(di)+'</div>'+
+      '<table class="pmh"><thead><tr><th>#</th><th>اسم المحور</th><th>مدة المحور</th>'+
+      '<th>نظام التدريب</th><th>وسائل التدريب المستخدمة</th><th>معيار التقييم</th></tr></thead>'+
+      '<tbody>'+trs+'</tbody></table></div>';
+  });
+  if(!daysHtml) daysHtml='<div class="empty" style="box-shadow:none">لا توجد محاور مسجّلة لهذا الترشيح.</div>';
+
+  var today=new Date();
+  var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  var todayStr=today.getDate()+' '+months[today.getMonth()]+' '+today.getFullYear();
+
+  $('printDoc').innerHTML=
+    '<div class="pdoc">'+
+      '<div class="pdoc-head">'+logoHtml(true)+
+        '<div class="org"><h1>معهد تمكين</h1>'+
+        '<p>إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: 97999768</p></div>'+
+      '</div>'+
+      '<div class="pdoc-title">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
+      '<div class="pdoc-meta">'+
+        '<div class="mrow"><div class="mk">اسم البرنامج</div><div class="mv">'+esc(r.program||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">اسم المدرب</div><div class="mv">'+esc(r.trainer||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">رقم العضوية</div><div class="mv">'+esc(r.memberId||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">مدة البرنامج</div><div class="mv">'+esc(r.duration||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">تاريخ البدء</div><div class="mv">'+esc(prettyDate(r.start))+'</div></div>'+
+      '</div>'+
+      '<div class="pdoc-obj"><div class="lbl">الهدف العام من البرنامج</div>'+
+        '<div class="val">'+esc(r.objective||'—')+'</div></div>'+
+      '<div class="pdoc-sec">محاور البرنامج التدريبي</div>'+
+      daysHtml+
+      '<div class="pdoc-foot">'+
+        '<div class="sign">مقدّم الترشيح (المدرب)<div class="ln">'+esc(r.trainer||'')+'</div></div>'+
+        '<div class="sign">اعتماد إدارة المعهد<div class="ln">&nbsp;</div></div>'+
+      '</div>'+
+      '<div class="pdoc-stamp">صدر هذا المستند عن معهد تمكين بتاريخ '+todayStr+'<br>إيديو كلاود للتدريب الأهلي · tamkeenkuw.com</div>'+
+    '</div>';
+
+  window.print();
+}
+</script>
+</body>
+</html>
