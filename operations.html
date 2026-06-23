@@ -1015,16 +1015,24 @@ function shade(hex,p){ hex=String(hex).replace('#',''); if(hex.length===3) hex=h
 function hexA(hex,a){ hex=String(hex).replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join(''); const r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return 'rgba('+r+','+g+','+b+','+a+')'; }
 function contrastColor(hex){ hex=String(hex).replace('#',''); if(hex.length===3) hex=hex.split('').map(c=>c+c).join(''); const r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16); return (r*299+g*587+b*114)/1000>=140?'#1a0808':'#ffffff'; }
 
+function parseDate(v){
+  if(!v) return null;
+  v=String(v).trim();
+  let m=v.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);            if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  m=v.match(/(\d{4})[\/.](\d{1,2})[\/.](\d{1,2})/);        if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  m=v.match(/(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})/);        if(m){ let a=+m[1],b=+m[2],y=+m[3],day=a,mon=b; if(a<=12&&b>12){mon=a;day=b;} return new Date(y,mon-1,day); }
+  const t=Date.parse(v); return isNaN(t)?null:new Date(t);
+}
 function getScheduleCourses(){
   if(!DATA.bookings||!DATA.bookings.tab) return [];
   const h=DATA.bookings.headers;
   return DATA.bookings.data.map(r=>mapBooking(h,r))
     .filter(r=>statusClass(r.status)!=='st-reject' && (r.start||r.course))
-    .sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+    .sort((a,b)=>{ const da=parseDate(a.start), db=parseDate(b.start); return (da?da.getTime():Infinity)-(db?db.getTime():Infinity); });
 }
 function dateParts(v){
-  const m=String(v||'').match(/(\d{4})-(\d{2})-(\d{2})/);
-  if(m){ const d=new Date(+m[1],+m[2]-1,+m[3]); if(!isNaN(d)) return {dow:DAYS_AR[d.getDay()],day:+m[3],mon:MONTHS_AR[+m[2]-1]}; }
+  const d=parseDate(v);
+  if(d && !isNaN(d)) return {dow:DAYS_AR[d.getDay()],day:d.getDate(),mon:MONTHS_AR[d.getMonth()]};
   return {dow:'',day:String(v||'').slice(0,6),mon:''};
 }
 function applyThemeColors(){ const t=THEME[designTheme]; const bc=document.getElementById('bgColor'),tc=document.getElementById('textColor'); if(bc) bc.value=t.bg; if(tc) tc.value=t.ink; }
