@@ -458,7 +458,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
                   <label class="ck"><input type="checkbox" id="schFTrainer" checked onchange="renderDesign()">اسم المدرب</label>
                   <label class="ck"><input type="checkbox" id="schFSystem" checked onchange="renderDesign()">نظام الدورة (حضوري/أونلاين)</label>
                   <label class="ck"><input type="checkbox" id="schFTime" checked onchange="renderDesign()">التوقيت</label>
-                  <label class="ck"><input type="checkbox" id="schFFree" onchange="renderDesign()">إظهار وسم «مجاني» (تحدّده بالقائمة تحت)</label>
+                  <label class="ck"><input type="checkbox" id="schFFree" onchange="renderDesign()">إظهار السعر/«مجاني» (تحدّده بالقائمة تحت)</label>
                 </div>
               </div>
               <div class="fld"><label style="display:flex;justify-content:space-between;align-items:center;">الدورات المعروضة (✓ إظهار · أخضر = مجاني)
@@ -1025,18 +1025,20 @@ function buildSchedCourseList(){
   const box=document.getElementById('schedCourses'); if(!box) return;
   const courses=getScheduleCourses();
   if(!courses.length){ box.innerHTML='<div style="font-size:12px;color:var(--muted);font-weight:600;padding:6px;">لا توجد دورات في الجدول بعد.</div>'; return; }
-  box.innerHTML=courses.map((c,i)=>'<div style="display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--line);"><input type="checkbox" data-ci="'+i+'" checked onchange="renderDesign()" style="width:16px;height:16px;accent-color:var(--crimson);flex:0 0 auto;"><span style="flex:1;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(c.course||'دورة')+(c.start?' — '+esc(fmtDate(c.start)):'')+'</span><label style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:#2E7D32;cursor:pointer;flex:0 0 auto;"><input type="checkbox" data-free="'+i+'" onchange="renderDesign()" style="width:14px;height:14px;accent-color:#2E7D32;">مجاني</label></div>').join('');
+  box.innerHTML=courses.map((c,i)=>'<div style="display:flex;align-items:center;gap:6px;padding:7px 2px;border-bottom:1px solid var(--line);flex-wrap:wrap;"><input type="checkbox" data-ci="'+i+'" checked onchange="renderDesign()" style="width:16px;height:16px;accent-color:var(--crimson);flex:0 0 auto;"><span style="flex:1;min-width:110px;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(c.course||'دورة')+(c.start?' — '+esc(fmtDate(c.start)):'')+'</span><select data-pmode="'+i+'" onchange="pmodeChange(this)" style="font-size:11px;font-weight:700;padding:4px 6px;border-radius:7px;border:1.5px solid var(--line);background:#fff;flex:0 0 auto;"><option value="">— السعر</option><option value="free">مجاني</option><option value="paid">مدفوع</option></select><input data-price="'+i+'" placeholder="السعر" oninput="renderDesign()" style="display:none;width:70px;font-size:11px;padding:4px 6px;border-radius:7px;border:1.5px solid var(--line);background:#fff;flex:0 0 auto;"></div>').join('');
 }
 function schedSelectAll(v){ document.querySelectorAll('#schedCourses input').forEach(cb=>cb.checked=v); renderDesign(); }
 function setSchedLayout(btn,l){ schedLayout=l; document.querySelectorAll('[data-sl]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderDesign(); }
 function setSchedCols(btn,c){ schedCols=c; document.querySelectorAll('[data-sc]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderDesign(); }
 function setSchedSize(btn,s){ schedSize=s; document.querySelectorAll('[data-ss]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderDesign(); }
 function schedH(){ return schedSize==='916'?1920:1350; }
+function pmodeChange(sel){ const row=sel.parentNode; const pi=row.querySelector('input[data-price]'); if(pi) pi.style.display=(sel.value==='paid')?'inline-block':'none'; renderDesign(); }
 function selectedSchedCourses(all){
   const box=document.getElementById('schedCourses');
   if(!box || !box.querySelector('input[data-ci]')) return all;
   return all.filter((c,i)=>{
-    const fcb=box.querySelector('input[data-free="'+i+'"]'); c._free=fcb?fcb.checked:false;
+    const pm=box.querySelector('select[data-pmode="'+i+'"]'); c._pmode=pm?pm.value:'';
+    const pr=box.querySelector('input[data-price="'+i+'"]'); c._price=pr?pr.value.trim():'';
     const cb=box.querySelector('input[data-ci="'+i+'"]'); return cb?cb.checked:true;
   });
 }
@@ -1116,7 +1118,13 @@ function buildSchedulePoster(S,allCourses,title){
          :            {name:22,date:30,dm:17,meta:18,pad:8, gap:6, circle:48,cnum:24,listd:20,dw:84};
   const SZ = cols===2 ? Object.assign({},D,{name:Math.round(D.name*0.85),date:Math.round(D.date*0.82),meta:Math.round(D.meta*0.85),dw:Math.round(D.dw*0.72)}) : D;
   const showFree=chk('schFFree');
-  const freeBadge=c=>(showFree&&c._free)?' <span style="display:inline-block;background:#2E7D32;color:#fff;font-size:'+Math.max(15,Math.round(SZ.meta*0.78))+'px;font-weight:900;border-radius:100px;padding:3px 16px;vertical-align:middle;">مجاني</span>':'';
+  const freeBadge=c=>{
+    if(!showFree) return '';
+    const fs=Math.max(15,Math.round(SZ.meta*0.78));
+    if(c._pmode==='free') return ' <span style="display:inline-block;background:#2E7D32;color:#fff;font-size:'+fs+'px;font-weight:900;border-radius:100px;padding:3px 16px;vertical-align:middle;">مجاني</span>';
+    if(c._pmode==='paid') return ' <span style="display:inline-block;background:'+t.ink+';color:'+contrastColor(t.ink)+';font-size:'+fs+'px;font-weight:900;border-radius:100px;padding:3px 16px;vertical-align:middle;">'+(c._price?esc(c._price):'مدفوع')+'</span>';
+    return '';
+  };
 
   let rows='';
   if(schedLayout==='list'){
