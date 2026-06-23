@@ -27,6 +27,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .fld input,.fld textarea{width:100%;padding:12px 14px;border:1.5px solid #E2D9CC;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);background:var(--cream);outline:none}
 .fld input:focus,.fld textarea:focus{border-color:var(--crimson);background:#fff;box-shadow:0 0 0 3px rgba(92,15,15,.06)}
 .fld textarea{min-height:84px;resize:vertical;line-height:1.8}
+.fld select.sel{width:100%;padding:12px 14px;border:1.5px solid #E2D9CC;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;color:var(--text);background:var(--cream);outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235C0F0F' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 14px center}
+.fld select.sel:focus{border-color:var(--crimson);background-color:#fff}
 
 .tags{display:flex;flex-wrap:wrap;gap:7px;padding:9px;border:1.5px solid #E2D9CC;border-radius:12px;background:var(--cream);min-height:48px;align-items:center}
 .tags input{border:none;background:transparent;outline:none;flex:1;min-width:120px;font-family:'Tajawal',sans-serif;font-size:14.5px;padding:5px}
@@ -79,21 +81,21 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 <body>
 <div class="wrap">
   <div class="brand"><div class="dot">ت</div><div class="nm">معهد تمكين</div></div>
-  <div class="sub">مخطّط دورات المدرب — حدّد أهدافك ويطلع لك توزيع مقترح للشهر</div>
+  <div class="sub">مخطّط دورات المدرب — حدّد أهدافك السنوية ويطلع لك توزيع مقترح على الأشهر</div>
 
   <!-- المدخلات -->
   <div class="card no-print" id="inputCard">
-    <h2><span class="n">1</span> أهدافك لهذا الشهر</h2>
+    <h2><span class="n">1</span> أهدافك لهذا العام</h2>
     <div class="grid2">
       <div class="fld">
-        <label>عدد الحضور المستهدف</label>
-        <input type="number" id="iAtt" min="1" placeholder="مثال: 120">
-        <div class="hint">إجمالي عدد المتدربين خلال الشهر</div>
+        <label>عدد الحضور المستهدف (سنوياً)</label>
+        <input type="number" id="iAtt" min="1" placeholder="مثال: 1200">
+        <div class="hint">إجمالي عدد المتدربين خلال السنة</div>
       </div>
       <div class="fld">
-        <label>عدد الدورات المستهدفة</label>
-        <input type="number" id="iCourses" min="1" placeholder="مثال: 6">
-        <div class="hint">كم دورة تخطط تقدّمها هذا الشهر</div>
+        <label>عدد الدورات المستهدفة (سنوياً)</label>
+        <input type="number" id="iCourses" min="1" placeholder="مثال: 48">
+        <div class="hint">كم دورة تخطط تقدّمها هذا العام</div>
       </div>
     </div>
 
@@ -118,16 +120,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         </div>
       </div>
       <div class="fld" style="margin-bottom:0">
-        <label>عدد أسابيع الشهر</label>
-        <div class="seg" id="wkSeg">
-          <button data-wk="4" class="on">٤ أسابيع</button>
-          <button data-wk="5">٥ أسابيع</button>
-        </div>
+        <label>ابدأ الخطة من شهر</label>
+        <select class="sel" id="startMonth"></select>
       </div>
     </div>
 
     <div class="err" id="err" style="margin-top:18px"></div>
-    <button class="btn" style="margin-top:20px" onclick="generate()">ولّد خطة الشهر</button>
+    <button class="btn" style="margin-top:20px" onclick="generate()">ولّد الخطة السنوية</button>
   </div>
 
   <!-- النتيجة -->
@@ -139,7 +138,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <div class="card">
-      <h2><span class="n">3</span> توزيع الدورات على الشهر</h2>
+      <h2><span class="n">3</span> توزيع الدورات على السنة</h2>
       <div id="weeks"></div>
       <div class="tips" id="tips"></div>
       <div class="actions no-print">
@@ -151,7 +150,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <script>
-var domains=[], curSys='blended', curWk=4;
+var domains=[], curSys='blended';
 
 /* وسوم المجالات */
 var domInput=document.getElementById('domInput');
@@ -174,11 +173,17 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){retur
 function arNum(n){ return String(n).replace(/\d/g,function(d){ return '٠١٢٣٤٥٦٧٨٩'[+d]; }); }
 
 document.getElementById('sysSeg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; curSys=b.getAttribute('data-sys'); seg(this,b); });
-document.getElementById('wkSeg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b)return; curWk=+b.getAttribute('data-wk'); seg(this,b); });
 function seg(box,b){ [].forEach.call(box.querySelectorAll('button'),function(x){ x.classList.toggle('on',x===b); }); }
 
 var SYS_LABEL={ online:'أونلاين', offline:'حضوري', blended:'مدمج' };
-var DAY_PLANS={ 1:['الثلاثاء'], 2:['الأحد','الأربعاء'], 3:['الأحد','الثلاثاء','الخميس'], 4:['الأحد','الاثنين','الأربعاء','الخميس'] };
+var MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+var WEEK_SLOTS=['الأسبوع الأول','الأسبوع الثاني','الأسبوع الثالث','الأسبوع الرابع'];
+
+/* تعبئة شهر البداية (افتراضي الشهر الحالي) */
+(function(){
+  var sel=document.getElementById('startMonth'), now=new Date().getMonth();
+  sel.innerHTML=MONTHS.map(function(m,i){ return '<option value="'+i+'"'+(i===now?' selected':'')+'>'+m+'</option>'; }).join('');
+})();
 
 function generate(){
   document.getElementById('err').style.display='none';
@@ -190,68 +195,72 @@ function generate(){
   if(!domains.length){ return fail('أضف مجالاً تدريبياً واحداً على الأقل'); }
 
   var titles=document.getElementById('iTitles').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  var weeks=curWk;
+  var startM=parseInt(document.getElementById('startMonth').value,10)||0;
   var attPer=Math.round(A/C);
-  var perWeek=(C/weeks);
+  var perMonth=(C/12);
 
-  // توزيع الدورات على الأسابيع
-  var base=Math.floor(C/weeks), rem=C%weeks;
-  var weekCounts=[]; for(var w=0;w<weeks;w++){ weekCounts.push(base+(w<rem?1:0)); }
-
-  // بناء الدورات
-  var courses=[], idx=0;
-  for(var w=0;w<weeks;w++){
-    var cnt=weekCounts[w], dayPlan=DAY_PLANS[Math.min(cnt,4)]||DAY_PLANS[4], list=[];
-    for(var k=0;k<cnt;k++){
-      var dom=domains[idx%domains.length];
-      var title=titles.length?titles[idx%titles.length]:('دورة في '+dom);
-      var sys=curSys==='blended'?(idx%2===0?'online':'offline'):curSys;
-      list.push({ title:title, dom:dom, sys:sys, att:attPer, day:dayPlan[k]||dayPlan[k%dayPlan.length] });
-      idx++;
-    }
-    courses.push(list);
+  // توزيع الدورات بالتساوي على ١٢ شهر (ابتداءً من شهر البداية)
+  var months=[]; for(var m=0;m<12;m++) months.push([]);
+  for(var i=0;i<C;i++){
+    var slot=Math.floor(i*12/C);                 // توزيع متساوٍ
+    var dom=domains[i%domains.length];
+    var title=titles.length?titles[i%titles.length]:('دورة في '+dom);
+    var sys=curSys==='blended'?(i%2===0?'online':'offline'):curSys;
+    months[slot].push({ title:title, dom:dom, sys:sys, att:attPer });
   }
 
-  renderResult(A,C,attPer,perWeek,courses);
+  // ترتيب الأشهر حسب شهر البداية + تسمية أسبوع لكل دورة داخل الشهر
+  var plan=[];
+  for(var m=0;m<12;m++){
+    var mi=(startM+m)%12, list=months[m];
+    list.forEach(function(c,k){ c.week=WEEK_SLOTS[k]||WEEK_SLOTS[k%WEEK_SLOTS.length]; });
+    plan.push({ name:MONTHS[mi], list:list });
+  }
+
+  renderResult(A,C,attPer,perMonth,plan);
 }
 function fail(m){ var e=document.getElementById('err'); e.textContent=m; e.style.display='block'; }
 
-function renderResult(A,C,attPer,perWeek,weeksData){
+function renderResult(A,C,attPer,perMonth,planData){
   // الملخص
   document.getElementById('stats').innerHTML=[
-    ['الحضور المستهدف',arNum(A)],
-    ['عدد الدورات',arNum(C)],
+    ['الحضور السنوي',arNum(A)],
+    ['دورات السنة',arNum(C)],
     ['متوسط الحضور/دورة',arNum(attPer)],
-    ['دورات أسبوعياً','~'+arNum(Math.round(perWeek*10)/10)]
+    ['دورات شهرياً','~'+arNum(Math.round(perMonth*10)/10)]
   ].map(function(s){ return '<div class="stat"><div class="v">'+s[1]+'</div><div class="l">'+s[0]+'</div></div>'; }).join('');
+
+  // أكبر عدد دورات في شهر واحد
+  var maxInMonth=0; planData.forEach(function(mo){ if(mo.list.length>maxInMonth) maxInMonth=mo.list.length; });
 
   // تحذيرات
   var warns=[];
   if(curSys==='offline' && attPer>40) warns.push('متوسط '+arNum(attPer)+' متدرب/دورة عالٍ للحضوري — فكّر بزيادة عدد الدورات أو تحويل بعضها أونلاين.');
-  if(perWeek>3) warns.push('أكثر من ٣ دورات أسبوعياً مكثّف — تأكد من قدرتك على التحضير والمتابعة.');
-  if(C>0 && domains.length>C) warns.push('عدد المجالات ('+arNum(domains.length)+') أكثر من الدورات — بعض المجالات ما راح تُغطّى هذا الشهر.');
+  if(maxInMonth>4) warns.push('بعض الأشهر فيها '+arNum(maxInMonth)+' دورات — توزيع مكثّف، تأكد من قدرتك على التحضير والمتابعة.');
+  if(C>0 && domains.length>C) warns.push('عدد المجالات ('+arNum(domains.length)+') أكثر من الدورات — بعض المجالات ما راح تُغطّى هذا العام.');
   document.getElementById('warns').innerHTML=warns.map(function(w){
     return '<div class="warn"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>'+w+'</span></div>';
   }).join('');
 
-  // الأسابيع
-  document.getElementById('weeks').innerHTML=weeksData.map(function(list,w){
-    if(!list.length) return '<div class="week"><div class="week-h"><span class="wt">الأسبوع '+arNum(w+1)+'</span><span class="wc">راحة / تحضير</span></div></div>';
-    var rows=list.map(function(c){
+  // الأشهر
+  document.getElementById('weeks').innerHTML=planData.map(function(mo){
+    if(!mo.list.length) return '<div class="week"><div class="week-h"><span class="wt">'+mo.name+'</span><span class="wc">بدون دورات</span></div></div>';
+    var rows=mo.list.map(function(c){
       var sysCls=c.sys==='offline'?'sys off':'sys';
-      return '<div class="course-row"><div class="day">'+c.day+'</div><div class="info"><div class="ct">'+esc(c.title)+'</div>'+
+      return '<div class="course-row"><div class="day">'+c.week+'</div><div class="info"><div class="ct">'+esc(c.title)+'</div>'+
         '<div class="cc"><span class="mini dom">'+esc(c.dom)+'</span><span class="mini '+sysCls+'">'+SYS_LABEL[c.sys]+'</span><span class="mini att">هدف '+arNum(c.att)+' متدرب</span></div></div></div>';
     }).join('');
-    return '<div class="week"><div class="week-h"><span class="wt">الأسبوع '+arNum(w+1)+'</span><span class="wc">'+arNum(list.length)+' دورة</span></div>'+rows+'</div>';
+    return '<div class="week"><div class="week-h"><span class="wt">'+mo.name+'</span><span class="wc">'+arNum(mo.list.length)+' دورة</span></div>'+rows+'</div>';
   }).join('');
 
   // نصائح حسب النظام
-  var tips=['وزّع الدورات على مدار الشهر وتجنّب تكديسها في أسبوع واحد لإعطاء وقت للتسويق والتسجيل.',
-    'افتح التسجيل لكل دورة قبل موعدها بـ ٧–١٠ أيام على الأقل.'];
+  var tips=['وزّع الدورات على مدار السنة وتجنّب تكديسها في أشهر متتالية لإعطاء وقت للتسويق والتسجيل.',
+    'راعِ مواسم الذروة والركود (الإجازات، رمضان، الصيف) عند توزيع الأشهر.',
+    'افتح التسجيل لكل دورة قبل موعدها بـ ١٠–١٤ يوماً على الأقل.'];
   if(curSys==='online') tips.push('الأونلاين يستوعب أعداداً أكبر بالجلسة — ركّز على جلسات أكبر وعدد دورات أقل لتقليل الجهد.');
   else if(curSys==='offline') tips.push('الحضوري محدود بسعة القاعة — جلسات أصغر وأكثر، وتأكد من حجز القاعة مبكراً.');
   else tips.push('المدمج: استخدم الأونلاين للمحتوى النظري والأعداد الكبيرة، والحضوري للورش العملية والتطبيق.');
-  tips.push('راجع إنجازك أسبوعياً (الحضور الفعلي مقابل الهدف) وعدّل توزيع الأسابيع القادمة.');
+  tips.push('راجع إنجازك شهرياً (الحضور الفعلي مقابل الهدف) وعدّل توزيع الأشهر القادمة.');
   document.getElementById('tips').innerHTML='<h3>توصيات للتنفيذ</h3><ul>'+tips.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>';
 
   document.getElementById('inputCard').style.display='none';
