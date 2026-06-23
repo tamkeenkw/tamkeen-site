@@ -428,6 +428,12 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
             <div class="fld" id="fld-free-sub" style="display:none;"><label>نص فرعي (اختياري)</label><input id="freeSub" placeholder="سطر تحت العنوان" oninput="renderDesign()"></div>
             <div class="fld" id="fld-free-body" style="display:none;"><label>النص (سطر = نقطة)</label><textarea id="freeBody" placeholder="اكتب كل فكرة في سطر..." oninput="renderDesign()"></textarea></div>
             <div class="fld" id="fld-cta" style="display:none;"><label>نص الزر (اختياري)</label><input id="designCta" placeholder="سجّل الآن" oninput="renderDesign()"></div>
+            <div class="fld" id="fld-price" style="display:none;"><label>السعر</label>
+              <div style="display:flex;gap:8px;">
+                <select id="dPmode" onchange="dPriceToggle();renderDesign()" style="flex:1;padding:11px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:var(--cream);"><option value="">بدون</option><option value="free">مجاني</option><option value="paid">مدفوع</option></select>
+                <input id="dPrice" placeholder="السعر" oninput="renderDesign()" style="display:none;width:100px;padding:11px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:var(--cream);">
+              </div>
+            </div>
             <div id="fld-free-opts" style="display:none;">
               <div class="fld"><label>محاذاة النص</label>
                 <div class="seg" style="margin-bottom:0;"><button class="on" data-al="right" onclick="setAlign(this,'right')">يمين</button><button data-al="center" onclick="setAlign(this,'center')">وسط</button></div>
@@ -478,9 +484,19 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
                 <div class="fld"><label>نص فرعي</label><input id="carSub" oninput="carEditField()"></div>
                 <div class="fld"><label>النص (سطر = نقطة)</label><textarea id="carBody" oninput="carEditField()"></textarea></div>
                 <div class="fld"><label>نص الزر</label><input id="carCta" oninput="carEditField()"></div>
+                <div class="fld"><label>السعر</label>
+                  <div style="display:flex;gap:8px;">
+                    <select id="carPmode" onchange="carPriceToggle();carEditField()" style="flex:1;padding:9px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13px;background:#fff;"><option value="">بدون</option><option value="free">مجاني</option><option value="paid">مدفوع</option></select>
+                    <input id="carPrice" placeholder="السعر" oninput="carEditField()" style="display:none;width:90px;padding:9px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13px;background:#fff;">
+                  </div>
+                </div>
                 <div class="fld"><label>صورة الشريحة</label>
                   <input type="file" id="carImgInput" accept="image/*" onchange="carSlideImg(event)" class="file-in">
                   <button id="rmCarImg" onclick="carClearImg()" class="rm-btn" style="display:none;">إزالة الصورة</button>
+                </div>
+                <div class="fld" id="carPosWrap" style="display:none;"><label>تحريك صورة الشريحة</label>
+                  <div style="font-size:11px;font-weight:700;color:var(--muted);">أفقياً <span class="val" id="cpxVal">50</span></div><input type="range" id="carPosX" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('cpxVal').textContent=this.value;carEditField()">
+                  <div style="font-size:11px;font-weight:700;color:var(--muted);margin-top:6px;">عمودياً <span class="val" id="cpyVal">50</span></div><input type="range" id="carPosY" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('cpyVal').textContent=this.value;carEditField()">
                 </div>
               </div>
             </div>
@@ -521,6 +537,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
               </select></div>
               <div class="fld"><label>شفافية الصورة <span class="val" id="opVal">100%</span></label><input type="range" id="imgOpacity" class="range-in" min="20" max="100" value="100" oninput="document.getElementById('opVal').textContent=this.value+'%';renderDesign()"></div>
               <div class="fld"><label>تعتيم فوق الصورة <span class="val" id="ovVal">0%</span></label><input type="range" id="overlayDark" class="range-in" min="0" max="80" value="0" oninput="document.getElementById('ovVal').textContent=this.value+'%';renderDesign()"></div>
+              <div class="fld"><label>تحريك الصورة أفقياً <span class="val" id="bpxVal">50</span></label><input type="range" id="bgPosX" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('bpxVal').textContent=this.value;renderDesign()"></div>
+              <div class="fld"><label>تحريك الصورة عمودياً <span class="val" id="bpyVal">50</span></label><input type="range" id="bgPosY" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('bpyVal').textContent=this.value;renderDesign()"></div>
             </div>
             <div class="studio-divider" id="heroDivider" style="display:none;">صورة بارزة (أمام/فوق النص)</div>
             <div id="fld-hero" style="display:none;">
@@ -529,6 +547,8 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
                 <button id="rmHeroBtn" onclick="clearHeroImg()" class="rm-btn" style="display:none;">إزالة الصورة البارزة</button>
               </div>
               <div class="fld"><label>حجم الصورة <span class="val" id="hsVal">42%</span></label><input type="range" id="heroSize" class="range-in" min="25" max="65" value="42" oninput="document.getElementById('hsVal').textContent=this.value+'%';renderDesign()"></div>
+              <div class="fld"><label>تحريك الصورة أفقياً <span class="val" id="hpxVal">50</span></label><input type="range" id="heroPosX" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('hpxVal').textContent=this.value;renderDesign()"></div>
+              <div class="fld"><label>تحريك الصورة عمودياً <span class="val" id="hpyVal">50</span></label><input type="range" id="heroPosY" class="range-in" min="0" max="100" value="50" oninput="document.getElementById('hpyVal').textContent=this.value;renderDesign()"></div>
             </div>
           </div>
         </div>
@@ -1048,6 +1068,7 @@ function setDesign(btn,mode){
   const free=mode==='free';
   show('fld-single', mode==='single');
   show('fld-cta', mode==='single'||free);
+  show('fld-price', mode==='single'||free);
   ['fld-free-sub','fld-free-body','fld-free-opts','heroDivider','fld-hero'].forEach(id=>show(id,free));
   show('fld-sched-opts', mode==='schedule');
   show('fld-car-opts', mode==='carousel');
@@ -1074,8 +1095,16 @@ function readStyle(){
   const bg=val('bgColor')||base.bg, tx=val('textColor')||base.ink;
   const t={ bg:bg, bg2:shade(bg,-10), ink:tx, text:tx, sub:hexA(tx,.72), card:base.card, cb:base.cb, chip:base.chip };
   return { t, showLogo:chk('showLogo'), site:val('siteText'), phone:val('phoneText'), bgImg:bgImgData, blend:val('blendMode')||'normal',
-    imgOp:(parseInt(val('imgOpacity')||'100',10))/100, overlay:(parseInt(val('overlayDark')||'0',10))/100 };
+    imgOp:(parseInt(val('imgOpacity')||'100',10))/100, overlay:(parseInt(val('overlayDark')||'0',10))/100, posX:parseInt(val('bgPosX')||'50',10), posY:parseInt(val('bgPosY')||'50',10) };
 }
+function priceChip(t,pmode,price,fs){
+  fs=fs||30;
+  if(pmode==='free') return '<span style="display:inline-flex;align-items:center;background:#2E7D32;color:#fff;border-radius:100px;padding:14px 30px;font-size:'+fs+'px;font-weight:900;">مجاني</span>';
+  if(pmode==='paid') return '<span style="display:inline-flex;align-items:center;background:'+t.ink+';color:'+contrastColor(t.ink)+';border-radius:100px;padding:14px 30px;font-size:'+fs+'px;font-weight:900;">'+(price?esc(price):'مدفوع')+'</span>';
+  return '';
+}
+function dPriceToggle(){ const m=val('dPmode'); const pi=document.getElementById('dPrice'); if(pi) pi.style.display=(m==='paid')?'inline-block':'none'; }
+function carPriceToggle(){ const m=val('carPmode'); const pi=document.getElementById('carPrice'); if(pi) pi.style.display=(m==='paid')?'inline-block':'none'; }
 function topBar(S){
   const t=S.t;
   if(!S.showLogo && !S.site && !S.phone) return '';
@@ -1093,7 +1122,7 @@ function posterShell(S,inner,h){
   h=h||1350; const t=S.t;
   let bg='';
   if(S.bgImg){
-    bg='<img src="'+S.bgImg+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:'+S.blend+';opacity:'+S.imgOp+';">';
+    bg='<div style="position:absolute;inset:0;background-image:url('+S.bgImg+');background-size:cover;background-position:'+S.posX+'% '+S.posY+'%;mix-blend-mode:'+S.blend+';opacity:'+S.imgOp+';"></div>';
     if(S.overlay>0) bg+='<div style="position:absolute;inset:0;background:rgba(0,0,0,'+S.overlay+');"></div>';
   }
   return '<div class="poster" style="height:'+h+'px;position:relative;overflow:hidden;background:radial-gradient(ellipse 80% 55% at 100% 0%, '+t.bg2+' 0%, '+t.bg+' 60%), '+t.bg+';color:'+t.text+';">'+
@@ -1161,6 +1190,7 @@ function buildCoursePoster(S,c,title,cta){
   if(c.start) chips.push(chipHtml(S,(dp.dow?dp.dow+' ':'')+dp.day+' '+dp.mon));
   if(c.system) chips.push(chipHtml(S,c.system));
   if(c.time) chips.push(chipHtml(S,c.time+' مساءً'));
+  const _pc=priceChip(t,val('dPmode'),val('dPrice'),30); if(_pc) chips.push(_pc);
   const inner=topBar(S)+
     '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:34px;font-weight:800;color:'+t.sub+';margin-bottom:14px;">'+esc(title||'دورة تدريبية')+'</div>'+
     '<div style="font-size:96px;font-weight:900;color:'+t.ink+';line-height:1.1;">'+esc(c.course||'')+'</div>'+
@@ -1181,7 +1211,8 @@ function buildCover(S,courses,title){
 function buildFreePoster(S,o){
   const t=S.t, h=freeSize==='square'?1080:1350, center=freeAlign==='center';
   const heroH=parseInt(val('heroSize')||'42',10);
-  const hero=heroImgData?'<div style="width:100%;height:'+heroH+'%;border-radius:30px;overflow:hidden;margin-bottom:36px;border:3px solid '+t.cb+';flex:0 0 auto;"><img src="'+heroImgData+'" style="width:100%;height:100%;object-fit:cover;display:block;"></div>':'';
+  const hpx=parseInt(val('heroPosX')||'50',10), hpy=parseInt(val('heroPosY')||'50',10);
+  const hero=heroImgData?'<div style="width:100%;height:'+heroH+'%;border-radius:30px;margin-bottom:36px;border:3px solid '+t.cb+';flex:0 0 auto;background-image:url('+heroImgData+');background-size:cover;background-position:'+hpx+'% '+hpy+'%;"></div>':'';
   const lines=(o.body||'').split('\n').map(x=>x.trim()).filter(Boolean);
   let body='';
   if(lines.length>1) body='<div style="display:flex;flex-direction:column;gap:22px;margin-top:30px;'+(center?'align-items:center;':'')+'">'+lines.map(l=>'<div style="display:flex;align-items:flex-start;gap:18px;font-size:38px;font-weight:700;color:'+t.text+';line-height:1.4;text-align:right;"><span style="flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:'+t.ink+';margin-top:13px;"></span><span>'+esc(l.replace(/^[-•*]\s*/,''))+'</span></div>').join('')+'</div>';
@@ -1189,12 +1220,14 @@ function buildFreePoster(S,o){
   const brand=topBar(S);
   const sub=o.sub?'<div style="font-size:40px;font-weight:700;color:'+t.sub+';margin-top:14px;">'+esc(o.sub)+'</div>':'';
   const cta=o.cta?'<div style="background:'+t.ink+';color:'+contrastColor(t.ink)+';text-align:center;font-size:42px;font-weight:900;border-radius:24px;padding:30px;margin-top:36px;flex:0 0 auto;">'+esc(o.cta)+'</div>':'';
-  const inner=brand+hero+'<div style="flex:1;display:flex;flex-direction:column;justify-content:center;'+(center?'align-items:center;text-align:center;':'')+'min-height:0;"><div style="font-size:'+(o.titleSize||90)+'px;font-weight:900;color:'+t.ink+';line-height:1.08;">'+esc(o.title||'عنوان البوست')+'</div>'+sub+body+'</div>'+cta;
+  const _pc=priceChip(t,val('dPmode'),val('dPrice'),38); const priceRow=_pc?'<div style="margin-top:26px;'+(center?'text-align:center;':'')+'">'+_pc+'</div>':'';
+  const inner=brand+hero+'<div style="flex:1;display:flex;flex-direction:column;justify-content:center;'+(center?'align-items:center;text-align:center;':'')+'min-height:0;"><div style="font-size:'+(o.titleSize||90)+'px;font-weight:900;color:'+t.ink+';line-height:1.08;">'+esc(o.title||'عنوان البوست')+'</div>'+sub+priceRow+body+'</div>'+cta;
   return posterShell(S,inner,h);
 }
 function buildSlide(S,sl){
   const t=S.t, center=freeAlign==='center';
-  const img=sl.img?'<div style="width:100%;height:42%;border-radius:30px;overflow:hidden;margin-bottom:36px;border:3px solid '+t.cb+';flex:0 0 auto;"><img src="'+sl.img+'" style="width:100%;height:100%;object-fit:cover;display:block;"></div>':'';
+  const spx=(sl.posX==null?50:sl.posX), spy=(sl.posY==null?50:sl.posY);
+  const img=sl.img?'<div style="width:100%;height:42%;border-radius:30px;margin-bottom:36px;border:3px solid '+t.cb+';flex:0 0 auto;background-image:url('+sl.img+');background-size:cover;background-position:'+spx+'% '+spy+'%;"></div>':'';
   const lines=(sl.body||'').split('\n').map(x=>x.trim()).filter(Boolean);
   let body='';
   if(lines.length>1) body='<div style="display:flex;flex-direction:column;gap:22px;margin-top:30px;'+(center?'align-items:center;':'')+'">'+lines.map(l=>'<div style="display:flex;align-items:flex-start;gap:18px;font-size:38px;font-weight:700;color:'+t.text+';line-height:1.4;text-align:right;"><span style="flex:0 0 18px;width:18px;height:18px;border-radius:50%;background:'+t.ink+';margin-top:13px;"></span><span>'+esc(l.replace(/^[-•*]\s*/,''))+'</span></div>').join('')+'</div>';
@@ -1202,7 +1235,8 @@ function buildSlide(S,sl){
   const brand=topBar(S);
   const sub=sl.sub?'<div style="font-size:40px;font-weight:700;color:'+t.sub+';margin-top:14px;">'+esc(sl.sub)+'</div>':'';
   const cta=sl.cta?'<div style="background:'+t.ink+';color:'+contrastColor(t.ink)+';text-align:center;font-size:42px;font-weight:900;border-radius:24px;padding:30px;margin-top:36px;flex:0 0 auto;">'+esc(sl.cta)+'</div>':'';
-  const inner=brand+img+'<div style="flex:1;display:flex;flex-direction:column;justify-content:center;'+(center?'align-items:center;text-align:center;':'')+'min-height:0;"><div style="font-size:84px;font-weight:900;color:'+t.ink+';line-height:1.08;">'+esc(sl.title||'عنوان الشريحة')+'</div>'+sub+body+'</div>'+cta;
+  const _pc=priceChip(t,sl.pmode,sl.price,38); const priceRow=_pc?'<div style="margin-top:24px;'+(center?'text-align:center;':'')+'">'+_pc+'</div>':'';
+  const inner=brand+img+'<div style="flex:1;display:flex;flex-direction:column;justify-content:center;'+(center?'align-items:center;text-align:center;':'')+'min-height:0;"><div style="font-size:84px;font-weight:900;color:'+t.ink+';line-height:1.08;">'+esc(sl.title||'عنوان الشريحة')+'</div>'+sub+priceRow+body+'</div>'+cta;
   return posterShell(S,inner,1350);
 }
 function emptySlide(){ return '<div class="poster" style="height:1350px;background:#FAF7F2;color:#7A6060;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;text-align:center;padding:80px;">أضف شرائح من «+ شريحة جديدة» أو «استيراد الدورات»</div>'; }
@@ -1220,19 +1254,27 @@ function carSelect(i){
   document.getElementById('carCta').value=s.cta||'';
   document.getElementById('rmCarImg').style.display=s.img?'inline-block':'none';
   document.getElementById('carImgInput').value='';
+  document.getElementById('carPmode').value=s.pmode||'';
+  document.getElementById('carPrice').value=s.price||'';
+  carPriceToggle();
+  document.getElementById('carPosX').value=(s.posX==null?50:s.posX);
+  document.getElementById('carPosY').value=(s.posY==null?50:s.posY);
+  document.getElementById('cpxVal').textContent=(s.posX==null?50:s.posX);
+  document.getElementById('cpyVal').textContent=(s.posY==null?50:s.posY);
+  show('carPosWrap', !!s.img);
   show('carEditor',true); refreshCarList(); renderDesign();
 }
-function carAddSlide(){ carouselSlides.push({title:'',sub:'',body:'',cta:'',img:null}); carSelect(carouselSlides.length-1); }
+function carAddSlide(){ carouselSlides.push({title:'',sub:'',body:'',cta:'',img:null,pmode:'',price:'',posX:50,posY:50}); carSelect(carouselSlides.length-1); }
 function carDelete(i){ carouselSlides.splice(i,1); if(activeSlide>=carouselSlides.length) activeSlide=carouselSlides.length-1; if(activeSlide<0){ show('carEditor',false); refreshCarList(); renderDesign(); } else carSelect(activeSlide); }
 function carMove(i,d){ const j=i+d; if(j<0||j>=carouselSlides.length) return; const tmp=carouselSlides[i]; carouselSlides[i]=carouselSlides[j]; carouselSlides[j]=tmp; if(activeSlide===i) activeSlide=j; else if(activeSlide===j) activeSlide=i; refreshCarList(); renderDesign(); }
-function carEditField(){ const s=carouselSlides[activeSlide]; if(!s) return; s.title=val('carTitle'); s.sub=val('carSub'); s.body=val('carBody'); s.cta=val('carCta'); const nm=document.getElementById('carname-'+activeSlide); if(nm) nm.textContent=(activeSlide+1)+'. '+(s.title||'شريحة بدون عنوان'); renderDesign(); }
-function carSlideImg(e){ const f=e.target.files&&e.target.files[0]; if(!f||activeSlide<0) return; const r=new FileReader(); r.onload=()=>{ carouselSlides[activeSlide].img=r.result; document.getElementById('rmCarImg').style.display='inline-block'; renderDesign(); }; r.readAsDataURL(f); }
-function carClearImg(){ if(activeSlide<0) return; carouselSlides[activeSlide].img=null; document.getElementById('carImgInput').value=''; document.getElementById('rmCarImg').style.display='none'; renderDesign(); }
+function carEditField(){ const s=carouselSlides[activeSlide]; if(!s) return; s.title=val('carTitle'); s.sub=val('carSub'); s.body=val('carBody'); s.cta=val('carCta'); s.pmode=val('carPmode'); s.price=val('carPrice'); s.posX=parseInt(val('carPosX')||'50',10); s.posY=parseInt(val('carPosY')||'50',10); const nm=document.getElementById('carname-'+activeSlide); if(nm) nm.textContent=(activeSlide+1)+'. '+(s.title||'شريحة بدون عنوان'); renderDesign(); }
+function carSlideImg(e){ const f=e.target.files&&e.target.files[0]; if(!f||activeSlide<0) return; const r=new FileReader(); r.onload=()=>{ carouselSlides[activeSlide].img=r.result; document.getElementById('rmCarImg').style.display='inline-block'; show('carPosWrap',true); renderDesign(); }; r.readAsDataURL(f); }
+function carClearImg(){ if(activeSlide<0) return; carouselSlides[activeSlide].img=null; document.getElementById('carImgInput').value=''; document.getElementById('rmCarImg').style.display='none'; show('carPosWrap',false); renderDesign(); }
 function carImportSchedule(){
   const courses=selectedSchedCourses(getScheduleCourses());
   const title=(val('designTitle')||'').trim();
-  const cover={title:title||'جدول الدورات', sub:courses.length+' دورة قادمة', body:'', cta:'', img:null};
-  const slides=courses.map(c=>{ const dp=dateParts(c.start); const b=[]; if(c.start)b.push(dp.dow+' '+dp.day+' '+dp.mon); if(c.system)b.push(c.system); if(c.time)b.push(c.time+' مساءً'); return {title:c.course||'دورة', sub:c.trainer||'', body:b.join('\n'), cta:'سجّل الآن', img:null}; });
+  const cover={title:title||'جدول الدورات', sub:courses.length+' دورة قادمة', body:'', cta:'', img:null, pmode:'', price:'', posX:50, posY:50};
+  const slides=courses.map(c=>{ const dp=dateParts(c.start); const b=[]; if(c.start)b.push(dp.dow+' '+dp.day+' '+dp.mon); if(c.system)b.push(c.system); if(c.time)b.push(c.time+' مساءً'); return {title:c.course||'دورة', sub:c.trainer||'', body:b.join('\n'), cta:'سجّل الآن', img:null, pmode:'', price:'', posX:50, posY:50}; });
   carouselSlides=[cover].concat(slides);
   activeSlide=carouselSlides.length?0:-1;
   if(activeSlide>=0) carSelect(0); else { show('carEditor',false); refreshCarList(); renderDesign(); }
