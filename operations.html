@@ -445,6 +445,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
             </div>
             <div id="fld-sched-opts" style="display:none;">
               <div class="fld"><label>نص فرعي للجدول (اختياري)</label><input id="schedSub" placeholder="مثال: دورات شهر يونيو" oninput="renderDesign()"></div>
+              <div class="fld"><label>الشهر</label><select id="schedMonth" onchange="onSchedMonth()"></select></div>
               <div class="fld"><label>شكل الجدول</label>
                 <div class="seg" style="margin-bottom:0;flex-wrap:wrap;">
                   <button class="on" data-sl="cards" onclick="setSchedLayout(this,'cards')">بطاقات</button>
@@ -1049,9 +1050,26 @@ function initDesigns(){
   if(activeBtn) setDesign(activeBtn, activeBtn.dataset.d);
   else renderDesign();
 }
+function monthKey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function buildSchedMonths(){
+  const sel=document.getElementById('schedMonth'); if(!sel) return;
+  const cur=sel.value;
+  const set={}, list=[];
+  getScheduleCourses().forEach(c=>{ const d=parseDate(c.start); if(d){ const k=monthKey(d); if(!set[k]){ set[k]=1; list.push({k,label:MONTHS_AR[d.getMonth()]+' '+d.getFullYear(),t:d.getTime()}); } } });
+  list.sort((a,b)=>a.t-b.t);
+  sel.innerHTML='<option value="">كل الأشهر</option>'+list.map(m=>'<option value="'+m.k+'">'+m.label+'</option>').join('');
+  if(cur && list.some(m=>m.k===cur)) sel.value=cur;
+}
+function schedSource(){
+  const mk=val('schedMonth'); let arr=getScheduleCourses();
+  if(mk) arr=arr.filter(c=>{ const d=parseDate(c.start); return d && monthKey(d)===mk; });
+  return arr;
+}
+function onSchedMonth(){ buildSchedCourseList(); renderDesign(); }
 function buildSchedCourseList(){
+  buildSchedMonths();
   const box=document.getElementById('schedCourses'); if(!box) return;
-  const courses=getScheduleCourses();
+  const courses=schedSource();
   if(!courses.length){ box.innerHTML='<div style="font-size:12px;color:var(--muted);font-weight:600;padding:6px;">لا توجد دورات في الجدول بعد.</div>'; return; }
   box.innerHTML=courses.map((c,i)=>'<div style="display:flex;align-items:center;gap:6px;padding:7px 2px;border-bottom:1px solid var(--line);flex-wrap:wrap;"><input type="checkbox" data-ci="'+i+'" checked onchange="renderDesign()" style="width:16px;height:16px;accent-color:var(--crimson);flex:0 0 auto;"><span style="flex:1;min-width:110px;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(c.course||'دورة')+(c.start?' — '+esc(fmtDate(c.start)):'')+'</span><select data-pmode="'+i+'" onchange="pmodeChange(this)" style="font-size:11px;font-weight:700;padding:4px 6px;border-radius:7px;border:1.5px solid var(--line);background:#fff;flex:0 0 auto;"><option value="">— السعر</option><option value="free">مجاني</option><option value="paid">مدفوع</option></select><input data-price="'+i+'" placeholder="السعر" oninput="renderDesign()" style="display:none;width:70px;font-size:11px;padding:4px 6px;border-radius:7px;border:1.5px solid var(--line);background:#fff;flex:0 0 auto;"></div>').join('');
 }
@@ -1295,7 +1313,7 @@ function renderDesign(){
   const title=(val('designTitle')||'').trim(), cta=(val('designCta')||'').trim();
   const courses=getScheduleCourses();
   let posters=[], h=(designMode==='free'&&freeSize==='square')?1080:(designMode==='schedule'?schedH():1350);
-  if(designMode==='schedule') posters=[buildSchedulePoster(S,courses,title)];
+  if(designMode==='schedule') posters=[buildSchedulePoster(S,schedSource(),title)];
   else if(designMode==='single'){ const i=parseInt(val('designCourse'),10); posters=[courses[i]?buildCoursePoster(S,courses[i],title,cta||'سجّل الآن'):emptyPoster()]; }
   else if(designMode==='carousel') posters = carouselSlides.length ? carouselSlides.map(sl=>buildSlide(S,sl)) : [emptySlide()];
   else posters=[buildFreePoster(S,{title,cta,sub:(val('freeSub')||'').trim(),body:val('freeBody')||'',titleSize:parseInt(val('titleSize')||'90',10)})];
@@ -1320,7 +1338,7 @@ async function downloadDesign(){
   const courses=getScheduleCourses();
   const btn=document.getElementById('dlBtn'), orig=btn.innerHTML; btn.innerHTML='جاري التجهيز...'; btn.disabled=true;
   try{
-    if(designMode==='schedule') await capture(buildSchedulePoster(S,courses,title),'الجدول-التدريبي.png',schedH());
+    if(designMode==='schedule') await capture(buildSchedulePoster(S,schedSource(),title),'الجدول-التدريبي.png',schedH());
     else if(designMode==='single'){ const i=parseInt(val('designCourse'),10); if(!courses[i]) toast('لا توجد دورة'); else await capture(buildCoursePoster(S,courses[i],title,cta||'سجّل الآن'),(courses[i].course||'دورة')+'.png',1350); }
     else if(designMode==='carousel'){ if(!carouselSlides.length) toast('أضف شرائح أولاً'); else { for(let i=0;i<carouselSlides.length;i++){ await capture(buildSlide(S,carouselSlides[i]),String(i+1).padStart(2,'0')+'-شريحة.png',1350); } toast('تم تحميل '+carouselSlides.length+' شريحة ✓'); } }
     else { const h=freeSize==='square'?1080:1350; await capture(buildFreePoster(S,{title,cta,sub:(val('freeSub')||'').trim(),body:val('freeBody')||'',titleSize:parseInt(val('titleSize')||'90',10)}),(title||'بوست')+'.png',h); }
