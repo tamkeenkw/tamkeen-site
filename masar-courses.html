@@ -347,9 +347,9 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
       <div class="ac-h">فعّل حسابك واحضر كل الدورات</div>
       <div class="ac-p">تفعيل شهري يفتح لك جميع الدورات المجانية. أضفه للسلة مع دوراتك وادفع دفعة وحدة:</div>
       <div class="plan-row">
-        <div class="plan-opt" onclick="addSub('شهر',15)"><div class="po-n">شهر واحد</div><div class="po-p">١٥ د.ك</div><div class="po-add">أضف للسلة</div></div>
-        <div class="plan-opt" onclick="addSub('٦ أشهر',40)"><div class="po-n">٦ أشهر</div><div class="po-p">٤٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
-        <div class="plan-opt" onclick="addSub('١٢ شهر',70)"><div class="po-n">١٢ شهر</div><div class="po-p">٧٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
+        <div class="plan-opt" onclick="addSub('شهر',15,'شهر')"><div class="po-n">شهر واحد</div><div class="po-p">١٥ د.ك</div><div class="po-add">أضف للسلة</div></div>
+        <div class="plan-opt" onclick="addSub('٦ أشهر',40,'6 أشهر')"><div class="po-n">٦ أشهر</div><div class="po-p">٤٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
+        <div class="plan-opt" onclick="addSub('١٢ شهر',70,'12 شهر')"><div class="po-n">١٢ شهر</div><div class="po-p">٧٠ د.ك</div><div class="po-add">أضف للسلة</div></div>
       </div>
     </div>
 
@@ -517,6 +517,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
       <svg class="ic" style="color:var(--crimson)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg>
       <div>عندك دورات بدون تفعيل. <span class="ch-add" onclick="quickAddSub()">فعّل حسابك (١٥ د.ك)</span> عشان تحضر جميع الدورات المجانية.</div>
     </div>
+    <div id="cartDiscountRow" style="display:none;align-items:center;justify-content:space-between;padding:2px 6px 12px;"><span style="font-size:13px;font-weight:800;color:var(--green);">خصم المشترك ١٠٪</span><span id="cartDiscount" style="font-size:15px;font-weight:900;color:var(--green);">−٠ د.ك</span></div>
     <div class="cart-total" id="cartTotalRow"><span class="ct-l">الإجمالي</span><span class="ct-v" id="cartTotal">٠ د.ك</span></div>
 
     <div id="checkoutForm">
@@ -575,7 +576,14 @@ function setBtn(btn, txt, spin, loading){
 
 /* ═══════════ CART ═══════════ */
 let cart=[]; let cid=1;
-function cartTotalAmount(){ return cart.reduce((s,i)=>s+(i.amount||0),0); }
+function cartTotals(){
+  let subtotal=0, discBase=0;
+  cart.forEach(i=>{ const a=i.amount||0; subtotal+=a; if(i.kind!=='sub') discBase+=a; });
+  const subscriber=cart.some(i=>i.kind==='sub');
+  const discount = subscriber ? Math.round(discBase*0.10*1000)/1000 : 0;
+  const total = Math.round((subtotal-discount)*1000)/1000;
+  return {subtotal, discount, total, subscriber};
+}
 function updateFab(){
   const fab=document.getElementById('cartFab');
   fab.classList.toggle('empty', cart.length===0);
@@ -596,7 +604,11 @@ function renderCart(){
       return '<div class="cart-item"><div class="ci-body"><div class="ci-tag">'+i.tag+'</div><div class="ci-title">'+i.title+'</div>'+(i.sub?'<div class="ci-sub">'+i.sub+'</div>':'')+'</div>'+priceHtml+'<button class="ci-remove" onclick="removeItem('+i.id+')">✕</button></div>';
     }).join('');
   }
-  document.getElementById('cartTotal').textContent=ar(cartTotalAmount())+' د.ك';
+  const t=cartTotals();
+  document.getElementById('cartTotal').textContent=ar(t.total)+' د.ك';
+  const dRow=document.getElementById('cartDiscountRow');
+  if(t.discount>0){ dRow.style.display='flex'; document.getElementById('cartDiscount').textContent='−'+ar(t.discount)+' د.ك'; }
+  else dRow.style.display='none';
   const hasFree=cart.some(i=>i.kind==='free' && !i.cert);
   const hasSub =cart.some(i=>i.kind==='sub');
   document.getElementById('cartHint').style.display=(hasFree && !hasSub)?'':'none';
@@ -646,12 +658,12 @@ function addSpecialToCart(){
 }
 
 /* ───── ADD: SUBSCRIPTION ───── */
-function addSub(plan, amount){
+function addSub(label, amount, planKey){
   cart=cart.filter(i=>i.kind!=='sub');
-  addToCart({ kind:'sub', amount:amount, tag:'تفعيل الحساب', title:'اشتراك '+plan,
-    sub:'حضور جميع الدورات المجانية', plan:'اشتراك '+plan+' — '+ar(amount)+' د.ك' });
+  addToCart({ kind:'sub', amount:amount, planKey:planKey, tag:'تفعيل الحساب', title:'اشتراك '+label,
+    sub:'حضور جميع الدورات المجانية' });
 }
-function quickAddSub(){ addSub('شهر',15); }
+function quickAddSub(){ addSub('شهر',15,'شهر'); }
 
 /* ───── CHECKOUT ───── */
 async function checkout(){
@@ -667,41 +679,44 @@ async function checkout(){
   setBtn('coBtn','coTxt','coSpin',true);
   const ts=new Date().toLocaleString('ar-SA');
 
-  // 1) سجّل كل عنصر في الشيت
-  for(const i of cart){
-    let body=null;
-    if(i.kind==='free'){
-      body={ type:'تسجيل دورة مجانية', name, phone, email, course:i.course, courseDate:i.date,
-        wantCert: i.cert?'نعم':'لا', courseType:'مجاني', notes:'طلب من السلة', timestamp:ts };
-    } else if(i.kind==='sub'){
-      body={ type:'اشتراك مسار', name, phone, email, plan:i.plan, timestamp:ts };
-    } else if(i.kind==='special'){
-      body={ type:'دورة خاصة', name, phone, email, course:i.course, courseDate:i.date, courseType:'دورة خاصة',
-        notes: i.amount>0?('رسوم: '+i.amount+' د.ك'):'بانتظار تحديد الرسوم', timestamp:ts };
-    }
-    if(body) await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)}).catch(()=>{});
+  // 1) دورات مجانية (حضور فقط) — تسجّل فوراً بدون دفع
+  const freeAttend = cart.filter(i=>i.kind==='free' && !i.cert);
+  for(const i of freeAttend){
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ type:'تسجيل دورة مجانية', name, phone, email, course:i.course, courseDate:i.date,
+        wantCert:'لا', courseType:'مجاني', notes:'حضور مجاني من السلة', timestamp:ts })}).catch(()=>{});
   }
   if(typeof fbq!=='undefined') fbq('track','Lead');
 
-  const total=cartTotalAmount();
-  // 2) ادفع الإجمالي عبر Tap (سلة)
-  if(total>0){
-    const itemsTxt=cart.filter(i=>i.amount>0).map(i=>i.title+' ('+i.amount+'د.ك)').join(' + ');
-    try{
-      const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({ type:'دفع_سلة', name, phone, email, amount:total, items:itemsTxt,
-          redirect: PAGE_URL+'?payment=success&type=سلة&phone='+encodeURIComponent(phone) })});
-      const data=await res.json();
-      if(data && data.status==='ok' && data.url){ window.location.href=data.url; return; }
-    }catch(err){}
-    finishCart('تم تسجيل طلبك ('+ar(total)+' د.ك). يتواصل معك الفريق لإتمام الدفع، أو ادفع عبر الواتساب 97999768.');
-  } else {
-    finishCart('تم تسجيل دوراتك المجانية! يوصلك لينك زووم على إيميلك قبل كل دورة.');
-  }
+  // 2) العناصر المدفوعة → بصيغة موديول السلة (الموديول يسجّلها بعد نجاح الدفع)
+  const payItems=[];
+  cart.forEach(i=>{
+    if(i.kind==='free' && i.cert)      payItems.push({ kind:'cert',         name:i.course, date:i.date });
+    else if(i.kind==='special')        payItems.push({ kind:'course',       name:i.course, date:i.date });
+    else if(i.kind==='sub')            payItems.push({ kind:'subscription',  plan:i.planKey });
+  });
+  const subscriber = cart.some(i=>i.kind==='sub');
+
+  // لا عناصر مدفوعة — اكتفِ بالمجاني
+  if(!payItems.length){ finishCart('تم تسجيل دوراتك المجانية! يوصلك لينك زووم على إيميلك قبل كل دورة.'); return; }
+
+  // 3) ادفع الإجمالي عبر Tap (دفع_سلة)
+  try{
+    const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ type:'دفع_سلة', name, phone, email, subscriber, items:payItems })});
+    const data=await res.json();
+    if(data && data.status==='ok' && data.url){ window.location.href=data.url; return; }
+  }catch(err){}
+
+  // 4) تعذّر الدفع — احفظ الطلب معلّقاً
+  try{ await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({ type:'طلب_سلة_معلّق', name, phone, email, subscriber, items:payItems, timestamp:ts })}); }catch(e){}
+  finishCart('تم استلام طلبك. يتواصل معك الفريق لإتمام الدفع، أو واتساب 97999768.');
 }
 function finishCart(msg){
   document.getElementById('cartItems').style.display='none';
   document.getElementById('cartHint').style.display='none';
+  document.getElementById('cartDiscountRow').style.display='none';
   document.getElementById('cartTotalRow').style.display='none';
   document.getElementById('checkoutForm').style.display='none';
   document.getElementById('cartSuccessMsg').textContent=msg;
@@ -749,8 +764,14 @@ const SPECIAL_PAGES = [
 ];
 function specialPageFor(name){ const f=SPECIAL_PAGES.find(p=>(name||'').includes(p.match)); return f?f.url:null; }
 
+let PRICES={};
+async function loadPrices(){
+  try{ const r=await fetch(SCRIPT_URL+'?action=getPrices'); const d=await r.json(); PRICES=d.prices||{}; }catch(e){ PRICES={}; }
+}
+
 async function loadSpecialCourses(){
   try{
+    await loadPrices();
     const res=await fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'));
     const data=await res.json();
     const grid=document.getElementById('specialGrid');
@@ -761,7 +782,7 @@ async function loadSpecialCourses(){
       const dateLabel=formatDateAr(c.date);
       const online=c.zoom && c.zoom.startsWith('https://');
       const mode=online?'<span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/></svg> أونلاين</span>':'<span class="course-meta-item" style="color:#8B4513;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-5 9 5"/><path d="M4 9v10M9 9v10M15 9v10M20 9v10"/><path d="M2 21h20"/></svg> حضوري</span>';
-      const price=parseFloat(c.price)||0;
+      const price=Number(PRICES[c.name])||parseFloat(c.price)||0;
       const pageUrl=specialPageFor(c.name);
       const priceBlock = price>0
         ? `<div class="course-price-row"><span class="course-price">${ar(price)}</span><span class="course-price-cur">د.ك</span></div>`
