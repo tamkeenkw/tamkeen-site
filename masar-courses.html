@@ -764,14 +764,8 @@ const SPECIAL_PAGES = [
 ];
 function specialPageFor(name){ const f=SPECIAL_PAGES.find(p=>(name||'').includes(p.match)); return f?f.url:null; }
 
-let PRICES={};
-async function loadPrices(){
-  try{ const r=await fetch(SCRIPT_URL+'?action=getPrices'); const d=await r.json(); PRICES=d.prices||{}; }catch(e){ PRICES={}; }
-}
-
 async function loadSpecialCourses(){
   try{
-    await loadPrices();
     const res=await fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'));
     const data=await res.json();
     const grid=document.getElementById('specialGrid');
@@ -782,7 +776,7 @@ async function loadSpecialCourses(){
       const dateLabel=formatDateAr(c.date);
       const online=c.zoom && c.zoom.startsWith('https://');
       const mode=online?'<span class="course-meta-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/></svg> أونلاين</span>':'<span class="course-meta-item" style="color:#8B4513;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-5 9 5"/><path d="M4 9v10M9 9v10M15 9v10M20 9v10"/><path d="M2 21h20"/></svg> حضوري</span>';
-      const price=Number(PRICES[c.name])||parseFloat(c.price)||0;
+      const price=parseFloat(c.price)||0;
       const pageUrl=specialPageFor(c.name);
       const priceBlock = price>0
         ? `<div class="course-price-row"><span class="course-price">${ar(price)}</span><span class="course-price-cur">د.ك</span></div>`
