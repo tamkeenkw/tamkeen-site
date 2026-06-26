@@ -138,6 +138,19 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .crs-eval-btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .crs-eval-btn.copied { background:#E8F5E9; color:#1A7A3A; border-color:#1A7A3A; }
 
+/* أزرار الدورة (تسجيل + تقييم) */
+.crs-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.crs-actions .crs-eval-btn { margin-top:0; }
+.crs-reg-btn {
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--crimson); color:#fff; border:1.5px solid var(--crimson);
+  border-radius:100px; padding:7px 14px; font-family:'Tajawal',sans-serif; font-size:12.5px;
+  font-weight:800; cursor:pointer; transition:all .22s;
+}
+.crs-reg-btn:hover { background:var(--crimson-2); }
+.crs-reg-btn svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.crs-reg-btn.copied { background:#1A7A3A; border-color:#1A7A3A; }
+
 /* آراء الحضور */
 .rv-card { background:#fff; border-radius:16px; padding:20px 22px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:14px; }
 .rv-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
@@ -290,6 +303,9 @@ const PAGES = {
 
 /* صفحة تقييم الدورة العامة (تُبنى منها الروابط المشتركة للحضور) */
 const EVAL_PAGE = 'Taqeem.html';
+
+/* صفحة التسجيل العامة للدورة (مجانية أو خاصة — تكتشف النوع تلقائياً) */
+const REG_PAGE = 'masar-register.html';
 
 /* تمرير رقم العضوية للصفحة المقصودة (إن أرادت قراءته لاحقاً) */
 function goTo(url) {
@@ -471,16 +487,25 @@ function loadMyCourses(trainerName) {
                   encodeURIComponent(c.course || 'دورة') + '" data-date="' + encodeURIComponent(c.date || '') + '">' +
                   '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' +
                   'احصل على رابط تقييم الدورة</button>';
+      var regBtn = '<button class="crs-reg-btn" type="button" data-course="' +
+                  encodeURIComponent(c.course || 'دورة') + '" data-date="' + encodeURIComponent(c.date || '') + '">' +
+                  '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+                  'انسخ رابط التسجيل</button>';
       return '<div class="crs-card">' +
                '<div class="crs-count"><div class="n">' + (c.count || 0) + '</div><div class="t">مسجّل</div></div>' +
                '<div class="crs-info"><div class="crs-title">' + (c.course || 'دورة') + '</div>' +
-               '<div class="crs-meta">' + meta.join('') + '</div>' + btn + '</div>' +
+               '<div class="crs-meta">' + meta.join('') + '</div>' +
+               '<div class="crs-actions">' + regBtn + btn + '</div></div>' +
              '</div>';
     }).join('');
 
     // ربط أزرار "احصل على رابط التقييم"
     box.querySelectorAll('.crs-eval-btn').forEach(function(b) {
       b.addEventListener('click', function(){ copyEvalLink(this); });
+    });
+    // ربط أزرار "انسخ رابط التسجيل"
+    box.querySelectorAll('.crs-reg-btn').forEach(function(b) {
+      b.addEventListener('click', function(){ copyRegLink(this); });
     });
   };
   script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
@@ -524,6 +549,28 @@ function fallbackCopy(text, cb) {
   try { document.execCommand('copy'); cb(); }
   catch(e) { prompt('انسخ الرابط يدوياً:', text); }
   document.body.removeChild(ta);
+}
+
+/* ===== بناء رابط التسجيل للدورة ونسخه (مجاني/خاص — الصفحة تكتشف النوع) ===== */
+function copyRegLink(btn) {
+  var course = decodeURIComponent(btn.getAttribute('data-course') || '');
+  var date   = decodeURIComponent(btn.getAttribute('data-date') || '');
+  var base = new URL(REG_PAGE, location.href).href; // رابط مطلق يعمل خارج الموقع
+  var link = base + '?course=' + encodeURIComponent(course) +
+             (date ? '&date=' + encodeURIComponent(date) : '');
+
+  function flash() {
+    var orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم نسخ رابط التسجيل ✓';
+    setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = orig; }, 2400);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(flash).catch(function(){ fallbackCopy(link, flash); });
+  } else {
+    fallbackCopy(link, flash);
+  }
 }
 
 /* ===== آراء الحضور على دورات المدرب ===== */
