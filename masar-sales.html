@@ -346,8 +346,10 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0G
 const TODAY = new Date().toISOString().split('T')[0];
 let AGENT = '';
 
-function get(action){return fetch(SCRIPT_URL+'?action='+action).then(r=>r.json());}
+function get(action){return fetch(SCRIPT_URL+'?action='+action+'&t='+Date.now()).then(r=>r.json());}
 function post(body){return fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(r=>r.json());}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function jsAttr(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function toA(n){return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
 function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'s');t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
 function cleanNum(p){const c=String(p||'').replace(/\D/g,'');return c.startsWith('965')?c:'965'+c;}
@@ -439,6 +441,7 @@ function render(){
   if(!d.length){box.innerHTML='<div class="empty"><div class="empty-icon">🔍</div>لا توجد نتائج لهذا الفلتر</div>';updSelCnt();return;}
 
   box.innerHTML=d.map(r=>{
+   try{
     const p=payClass(r.status);
     const isSel=sel.has(r.rowIndex);
     const today=r.lastContact===TODAY;
@@ -449,22 +452,22 @@ function render(){
         <div class="lc-top">
           <input type="checkbox" class="lc-chk" ${isSel?'checked':''} onchange="fTog(${r.rowIndex},this)">
           <div style="min-width:0;">
-            <div class="lc-name">${r.name||'—'}</div>
-            ${r.course?`<span class="lc-course">${r.course}</span>`:''}
+            <div class="lc-name">${esc(r.name)||'—'}</div>
+            ${r.course?`<span class="lc-course">${esc(r.course)}</span>`:''}
           </div>
           <span class="lc-paypill ${p.pill}">${p.label}</span>
         </div>
 
         <div class="lc-meta">
-          <span>📞 <b class="lc-phone">${r.phone||'—'}</b></span>
-          ${r.source?`<span class="lc-tag" style="${srcStyle(r.source)}">${r.source}</span>`:''}
+          <span>📞 <b class="lc-phone">${esc(r.phone)||'—'}</b></span>
+          ${r.source?`<span class="lc-tag" style="${srcStyle(r.source)}">${esc(r.source)}</span>`:''}
           ${r.cert==='نعم'?`<span class="lc-tag" style="background:var(--green-bg);color:var(--green);">🎓 يبي شهادة</span>`:''}
           ${r.attended==='نعم حضر'?`<span class="lc-tag" style="background:var(--green-bg);color:var(--green);">✓ حضر</span>`:''}
         </div>
 
         <div class="lc-meta" style="margin-top:6px;">
-          <span>آخر تواصل: ${today?'<span class="lc-today">اليوم ✓</span>':`<b>${r.lastContact||'—'}</b>`}</span>
-          ${r.agent?`<span>بواسطة: <b>${r.agent}</b></span>`:''}
+          <span>آخر تواصل: ${today?'<span class="lc-today">اليوم ✓</span>':`<b>${esc(r.lastContact)||'—'}</b>`}</span>
+          ${r.agent?`<span>بواسطة: <b>${esc(r.agent)}</b></span>`:''}
         </div>
 
         <div class="lc-bottom">
@@ -473,6 +476,10 @@ function render(){
         </div>
       </div>
     </div>`;
+   }catch(cardErr){
+    console.error('card error rowIndex',r&&r.rowIndex,cardErr);
+    return `<div class="lead-card"><div class="lc-strip none"></div><div class="lc-body" style="font-size:12px;color:var(--muted);">تعذّر عرض سجل #${(r&&r.rowIndex)||'?'} — ${esc(r&&r.name)}</div></div>`;
+   }
   }).join('');
   updSelCnt();
   }catch(err){
@@ -541,7 +548,7 @@ async function doFUpdate(){
 
 // ── WA POPUP ──
 let waNum='', waName='';
-function waBtn(phone,name){return`<button onclick="openWa('${cleanNum(phone)}','${String(name||'').replace(/'/g,"\\'")}',this)" class="wa-btn">واتساب</button>`;}
+function waBtn(phone,name){return`<button onclick="openWa('${cleanNum(phone)}','${jsAttr(name)}',this)" class="wa-btn">واتساب</button>`;}
 const WA_TPLS={
   'تذكير':n=>`السلام عليكم ${n} 👋\n\nتذكير بموعد دورتك اليوم الساعة ٥:٠٠ م\n\nرابط زووم بيوصلك قريب\n\nأكاديمية مسار 🎓`,
   'شهادة':n=>`السلام عليكم ${n} 👋\n\nلاعتماد شهادتك المعتمدة يرجى إتمام دفع الرسوم (١٥ د.ك)\n\nراسلنا هنا للتفاصيل ✅\n\nأكاديمية مسار 🎓`,
