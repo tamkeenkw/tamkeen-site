@@ -63,6 +63,15 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .mc-item .k { font-size:12px; color:var(--muted); font-weight:700; margin-bottom:4px; }
 .mc-item .v { font-size:16px; font-weight:800; color:var(--text); }
 
+/* زر طلب تجديد العضوية */
+.renew-cta { margin-top:22px; padding-top:20px; border-top:1px solid rgba(92,15,15,.08); }
+.renew-btn { display:flex; align-items:center; justify-content:center; gap:9px; width:100%; background:var(--crimson); color:#fff; border:none; border-radius:13px; padding:14px; font-family:'Tajawal',sans-serif; font-size:15px; font-weight:900; cursor:pointer; transition:all .25s; box-shadow:0 8px 22px rgba(92,15,15,.18); }
+.renew-btn:hover { background:var(--crimson-2); transform:translateY(-2px); }
+.renew-btn:disabled { opacity:.75; cursor:default; transform:none; box-shadow:none; }
+.renew-btn svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.renew-btn.done { background:#1A7A3A; }
+.renew-note { font-size:12.5px; color:var(--muted); text-align:center; margin-top:10px; line-height:1.6; display:none; }
+
 /* بطاقات الإجراءات */
 .section-title { font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--crimson); margin:0 4px 16px; }
 .actions { display:grid; grid-template-columns:1fr; gap:14px; }
@@ -210,6 +219,13 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
         <div class="mc-item"><div class="k">رقم العضوية</div><div class="v" id="vId">—</div></div>
         <div class="mc-item"><div class="k">تاريخ العضوية</div><div class="v" id="vStart">—</div></div>
         <div class="mc-item"><div class="k">تاريخ الانتهاء</div><div class="v" id="vEnd">—</div></div>
+      </div>
+      <div class="renew-cta">
+        <button class="renew-btn" id="renewBtn" type="button" onclick="requestRenew()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          <span id="renewTxt">طلب تجديد العضوية</span>
+        </button>
+        <div class="renew-note" id="renewNote">تم استلام طلبك، بيتواصل معك فريق تمكين لإتمام التجديد.</div>
       </div>
     </div>
 
@@ -360,6 +376,12 @@ function showDashboard(m) {
     dot.className = 'dot dot-active'; lbl.className = 'lbl badge-active'; lbl.textContent = 'العضوية سارية';
   }
 
+  // إعادة ضبط زر طلب التجديد
+  var rb = document.getElementById('renewBtn');
+  rb.disabled = false; rb.classList.remove('done');
+  document.getElementById('renewTxt').textContent = 'طلب تجديد العضوية';
+  document.getElementById('renewNote').style.display = 'none';
+
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('dashScreen').style.display  = 'block';
   window.scrollTo(0, 0);
@@ -368,11 +390,44 @@ function showDashboard(m) {
 
   // إعادة ضبط قسم آراء الحضور (يُحمّل عند الضغط فقط)
   reviewsLoaded = false;
-  var rb = document.getElementById('reviewsBox');
-  rb.style.display = 'none'; rb.innerHTML = '';
+  var rbx = document.getElementById('reviewsBox');
+  rbx.style.display = 'none'; rbx.innerHTML = '';
   document.getElementById('reviewsToggle').classList.remove('open');
   document.getElementById('reviewsToggleTxt').textContent = 'أظهر تقييم دوراتي';
   document.getElementById('rvCount').style.display = 'none';
+}
+
+/* ===== طلب تجديد العضوية — يُسجَّل كطلب عضوية جديد ===== */
+function requestRenew() {
+  var btn  = document.getElementById('renewBtn');
+  var txt  = document.getElementById('renewTxt');
+  var note = document.getElementById('renewNote');
+  var memberId = sessionStorage.getItem('tk_memberId') || '';
+  var name     = document.getElementById('vName').textContent || '';
+  if (!memberId) { alert('تعذّر تحديد رقم عضويتك، أعد تسجيل الدخول.'); return; }
+  if (!confirm('إرسال طلب تجديد عضويتك إلى إدارة تمكين؟')) return;
+
+  btn.disabled = true; txt.textContent = 'جاري الإرسال...';
+
+  function renewDone() {
+    btn.classList.add('done');
+    txt.textContent = 'تم إرسال طلب التجديد ✓';
+    note.style.display = 'block';
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      type: 'عضوية',
+      name: name,
+      phone: '',
+      field: 'تجديد عضوية — رقم العضوية: ' + memberId,
+      courses: '',
+      payment: 'طلب تجديد',
+      plan: 'تجديد عضوية',
+      timestamp: new Date().toLocaleString('ar-SA')
+    })
+  }).then(renewDone).catch(renewDone);
 }
 
 /* ===== أيكونز SVG مضمّنة (بدل الإيموجي) ===== */
