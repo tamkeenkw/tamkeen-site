@@ -491,7 +491,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div class="modal-info-row">
       <div class="modal-info-chip">👤 <span id="modalTrainer"></span></div>
       <div class="modal-info-chip">📅 <span id="modalDate"></span></div>
-      <div class="modal-info-chip">🕔 ٥:٠٠ م</div>
+      <div class="modal-info-chip">🕔 <span id="modalTime"></span></div>
     </div>
     <input type="hidden" id="courseNameInput">
     <input type="hidden" id="courseDateInput">
@@ -766,11 +766,12 @@ function selectPlan(plan, el) {
   document.getElementById('subForm').style.display = '';
 }
 
-function openCourseModal(course, trainer, date) {
+function openCourseModal(course, trainer, date, time) {
   document.getElementById('modalCourseTag').textContent = 'دورة مجانية — ' + date;
   document.getElementById('modalCourseTitle').textContent = course;
   document.getElementById('modalTrainer').textContent = trainer;
   document.getElementById('modalDate').textContent = date;
+  document.getElementById('modalTime').textContent = time || '';
   document.getElementById('courseNameInput').value = course;
   document.getElementById('courseDateInput').value = date;
   document.getElementById('step1Phone').value = '';
@@ -1085,7 +1086,7 @@ async function loadFreeCourses() {
             ${modeTag}
           </div>
           ${locationInfo}
-          <button class="course-register-btn" onclick="openCourseModal('${c.name}','${c.trainer}','${dateLabel}')">سجّل مجاناً</button>
+          <button class="course-register-btn" onclick="openCourseModal('${c.name}','${c.trainer}','${dateLabel}','${c.time}')">سجّل مجاناً</button>
         </div>
       </div>`;
     }).join('');
