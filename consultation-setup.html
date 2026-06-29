@@ -298,6 +298,15 @@ async function sendRemind(bookingId,btn){
   }catch(e){ btn.innerHTML='خطأ في الاتصال'; }
   setTimeout(()=>{btn.disabled=false;btn.innerHTML=o;},2500);
 }
+
+/* ====== دخول تلقائي عبر ?m= (من لوحة المدرب) ====== */
+(function(){
+  var m = new URLSearchParams(location.search).get('m');
+  if(m){
+    var f = document.getElementById('memberNo');
+    if(f){ f.value = m; if(typeof enter === 'function') enter(); }
+  }
+})();
 </script>
 </body>
 </html>
