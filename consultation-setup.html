@@ -52,6 +52,10 @@ input:focus,select:focus{border-color:var(--maroon)}
 @keyframes s{to{transform:rotate(360deg)}}
 .hint{color:var(--muted);font-size:13px;margin-top:4px}
 .gate{max-width:420px;margin:40px auto 0}
+.stats{display:flex;gap:12px;margin-bottom:16px}
+.stat{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:16px 12px;text-align:center}
+.stat .num{font-size:28px;font-weight:800;color:var(--maroon);line-height:1.2}
+.stat .lbl{font-size:13px;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -113,7 +117,8 @@ input:focus,select:focus{border-color:var(--maroon)}
     </div>
 
     <div class="card">
-      <h2>الحجوزات المؤكدة (<span id="bkCount">0</span>)</h2>
+      <h2>الحجوزات</h2>
+      <div id="statsRow" class="stats hide"></div>
       <div id="bookingsWrap"><p class="hint">لا توجد حجوزات بعد.</p></div>
     </div>
   </div>
@@ -139,7 +144,7 @@ function addService(preset){
   div.innerHTML =
     '<input class="svcName" placeholder="اسم الاستشارة (مثال: استشارة تسويق)">'+
     '<div class="svcrow">'+
-      '<input class="svcFee" inputmode="decimal" placeholder="الرسوم د.ك">'+
+      '<input class="svcFee" inputmode="decimal" placeholder="الرسوم د.ك (٠ = مجاني)">'+
       '<select class="svcDur"><option value="30">٣٠ دقيقة</option><option value="45">٤٥ دقيقة</option><option value="60">٦٠ دقيقة</option><option value="90">٩٠ دقيقة</option></select>'+
       '<button class="del" onclick="this.closest(\'.svc\').remove()">حذف ✕</button>'+
     '</div>';
@@ -153,9 +158,9 @@ function addService(preset){
 function collectServices(){
   return [...document.querySelectorAll('.svc')].map(s=>({
     name:s.querySelector('.svcName').value.trim(),
-    fee:s.querySelector('.svcFee').value,
+    fee:s.querySelector('.svcFee').value.trim(),
     duration:s.querySelector('.svcDur').value
-  })).filter(s=>s.name && Number(s.fee)>0);
+  })).filter(s=>s.name && s.fee!=='' && !isNaN(Number(s.fee)) && Number(s.fee)>=0);
 }
 
 // ── المواعيد ──
@@ -260,8 +265,17 @@ async function save(){
 }
 
 // ── الحجوزات ──
+function arNum(n){ return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
 function renderBookings(list){
-  $('bkCount').textContent=list.length;
+  const total = list.reduce((s,b)=>s+(Number(b.fee)||0),0);
+  const stats = $('statsRow');
+  if(list.length){
+    stats.innerHTML =
+      '<div class="stat"><div class="num">'+arNum(list.length)+'</div><div class="lbl">عدد المشتركين</div></div>'+
+      '<div class="stat"><div class="num">'+arNum(total)+'</div><div class="lbl">إجمالي الإيرادات (د.ك)</div></div>';
+    stats.classList.remove('hide');
+  } else stats.classList.add('hide');
+
   const w=$('bookingsWrap');
   if(!list.length){ w.innerHTML='<p class="hint">لا توجد حجوزات بعد.</p>'; return; }
   w.innerHTML=list.map(b=>

@@ -84,7 +84,7 @@ function render(){
   const svcHtml = hasSvc ? TR.services.map((s,i)=>
     '<div class="svc-card" data-i="'+i+'" onclick="pickSvc('+i+',this)">'+
       '<div><div class="nm">'+s.name+'</div><div class="dur">⏱ '+arNum(s.duration||30)+' دقيقة</div></div>'+
-      '<div class="fee">'+arNum(s.fee)+' د.ك</div>'+
+      '<div class="fee">'+(Number(s.fee)>0?arNum(s.fee)+' د.ك':'مجاناً')+'</div>'+
     '</div>'
   ).join('') : '<div class="empty">لا توجد أنواع استشارات.</div>';
 
@@ -108,7 +108,7 @@ function render(){
       '<div class="sumbar"><div class="sel-when" id="selWhen">اختر نوع الاستشارة والموعد</div>'+
         '<div class="fee" id="selFee"></div></div>'+
       '<button class="btn" id="payBtn" onclick="pay()" style="margin-top:12px" disabled><span id="payTxt">ادفع واحجز الموعد</span></button>'+
-      '<p class="pay-note">دفع آمن عبر بوابة Tap — K-NET / مدى / بطاقات</p>'+
+      '<p class="pay-note" id="payNote">دفع آمن عبر بوابة Tap — K-NET / مدى / بطاقات</p>'+
     '</div>';
 }
 
@@ -127,7 +127,10 @@ function pickTime(btn){
 }
 function refreshSummary(){
   if(selTime) $('selWhen').textContent = arDate(selTime.date)+' · '+fmt12(selTime.time)+(selSvc?(' · '+selSvc.name):'');
-  $('selFee').innerHTML = selSvc ? ('الرسوم: <b>'+arNum(selSvc.fee)+'</b> د.ك') : '';
+  const free = selSvc && Number(selSvc.fee)===0;
+  $('selFee').innerHTML = selSvc ? (free ? '<b>مجاناً</b>' : ('الرسوم: <b>'+arNum(selSvc.fee)+'</b> د.ك')) : '';
+  $('payTxt').textContent = free ? 'احجز الموعد مجاناً' : 'ادفع واحجز الموعد';
+  $('payNote').style.display = free ? 'none' : 'block';
   $('payBtn').disabled = !(selSvc && selTime);
 }
 
@@ -148,11 +151,23 @@ async function pay(){
     const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
       type:'book', t:slug, name, phone, email, service:selSvc.name, date:selTime.date, time:selTime.time })});
     const d=await r.json();
+    if(d.ok && d.free){ showSuccess(); return; }
     if(d.ok && d.url){ location.href=d.url; return; }
-    showErr(d.message||'تعذّر فتح بوابة الدفع — حاول مرة ثانية');
+    showErr(d.message||'تعذّر إتمام الحجز — حاول مرة ثانية');
     if(d.message && d.message.indexOf('متاح')>-1) setTimeout(load,1500);
   }catch(e){ showErr('خطأ في الاتصال — حاول مرة ثانية'); }
-  $('payBtn').disabled=false; $('payTxt').textContent='ادفع واحجز الموعد';
+  $('payBtn').disabled=false;
+  $('payTxt').textContent = (selSvc && Number(selSvc.fee)===0) ? 'احجز الموعد مجاناً' : 'ادفع واحجز الموعد';
+}
+
+function showSuccess(){
+  $('content').innerHTML =
+    '<div class="card" style="text-align:center;padding:42px 24px">'+
+      '<div style="font-size:58px">✅</div>'+
+      '<h1 style="margin:12px 0">تم تأكيد موعدك</h1>'+
+      '<p style="color:var(--muted)">وصلك إيميل بتفاصيل موعدك، وسيتواصل معك المدرب قريباً.</p>'+
+    '</div>';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 load();
