@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>استشارات تمكين — إعداد المدرب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{ --maroon:#5C0F0F; --maroon2:#7d1a1a; --cream:#FAF7F2; --line:#ece4da; --txt:#2b2b2b; --muted:#8a8079; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--txt);line-height:1.7;padding:18px}
+.wrap{max-width:680px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;justify-content:center;margin:8px 0 20px}
+.brand b{color:var(--maroon);font-size:22px;font-weight:800}
+.brand span{color:var(--muted);font-size:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 6px 24px rgba(92,15,15,.05)}
+h1{font-size:20px;color:var(--maroon);margin-bottom:4px}
+h2{font-size:16px;color:var(--maroon);margin:0 0 12px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+label{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
+input,select,textarea{width:100%;font-family:inherit;font-size:15px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--maroon)}
+.row{display:flex;gap:12px}.row>*{flex:1}
+.btn{display:block;width:100%;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:16px;padding:14px;border-radius:12px;background:var(--maroon);color:#fff;transition:.15s}
+.btn:hover{background:var(--maroon2)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:#fff;color:var(--maroon);border:1.5px solid var(--maroon)}
+.btn.sm{width:auto;padding:9px 16px;font-size:14px;border-radius:10px}
+.btn.tiny{width:auto;padding:6px 12px;font-size:13px;border-radius:9px}
+.day{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;background:#fffdfb}
+.dayhead{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:10px}
+.times{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tchip{display:flex;align-items:center;gap:6px;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:14px}
+.tchip b{color:var(--maroon)}
+.tchip x{cursor:pointer;color:#b54;font-weight:700;font-size:16px;line-height:1}
+.del{background:none;border:none;color:#b54;cursor:pointer;font-size:18px;font-weight:700}
+.msg{display:none;padding:12px 14px;border-radius:11px;font-size:14px;margin-top:12px}
+.msg.err{display:block;background:#fde9e9;color:#9a2222}
+.msg.ok{display:block;background:#e6f5ec;color:#1d7a3a}
+.link-box{background:var(--cream);border:1.5px dashed var(--maroon);border-radius:12px;padding:14px;margin:10px 0;word-break:break-all;font-size:13px;color:var(--maroon)}
+.hide{display:none}
+.book{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.book .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.book .nm{font-weight:700}
+.book .meta{color:var(--muted);font-size:13px}
+.book .when{color:var(--maroon);font-weight:700;font-size:14px}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:middle}
+@keyframes s{to{transform:rotate(360deg)}}
+.hint{color:var(--muted);font-size:13px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><b>تمكين</b><span>· خدمة الاستشارات التدريبية</span></div>
+
+  <!-- ════ وضع الإعداد ════ -->
+  <div id="setupView">
+    <div class="card">
+      <h1>إعداد خدمة استشاراتك</h1>
+      <p class="sub">حدّد مواعيدك ورسومك، واحصل على رابط تحطه في الانستقرام ليحجز عملاؤك مباشرة.</p>
+
+      <label>الاسم (كما يظهر للعميل)</label>
+      <input id="name" placeholder="مثال: عتيق العنزي">
+
+      <label>المسمى / تخصصك (اختياري)</label>
+      <input id="title" placeholder="مثال: مدرب معتمد في التسويق">
+
+      <div class="row">
+        <div><label>الإيميل (لإشعارات الحجز)</label><input id="email" type="email" placeholder="name@email.com"></div>
+        <div><label>الجوال</label><input id="phone" inputmode="numeric" placeholder="9xxxxxxx"></div>
+      </div>
+
+      <div class="row">
+        <div><label>مدة الجلسة</label>
+          <select id="duration">
+            <option value="30">٣٠ دقيقة</option>
+            <option value="45">٤٥ دقيقة</option>
+            <option value="60">٦٠ دقيقة</option>
+          </select>
+        </div>
+        <div><label>رسوم الاستشارة (د.ك)</label><input id="fee" inputmode="decimal" placeholder="مثال: 15"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>المواعيد المتاحة</h2>
+      <p class="hint" style="margin-bottom:12px">أضف يوماً، ثم أضف الأوقات المتاحة فيه. سيختار العميل وقتاً واحداً.</p>
+      <div id="daysWrap"></div>
+      <button class="btn ghost sm" onclick="addDay()">+ أضف يوماً</button>
+    </div>
+
+    <div class="card">
+      <button id="saveBtn" class="btn" onclick="saveTrainer()"><span id="saveTxt">حفظ والحصول على الرابط</span></button>
+      <div id="setupMsg" class="msg"></div>
+
+      <div id="linksOut" class="hide">
+        <h2 style="margin-top:18px">✅ جاهز! روابطك:</h2>
+        <p class="hint">١) الرابط العام — ضعه في الانستقرام:</p>
+        <div class="link-box" id="publicLink"></div>
+        <button class="btn sm" onclick="copyTxt('publicLink',this)">نسخ الرابط العام</button>
+
+        <p class="hint" style="margin-top:16px">٢) رابط الإدارة — احفظه لنفسك (تعديل المواعيد + إرسال التذكيرات):</p>
+        <div class="link-box" id="manageLink"></div>
+        <button class="btn sm ghost" onclick="copyTxt('manageLink',this)">نسخ رابط الإدارة</button>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <p class="hint">عندك رابط إدارة سابق؟ افتحه مباشرة للتعديل وعرض الحجوزات.</p>
+    </div>
+  </div>
+
+  <!-- ════ وضع الإدارة ════ -->
+  <div id="manageView" class="hide">
+    <div class="card">
+      <h1 id="mName">لوحة الإدارة</h1>
+      <p class="sub" id="mTitle"></p>
+      <p class="hint">الرابط العام لعملائك:</p>
+      <div class="link-box" id="mPublicLink"></div>
+      <button class="btn sm" onclick="copyTxt('mPublicLink',this)">نسخ الرابط العام</button>
+    </div>
+
+    <div class="card">
+      <h2>المواعيد + الرسوم</h2>
+      <div class="row">
+        <div><label>مدة الجلسة</label>
+          <select id="mDuration">
+            <option value="30">٣٠ دقيقة</option><option value="45">٤٥ دقيقة</option><option value="60">٦٠ دقيقة</option>
+          </select>
+        </div>
+        <div><label>الرسوم (د.ك)</label><input id="mFee" inputmode="decimal"></div>
+      </div>
+      <label style="margin-top:16px">المواعيد</label>
+      <div id="mDaysWrap"></div>
+      <button class="btn ghost sm" onclick="addDay('m')">+ أضف يوماً</button>
+      <div style="margin-top:14px"></div>
+      <button id="updBtn" class="btn" onclick="updateSlots()"><span id="updTxt">حفظ التعديلات</span></button>
+      <div id="manageMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>الحجوزات المؤكدة (<span id="bkCount">0</span>)</h2>
+      <div id="bookingsWrap"><p class="hint">لا توجد حجوزات بعد.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ⚠️ بعد نشر Consultations.gs ضع رابط الـ deployment هنا:
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbxTfdfwu1GH_kilm-9fiVlo3vNVLKozQgUv5Enh1NMeQOKsWdC_URFKZE0hbuQYG2Ah/exec';
+// رابط صفحة العميل العامة (المرفوعة على github):
+const PUBLIC_PAGE = 'https://tamkeenkuw.com/consultation.html';
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const manageToken = params.get('token');
+
+// ── منشئ الأيام (يُستخدم في الوضعين بـ prefix '' أو 'm') ──
+function wrapId(p){ return p==='m' ? 'mDaysWrap' : 'daysWrap'; }
+function arDate(d){
+  if(!d) return '';
+  try{ return new Date(d+'T00:00:00').toLocaleDateString('ar-KW',{weekday:'long',day:'numeric',month:'long'}); }
+  catch(e){ return d; }
+}
+function addDay(p='', preset){
+  const wrap = $(wrapId(p));
+  const id = 'd'+Date.now()+Math.random().toString(36).slice(2,5);
+  const div = document.createElement('div');
+  div.className='day'; div.id=id;
+  div.innerHTML =
+    '<div class="dayhead">'+
+      '<input type="date" class="dayDate" onchange="lbl(\''+id+'\')" style="max-width:200px">'+
+      '<button class="del" onclick="this.closest(\'.day\').remove()">حذف ✕</button>'+
+    '</div>'+
+    '<div class="lbl hint"></div>'+
+    '<div class="times" style="margin-top:8px"><div class="chips"></div>'+
+      '<input type="time" class="newTime" style="max-width:130px">'+
+      '<button class="btn tiny" onclick="addTime(\''+id+'\')">+ وقت</button>'+
+    '</div>';
+  wrap.appendChild(div);
+  if(preset){
+    div.querySelector('.dayDate').value = preset.date;
+    lbl(id);
+    (preset.times||[]).forEach(t=>renderChip(id,t));
+  }
+}
+function lbl(id){
+  const d = $(id).querySelector('.dayDate').value;
+  $(id).querySelector('.lbl').textContent = arDate(d);
+}
+function addTime(id){
+  const inp = $(id).querySelector('.newTime');
+  const v = inp.value;
+  if(!v) return;
+  // امنع التكرار داخل نفس اليوم
+  const existing = [...$(id).querySelectorAll('.chips .tchip')].map(c=>c.dataset.t);
+  if(existing.includes(v)){ inp.value=''; return; }
+  renderChip(id,v); inp.value='';
+}
+function renderChip(id,v){
+  const chips = $(id).querySelector('.chips');
+  const c = document.createElement('span');
+  c.className='tchip'; c.dataset.t=v;
+  c.innerHTML = '<b>'+fmt12(v)+'</b><x onclick="this.closest(\'.tchip\').remove()">✕</x>';
+  chips.appendChild(c);
+}
+function fmt12(t){
+  const [h,m]=t.split(':').map(Number);
+  const ap = h<12?'ص':'م'; let hh=h%12; if(hh===0)hh=12;
+  return hh+':'+String(m).padStart(2,'0')+' '+ap;
+}
+function collectSlots(p=''){
+  const days=[...$(wrapId(p)).querySelectorAll('.day')];
+  const out=[];
+  days.forEach(d=>{
+    const date=d.querySelector('.dayDate').value;
+    const times=[...d.querySelectorAll('.chips .tchip')].map(c=>c.dataset.t).sort();
+    if(date && times.length) out.push({date, label:arDate(date), times});
+  });
+  return out;
+}
+
+// ── نسخ ──
+function copyTxt(id,btn){
+  const t=$(id).textContent;
+  navigator.clipboard.writeText(t).then(()=>{ const o=btn.textContent; btn.textContent='✓ تم النسخ'; setTimeout(()=>btn.textContent=o,1500); });
+}
+function showMsg(id,kind,text){ const e=$(id); e.className='msg '+kind; e.textContent=text; }
+function loading(btnId,txtId,on,label){
+  $(btnId).disabled=on;
+  $(txtId).innerHTML = on ? '<span class="spin"></span>' : label;
+}
+
+// ── حفظ مدرب جديد ──
+async function saveTrainer(){
+  const slots = collectSlots('');
+  const body = {
+    type:'saveTrainer',
+    name:$('name').value.trim(), title:$('title').value.trim(),
+    email:$('email').value.trim(), phone:$('phone').value.trim(),
+    duration:$('duration').value, fee:$('fee').value, slots
+  };
+  if(!body.name||!body.email){ showMsg('setupMsg','err','الاسم والإيميل مطلوبان'); return; }
+  if(!body.fee||Number(body.fee)<=0){ showMsg('setupMsg','err','حدّد رسوم الاستشارة'); return; }
+  if(!slots.length){ showMsg('setupMsg','err','أضف موعداً واحداً على الأقل مع أوقاته'); return; }
+
+  loading('saveBtn','saveTxt',true);
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.ok){
+      $('publicLink').textContent = PUBLIC_PAGE+'?t='+d.slug;
+      $('manageLink').textContent = location.origin+location.pathname+'?token='+d.token;
+      $('linksOut').classList.remove('hide');
+      showMsg('setupMsg','ok','تم الحفظ بنجاح ✅');
+      $('saveBtn').classList.add('hide');
+      $('linksOut').scrollIntoView({behavior:'smooth'});
+    } else showMsg('setupMsg','err',d.message||'تعذّر الحفظ');
+  }catch(e){ showMsg('setupMsg','err','خطأ في الاتصال — حاول مرة ثانية'); }
+  loading('saveBtn','saveTxt',false,'حفظ والحصول على الرابط');
+}
+
+// ── وضع الإدارة ──
+async function loadManage(){
+  $('setupView').classList.add('hide');
+  $('manageView').classList.remove('hide');
+  try{
+    const r=await fetch(SCRIPT+'?action=getManage&token='+encodeURIComponent(manageToken));
+    const d=await r.json();
+    if(!d.ok){ $('mName').textContent='رابط إدارة غير صالح'; return; }
+    $('mName').textContent='أهلاً '+d.name;
+    $('mTitle').textContent=d.title||'';
+    $('mPublicLink').textContent=PUBLIC_PAGE+'?t='+d.slug;
+    $('mFee').value=d.fee; $('mDuration').value=d.duration||30;
+    (d.slots||[]).forEach(s=>addDay('m',s));
+    renderBookings(d.bookings||[]);
+  }catch(e){ $('mName').textContent='خطأ في الاتصال'; }
+}
+function renderBookings(list){
+  $('bkCount').textContent=list.length;
+  const w=$('bookingsWrap');
+  if(!list.length){ w.innerHTML='<p class="hint">لا توجد حجوزات بعد.</p>'; return; }
+  w.innerHTML = list.map(b=>
+    '<div class="book">'+
+      '<div class="top"><span class="nm">'+b.name+'</span>'+
+        '<span class="when">'+arDate(b.date)+' · '+fmt12(b.time)+'</span></div>'+
+      '<div class="meta">📞 '+b.phone+'  ·  ✉️ '+b.email+'  ·  '+b.fee+' د.ك</div>'+
+      '<div style="margin-top:8px">'+
+        '<button class="btn tiny '+(b.reminded?'ghost':'')+'" onclick="sendRemind(\''+b.id+'\',this)">'+
+          (b.reminded?'تم التذكير ✓ — إعادة الإرسال':'إرسال تذكير للعميل')+'</button>'+
+      '</div>'+
+    '</div>'
+  ).join('');
+}
+async function sendRemind(bookingId,btn){
+  const o=btn.innerHTML; btn.disabled=true; btn.innerHTML='<span class="spin"></span>';
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({type:'remind',token:manageToken,bookingId})});
+    const d=await r.json();
+    btn.innerHTML = d.ok ? '✓ تم إرسال التذكير' : (d.message||'تعذّر الإرسال');
+  }catch(e){ btn.innerHTML='خطأ في الاتصال'; }
+  setTimeout(()=>{btn.disabled=false;btn.innerHTML=o;},2500);
+}
+async function updateSlots(){
+  const slots=collectSlots('m');
+  if(!slots.length){ showMsg('manageMsg','err','أضف موعداً واحداً على الأقل'); return; }
+  loading('updBtn','updTxt',true);
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({type:'updateSlots',token:manageToken,slots,fee:$('mFee').value,duration:$('mDuration').value})});
+    const d=await r.json();
+    showMsg('manageMsg', d.ok?'ok':'err', d.ok?'تم حفظ التعديلات ✅':(d.message||'تعذّر الحفظ'));
+  }catch(e){ showMsg('manageMsg','err','خطأ في الاتصال'); }
+  loading('updBtn','updTxt',false,'حفظ التعديلات');
+}
+
+// ── init ──
+if(manageToken){ loadManage(); }
+else { addDay(''); }   // ابدأ بيوم فارغ واحد
+</script>
+</body>
+</html>

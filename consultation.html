@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>احجز استشارتك — تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{ --maroon:#5C0F0F; --maroon2:#7d1a1a; --cream:#FAF7F2; --line:#ece4da; --txt:#2b2b2b; --muted:#8a8079; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--txt);line-height:1.7;padding:18px}
+.wrap{max-width:560px;margin:0 auto}
+.brand{text-align:center;margin:6px 0 18px}
+.brand b{color:var(--maroon);font-size:20px;font-weight:800}
+.brand span{color:var(--muted);font-size:13px;display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 6px 24px rgba(92,15,15,.05)}
+.head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.av{width:54px;height:54px;border-radius:50%;background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;flex-shrink:0}
+h1{font-size:21px;color:var(--maroon)}
+.role{color:var(--muted);font-size:14px}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.pill{background:var(--cream);border:1px solid var(--line);border-radius:11px;padding:8px 14px;font-size:14px}
+.pill b{color:var(--maroon)}
+h2{font-size:16px;color:var(--maroon);margin-bottom:12px}
+.day{margin-bottom:16px}
+.dlabel{font-weight:700;margin-bottom:8px;font-size:15px}
+.times{display:flex;flex-wrap:wrap;gap:9px}
+.tbtn{border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:10px 16px;font-family:inherit;font-size:15px;cursor:pointer;color:var(--txt);transition:.12s}
+.tbtn:hover{border-color:var(--maroon)}
+.tbtn.sel{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+label{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
+input{width:100%;font-family:inherit;font-size:15px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;outline:none}
+input:focus{border-color:var(--maroon)}
+.btn{display:block;width:100%;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:16px;padding:15px;border-radius:12px;background:var(--maroon);color:#fff;transition:.15s}
+.btn:hover{background:var(--maroon2)}
+.btn:disabled{opacity:.5;cursor:default}
+.pay-note{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+.sumbar{position:sticky;bottom:0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;box-shadow:0 -4px 20px rgba(0,0,0,.05)}
+.sumbar .sel-when{font-weight:700;color:var(--maroon);font-size:14px}
+.sumbar .fee{font-size:15px}
+.msg{display:none;padding:12px 14px;border-radius:11px;font-size:14px;margin-top:12px}
+.msg.err{display:block;background:#fde9e9;color:#9a2222}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:middle}
+@keyframes s{to{transform:rotate(360deg)}}
+.center{text-align:center;padding:40px 0;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:20px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><b>تمكين</b><span>الاستشارات التدريبية</span></div>
+  <div id="content"><div class="center"><span class="spin" style="border-color:var(--maroon);border-top-color:transparent"></span><br><br>جارٍ التحميل…</div></div>
+</div>
+
+<script>
+// ⚠️ بعد نشر Consultations.gs ضع رابط الـ deployment هنا (نفس رابط صفحة الإعداد):
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbxTfdfwu1GH_kilm-9fiVlo3vNVLKozQgUv5Enh1NMeQOKsWdC_URFKZE0hbuQYG2Ah/exec';
+
+const $ = id => document.getElementById(id);
+const slug = new URLSearchParams(location.search).get('t');
+let TR = null, sel = null;   // sel = {date, time, label}
+
+function arDate(d){
+  try{ return new Date(d+'T00:00:00').toLocaleDateString('ar-KW',{weekday:'long',day:'numeric',month:'long'}); }
+  catch(e){ return d; }
+}
+function fmt12(t){
+  const [h,m]=t.split(':').map(Number);
+  const ap=h<12?'ص':'م'; let hh=h%12; if(hh===0)hh=12;
+  return hh+':'+String(m).padStart(2,'0')+' '+ap;
+}
+function arNum(n){ return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+
+async function load(){
+  if(!slug){ $('content').innerHTML='<div class="card empty">رابط غير صالح.</div>'; return; }
+  try{
+    const r=await fetch(SCRIPT+'?action=getTrainer&t='+encodeURIComponent(slug));
+    TR=await r.json();
+    if(!TR.ok){ $('content').innerHTML='<div class="card empty">'+(TR.message||'غير موجود')+'</div>'; return; }
+    render();
+  }catch(e){ $('content').innerHTML='<div class="card empty">تعذّر الاتصال — حدّث الصفحة.</div>'; }
+}
+
+function render(){
+  const initial = (TR.name||'?').trim().charAt(0);
+  let slotsHtml = '';
+  if(!TR.slots.length){
+    slotsHtml = '<div class="empty">لا توجد مواعيد متاحة حالياً.</div>';
+  } else {
+    slotsHtml = TR.slots.map(day=>
+      '<div class="day"><div class="dlabel">'+(day.label||arDate(day.date))+'</div>'+
+      '<div class="times">'+
+        day.times.map(t=>'<button class="tbtn" data-d="'+day.date+'" data-t="'+t+'" onclick="pick(this)">'+fmt12(t)+'</button>').join('')+
+      '</div></div>'
+    ).join('');
+  }
+
+  $('content').innerHTML =
+    '<div class="card">'+
+      '<div class="head"><div class="av">'+initial+'</div>'+
+        '<div><h1>'+TR.name+'</h1><div class="role">'+(TR.title||'مدرب')+'</div></div></div>'+
+      '<div class="pills">'+
+        '<span class="pill">⏱ <b>'+arNum(TR.duration||30)+'</b> دقيقة</span>'+
+        '<span class="pill">💳 رسوم الاستشارة <b>'+arNum(TR.fee)+'</b> د.ك</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card"><h2>اختر موعداً</h2>'+slotsHtml+'</div>'+
+    '<div class="card" id="formCard" style="display:'+(TR.slots.length?'block':'none')+'">'+
+      '<h2>بياناتك</h2>'+
+      '<label>الاسم الكامل</label><input id="cName" placeholder="اسمك">'+
+      '<label>رقم الجوال</label><input id="cPhone" inputmode="numeric" placeholder="9xxxxxxx">'+
+      '<label>الإيميل (لإرسال تأكيد الموعد)</label><input id="cEmail" type="email" placeholder="name@email.com">'+
+      '<div id="errMsg" class="msg"></div>'+
+      '<div class="sumbar">'+
+        '<div><div class="sel-when" id="selWhen">لم تختر موعداً</div>'+
+          '<div class="fee">الرسوم: <b>'+arNum(TR.fee)+'</b> د.ك</div></div>'+
+      '</div>'+
+      '<button class="btn" id="payBtn" onclick="pay()" style="margin-top:12px" disabled><span id="payTxt">ادفع واحجز الموعد</span></button>'+
+      '<p class="pay-note">دفع آمن عبر بوابة Tap — K-NET / مدى / بطاقات</p>'+
+    '</div>';
+}
+
+function pick(btn){
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  sel={ date:btn.dataset.d, time:btn.dataset.t };
+  $('selWhen').textContent = arDate(sel.date)+' · '+fmt12(sel.time);
+  $('payBtn').disabled=false;
+  $('formCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function showErr(m){ const e=$('errMsg'); e.className='msg err'; e.textContent=m; }
+function clearErr(){ $('errMsg').className='msg'; }
+
+async function pay(){
+  clearErr();
+  if(!sel){ showErr('اختر موعداً أولاً'); return; }
+  const name=$('cName').value.trim(), phone=$('cPhone').value.trim(), email=$('cEmail').value.trim();
+  if(!name){ showErr('أدخل اسمك'); return; }
+  if(!phone){ showErr('أدخل رقم جوالك'); return; }
+  if(!email||!/.+@.+\..+/.test(email)){ showErr('أدخل إيميلاً صحيحاً'); return; }
+
+  $('payBtn').disabled=true; $('payTxt').innerHTML='<span class="spin"></span>';
+  try{
+    const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({type:'book', t:slug, name, phone, email, date:sel.date, time:sel.time})});
+    const d=await r.json();
+    if(d.ok && d.url){ location.href=d.url; return; }
+    showErr(d.message||'تعذّر فتح بوابة الدفع — حاول مرة ثانية');
+    // لو الموعد اتحجز للتو، أعد تحميل المواعيد
+    if(d.message && d.message.indexOf('متاح')>-1) setTimeout(load,1500);
+  }catch(e){ showErr('خطأ في الاتصال — حاول مرة ثانية'); }
+  $('payBtn').disabled=false; $('payTxt').textContent='ادفع واحجز الموعد';
+}
+
+load();
+</script>
+</body>
+</html>
