@@ -113,7 +113,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .pday-h{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:13px;padding:8px 14px;
   border-radius:8px 8px 0 0;border:1px solid var(--line-2);border-bottom:none;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-table.pmh{border-collapse:collapse;width:100%;table-layout:fixed}
+table.pmh{border-collapse:collapse;width:100%;table-layout:auto}
 table.pmh th{background:var(--crimson);color:#fff;font-size:11.5px;font-weight:800;padding:8px 6px;
   text-align:center;border:1px solid var(--crimson);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 table.pmh th:first-child{width:28px}
@@ -126,11 +126,76 @@ table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
 .pdoc-stamp{text-align:center;font-size:11px;color:var(--muted);margin-top:26px;
   border-top:1px solid var(--line);padding-top:12px;line-height:1.8}
 
+/* ===== شاشة المعاينة والتحكم ===== */
+.modal{position:fixed;inset:0;background:rgba(40,20,20,.55);z-index:60;display:none;padding:16px;overflow:auto}
+.modal.show{display:block}
+.modal-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start}
+@media(max-width:840px){.modal-inner{grid-template-columns:1fr}}
+.ctrl{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);position:sticky;top:16px}
+.ctrl h3{font-size:15px;color:var(--crimson);font-weight:900;margin-bottom:4px}
+.ctrl .sub{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:14px}
+.ctrl .grp{margin-bottom:16px;border-top:1px solid var(--line);padding-top:12px}
+.ctrl .grp .gl{font-size:11.5px;font-weight:800;color:var(--crimson);margin-bottom:6px}
+.ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;padding:6px 0;cursor:pointer;color:var(--ink)}
+.ctrl label.chk input{width:17px;height:17px;accent-color:var(--crimson);cursor:pointer;flex:0 0 auto}
+.ctrl .fld{margin-bottom:9px}
+.ctrl .fld label{display:block;font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:5px}
+.ctrl .fld input{width:100%;font-family:inherit;font-size:13px;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;outline:none}
+.ctrl .fld input:focus{border-color:var(--crimson)}
+.ctrl .row{display:flex;gap:8px;margin-top:14px}
+.ctrl .row .btn{flex:1;justify-content:center}
+.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);overflow:auto}
+.ed-hint{font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:700;background:#f6efe9;padding:8px;border-radius:8px}
+.ed{outline:none;border-radius:4px;transition:background .12s}
+.ed:hover{background:rgba(92,15,15,.05)}
+.ed:focus{background:rgba(92,15,15,.08);box-shadow:0 0 0 2px var(--line-2)}
+
+/* ===== محرّر تعديل الترشيح ===== */
+.editor .modal-inner{display:block;max-width:780px}
+.ed-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.ed-head{background:var(--crimson);color:#fff;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2}
+.ed-head b{font-size:16px;font-weight:900}
+.ed-head .x{background:rgba(255,255,255,.2);border:none;color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:18px;line-height:1}
+.ed-body{padding:20px}
+.efield{margin-bottom:14px}
+.efield label{display:block;font-size:13px;font-weight:800;color:var(--crimson);margin-bottom:6px}
+.einp{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;outline:none}
+.einp:focus{border-color:var(--crimson);background:#fff}
+textarea.einp{resize:vertical;min-height:74px;line-height:1.85;text-align:right}
+.erow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.erow2{grid-template-columns:1fr}}
+.esec{font-size:14px;font-weight:900;color:var(--crimson);margin:20px 0 12px;border-top:1px solid var(--line);padding-top:14px}
+.eday{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.eday-h{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--cream)}
+.eday-h .ttl{font-weight:800;color:var(--crimson);font-size:14px}
+.eday-h .del{margin-inline-start:auto;background:transparent;border:1px solid var(--line-2);color:var(--muted);width:28px;height:28px;border-radius:9px;font-size:15px;cursor:pointer;line-height:1}
+.eday-h .del:hover{border-color:var(--rej);color:var(--rej)}
+.eday-b{padding:12px}
+.etbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table.emh{border-collapse:collapse;width:100%;min-width:640px}
+table.emh th{background:var(--crimson);color:#fff;font-size:11px;font-weight:800;padding:8px 6px;text-align:center;white-space:nowrap}
+table.emh th:first-child{width:30px}
+table.emh td{border-top:1px solid var(--line);padding:5px;vertical-align:top}
+table.emh td.n{text-align:center;font-weight:800;color:var(--muted);font-size:12px;vertical-align:middle}
+table.emh td.act{text-align:center;vertical-align:middle;width:34px}
+.ecell{width:100%;min-width:110px;font-family:inherit;font-size:12.5px;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:7px 8px;outline:none;resize:vertical;min-height:36px;line-height:1.6}
+.ecell:focus{border-color:var(--crimson)}
+.edel-row{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;width:26px;height:26px;border-radius:7px;line-height:1}
+.edel-row:hover{color:var(--rej);background:#fff5f4}
+.ebtn-ghost{background:#fff;border:1.5px dashed var(--line-2);color:var(--crimson);font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;border-radius:11px;padding:10px 14px;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.ebtn-ghost:hover{background:var(--cream);border-color:var(--crimson)}
+.ed-foot{padding:16px 20px;border-top:1px solid var(--line);display:flex;gap:10px;position:sticky;bottom:0;background:#fff}
+.ed-foot .btn{flex:1;justify-content:center;padding:13px}
+.spin-s{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+
 @media print{
   body{background:#fff;padding:0;margin:0}
   body *{visibility:hidden}
+  .modal{position:static;background:none;padding:0;overflow:visible}
+  .ctrl,.ed-hint,.paper{border:none!important;box-shadow:none!important;padding:0!important;background:none!important}
   #printDoc,#printDoc *{visibility:visible}
   #printDoc{display:block;position:absolute;inset:0;width:100%}
+  .ed{background:none!important;box-shadow:none!important}
   @page{size:A4;margin:13mm}
 }
 .hidden{display:none!important}
@@ -173,13 +238,94 @@ table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
   <div class="cards" id="cards"><div class="spin"></div></div>
 </div>
 
-<!-- مستند الطباعة -->
-<div id="printDoc"></div>
+<!-- محرّر تعديل الترشيح -->
+<div class="modal editor" id="editor">
+  <div class="modal-inner">
+    <div class="ed-card">
+      <div class="ed-head">
+        <b>تعديل الترشيح</b>
+        <button class="x" onclick="closeEditor()">×</button>
+      </div>
+      <div class="ed-body">
+        <div class="efield"><label>اسم البرنامج</label><input class="einp" id="eProgram"></div>
+        <div class="erow2">
+          <div class="efield"><label>اسم المدرب</label><input class="einp" id="eTrainer"></div>
+          <div class="efield"><label>رقم العضوية</label><input class="einp" id="eMember"></div>
+        </div>
+        <div class="erow2">
+          <div class="efield"><label>مدة البرنامج</label><input class="einp" id="eDuration"></div>
+          <div class="efield"><label>تاريخ البدء</label><input class="einp" id="eStart" type="date"></div>
+        </div>
+        <div class="efield"><label>الهدف العام</label><textarea class="einp" id="eObjective"></textarea></div>
+        <div class="efield"><label>حالة الترشيح</label>
+          <select class="einp" id="eStatus">
+            <option value="جديد">جديد</option>
+            <option value="مقبول">مقبول</option>
+            <option value="مرفوض">مرفوض</option>
+          </select>
+        </div>
+
+        <div class="esec">محاور البرنامج</div>
+        <div id="eDays"></div>
+        <button class="ebtn-ghost" data-eaction="add-day" style="margin-top:4px">＋ أضف يوماً</button>
+      </div>
+      <div class="ed-foot">
+        <button class="btn btn-primary" id="eSaveBtn" onclick="saveEdit()">
+          <span id="eSaveTxt">حفظ التعديلات</span><span class="spin-s" id="eSaveSpin"></span>
+        </button>
+        <button class="btn btn-line" onclick="closeEditor()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- شاشة المعاينة والتحكم -->
+<div class="modal" id="preview">
+  <div class="modal-inner">
+    <div class="ctrl">
+      <h3>تحكّم بالطباعة</h3>
+      <div class="sub">عدّل النصوص داخل المستند مباشرةً، وتحكّم بما يظهر.</div>
+
+      <div class="grp">
+        <div class="gl">الأقسام</div>
+        <label class="chk"><input type="checkbox" id="tLogo" checked onchange="applyToggles()"> شعار المعهد</label>
+        <label class="chk"><input type="checkbox" id="tObj" checked onchange="applyToggles()"> الهدف العام</label>
+        <label class="chk"><input type="checkbox" id="tSign" checked onchange="applyToggles()"> خانات التوقيع</label>
+        <label class="chk"><input type="checkbox" id="tFoot" checked onchange="applyToggles()"> التذييل / الختم</label>
+      </div>
+
+      <div class="grp">
+        <div class="gl">أعمدة جدول المحاور</div>
+        <label class="chk"><input type="checkbox" id="t_dur" checked onchange="applyToggles()"> مدة المحور</label>
+        <label class="chk"><input type="checkbox" id="t_system" checked onchange="applyToggles()"> نظام التدريب</label>
+        <label class="chk"><input type="checkbox" id="t_methods" checked onchange="applyToggles()"> وسائل التدريب</label>
+        <label class="chk"><input type="checkbox" id="t_criteria" checked onchange="applyToggles()"> معيار التقييم</label>
+      </div>
+
+      <div class="grp">
+        <div class="gl">حقول إضافية (اختياري)</div>
+        <div class="fld"><label>الجهة المستفيدة</label><input id="fBenef" placeholder="مثال: وزارة التربية" oninput="applyExtras()"></div>
+        <div class="fld"><label>رقم مرجعي للمستند</label><input id="fRef" placeholder="مثال: TMK-2026-014" oninput="applyExtras()"></div>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" onclick="printNow()">🖨️ طباعة</button>
+        <button class="btn btn-line" onclick="closePreview()">إغلاق</button>
+      </div>
+    </div>
+
+    <div class="paper">
+      <div class="ed-hint">✎ النصوص داخل المستند قابلة للتعديل — اضغط على أي نص لتغييره قبل الطباعة</div>
+      <div id="printDoc"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ====== ثوابت ====== */
 var SHEET_ID = '1ORUcqzkBKPKWkEuKT0cOdoV_qtbCD-d1XdslQILXx2g';
 var API_KEY  = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
 var PIN      = '1990'; // غيّره لرقمك الخاص
 var LOGO_SRC = 'Untitled_design__2_.png';
 
@@ -283,10 +429,162 @@ function render(){
       '</div>'+
       '<div class="side">'+statusBadge(r.status)+'</div>'+
       '<div class="acts">'+
-        '<button class="btn btn-primary" onclick="printRow('+idx+')">🖨️ طباعة بفورمة تمكين</button>'+
+        '<button class="btn btn-line" onclick="openEditor('+idx+')">✏️ تعديل</button>'+
+        '<button class="btn btn-primary" onclick="openPreview('+idx+')">🖨️ طباعة بفورمة تمكين</button>'+
       '</div>'+
     '</div>';
   }).join('');
+}
+
+/* ====== محرّر التعديل ====== */
+var editIdx = -1;
+var editDays = [];   // [{open, rows:[{topic,dur,system,methods,criteria}]}]
+
+function openEditor(idx){
+  var r = ROWS[idx];
+  if(!r) return;
+  editIdx = idx;
+  $('eProgram').value  = r.program || '';
+  $('eTrainer').value  = r.trainer || '';
+  $('eMember').value   = r.memberId || '';
+  $('eDuration').value = r.duration || '';
+  $('eStart').value    = /^\d{4}-\d{2}-\d{2}$/.test(r.start) ? r.start : '';
+  $('eObjective').value= r.objective || '';
+  $('eStatus').value   = ['جديد','مقبول','مرفوض'].indexOf(r.status)>=0 ? r.status : 'جديد';
+
+  var days = parseDays(r);
+  editDays = days.length ? days.map(function(d){
+    return { open:true, rows:(d.rows||[]).map(function(x){
+      return { topic:x.topic||'', dur:x.dur||'', system:x.system||'', methods:x.methods||'', criteria:x.criteria||'' };
+    }) };
+  }) : [{ open:true, rows:[ blankRow() ] }];
+  // تأكد أن كل يوم فيه صف واحد على الأقل
+  editDays.forEach(function(d){ if(!d.rows.length) d.rows.push(blankRow()); });
+
+  renderEditDays();
+  $('editor').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closeEditor(){
+  $('editor').classList.remove('show');
+  document.body.style.overflow='';
+  editIdx = -1;
+}
+
+function blankRow(){ return { topic:'', dur:'', system:'', methods:'', criteria:'' }; }
+
+function renderEditDays(){
+  var wrap=$('eDays'), html='';
+  editDays.forEach(function(day, di){
+    var rowsHtml='';
+    day.rows.forEach(function(r, ri){
+      rowsHtml+='<tr>'+
+        '<td class="n">'+(ri+1)+'</td>'+
+        '<td><textarea class="ecell" data-d="'+di+'" data-r="'+ri+'" data-f="topic" rows="1" placeholder="اسم المحور"></textarea></td>'+
+        '<td><textarea class="ecell" data-d="'+di+'" data-r="'+ri+'" data-f="dur" rows="1" placeholder="المدة"></textarea></td>'+
+        '<td><textarea class="ecell" data-d="'+di+'" data-r="'+ri+'" data-f="system" rows="1" placeholder="نظام التدريب"></textarea></td>'+
+        '<td><textarea class="ecell" data-d="'+di+'" data-r="'+ri+'" data-f="methods" rows="1" placeholder="الوسائل"></textarea></td>'+
+        '<td><textarea class="ecell" data-d="'+di+'" data-r="'+ri+'" data-f="criteria" rows="1" placeholder="معيار التقييم"></textarea></td>'+
+        '<td class="act"><button class="edel-row" data-eaction="del-row" data-d="'+di+'" data-r="'+ri+'" '+(day.rows.length<=1?'disabled':'')+' title="حذف">×</button></td>'+
+      '</tr>';
+    });
+    html+='<div class="eday">'+
+      '<div class="eday-h"><span class="ttl">'+dayLabel(di)+'</span>'+
+        (editDays.length>1?'<button class="del" data-eaction="del-day" data-d="'+di+'" title="حذف اليوم">×</button>':'')+
+      '</div>'+
+      '<div class="eday-b">'+
+        '<div class="etbl-scroll"><table class="emh"><thead><tr>'+
+          '<th>#</th><th>اسم المحور</th><th>مدة المحور</th><th>نظام التدريب</th><th>وسائل التدريب</th><th>معيار التقييم</th><th></th>'+
+        '</tr></thead><tbody>'+rowsHtml+'</tbody></table></div>'+
+        '<button class="ebtn-ghost" data-eaction="add-row" data-d="'+di+'" style="margin-top:10px">＋ أضف سطراً</button>'+
+      '</div>'+
+    '</div>';
+  });
+  wrap.innerHTML=html;
+  wrap.querySelectorAll('.ecell').forEach(function(el){
+    var d=+el.getAttribute('data-d'), r=+el.getAttribute('data-r'), f=el.getAttribute('data-f');
+    el.value = editDays[d].rows[r][f] || '';
+    el.style.height='auto'; el.style.height=el.scrollHeight+'px';
+  });
+}
+
+$('eDays').addEventListener('input', function(e){
+  var el=e.target;
+  if(el.classList.contains('ecell')){
+    editDays[+el.getAttribute('data-d')].rows[+el.getAttribute('data-r')][el.getAttribute('data-f')]=el.value;
+    el.style.height='auto'; el.style.height=el.scrollHeight+'px';
+  }
+});
+$('eDays').addEventListener('click', function(e){
+  var t=e.target.closest('[data-eaction]'); if(!t) return;
+  var act=t.getAttribute('data-eaction');
+  var d=t.getAttribute('data-d')!=null?+t.getAttribute('data-d'):null;
+  var r=t.getAttribute('data-r')!=null?+t.getAttribute('data-r'):null;
+  if(act==='add-row'){ editDays[d].rows.push(blankRow()); renderEditDays(); }
+  else if(act==='del-row'){ if(editDays[d].rows.length>1){ editDays[d].rows.splice(r,1); renderEditDays(); } }
+  else if(act==='del-day'){ if(editDays.length>1){ editDays.splice(d,1); renderEditDays(); } }
+});
+document.querySelector('[data-eaction="add-day"]').addEventListener('click', function(){
+  editDays.push({ open:true, rows:[ blankRow() ] }); renderEditDays();
+});
+
+function buildEditTopicsText(){
+  var out=[];
+  editDays.forEach(function(day, di){
+    var lines=[];
+    day.rows.forEach(function(r, ri){
+      if(!(r.topic||'').trim()) return;
+      lines.push('  '+(ri+1)+') '+r.topic.trim()+
+        ' | المدة: '+(r.dur||'-')+' | نظام التدريب: '+(r.system||'-')+
+        ' | الوسائل: '+(r.methods||'-')+' | معيار التقييم: '+(r.criteria||'-'));
+    });
+    if(lines.length){ out.push('▪ '+dayLabel(di)+':'); out.push(lines.join('\n')); out.push(''); }
+  });
+  return out.join('\n').trim();
+}
+
+function saveEdit(){
+  if(editIdx<0) return;
+  var r = ROWS[editIdx];
+  var program  = ($('eProgram').value||'').trim();
+  if(!program){ $('eProgram').focus(); return; }
+
+  var trainer  = ($('eTrainer').value||'').trim();
+  var member   = ($('eMember').value||'').trim();
+  var duration = ($('eDuration').value||'').trim();
+  var start    = ($('eStart').value||'').trim();
+  var objective= ($('eObjective').value||'').trim();
+  var status   = $('eStatus').value;
+  var topicsText = buildEditTopicsText();
+  var topicsJson = JSON.stringify(editDays.map(function(d){ return { rows:d.rows }; }));
+
+  var btn=$('eSaveBtn'), txt=$('eSaveTxt'), sp=$('eSaveSpin');
+  btn.disabled=true; sp.style.display='block'; txt.textContent='جاري الحفظ...';
+
+  var payload = {
+    type:'تحديث ترشيح', rowIndex:r._row,
+    memberId:member, trainerName:trainer, programName:program,
+    objective:objective, duration:duration, startDate:start,
+    status:status, topicsText:topicsText, topicsJson:topicsJson
+  };
+
+  fetch(SCRIPT_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(){
+    // تحديث النسخة المحلية فوراً
+    r.program=program; r.trainer=trainer; r.memberId=member; r.duration=duration;
+    r.start=start; r.objective=objective; r.status=status;
+    r.topics=topicsText; r.json=topicsJson;
+    btn.disabled=false; sp.style.display='none'; txt.textContent='حفظ التعديلات';
+    closeEditor();
+    render();
+  }).catch(function(){
+    btn.disabled=false; sp.style.display='none'; txt.textContent='حفظ التعديلات';
+    alert('تعذّر حفظ التعديلات، حاول مرة أخرى.');
+  });
 }
 
 /* ====== الطباعة ====== */
@@ -349,12 +647,16 @@ function printRow(idx){
     if(!rows.length) return;
     var trs=rows.map(function(x, ri){
       return '<tr><td class="n">'+(ri+1)+'</td>'+
-        '<td>'+esc(x.topic)+'</td><td>'+esc(x.dur)+'</td><td>'+esc(x.system)+'</td>'+
-        '<td>'+esc(x.methods)+'</td><td>'+esc(x.criteria)+'</td></tr>';
+        '<td class="ed" contenteditable="true">'+esc(x.topic)+'</td>'+
+        '<td class="ed col-dur" contenteditable="true">'+esc(x.dur)+'</td>'+
+        '<td class="ed col-system" contenteditable="true">'+esc(x.system)+'</td>'+
+        '<td class="ed col-methods" contenteditable="true">'+esc(x.methods)+'</td>'+
+        '<td class="ed col-criteria" contenteditable="true">'+esc(x.criteria)+'</td></tr>';
     }).join('');
-    daysHtml+='<div class="pday"><div class="pday-h">'+dayLabel(di)+'</div>'+
-      '<table class="pmh"><thead><tr><th>#</th><th>اسم المحور</th><th>مدة المحور</th>'+
-      '<th>نظام التدريب</th><th>وسائل التدريب المستخدمة</th><th>معيار التقييم</th></tr></thead>'+
+    daysHtml+='<div class="pday"><div class="pday-h ed" contenteditable="true">'+dayLabel(di)+'</div>'+
+      '<table class="pmh"><thead><tr><th>#</th><th>اسم المحور</th><th class="col-dur">مدة المحور</th>'+
+      '<th class="col-system">نظام التدريب</th><th class="col-methods">وسائل التدريب المستخدمة</th>'+
+      '<th class="col-criteria">معيار التقييم</th></tr></thead>'+
       '<tbody>'+trs+'</tbody></table></div>';
   });
   if(!daysHtml) daysHtml='<div class="empty" style="box-shadow:none">لا توجد محاور مسجّلة لهذا الترشيح.</div>';
@@ -365,31 +667,76 @@ function printRow(idx){
 
   $('printDoc').innerHTML=
     '<div class="pdoc">'+
-      '<div class="pdoc-head">'+logoHtml(true)+
-        '<div class="org"><h1>معهد تمكين</h1>'+
-        '<p>إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: 97999768</p></div>'+
+      '<div class="pdoc-head" id="secLogoRow">'+logoHtml(true)+
+        '<div class="org"><h1 class="ed" contenteditable="true">معهد تمكين</h1>'+
+        '<p class="ed" contenteditable="true">إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: 97999768</p></div>'+
       '</div>'+
-      '<div class="pdoc-title">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
+      '<div class="pdoc-title ed" contenteditable="true">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
       '<div class="pdoc-meta">'+
-        '<div class="mrow"><div class="mk">اسم البرنامج</div><div class="mv">'+esc(r.program||'—')+'</div></div>'+
-        '<div class="mrow"><div class="mk">اسم المدرب</div><div class="mv">'+esc(r.trainer||'—')+'</div></div>'+
-        '<div class="mrow"><div class="mk">رقم العضوية</div><div class="mv">'+esc(r.memberId||'—')+'</div></div>'+
-        '<div class="mrow"><div class="mk">مدة البرنامج</div><div class="mv">'+esc(r.duration||'—')+'</div></div>'+
-        '<div class="mrow"><div class="mk">تاريخ البدء</div><div class="mv">'+esc(prettyDate(r.start))+'</div></div>'+
+        '<div class="mrow" id="rowBenef" style="display:none"><div class="mk">الجهة المستفيدة</div><div class="mv" id="vBenef"></div></div>'+
+        '<div class="mrow" id="rowRef" style="display:none"><div class="mk">الرقم المرجعي</div><div class="mv" id="vRef"></div></div>'+
+        '<div class="mrow"><div class="mk">اسم البرنامج</div><div class="mv ed" contenteditable="true">'+esc(r.program||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">اسم المدرب</div><div class="mv ed" contenteditable="true">'+esc(r.trainer||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">رقم العضوية</div><div class="mv ed" contenteditable="true">'+esc(r.memberId||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">مدة البرنامج</div><div class="mv ed" contenteditable="true">'+esc(r.duration||'—')+'</div></div>'+
+        '<div class="mrow"><div class="mk">تاريخ البدء</div><div class="mv ed" contenteditable="true">'+esc(prettyDate(r.start))+'</div></div>'+
       '</div>'+
-      '<div class="pdoc-obj"><div class="lbl">الهدف العام من البرنامج</div>'+
-        '<div class="val">'+esc(r.objective||'—')+'</div></div>'+
+      '<div class="pdoc-obj" id="secObj"><div class="lbl">الهدف العام من البرنامج</div>'+
+        '<div class="val ed" contenteditable="true">'+esc(r.objective||'—')+'</div></div>'+
       '<div class="pdoc-sec">محاور البرنامج التدريبي</div>'+
       daysHtml+
-      '<div class="pdoc-foot">'+
-        '<div class="sign">مقدّم الترشيح (المدرب)<div class="ln">'+esc(r.trainer||'')+'</div></div>'+
+      '<div class="pdoc-foot" id="secSign">'+
+        '<div class="sign">مقدّم الترشيح (المدرب)<div class="ln ed" contenteditable="true">'+esc(r.trainer||'')+'</div></div>'+
         '<div class="sign">اعتماد إدارة المعهد<div class="ln">&nbsp;</div></div>'+
       '</div>'+
-      '<div class="pdoc-stamp">صدر هذا المستند عن معهد تمكين بتاريخ '+todayStr+'<br>إيديو كلاود للتدريب الأهلي · tamkeenkuw.com</div>'+
+      '<div class="pdoc-stamp ed" id="secStamp" contenteditable="true">صدر هذا المستند عن معهد تمكين بتاريخ '+todayStr+'<br>إيديو كلاود للتدريب الأهلي · tamkeenkuw.com</div>'+
     '</div>';
 
-  window.print();
+  applyToggles();
+  applyExtras();
 }
+
+/* فتح شاشة المعاينة والتحكم */
+function openPreview(idx){
+  // إعادة ضبط عناصر التحكم للوضع الافتراضي
+  ['tLogo','tObj','tSign','tFoot','t_dur','t_system','t_methods','t_criteria'].forEach(function(id){
+    var el=$(id); if(el) el.checked=true;
+  });
+  $('fBenef').value=''; $('fRef').value='';
+  printRow(idx);
+  $('preview').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function closePreview(){
+  $('preview').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+/* إظهار/إخفاء الأقسام والأعمدة */
+function applyToggles(){
+  var map={ secLogoRow:'tLogo', secObj:'tObj', secSign:'tSign', secStamp:'tFoot' };
+  Object.keys(map).forEach(function(secId){
+    var sec=$(secId), cb=$(map[secId]);
+    if(sec && cb) sec.style.display = cb.checked ? '' : 'none';
+  });
+  ['dur','system','methods','criteria'].forEach(function(c){
+    var show=$('t_'+c).checked;
+    document.querySelectorAll('#printDoc .col-'+c).forEach(function(el){
+      el.style.display = show ? '' : 'none';
+    });
+  });
+}
+
+/* الحقول الإضافية */
+function applyExtras(){
+  var b=($('fBenef').value||'').trim();
+  if($('rowBenef')){ $('rowBenef').style.display = b ? 'flex' : 'none'; $('vBenef').textContent=b; }
+  var rf=($('fRef').value||'').trim();
+  if($('rowRef')){ $('rowRef').style.display = rf ? 'flex' : 'none'; $('vRef').textContent=rf; }
+}
+
+function printNow(){ window.print(); }
 </script>
 </body>
 </html>
