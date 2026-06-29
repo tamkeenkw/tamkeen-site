@@ -254,6 +254,12 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
         <div class="txt"><h3>الترشيحات الحكومية</h3><p>قدّم مقترح برنامج تدريبي عند طلب جهة حكومية</p></div>
         <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
       </a>
+
+      <a class="action-card" id="cardConsult">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="txt"><h3>تنظيم الاستشارات التدريبية</h3><p>جهّز أنواع استشاراتك ومواعيدها واحصل على رابط الحجز</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
     </div>
 
     <div class="section-title" style="margin-top:30px;">دوراتي هذا الشهر
@@ -289,10 +295,11 @@ const MASAR_URL  = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0G
 
 /* ====== روابط صفحاتك — عدّلها حسب أسماء ملفاتك ====== */
 const PAGES = {
-  booking:     'booking.html',                // حجز مواعيد الدورات
-  attendance:  'attendance.html',             // حضور الجلسات التدريبية
-  material:    'trainer.html',                // رفع / اعتماد المادة التدريبية
-  nominations: 'government-nominations.html'  // الترشيحات الحكومية
+  booking:      'booking.html',                // حجز مواعيد الدورات
+  attendance:   'attendance.html',             // حضور الجلسات التدريبية
+  material:     'trainer.html',                // رفع / اعتماد المادة التدريبية
+  nominations:  'government-nominations.html', // الترشيحات الحكومية
+  consultations:'consultation-setup.html'      // تنظيم الاستشارات التدريبية
 };
 
 /* صفحة تقييم الدورة العامة (تُبنى منها الروابط المشتركة للحضور) */
@@ -308,6 +315,7 @@ document.getElementById('cardBooking').addEventListener('click', function(){ goT
 document.getElementById('cardAttend').addEventListener('click', function(){ goTo(PAGES.attendance); });
 document.getElementById('cardMaterial').addEventListener('click', function(){ goTo(PAGES.material); });
 document.getElementById('cardNominations').addEventListener('click', function(){ goTo(PAGES.nominations); });
+document.getElementById('cardConsult').addEventListener('click', function(){ goTo(PAGES.consultations); });
 
 /* السماح بالدخول بزر Enter */
 document.getElementById('memberInput').addEventListener('keydown', function(e){
