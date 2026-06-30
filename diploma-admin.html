@@ -114,7 +114,13 @@ a.link{color:var(--crimson);font-weight:700;text-decoration:none;font-size:13px}
 <div id="app">
   <div class="top">
     <h1>لوحة تحكم الدبلوم</h1>
-    <button class="out" onclick="logout()">خروج ↩</button>
+    <div style="display:flex;align-items:center;gap:14px">
+      <button class="out" id="refreshBtn" onclick="loadAll()" style="display:inline-flex;align-items:center;gap:6px">
+        <svg id="refreshIcon" viewBox="0 0 24 24" style="width:15px;height:15px;fill:rgba(255,255,255,.7)"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        تحديث
+      </button>
+      <button class="out" onclick="logout()">خروج ↩</button>
+    </div>
   </div>
 
   <div class="tabs">
@@ -251,8 +257,13 @@ function logout(){ PASS=''; DB=null; location.reload(); }
 
 /* ===== تحميل كل البيانات ===== */
 async function loadAll(){
+  const rb=document.getElementById('refreshBtn'), ic=document.getElementById('refreshIcon');
+  if(rb) rb.disabled=true;
+  if(ic) ic.style.animation='spin .7s linear infinite';
   ['coursesList','bookingsList','materialsList','membersList','scheduleList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="spinner"></div>'; });
   const out=await post({type:'admin_data'});
+  if(rb) rb.disabled=false;
+  if(ic) ic.style.animation='';
   if(!out||!out.ok){ toast((out&&out.error)||'تعذّر التحميل',true); return; }
   DB=out;
   fillStageDropdown();
