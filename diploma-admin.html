@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم الدبلوم — عتيق</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#6B1212;
+  --cream:#FAF7F2; --cream-2:#F2EDE5; --white:#fff;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2e7d32; --amber:#B85C00; --red:#8B1A1A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text)}
+
+/* LOGIN */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:var(--crimson);position:relative;overflow:hidden}
+#login::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:48px 48px;background-position:0 0,0 24px,24px -24px,-24px 0}
+.login-card{position:relative;z-index:1;background:#fff;border-radius:24px;padding:40px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.login-card h1{font-size:24px;font-weight:900;color:var(--crimson);margin-bottom:6px}
+.login-card p{font-size:14px;color:var(--muted);margin-bottom:24px}
+.login-card input{width:100%;padding:14px 18px;font-family:inherit;font-size:16px;border:1.5px solid rgba(92,15,15,.15);border-radius:14px;background:var(--cream);outline:none;text-align:center;margin-bottom:14px}
+.login-card input:focus{border-color:var(--crimson)}
+
+/* APP */
+#app{display:none}
+.top{background:var(--crimson);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.top h1{font-size:18px;font-weight:900;color:#fff}
+.top .out{color:rgba(255,255,255,.7);font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit}
+
+.tabs{background:#fff;border-bottom:1.5px solid rgba(92,15,15,.08);display:flex;overflow-x:auto;position:sticky;top:53px;z-index:40}
+.tab{padding:15px 20px;font-size:14px;font-weight:800;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+.tab.active{color:var(--crimson);border-bottom-color:var(--crimson)}
+
+.wrap{max-width:780px;margin:0 auto;padding:24px 18px 60px}
+.panel{display:none}
+.panel.show{display:block}
+
+.card{background:#fff;border-radius:18px;border:1.5px solid rgba(92,15,15,.08);padding:22px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:16px}
+
+label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;margin-top:12px}
+input,select,textarea{width:100%;padding:12px 14px;font-family:inherit;font-size:15px;border:1.5px solid rgba(92,15,15,.12);border-radius:12px;background:var(--cream);outline:none;color:var(--text)}
+input:focus,select:focus,textarea:focus{border-color:var(--crimson)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{padding:13px 20px;background:var(--crimson);color:#fff;font-family:inherit;font-size:15px;font-weight:800;border:none;border-radius:12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-full{width:100%;margin-top:16px}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+.btn-ghost{background:var(--cream-2);color:var(--crimson)}
+.btn-ghost:hover{background:#e8ddd0}
+.btn-danger{background:#fdecea;color:var(--red)}
+.btn-danger:hover{background:#fbd9d5}
+.btn-green{background:var(--green)}
+
+.item{background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px;margin-bottom:10px}
+.item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.item-name{font-size:15px;font-weight:800;color:var(--text)}
+.item-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px}
+.item-meta b{color:var(--text);font-weight:700}
+.item-actions{display:flex;gap:8px;margin-top:12px}
+
+.pill{font-size:11px;font-weight:800;padding:3px 11px;border-radius:100px;white-space:nowrap}
+.pill-open{background:#e8f5e9;color:var(--green)}
+.pill-closed{background:var(--cream-2);color:var(--muted)}
+.pill-full{background:#fff3e0;color:var(--amber)}
+
+.empty{text-align:center;padding:30px;color:var(--muted);font-size:14px}
+
+/* stage chips for members */
+.member{background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px;margin-bottom:12px}
+.member-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.member-name{font-size:15px;font-weight:800}
+.member-phone{font-size:13px;color:var(--muted)}
+.stage-chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:12px;font-weight:700;padding:7px 12px;border-radius:10px;cursor:pointer;border:1.5px solid rgba(92,15,15,.12);background:#fff;color:var(--muted);transition:all .15s;position:relative}
+.chip.done{background:var(--green);color:#fff;border-color:var(--green)}
+.chip.cur{border-color:var(--crimson);color:var(--crimson);background:rgba(92,15,15,.06)}
+.chip-num{font-weight:900;margin-left:4px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:13px 24px;border-radius:100px;font-size:14px;font-weight:700;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.err{background:var(--red)}
+
+.spinner{width:34px;height:34px;border:3px solid rgba(92,15,15,.12);border-top-color:var(--crimson);border-radius:50%;animation:spin .8s linear infinite;margin:30px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+a.link{color:var(--crimson);font-weight:700;text-decoration:none;font-size:13px}
+
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <h1>لوحة تحكم الدبلوم</h1>
+    <p>أدخل كلمة المرور للدخول</p>
+    <input type="password" id="pass" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn btn-full" id="loginBtn" onclick="login()">دخول</button>
+    <div id="loginMsg" style="margin-top:12px;font-size:14px;font-weight:700;color:var(--red)"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="top">
+    <h1>لوحة تحكم الدبلوم</h1>
+    <button class="out" onclick="logout()">خروج ↩</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('courses',this)">الدورات</div>
+    <div class="tab" onclick="showTab('consult',this)">الاستشارات</div>
+    <div class="tab" onclick="showTab('materials',this)">المواد</div>
+    <div class="tab" onclick="showTab('members',this)">المتدربون</div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- COURSES -->
+    <div class="panel show" id="panel-courses">
+      <div class="card">
+        <div class="card-title" id="courseFormTitle">➕ إضافة دورة جديدة</div>
+        <input type="hidden" id="cId">
+        <label>اسم الدورة</label>
+        <input type="text" id="cName" placeholder="مثال: دورة اللقاء والتقديم — الدفعة ١">
+        <label>المرحلة المرتبطة</label>
+        <select id="cStage"></select>
+        <div class="row2">
+          <div><label>التاريخ</label><input type="date" id="cDate"></div>
+          <div><label>الوقت</label><input type="time" id="cTime" value="17:00"></div>
+        </div>
+        <div class="row2">
+          <div><label>النظام</label>
+            <select id="cMode"><option>حضوري</option><option>أونلاين</option></select></div>
+          <div><label>السعة (٠ = غير محدودة)</label><input type="number" id="cCap" value="0" min="0"></div>
+        </div>
+        <label>الحالة</label>
+        <select id="cStatus"><option value="مفتوح">مفتوح للتسجيل</option><option value="مغلق">مغلق</option></select>
+        <button class="btn btn-full" id="saveCourseBtn" onclick="saveCourse()">حفظ الدورة</button>
+        <button class="btn btn-ghost btn-full" id="cancelEditBtn" onclick="resetCourseForm()" style="display:none;margin-top:8px">إلغاء التعديل</button>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 الدورات الحالية</div>
+        <div id="coursesList"></div>
+      </div>
+    </div>
+
+    <!-- CONSULT -->
+    <div class="panel" id="panel-consult">
+      <div class="card">
+        <div class="card-title">📅 أيام وأوقات الاستشارات</div>
+        <label>أيام الإتاحة</label>
+        <div id="daysToggle" class="stage-chips" style="margin-bottom:6px"></div>
+        <label>الأوقات المتاحة (لكل يوم)</label>
+        <div id="slotsList"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addSlot('')" style="margin-top:8px">+ إضافة وقت</button>
+        <label style="margin-top:16px">عدد الأسابيع المعروضة مقدماً</label>
+        <input type="number" id="weeksAhead" min="1" max="8" value="3">
+        <button class="btn btn-full" onclick="saveSettings()">حفظ الإعدادات</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🗓️ الحجوزات</div>
+        <div id="bookingsList"></div>
+      </div>
+    </div>
+
+    <!-- MATERIALS -->
+    <div class="panel" id="panel-materials">
+      <div class="card">
+        <div class="card-title">📎 المواد المرفوعة للمراجعة</div>
+        <div id="materialsList"></div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="panel" id="panel-members">
+      <div class="card">
+        <div class="card-title">➕ ضمّ منتسب جديد للدبلوم</div>
+        <div class="row2">
+          <div><label>الاسم</label><input type="text" id="mName" placeholder="الاسم الكامل"></div>
+          <div><label>رقم الهاتف</label><input type="tel" id="mPhone" placeholder="9XXXXXXX"></div>
+        </div>
+        <button class="btn btn-full" onclick="addMember()">ضمّه للدبلوم</button>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 منتسبو الدبلوم — اضغط المرحلة لتبديل حالتها</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">الأخضر = تم الإنجاز · المحاط بإطار = المرحلة الحالية. اضغط أي مرحلة لتعليمها مكتملة أو إرجاعها.</p>
+        <div id="membersList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzu4Upl0kdVEd1ystaHgp1m4FX1iejaMHxr5ADTB4LdniEyrUKlChauVlpgl7If-yH4/exec";
+
+let PASS = '';
+let DB = null; // { settings, stages, members, courses, bookings, materials }
+let slots = [];
+
+const DAYNAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS   = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const toAr = s => String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+function timeText(v){ if(!v)return''; const[h,m]=v.split(':').map(Number); const ap=h>=12?'م':'ص'; let hh=h%12; if(hh===0)hh=12; return toAr(hh)+':'+toAr((m<10?'0':'')+m)+' '+ap; }
+function dLabel(key){ if(!key)return''; const d=new Date(key+'T00:00:00'); if(isNaN(d))return key; return DAYNAMES[d.getDay()]+' '+toAr(d.getDate())+' '+MONTHS[d.getMonth()]; }
+function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg,err){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(err?' err':''); setTimeout(()=>t.className='toast',2200); }
+
+async function post(obj){
+  const body=new URLSearchParams(Object.assign({pass:PASS},obj));
+  const res=await fetch(API,{method:'POST',body});
+  const txt=await res.text();
+  try{ return JSON.parse(txt); }catch(e){ return {ok:false,error:'رد غير متوقع'}; }
+}
+
+/* ===== تسجيل الدخول ===== */
+async function login(){
+  const p=document.getElementById('pass').value.trim();
+  if(!p) return;
+  const btn=document.getElementById('loginBtn'); btn.disabled=true; btn.textContent='جاري الدخول...';
+  PASS=p;
+  const out=await post({type:'admin_login'});
+  if(out&&out.ok){ document.getElementById('login').style.display='none'; document.getElementById('app').style.display='block'; loadAll(); }
+  else { document.getElementById('loginMsg').textContent=(out&&out.error)||'فشل الدخول'; PASS=''; }
+  btn.disabled=false; btn.textContent='دخول';
+}
+function logout(){ PASS=''; DB=null; location.reload(); }
+
+/* ===== تحميل كل البيانات ===== */
+async function loadAll(){
+  ['coursesList','bookingsList','materialsList','membersList'].forEach(id=>document.getElementById(id).innerHTML='<div class="spinner"></div>');
+  const out=await post({type:'admin_data'});
+  if(!out||!out.ok){ toast((out&&out.error)||'تعذّر التحميل',true); return; }
+  DB=out;
+  fillStageDropdown();
+  renderSettings();
+  renderCourses();
+  renderBookings();
+  renderMaterials();
+  renderMembers();
+}
+
+/* ===== التبويبات ===== */
+function showTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('panel-'+name).classList.add('show');
+}
+
+/* ===== الدورات ===== */
+function courseStages(){ return DB.stages.filter(s=>s.type==='course'||s.type==='schedule'); }
+function stageLabel(key){ const s=DB.stages.find(x=>x.key===key); return s?s.label:key; }
+function fillStageDropdown(){
+  document.getElementById('cStage').innerHTML = courseStages().map(s=>`<option value="${s.key}">${esc(s.label)}</option>`).join('');
+}
+function renderCourses(){
+  const list=document.getElementById('coursesList');
+  if(!DB.courses.length){ list.innerHTML='<div class="empty">ما فيه دورات بعد — أضف أول دورة من فوق.</div>'; return; }
+  list.innerHTML=DB.courses.map(c=>{
+    const statusPill = !c.open ? '<span class="pill pill-closed">مغلق</span>'
+      : c.full ? '<span class="pill pill-full">مكتمل</span>'
+      : '<span class="pill pill-open">مفتوح</span>';
+    const seats = c.capacity>0 ? `<span><b>${toAr(c.registered)}/${toAr(c.capacity)}</b> مسجّل</span>` : `<span><b>${toAr(c.registered)}</b> مسجّل</span>`;
+    return `<div class="item">
+      <div class="item-head">
+        <div class="item-name">${esc(c.name)}</div>
+        ${statusPill}
+      </div>
+      <div class="item-meta">
+        <span>🎯 ${esc(stageLabel(c.stageKey))}</span>
+        ${c.date?`<span>📅 <b>${dLabel(c.date)}</b></span>`:''}
+        ${c.time?`<span>🕐 <b>${timeText(c.time)}</b></span>`:''}
+        ${c.mode?`<span>${esc(c.mode)}</span>`:''}
+        ${seats}
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-ghost btn-sm" onclick='editCourse(${JSON.stringify(c)})'>تعديل</button>
+        <button class="btn btn-danger btn-sm" onclick="delCourse('${c.id}')">حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function editCourse(c){
+  document.getElementById('cId').value=c.id;
+  document.getElementById('cName').value=c.name;
+  document.getElementById('cStage').value=c.stageKey;
+  document.getElementById('cDate').value=c.date||'';
+  document.getElementById('cTime').value=c.time||'17:00';
+  document.getElementById('cMode').value=c.mode||'حضوري';
+  document.getElementById('cCap').value=c.capacity||0;
+  document.getElementById('cStatus').value=c.open?'مفتوح':'مغلق';
+  document.getElementById('courseFormTitle').textContent='✏️ تعديل الدورة';
+  document.getElementById('cancelEditBtn').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function resetCourseForm(){
+  ['cId','cName','cDate'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cTime').value='17:00';
+  document.getElementById('cCap').value=0;
+  document.getElementById('cStatus').value='مفتوح';
+  document.getElementById('courseFormTitle').textContent='➕ إضافة دورة جديدة';
+  document.getElementById('cancelEditBtn').style.display='none';
+}
+async function saveCourse(){
+  const name=document.getElementById('cName').value.trim();
+  if(!name){ toast('اكتب اسم الدورة',true); return; }
+  const btn=document.getElementById('saveCourseBtn'); btn.disabled=true; btn.textContent='جاري الحفظ...';
+  const out=await post({
+    type:'admin_save_course',
+    id:document.getElementById('cId').value,
+    name, stageKey:document.getElementById('cStage').value,
+    date:document.getElementById('cDate').value,
+    time:document.getElementById('cTime').value,
+    mode:document.getElementById('cMode').value,
+    capacity:document.getElementById('cCap').value,
+    status:document.getElementById('cStatus').value
+  });
+  btn.disabled=false; btn.textContent='حفظ الدورة';
+  if(out&&out.ok){ toast('تم الحفظ ✓'); resetCourseForm(); loadAll(); }
+  else toast((out&&out.error)||'فشل الحفظ',true);
+}
+async function delCourse(id){
+  if(!confirm('متأكد تبي تحذف هالدورة؟')) return;
+  const out=await post({type:'admin_delete_course',id});
+  if(out&&out.ok){ toast('تم الحذف'); loadAll(); } else toast((out&&out.error)||'فشل',true);
+}
+
+/* ===== الاستشارات ===== */
+function renderSettings(){
+  const s=DB.settings;
+  document.getElementById('daysToggle').innerHTML=DAYNAMES.map((nm,i)=>
+    `<div class="chip ${s.days.includes(i)?'done':''}" data-day="${i}" onclick="toggleDay(${i},this)">${nm}</div>`).join('');
+  slots=(s.slots||[]).slice();
+  renderSlots();
+  document.getElementById('weeksAhead').value=s.weeksAhead||3;
+}
+function toggleDay(i,el){ el.classList.toggle('done'); }
+function renderSlots(){
+  const wrap=document.getElementById('slotsList');
+  wrap.innerHTML=slots.map((v,idx)=>`
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <input type="time" value="${v}" onchange="slots[${idx}]=this.value">
+      <button class="btn btn-danger btn-sm" onclick="removeSlot(${idx})">حذف</button>
+    </div>`).join('');
+}
+function addSlot(v){ slots.push(v||'17:00'); renderSlots(); }
+function removeSlot(i){ slots.splice(i,1); renderSlots(); }
+async function saveSettings(){
+  const days=[...document.querySelectorAll('#daysToggle .chip.done')].map(el=>el.dataset.day).join(',');
+  const slotStr=slots.filter(Boolean).join(',');
+  const weeks=document.getElementById('weeksAhead').value||3;
+  if(!days){ toast('اختر يوم واحد على الأقل',true); return; }
+  if(!slotStr){ toast('أضف وقت واحد على الأقل',true); return; }
+  const out=await post({type:'admin_save_settings',days,slots:slotStr,weeks});
+  if(out&&out.ok){ toast('تم حفظ الإعدادات ✓'); loadAll(); } else toast((out&&out.error)||'فشل',true);
+}
+
+/* ===== الحجوزات ===== */
+function renderBookings(){
+  const list=document.getElementById('bookingsList');
+  if(!DB.bookings.length){ list.innerHTML='<div class="empty">ما فيه حجوزات بعد.</div>'; return; }
+  list.innerHTML=DB.bookings.slice().reverse().map(b=>`
+    <div class="item">
+      <div class="item-head"><div class="item-name">${esc(b.name||b.phone)}</div></div>
+      <div class="item-meta">
+        <span>📅 <b>${dLabel(b.date)}</b></span>
+        <span>🕐 <b>${timeText(b.time)}</b></span>
+        <span>📞 ${esc(b.phone)}</span>
+      </div>
+      <div class="item-actions">
+        <select onchange="setBooking(${b.row},this.value)" style="max-width:200px">
+          ${['مؤكد','تم','ملغى'].map(o=>`<option ${b.status===o?'selected':''}>${o}</option>`).join('')}
+        </select>
+      </div>
+    </div>`).join('');
+}
+async function setBooking(row,status){
+  const out=await post({type:'admin_booking_status',row,status});
+  toast(out&&out.ok?'تم التحديث ✓':'فشل', !(out&&out.ok));
+}
+
+/* ===== المواد ===== */
+function renderMaterials(){
+  const list=document.getElementById('materialsList');
+  if(!DB.materials.length){ list.innerHTML='<div class="empty">ما فيه مواد مرفوعة بعد.</div>'; return; }
+  list.innerHTML=DB.materials.slice().reverse().map(m=>`
+    <div class="item">
+      <div class="item-head">
+        <div class="item-name">${esc(m.name||m.phone)}</div>
+        <a class="link" href="${esc(m.link)}" target="_blank">فتح الملف ↗</a>
+      </div>
+      <div class="item-meta" style="margin-bottom:10px">
+        <span>📄 ${esc(m.fileName)}</span><span>📞 ${esc(m.phone)}</span><span>${esc(m.date)}</span>
+      </div>
+      <label style="margin-top:0">حالة المراجعة</label>
+      <select id="rv_${m.row}">
+        ${['بانتظار المراجعة','معتمدة','تحتاج تعديل'].map(o=>`<option ${m.review===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+      <label>ملاحظات لعتيق (تظهر للمتدرب)</label>
+      <textarea id="nt_${m.row}" rows="2" placeholder="اكتب ملاحظاتك...">${esc(m.notes)}</textarea>
+      <button class="btn btn-sm btn-full" onclick="saveReview(${m.row})">حفظ المراجعة</button>
+    </div>`).join('');
+}
+async function saveReview(row){
+  const review=document.getElementById('rv_'+row).value;
+  const notes=document.getElementById('nt_'+row).value.trim();
+  const out=await post({type:'admin_review_material',row,review,notes});
+  toast(out&&out.ok?'تم حفظ المراجعة ✓':'فشل', !(out&&out.ok));
+}
+
+/* ===== المتدربون ===== */
+function renderMembers(){
+  const list=document.getElementById('membersList');
+  if(!DB.members.length){ list.innerHTML='<div class="empty">ما فيه منتسبين بعد — ضمّ أول منتسب من فوق.</div>'; return; }
+  list.innerHTML=DB.members.map(m=>{
+    const curIdx=m.stages.findIndex(v=>v!=='تم الانجاز');
+    const chips=DB.stages.map((s,i)=>{
+      const done=m.stages[i]==='تم الانجاز';
+      const cur=i===curIdx;
+      return `<div class="chip ${done?'done':''} ${cur?'cur':''}" onclick="toggleStage(${m.row},${i},${done?1:0},this)" title="${esc(s.label)}"><span class="chip-num">${toAr(i+1)}</span> ${esc(shortLabel(s.label))}</div>`;
+    }).join('');
+    const doneCount=m.stages.filter(v=>v==='تم الانجاز').length;
+    return `<div class="member">
+      <div class="member-top">
+        <div><div class="member-name">${esc(m.name)}</div><div class="member-phone">📞 ${esc(m.phone)} · ${toAr(doneCount)}/${toAr(DB.stages.length)}</div></div>
+      </div>
+      <div class="stage-chips">${chips}</div>
+    </div>`;
+  }).join('');
+}
+function shortLabel(l){ return l.length>18?l.slice(0,18)+'…':l; }
+async function toggleStage(row,idx,isDone,el){
+  const value = isDone ? 'متبقية' : 'تم الانجاز';
+  el.style.opacity='.5';
+  const out=await post({type:'admin_set_stage',row,stageIndex:idx,value});
+  if(out&&out.ok){
+    // حدّث محلياً وأعد الرسم لضبط "الحالية"
+    const m=DB.members.find(x=>x.row===row); if(m){ m.stages[idx]=value; renderMembers(); }
+    toast('تم التحديث ✓');
+  } else { el.style.opacity='1'; toast((out&&out.error)||'فشل',true); }
+}
+async function addMember(){
+  const name=document.getElementById('mName').value.trim();
+  const phone=document.getElementById('mPhone').value.trim();
+  if(!name||!phone){ toast('الاسم والهاتف مطلوبان',true); return; }
+  const out=await post({type:'admin_add_member',name,phone});
+  if(out&&out.ok){ toast('تم الضمّ ✓'); document.getElementById('mName').value=''; document.getElementById('mPhone').value=''; loadAll(); }
+  else toast((out&&out.error)||'فشل',true);
+}
+</script>
+</body>
+</html>
