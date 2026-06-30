@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدبلوم التدريبي — متابعة خطتك | تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#6B1212;
+  --cream:#FAF7F2; --cream-2:#F2EDE5; --white:#fff;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2e7d32; --amber:#B85C00;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* NAV */
+.nav{background:var(--crimson);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav span{font-size:19px;font-weight:900;color:#fff}
+.nav a{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:600}
+
+/* HERO */
+.hero{background:var(--crimson);padding:48px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:48px 48px;background-position:0 0,0 24px,24px -24px,-24px 0}
+.hero-in{position:relative;z-index:1;max-width:620px;margin:0 auto}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.85);font-size:13px;font-weight:700;padding:6px 20px;border-radius:100px;margin-bottom:18px}
+.hero h1{font-size:clamp(26px,5vw,40px);font-weight:900;color:#fff;line-height:1.25;margin-bottom:12px}
+.hero p{font-size:15px;color:rgba(255,255,255,.6);line-height:1.7}
+
+/* SEARCH */
+.search-wrap{max-width:620px;margin:-32px auto 0;padding:0 20px;position:relative;z-index:5}
+.search-card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 18px 48px rgba(92,15,15,.14);border:1.5px solid rgba(92,15,15,.06)}
+.search-bar{display:flex;gap:10px}
+.search-bar input{flex:1;padding:14px 18px;font-family:inherit;font-size:16px;border:1.5px solid rgba(92,15,15,.15);border-radius:14px;background:var(--cream);color:var(--text);outline:none;transition:border-color .2s}
+.search-bar input:focus{border-color:var(--crimson)}
+.search-btn{padding:14px 26px;background:var(--crimson);color:#fff;font-family:inherit;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s}
+.search-btn:hover{background:var(--crimson-2)}
+.search-btn:disabled{opacity:.55;cursor:not-allowed}
+.search-btn svg{width:18px;height:18px;fill:#fff}
+.search-hint{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+
+/* CONTAINER */
+.container{max-width:620px;margin:0 auto;padding:28px 20px 60px}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;display:none}
+.loading.show{display:block}
+.spinner{width:38px;height:38px;border:3px solid rgba(92,15,15,.12);border-top-color:var(--crimson);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESULT */
+#result{display:none}
+#result.show{display:block}
+
+/* trainee header card */
+.tcard{background:var(--crimson);border-radius:24px;overflow:hidden;position:relative;margin-bottom:18px}
+.tcard::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.03) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.03) 75%);
+  background-size:40px 40px;background-position:0 0,0 20px,20px -20px,-20px 0}
+.tcard-top{position:relative;z-index:1;padding:32px 28px 24px;text-align:center}
+.tavatar{width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;margin:0 auto 14px}
+.tname{font-size:clamp(20px,4vw,26px);font-weight:900;color:#fff;margin-bottom:6px}
+.tsub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.tpill{display:inline-flex;align-items:center;gap:8px;padding:9px 22px;border-radius:100px;font-size:14px;font-weight:800;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.28);color:#fff}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot-on{background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,.6)}
+.dot-prog{background:#ffc107;box-shadow:0 0 6px rgba(255,193,7,.5)}
+.tcard-bottom{position:relative;z-index:1;background:rgba(0,0,0,.18);padding:18px 28px;display:flex;justify-content:center;gap:48px}
+.tc-n{font-size:22px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px}
+.tc-l{font-size:12px;color:rgba(255,255,255,.55)}
+/* progress bar inside */
+.tprog{position:relative;z-index:1;padding:0 28px 20px}
+.tprog-track{height:8px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.tprog-fill{height:100%;background:#fff;border-radius:100px;transition:width .6s ease}
+
+/* appointment banner */
+.appt{background:rgba(92,15,15,.04);border:1.5px solid rgba(92,15,15,.18);border-radius:18px;padding:18px 22px;margin-bottom:18px}
+.appt-label{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:8px}
+.appt-day{font-size:18px;font-weight:900;color:var(--text);margin-bottom:3px}
+.appt-time{font-size:14px;color:var(--muted)}
+
+/* path */
+.path{background:#fff;border-radius:22px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden}
+.path-head{padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase}
+.path-body{padding:22px 20px}
+
+.step{display:flex;align-items:flex-start;gap:14px}
+.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:38px}
+.circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;position:relative;z-index:1}
+.circle.done{background:var(--green);color:#fff}
+.circle.current{background:var(--crimson);color:#fff;outline:3px solid rgba(92,15,15,.18);outline-offset:2px}
+.circle.locked{background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.1)}
+.circle svg{width:16px;height:16px}
+.vline{width:2px;flex:1;min-height:20px;margin:4px 0}
+.step-content{flex:1;padding-bottom:26px}
+.step:last-child .step-content{padding-bottom:0}
+.step-name{font-size:16px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:3px}
+.step-name.muted{color:var(--muted);font-weight:600}
+.step-tag{display:inline-block;margin-top:8px;font-size:12px;font-weight:800;padding:4px 13px;border-radius:100px}
+.tag-done{background:#e8f5e9;color:var(--green)}
+.tag-current{background:rgba(92,15,15,.08);color:var(--crimson)}
+.tag-locked{background:var(--cream-2);color:var(--muted)}
+
+/* action panel inside a step */
+.action{margin-top:14px;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:16px;padding:18px}
+.action-title{font-size:13px;font-weight:800;color:var(--crimson);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* booking */
+.daygrid{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
+.day{padding:13px 16px;border-radius:13px;border:1.5px solid rgba(92,15,15,.12);background:#fff;cursor:pointer;font-size:15px;font-weight:700;color:var(--text);transition:all .2s}
+.day.sel{border-color:var(--crimson);background:rgba(92,15,15,.05);color:var(--crimson)}
+.slotgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:9px;margin-top:14px}
+.slot{padding:12px;border-radius:12px;text-align:center;font-size:14px;font-weight:700;border:1.5px solid rgba(92,15,15,.12);background:#fff;color:var(--text);cursor:pointer}
+.slot.sel{border-color:var(--crimson);background:rgba(92,15,15,.05);color:var(--crimson)}
+.slot.taken{background:var(--cream-2);color:var(--muted);cursor:not-allowed;text-decoration:line-through;opacity:.6}
+.subhead{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--crimson);text-transform:uppercase;margin:14px 0 10px}
+
+/* course offering */
+.offer{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:16px;margin-bottom:10px}
+.offer-name{font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px}
+.offer-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.offer-meta b{color:var(--text);font-weight:700}
+.btn{width:100%;padding:13px;background:var(--crimson);color:#fff;font-family:inherit;font-size:15px;font-weight:800;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.btn:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-ok{background:var(--green)}
+.btn-sm{padding:11px;font-size:14px}
+
+/* upload */
+.drop{border:2px dashed rgba(92,15,15,.2);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
+.drop:hover{border-color:var(--crimson);background:rgba(92,15,15,.02)}
+.drop svg{width:36px;height:36px;fill:rgba(92,15,15,.4);margin-bottom:8px}
+.drop p{font-size:14px;color:var(--muted)}
+.matrow{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.matrow .nm{flex:1;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.review-pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;white-space:nowrap}
+.rv-wait{background:var(--cream-2);color:var(--muted)}
+.rv-ok{background:#e8f5e9;color:var(--green)}
+.rv-edit{background:#fff3e0;color:var(--amber)}
+
+.locked-note{font-size:13px;color:var(--muted);margin-top:8px;background:var(--cream);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(92,15,15,.06)}
+
+.msg{margin-top:12px;font-size:14px;font-weight:700;padding:10px 14px;border-radius:10px}
+.msg-ok{background:#e8f5e9;color:var(--green)}
+.msg-err{background:#fdecea;color:#8B1A1A}
+
+.notfound{text-align:center;padding:40px 24px;background:#fff;border-radius:18px;border:1.5px dashed rgba(92,15,15,.15)}
+.notfound svg{width:44px;height:44px;fill:rgba(92,15,15,.18);margin:0 auto 14px;display:block}
+.notfound p{font-size:16px;color:var(--muted);line-height:1.7}
+
+footer{background:var(--crimson-2);padding:24px;text-align:center;margin-top:40px}
+footer p{font-size:13px;color:rgba(255,255,255,.35)}
+footer a{color:rgba(255,255,255,.55);text-decoration:none}
+
+@media(max-width:520px){.search-bar{flex-direction:column}.search-btn{justify-content:center}.tcard-bottom{gap:32px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span>الدبلوم التدريبي</span>
+  <a href="/">← الرئيسية</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-badge">برنامج عتيق العتيق — معهد تمكين</div>
+    <h1>تابع خطتك في الدبلوم التدريبي</h1>
+    <p>ادخل برقم هاتفك لتشوف مرحلتك الحالية، المتطلبات منك، وتحجز استشارتك وتسجّل بدوراتك</p>
+  </div>
+</section>
+
+<div class="search-wrap">
+  <div class="search-card">
+    <div class="search-bar">
+      <input type="text" id="q" placeholder="رقم هاتفك المسجّل..." maxlength="40" autocomplete="off">
+      <button class="search-btn" id="goBtn" onclick="doSearch()">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        دخول
+      </button>
+    </div>
+    <p class="search-hint">خاص بمنتسبي الدبلوم — إذا ما طلعت بياناتك تواصل مع عتيق</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="loading" id="loading"><div class="spinner"></div><p style="color:var(--muted);font-size:14px">جاري التحميل...</p></div>
+  <div id="result"></div>
+</div>
+
+<footer>
+  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a></p>
+</footer>
+
+<script>
+/* ====== ضع هنا رابط الـ Web App الجديد بعد نشر DiplomaCode.gs ====== */
+const API = "PASTE_DIPLOMA_WEBAPP_URL_HERE";
+
+const WA = "96597999768";
+let DATA = null;
+
+/* أدوات عربية */
+const DAYNAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS   = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const toAr = s => String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const pad = n => n<10?'0'+n:''+n;
+function dKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function dLabel(key){ const d=new Date(key+'T00:00:00'); return DAYNAMES[d.getDay()]+' '+toAr(d.getDate())+' '+MONTHS[d.getMonth()]; }
+function timeText(v){ // "17:00" → "٥:٠٠ م"
+  const [h,m]=v.split(':').map(Number); const ap=h>=12?'م':'ص'; let hh=h%12; if(hh===0)hh=12;
+  return toAr(hh)+':'+toAr(pad(m))+' '+ap;
+}
+function initials(name){ return name.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join(''); }
+function cleanPhone(p){ return String(p||'').replace(/[\s\-]/g,'').replace(/^\+?00?965/,'').replace(/\D/g,''); }
+function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function doSearch(){
+  const q = document.getElementById('q').value.trim();
+  if(!q){ document.getElementById('q').focus(); return; }
+  const btn=document.getElementById('goBtn'), L=document.getElementById('loading'), R=document.getElementById('result');
+  btn.disabled=true; L.classList.add('show'); R.classList.remove('show'); R.innerHTML='';
+  try{
+    const res=await fetch(API+'?action=lookup&q='+encodeURIComponent(q));
+    DATA=await res.json();
+    render();
+  }catch(e){
+    R.innerHTML=notFoundHTML('تعذّر الاتصال — تأكد من الرابط أو حاول لاحقاً');
+    R.classList.add('show');
+  }finally{ btn.disabled=false; L.classList.remove('show'); }
+}
+
+function notFoundHTML(msg){
+  return `<div class="notfound"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><p>${esc(msg)}</p></div>`;
+}
+
+function render(){
+  const R=document.getElementById('result');
+  if(!DATA || !DATA.found){ R.innerHTML=notFoundHTML(DATA&&DATA.message||'لم يُعثر على بياناتك'); R.classList.add('show'); return; }
+
+  const d=DATA, p=d.progress;
+  const passed = p.done>=p.total;
+  const pill = passed
+    ? `<span class="tpill"><span class="dot dot-on"></span>أنجز الدبلوم</span>`
+    : `<span class="tpill"><span class="dot dot-prog"></span>قيد الدبلوم</span>`;
+
+  const apptBlock = d.myAppointment && d.myAppointment.date ? `
+    <div class="appt">
+      <div class="appt-label">📅 موعد استشارتك القادم</div>
+      <div class="appt-day">${dLabel(d.myAppointment.date)}</div>
+      <div class="appt-time">الساعة ${timeText(d.myAppointment.time)} — ${esc(d.myAppointment.status||'مؤكد')}</div>
+    </div>` : '';
+
+  const steps = d.stages.map((s,i)=>stepHTML(s,i)).join('');
+
+  R.innerHTML = `
+    <div class="tcard">
+      <div class="tcard-top">
+        <div class="tavatar">${esc(initials(d.name))}</div>
+        <div class="tname">${esc(d.name)}</div>
+        <div class="tsub">منتسب الدبلوم التدريبي — معهد تمكين</div>
+        ${pill}
+      </div>
+      <div class="tprog"><div class="tprog-track"><div class="tprog-fill" style="width:0%"></div></div></div>
+      <div class="tcard-bottom">
+        <div><div class="tc-n">${toAr(p.pct)}%</div><div class="tc-l">نسبة الإنجاز</div></div>
+        <div><div class="tc-n">${toAr(p.done)}/${toAr(p.total)}</div><div class="tc-l">المراحل المكتملة</div></div>
+      </div>
+    </div>
+    ${apptBlock}
+    <div class="path">
+      <div class="path-head">مسار الدبلوم التدريبي</div>
+      <div class="path-body">${steps}</div>
+    </div>`;
+  R.classList.add('show');
+  setTimeout(()=>{ const f=R.querySelector('.tprog-fill'); if(f) f.style.width=p.pct+'%'; },100);
+  R.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function stepHTML(s,i){
+  const isLast = i===DATA.stages.length-1;
+  const circleClass = s.status==='done'?'done':s.status==='current'?'current':'locked';
+  const circleInner = s.status==='done'
+    ? `<svg viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
+    : (s.status==='locked'
+        ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>`
+        : toAr(i+1));
+  const lineColor = s.status==='done' ? 'var(--green)' : 'rgba(92,15,15,.1)';
+  const vline = isLast ? '' : `<div class="vline" style="background:${lineColor}"></div>`;
+
+  const nameClass = s.status==='locked' ? 'step-name muted' : 'step-name';
+  const tag = s.status==='done'
+    ? `<span class="step-tag tag-done">تم الإنجاز ✓</span>`
+    : s.status==='current'
+      ? `<span class="step-tag tag-current">أنت هنا الآن</span>`
+      : `<span class="step-tag tag-locked">مقفلة — أكمل المرحلة السابقة</span>`;
+
+  let action='';
+  if(s.status==='current') action = actionHTML(s,i);
+  else if(s.status==='done' && s.type==='consult' && DATA.myAppointment){ /* already shown above */ }
+
+  return `
+    <div class="step">
+      <div class="step-left">
+        <div class="circle ${circleClass}">${circleInner}</div>
+        ${vline}
+      </div>
+      <div class="step-content">
+        <div class="${nameClass}">${esc(s.label)}</div>
+        ${tag}
+        ${action}
+      </div>
+    </div>`;
+}
+
+/* لوحة الإجراء حسب نوع المرحلة الحالية */
+function actionHTML(s,i){
+  if(s.type==='consult')  return consultPanel();
+  if(s.type==='upload')   return uploadPanel(s);
+  if(s.type==='course' || s.type==='schedule') return coursePanel(s);
+  return '';
+}
+
+/* ===== استشارة ===== */
+let selDate=null, selSlot=null;
+function consultPanel(){
+  return `<div class="action" id="consultPanel">
+    <div class="action-title">📅 احجز موعد استشارتك</div>
+    <div id="consultBody"></div>
+  </div>`;
+}
+function buildConsult(){
+  const panel=document.getElementById('consultBody'); if(!panel) return;
+  const av=DATA.availability||{days:[6,2],slots:['17:00'],weeksAhead:3};
+  const dates=upcomingDates(av.days, av.weeksAhead);
+  if(!dates.length){ panel.innerHTML='<p style="font-size:14px;color:var(--muted)">لا توجد مواعيد متاحة حالياً — تواصل مع عتيق.</p>'; return; }
+  const dayCards=dates.map(d=>{
+    const k=dKey(d);
+    return `<div class="day" data-d="${k}" onclick="selectDate('${k}')">${dLabel(k)}</div>`;
+  }).join('');
+  panel.innerHTML=`
+    <div class="subhead">١ — اختر اليوم</div>
+    <div class="daygrid">${dayCards}</div>
+    <div id="slotsWrap" style="display:none">
+      <div class="subhead">٢ — اختر الوقت</div>
+      <div class="slotgrid" id="slots"></div>
+    </div>
+    <button class="btn" id="bkBtn" onclick="confirmBooking()" disabled style="margin-top:16px">تأكيد الحجز ←</button>
+    <div id="bkMsg"></div>`;
+}
+function upcomingDates(days, weeks){
+  const out=[], t=new Date(); t.setHours(0,0,0,0);
+  const end=new Date(t); end.setDate(end.getDate()+(weeks||3)*7);
+  for(let d=new Date(t); d<=end; d.setDate(d.getDate()+1)){ if(days.includes(d.getDay())) out.push(new Date(d)); }
+  return out;
+}
+function selectDate(k){
+  selDate=k; selSlot=null;
+  document.querySelectorAll('#consultBody .day').forEach(el=>el.classList.toggle('sel', el.dataset.d===k));
+  const av=DATA.availability, booked=DATA.bookedSlots||[];
+  document.getElementById('slots').innerHTML = av.slots.map(v=>{
+    const taken=booked.includes(k+'|'+v);
+    return `<div class="slot ${taken?'taken':''}" data-s="${v}" ${taken?'':`onclick="selectSlot('${v}')"`}>${timeText(v)}${taken?'<div style="font-size:10px;margin-top:2px">محجوز</div>':''}</div>`;
+  }).join('');
+  document.getElementById('slotsWrap').style.display='block';
+  document.getElementById('bkBtn').disabled=true;
+}
+function selectSlot(v){
+  selSlot=v;
+  document.querySelectorAll('#slots .slot').forEach(el=>{ if(!el.classList.contains('taken')) el.classList.toggle('sel', el.dataset.s===v); });
+  document.getElementById('bkBtn').disabled=false;
+}
+async function confirmBooking(){
+  if(!selDate||!selSlot) return;
+  const btn=document.getElementById('bkBtn'); btn.disabled=true; btn.textContent='جاري الحجز...';
+  const out=await post({ type:'book_consultation', name:DATA.name, phone:DATA.phone, date:selDate, time:selSlot });
+  const msg=document.getElementById('bkMsg');
+  if(out&&out.ok){
+    document.getElementById('consultBody').innerHTML=`
+      <div style="text-align:center;padding:14px 4px">
+        <div style="width:66px;height:66px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#2e7d32"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div style="font-size:18px;font-weight:900;margin-bottom:4px">تم تأكيد حجزك ✅</div>
+        <div style="font-size:15px;font-weight:700">${dLabel(selDate)}</div>
+        <div style="font-size:14px;color:var(--muted);margin-bottom:16px">الساعة ${timeText(selSlot)}</div>
+        <a class="btn btn-sm" style="text-decoration:none;display:inline-flex;width:auto;padding:11px 24px" target="_blank"
+          href="https://wa.me/${WA}?text=${encodeURIComponent('السلام عليكم، أنا '+DATA.name+' — حجزت استشارة دبلوم يوم '+dLabel(selDate)+' الساعة '+timeText(selSlot))}">أبلغ عتيق على واتساب</a>
+      </div>`;
+  } else if(out&&out.taken){
+    msg.innerHTML='<div class="msg msg-err">هذا الموعد انحجز للتو — اختر وقت ثاني.</div>';
+    (DATA.bookedSlots=DATA.bookedSlots||[]).push(selDate+'|'+selSlot);
+    btn.textContent='تأكيد الحجز ←'; selectDate(selDate);
+  } else {
+    msg.innerHTML='<div class="msg msg-err">'+esc(out&&out.error||'تعذّر الحجز')+'</div>';
+    btn.disabled=false; btn.textContent='تأكيد الحجز ←';
+  }
+}
+
+/* ===== رفع مادة ===== */
+function uploadPanel(s){
+  const mats=(s.materials||[]).map(m=>{
+    const rv=m.review.includes('معتمد')?'rv-ok':m.review.includes('تعديل')?'rv-edit':'rv-wait';
+    return `<div class="matrow"><div class="nm">${esc(m.fileName)}</div><span class="review-pill ${rv}">${esc(m.review)}</span></div>
+      ${m.notes?`<div style="font-size:13px;color:var(--muted);margin:-4px 0 10px;padding:0 4px">📝 ${esc(m.notes)}</div>`:''}`;
+  }).join('');
+  return `<div class="action">
+    <div class="action-title">📎 ارفع مادتك التدريبية للمراجعة</div>
+    ${mats?`<div style="margin-bottom:14px">${mats}</div>`:''}
+    <div class="drop" id="drop" onclick="document.getElementById('fileInput').click()">
+      <svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+      <p id="dropText">اضغط لاختيار ملف (PDF / Word / صورة)</p>
+    </div>
+    <input type="file" id="fileInput" style="display:none" onchange="pickFile(this)">
+    <button class="btn" id="upBtn" onclick="doUpload()" disabled style="margin-top:14px">رفع المادة ←</button>
+    <div id="upMsg"></div>
+  </div>`;
+}
+let pickedFile=null;
+function pickFile(input){
+  pickedFile=input.files[0]||null;
+  document.getElementById('dropText').textContent = pickedFile?('📄 '+pickedFile.name):'اضغط لاختيار ملف';
+  document.getElementById('upBtn').disabled=!pickedFile;
+}
+async function doUpload(){
+  if(!pickedFile) return;
+  if(pickedFile.size > 18*1024*1024){ document.getElementById('upMsg').innerHTML='<div class="msg msg-err">حجم الملف كبير — الحد ١٨ ميجا.</div>'; return; }
+  const btn=document.getElementById('upBtn'); btn.disabled=true; btn.textContent='جاري الرفع...';
+  try{
+    const b64=await fileToB64(pickedFile);
+    const out=await post({ type:'upload_material', name:DATA.name, phone:DATA.phone, fileName:pickedFile.name, mime:pickedFile.type||'application/octet-stream', fileData:b64 });
+    if(out&&out.ok){ document.getElementById('upMsg').innerHTML='<div class="msg msg-ok">تم رفع مادتك ✅ — عتيق بيراجعها ويعطيك ملاحظاته.</div>'; btn.textContent='تم الرفع ✓'; }
+    else throw new Error(out&&out.error||'فشل');
+  }catch(e){
+    document.getElementById('upMsg').innerHTML='<div class="msg msg-err">'+esc(e.message||'تعذّر الرفع')+'</div>';
+    btn.disabled=false; btn.textContent='رفع المادة ←';
+  }
+}
+function fileToB64(file){
+  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=()=>rej(new Error('قراءة الملف فشلت')); r.readAsDataURL(file); });
+}
+
+/* ===== دورات / تحديد موعد ===== */
+function coursePanel(s){
+  const offers=s.offerings||[];
+  const myRegs=s.myRegs||[];
+  if(!offers.length){
+    return `<div class="action"><div class="action-title">🎓 الدورات المتاحة</div>
+      <p style="font-size:14px;color:var(--muted)">ما فيه مواعيد معلنة لهذه المرحلة بعد — عتيق بيحدد الموعد قريباً ويظهر لك هنا.</p></div>`;
+  }
+  const cards=offers.map(o=>{
+    const reg=myRegs.find(r=>r.courseId===o.id);
+    let btn;
+    if(reg) btn=`<button class="btn btn-ok btn-sm" disabled>أنت مسجّل ✓</button>`;
+    else if(!o.open) btn=`<button class="btn btn-sm" disabled>التسجيل مغلق</button>`;
+    else if(o.full) btn=`<button class="btn btn-sm" disabled>اكتمل العدد</button>`;
+    else btn=`<button class="btn btn-sm" onclick="regCourse('${o.id}',this)">سجّلني ←</button>`;
+    const seats = o.capacity>0 ? `<span><b>${toAr(o.registered)}/${toAr(o.capacity)}</b> مقعد</span>` : '';
+    return `<div class="offer">
+      <div class="offer-name">${esc(o.name)}</div>
+      <div class="offer-meta">
+        ${o.date?`<span>📅 <b>${dLabel(o.date)}</b></span>`:''}
+        ${o.time?`<span>🕐 <b>${timeText(o.time)}</b></span>`:''}
+        ${o.mode?`<span>${esc(o.mode)}</span>`:''}
+        ${seats}
+      </div>
+      ${btn}
+      <div id="rmsg_${o.id}"></div>
+    </div>`;
+  }).join('');
+  return `<div class="action"><div class="action-title">🎓 الدورات المتاحة لهذه المرحلة</div>${cards}</div>`;
+}
+async function regCourse(id, btnEl){
+  btnEl.disabled=true; btnEl.textContent='جاري التسجيل...';
+  const out=await post({ type:'register_course', name:DATA.name, phone:DATA.phone, courseId:id });
+  const msg=document.getElementById('rmsg_'+id);
+  if(out&&out.ok){ btnEl.textContent='تم تسجيلك ✓'; btnEl.classList.add('btn-ok'); }
+  else { msg.innerHTML='<div class="msg msg-err">'+esc(out&&out.error||'تعذّر التسجيل')+'</div>'; btnEl.disabled=false; btnEl.textContent='سجّلني ←'; }
+}
+
+/* POST عام */
+async function post(obj){
+  const body=new URLSearchParams(obj);
+  const res=await fetch(API,{ method:'POST', body });
+  const txt=await res.text();
+  try{ return JSON.parse(txt); }catch(e){ return { ok:false, error:'رد غير متوقع من الخادم' }; }
+}
+
+/* بعد كل render نبني اللوحات التفاعلية */
+const _render=render;
+render=function(){ _render(); setTimeout(buildConsult,120); };
+
+document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+</script>
+</body>
+</html>
