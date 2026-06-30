@@ -2,748 +2,544 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة موظف المبيعات — أكاديمية مسار</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مساحة المبيعات — أكاديمية مسار</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --crimson:#5C0F0F; --crimson-2:#7A1515; --cream:#FAF7F2; --cream-2:#F2EDE5;
-  --text:#1A0808; --muted:#7A6060; --white:#FFFFFF;
-  --green:#2E7D32; --green-bg:#E8F5E9; --yellow:#F57F17; --yellow-bg:#FFF9C4;
+  --text:#1A0808; --muted:#7A6060; --white:#fff;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --yellow:#B26A00; --yellow-bg:#FFF3D6;
   --blue:#1565C0; --blue-bg:#E3F2FD;
+  --red:#C62828; --red-bg:#FDECEC;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;position:relative;background:var(--cream);}
 
-/* HEADER */
-.header{background:var(--crimson);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;}
-.header-logo-text{font-size:20px;font-weight:900;color:#fff;}
-.header-logo-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:2px;}
-.header-right{display:flex;align-items:center;gap:12px;}
-.header-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);}
-.logout-btn{background:transparent;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;}
-.logout-btn:hover{color:#fff;}
-
-.main{max-width:920px;margin:0 auto;padding:28px 20px;}
-
-/* TABS */
-.tabs{display:flex;gap:8px;background:#fff;padding:6px;border-radius:14px;box-shadow:0 2px 12px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);flex-wrap:wrap;}
-.tab-btn{flex:1;min-width:120px;padding:10px;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s;}
-.tab-btn.on{background:var(--crimson);color:#fff;}
-
-/* CARDS */
-.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);margin-bottom:20px;}
-.card-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-
-.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.5px;margin-bottom:6px;}
-.field input,.field select{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border .2s;}
-.field input:focus,.field select:focus{border-color:var(--crimson);background:#fff;}
-.field.invalid input{border-color:#C62828;background:#FFF5F5;}
-
-.btn{background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;padding:12px 24px;border:none;border-radius:12px;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
-.btn:hover{background:var(--crimson-2);}
-.btn:disabled{opacity:.45;cursor:not-allowed;}
-.btn-ghost{background:#fff;color:var(--text);border:1.5px solid rgba(92,15,15,.12);}
-.btn-ghost:hover{background:var(--cream);}
-.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+/* ===== LOGIN ===== */
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;}
+.login-logo{font-size:26px;font-weight:900;color:var(--crimson);}
+.login-sub{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:3px;margin-top:4px;margin-bottom:34px;}
+.login-card{background:#fff;border-radius:22px;padding:30px 24px;width:100%;box-shadow:0 8px 30px rgba(92,15,15,.08);border:1.5px solid rgba(92,15,15,.06);}
+.login-card h2{font-size:18px;font-weight:900;margin-bottom:6px;text-align:center;}
+.login-card p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:22px;}
+.pin-input{width:100%;text-align:center;font-size:26px;font-weight:900;letter-spacing:10px;padding:16px;border:1.5px solid rgba(92,15,15,.12);border-radius:14px;background:var(--cream);color:var(--text);outline:none;font-family:'Tajawal',sans-serif;}
+.pin-input:focus{border-color:var(--crimson);background:#fff;}
+.btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:14px;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;}
+.btn:active{background:var(--crimson-2);}
+.btn[disabled]{opacity:.6;}
+.login-err{color:var(--red);font-size:13px;font-weight:700;text-align:center;margin-top:14px;min-height:18px;}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
-@media(max-width:560px){.stats-row{grid-template-columns:repeat(2,1fr);}}
-.stat-card{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 2px 12px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);}
-.stat-n{font-size:26px;font-weight:900;color:var(--crimson);}
-.stat-l{font-size:12px;font-weight:700;color:var(--muted);margin-top:2px;}
+/* ===== APP ===== */
+#app{display:none;padding-bottom:78px;}
+.header{background:var(--crimson);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;}
+.header .h-title{font-size:17px;font-weight:900;color:#fff;}
+.header .h-emp{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-top:2px;}
+.header .h-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:6px 13px;border-radius:100px;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.15);}
 
-/* TABLE */
-.results-card{background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);overflow:hidden;}
-.results-header{padding:16px 22px;border-bottom:1px solid rgba(92,15,15,.06);display:flex;align-items:center;justify-content:space-between;}
-.results-title{font-size:15px;font-weight:800;color:var(--text);}
-.results-count{font-size:13px;font-weight:700;color:var(--muted);}
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-th{background:var(--cream);padding:12px 14px;text-align:right;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.5px;border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
-td{padding:12px 14px;font-size:13px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
+.view{display:none;padding:18px 16px;}
+.view.active{display:block;}
 
-.cert-done{background:var(--green-bg);color:var(--green);padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:inline-block;}
-.cert-no{background:var(--cream-2);color:var(--muted);padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;display:inline-block;}
-.cert-pending{background:var(--yellow-bg);color:var(--yellow);padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;display:inline-block;}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
-.name-row{display:flex;align-items:center;gap:9px;}
+/* ===== HOME ===== */
+.progress-card{background:linear-gradient(135deg,var(--crimson),var(--crimson-2));border-radius:22px;padding:24px;color:#fff;box-shadow:0 8px 24px rgba(92,15,15,.18);}
+.pc-label{font-size:13px;font-weight:700;opacity:.8;}
+.pc-num{font-size:46px;font-weight:900;line-height:1;margin:6px 0;}
+.pc-num small{font-size:18px;font-weight:700;opacity:.7;}
+.pbar{height:10px;background:rgba(255,255,255,.2);border-radius:100px;overflow:hidden;margin-top:14px;}
+.pbar > div{height:100%;background:#fff;border-radius:100px;transition:width .6s;}
+.pc-foot{font-size:12px;font-weight:700;opacity:.85;margin-top:10px;}
+.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.mini{background:#fff;border-radius:16px;padding:16px;text-align:center;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.mini .n{font-size:26px;font-weight:900;color:var(--crimson);}
+.mini .l{font-size:12px;font-weight:700;color:var(--muted);margin-top:2px;}
+.sect-title{font-size:15px;font-weight:900;margin:22px 4px 12px;display:flex;align-items:center;gap:8px;}
+.milestones{display:flex;flex-direction:column;gap:10px;}
+.ms{background:#fff;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border:1.5px solid rgba(92,15,15,.06);}
+.ms .ms-l{font-size:14px;font-weight:800;}
+.ms .ms-r{font-size:13px;font-weight:800;color:var(--muted);}
+.ms.hit{background:var(--green-bg);border-color:rgba(46,125,50,.2);}
+.ms.hit .ms-r{color:var(--green);}
 
-.res-sel{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:700;font-family:'Tajawal',sans-serif;border:none;cursor:pointer;outline:none;}
-.res-new{background:#F3F4F6;color:#6B7280;} .res-pending{background:#FEF3C7;color:#92400E;}
-.res-thinking{background:#DBEAFE;color:#1E40AF;} .res-info{background:#EDE9FE;color:#5B21B6;}
-.res-registered{background:#D1FAE5;color:#065F46;} .res-notint{background:#FEE2E2;color:#991B1B;}
-.res-later{background:#FFF7ED;color:#C2410C;}
-.wa-btn{display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#fff;padding:5px 12px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;}
-.wa-btn:hover{opacity:.85;}
+/* ===== CARDS / CLIENTS ===== */
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.search{flex:1;min-width:150px;background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;}
+.search:focus{border-color:var(--crimson);}
+.filter{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:11px 12px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;color:var(--text);outline:none;}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.c-name{font-size:16px;font-weight:900;}
+.c-meta{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.6;}
+.c-meta b{color:var(--text);font-weight:800;}
+.badge{padding:4px 11px;border-radius:100px;font-size:11.5px;font-weight:800;white-space:nowrap;}
+.b-paid{background:var(--green-bg);color:var(--green);}
+.b-pending{background:var(--yellow-bg);color:var(--yellow);}
+.b-none{background:var(--cream-2);color:var(--muted);}
+.c-controls{margin-top:13px;display:flex;flex-direction:column;gap:9px;}
+.sel,.note{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:11px;padding:10px 12px;font-family:'Tajawal',sans-serif;font-size:13.5px;color:var(--text);outline:none;}
+.note{resize:vertical;min-height:42px;}
+.sel:focus,.note:focus{border-color:var(--crimson);background:#fff;}
+.c-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.c-actions.three{grid-template-columns:1fr 1fr 1fr;}
+.act{padding:11px;border-radius:11px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:800;border:none;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;}
+.a-wa{background:var(--crimson);color:#fff;}
+.a-call{background:var(--cream-2);color:var(--crimson);}
+.a-save{background:var(--blue-bg);color:var(--blue);}
+.a-paid{background:var(--green);color:#fff;}
+.a-link{background:#F3E9F7;color:var(--crimson);}
+.act:active{opacity:.8;}
+.last-c{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:8px;}
 
-.ffilter{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid rgba(92,15,15,.1);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;}
-.ffilter.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
-.finp{width:100%;padding:6px 8px;border:1.5px solid rgba(92,15,15,.1);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);color:var(--text);}
-.finp:focus{outline:none;border-color:var(--crimson);background:#fff;}
-.fsel{width:100%;padding:6px 4px;border:1.5px solid rgba(92,15,15,.1);border-radius:8px;font-family:'Tajawal',sans-serif;font-size:11px;background:var(--cream);}
+.empty{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty .ico{width:46px;height:46px;margin:0 auto 12px;opacity:.4;}
+.empty .t{font-size:15px;font-weight:800;color:var(--text);}
+.empty .s{font-size:13px;margin-top:5px;}
 
-.empty{text-align:center;padding:42px 20px;color:var(--muted);}
-.empty-icon{font-size:36px;margin-bottom:10px;}
+/* ===== FORMS (link / add) ===== */
+.form-card{background:#fff;border-radius:18px;padding:20px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:6px;}
+.fld input,.fld select{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:13px 14px;font-family:'Tajawal',sans-serif;font-size:14.5px;color:var(--text);outline:none;}
+.fld input:focus,.fld select:focus{border-color:var(--crimson);background:#fff;}
+.result-box{background:var(--cream-2);border-radius:14px;padding:16px;margin-top:16px;display:none;}
+.result-box.show{display:block;}
+.result-box .lbl{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px;}
+.result-box .lnk{font-size:13px;font-weight:700;color:var(--crimson);word-break:break-all;background:#fff;padding:10px;border-radius:10px;border:1px solid rgba(92,15,15,.1);}
+.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
 
-/* WA POPUP */
-.wa-popup{position:absolute;z-index:50;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(92,15,15,.18);border:1.5px solid rgba(92,15,15,.08);width:300px;padding:14px;display:none;}
-.wa-tpls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
-.wa-tpl{padding:5px 11px;border-radius:100px;font-size:11px;font-weight:800;cursor:pointer;border:1.5px solid rgba(92,15,15,.1);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;}
-.wa-tpl.active{background:var(--crimson);color:#fff;border-color:var(--crimson);}
-.wa-popup textarea{width:100%;min-height:120px;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:10px;font-family:'Tajawal',sans-serif;font-size:12px;resize:vertical;outline:none;background:var(--cream);}
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:800;z-index:60;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+.toast.ok{background:var(--green);}
+.toast.err{background:var(--red);}
 
-/* PRICE CARDS */
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-@media(max-width:600px){.price-grid{grid-template-columns:repeat(2,1fr);}}
-.price-card{background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:all .15s;}
-.price-card:hover{border-color:var(--crimson);background:#fff;}
-.price-card .pc-name{font-size:13px;font-weight:800;color:var(--text);}
-.price-card .pc-val{font-size:22px;font-weight:900;color:var(--crimson);margin-top:6px;}
-.price-card .pc-sub{font-size:11px;color:var(--muted);margin-top:2px;}
-
-/* LOGIN */
-.login-overlay{position:fixed;inset:0;background:var(--cream);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
-.login-box{background:#fff;border-radius:24px;padding:36px 30px;box-shadow:0 12px 50px rgba(92,15,15,.12);max-width:380px;width:100%;text-align:center;}
-.login-box h2{font-size:22px;font-weight:900;color:var(--crimson);margin-bottom:6px;}
-.login-box p{font-size:13px;color:var(--muted);margin-bottom:22px;}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:100px;font-size:13px;font-weight:800;color:#fff;z-index:200;display:none;box-shadow:0 8px 30px rgba(0,0,0,.15);}
-.toast.s{background:var(--green);} .toast.e{background:#C62828;} .toast.w{background:var(--yellow);}
-.copy-btn{background:var(--cream-2);border:none;color:var(--crimson);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Tajawal',sans-serif;}
-.copy-btn:hover{background:var(--crimson);color:#fff;}
-.hint{font-size:12px;color:var(--muted);line-height:1.7;background:var(--cream);border-radius:12px;padding:12px 14px;margin-top:14px;}
-
-/* LEAD CARDS */
-.lead-card{display:flex;background:#fff;border:1.5px solid rgba(92,15,15,.08);border-radius:14px;overflow:hidden;transition:box-shadow .15s;}
-.lead-card:hover{box-shadow:0 4px 16px rgba(92,15,15,.08);}
-.lead-card.sel{border-color:var(--crimson);background:#FFF9F9;}
-.lc-strip{width:6px;flex-shrink:0;}
-.lc-strip.pay{background:var(--yellow);} .lc-strip.unpay{background:#E65100;} .lc-strip.paid{background:var(--green);} .lc-strip.none{background:#CBB;}
-.lc-body{flex:1;padding:13px 15px;min-width:0;}
-.lc-top{display:flex;align-items:center;gap:10px;}
-.lc-chk{width:16px;height:16px;accent-color:var(--crimson);cursor:pointer;flex-shrink:0;}
-.lc-name{font-size:15px;font-weight:800;color:var(--text);line-height:1.2;}
-.lc-course{font-size:11px;color:var(--muted);background:var(--cream-2);padding:1px 8px;border-radius:10px;display:inline-block;margin-top:3px;}
-.lc-paypill{margin-right:auto;font-size:12px;font-weight:900;padding:4px 12px;border-radius:100px;white-space:nowrap;}
-.pp-pay{background:#FFF3E0;color:#E65100;} .pp-unpay{background:#FFF8E1;color:#B8860B;} .pp-paid{background:var(--green-bg);color:var(--green);}
-.lc-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--muted);align-items:center;}
-.lc-meta b{color:var(--text);font-weight:700;}
-.lc-tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:100px;}
-.lc-bottom{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.lc-phone{direction:ltr;font-weight:700;color:var(--text);}
-.lc-today{color:var(--green);font-weight:900;}
+/* ===== BOTTOM NAV ===== */
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(5,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
+.nav-item{padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);position:relative;}
+.nav-item svg{width:23px;height:23px;}
+.nav-item span{font-size:10.5px;font-weight:800;}
+.nav-item.active{color:var(--crimson);}
+.nav-dot{position:absolute;top:6px;left:calc(50% + 9px);background:var(--red);color:#fff;font-size:9px;font-weight:900;min-width:16px;height:16px;border-radius:100px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- ===== LOGIN ===== -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <h2>أكاديمية مسار</h2>
-    <p>لوحة موظف المبيعات</p>
-    <div class="field" style="text-align:right;">
-      <label>اسمك (يظهر في سجل المتابعة)</label>
-      <input id="loginName" placeholder="مثال: نوف" onkeydown="if(event.key==='Enter')doLogin()">
+  <!-- ===== LOGIN ===== -->
+  <div id="login">
+    <div class="login-logo">أكاديمية مسار</div>
+    <div class="login-sub">مساحة المبيعات</div>
+    <div class="login-card">
+      <h2>تسجيل الدخول</h2>
+      <p>أدخل رقمك السري للدخول إلى عملائك</p>
+      <input id="pinInput" class="pin-input" type="tel" inputmode="numeric" placeholder="••••" maxlength="10" autocomplete="off">
+      <button id="loginBtn" class="btn" onclick="doLogin()">دخول</button>
+      <div id="loginErr" class="login-err"></div>
     </div>
-    <button class="btn" style="width:100%;margin-top:16px;" onclick="doLogin()">دخول →</button>
-  </div>
-</div>
-
-<!-- ===== HEADER ===== -->
-<div class="header" id="appHeader" style="display:none;">
-  <div>
-    <div class="header-logo-text">أكاديمية مسار</div>
-    <div class="header-logo-sub">لوحة موظف المبيعات</div>
-  </div>
-  <div class="header-right">
-    <span class="header-badge" id="agentBadge">—</span>
-    <button class="logout-btn" onclick="doLogout()">خروج</button>
-  </div>
-</div>
-
-<div class="main" id="appMain" style="display:none;">
-
-  <!-- TABS -->
-  <div class="tabs" style="margin-bottom:22px;">
-    <button class="tab-btn on" id="tab1" onclick="switchTab(1)">📋 متابعة العملاء</button>
-    <button class="tab-btn" id="tab2" onclick="switchTab(2)">➕ إضافة واستيراد</button>
-    <button class="tab-btn" id="tab3" onclick="switchTab(3)">👤 ملف العميل</button>
-    <button class="tab-btn" id="tab4" onclick="switchTab(4)">💳 رابط دفع</button>
-    <button class="tab-btn" id="tab5" onclick="switchTab(5)">💰 الأسعار والردود</button>
   </div>
 
-  <!-- ===== TAB 1: CRM ===== -->
-  <div id="tabContent1">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-n" id="s1">—</div><div class="stat-l">إجمالي العملاء</div></div>
-      <div class="stat-card"><div class="stat-n" id="s2" style="color:var(--yellow);">—</div><div class="stat-l">🔥 قيد الدفع</div></div>
-      <div class="stat-card"><div class="stat-n" id="s3" style="color:var(--blue);">—</div><div class="stat-l">لم يُتواصل اليوم</div></div>
-      <div class="stat-card"><div class="stat-n" id="s4" style="color:var(--green);">—</div><div class="stat-l">سجّلوا</div></div>
-    </div>
-
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">
-      <button class="ffilter on" onclick="setFF('all',this)">الكل</button>
-      <button class="ffilter" onclick="setFF('unpaid',this)">💸 لم يدفع</button>
-      <button class="ffilter" onclick="setFF('pend',this)">🔥 قيد الدفع</button>
-      <button class="ffilter" onclick="setFF('paid',this)">✅ دفعوا</button>
-      <button class="ffilter" onclick="setFF('cert',this)">🎓 يبي شهادة</button>
-      <button class="ffilter" onclick="setFF('nc',this)">📵 لم يُتواصل اليوم</button>
-      <input id="fsrch" style="flex:1;min-width:160px;padding:8px 14px;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;font-family:'Tajawal',sans-serif;font-size:12px;background:var(--cream);outline:none;" placeholder="🔍 ابحث بالاسم أو الرقم أو الدورة..." oninput="doFSearch(this.value)">
-      <button class="btn-ghost btn" style="padding:8px 14px;font-size:12px;" onclick="fLoad()">↻ تحديث</button>
-      <button class="btn-ghost btn" style="padding:8px 14px;font-size:12px;" onclick="copyList()">📋 نسخ القائمة</button>
-    </div>
-
-    <div class="results-card">
-      <div class="results-header">
-        <div class="results-title">المهتمون بالتسجيل</div>
-        <div class="results-count"><span id="selCnt">0</span> محدد</div>
+  <!-- ===== APP ===== -->
+  <div id="app">
+    <div class="header">
+      <div>
+        <div class="h-title">مساحة المبيعات</div>
+        <div class="h-emp" id="hEmp"></div>
       </div>
-      <div id="fcards" style="max-height:560px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;">
-        <div class="empty">جاري التحميل...</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;">
-      <div style="font-size:12px;color:var(--muted);">محدد <b id="selCnt2" style="color:var(--text);">0</b> عميل</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn-ghost btn" style="padding:8px 16px;font-size:12px;" onclick="fSelAll()">اختر الكل</button>
-        <button class="btn-ghost btn" style="padding:8px 16px;font-size:12px;" onclick="fSelNC()">اختر من لم يُتواصل معهم</button>
-        <button id="updBtn" disabled class="btn" style="padding:8px 18px;font-size:12px;" onclick="doFUpdate()">✓ تحديث آخر تواصل لليوم</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== TAB 2: ADD / IMPORT ===== -->
-  <div id="tabContent2" style="display:none;">
-    <div class="card">
-      <div class="card-title">📥 استيراد العملاء الجدد</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">يسحب المسجّلين الجدد من ورقة التسجيلات ويضيفهم لقائمة المتابعة (يتخطى المكرر تلقائياً).</p>
-      <button class="btn" id="impBtn" onclick="doImport(this)"><span>استيراد الآن ←</span><div class="spinner" id="impSpin"></div></button>
+      <div class="h-badge">@bymasar</div>
     </div>
 
-    <div class="card">
-      <div class="card-title">➕ إضافة عملاء من واتساب</div>
-      <div class="table-wrap" style="max-height:340px;overflow-y:auto;">
-        <table style="table-layout:fixed;min-width:640px;">
-          <thead><tr>
-            <th style="width:30px;">#</th><th style="width:22%;">الاسم</th><th style="width:18%;">الواتساب</th>
-            <th style="width:18%;">الدورة/الخدمة</th><th style="width:11%;">شهادة؟</th><th style="width:16%;">حالة الدفع</th><th>ملاحظة</th><th style="width:26px;"></th>
-          </tr></thead>
-          <tbody id="abtbody"></tbody>
-        </table>
+    <!-- HOME -->
+    <div class="view active" id="view-home">
+      <div class="progress-card">
+        <div class="pc-label">بيعاتك المُغلقة</div>
+        <div class="pc-num" id="pcNum">0 <small>/ 50</small></div>
+        <div class="pbar"><div id="pcBar" style="width:0%"></div></div>
+        <div class="pc-foot" id="pcFoot">الهدف الأساسي ٥٠ بيعة</div>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:14px;">
-        <button class="btn-ghost btn" style="padding:8px 16px;font-size:12px;" onclick="abAddRow()">+ صف جديد</button>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <span style="font-size:12px;color:var(--muted);">عدد: <b id="abCnt">1</b></span>
-          <button class="btn" id="abSub" disabled onclick="abSubmit()" style="padding:9px 20px;font-size:13px;">إضافة الكل ←</button>
-        </div>
+      <div class="mini-row">
+        <div class="mini"><div class="n" id="mPending">0</div><div class="l">قيد الدفع</div></div>
+        <div class="mini"><div class="n" id="mAssigned">0</div><div class="l">عملاء مخصصون لك</div></div>
       </div>
+      <div class="sect-title">المكافآت والمعالم</div>
+      <div class="milestones" id="milestones"></div>
     </div>
-  </div>
 
-  <!-- ===== TAB 3: CUSTOMER FILE ===== -->
-  <div id="tabContent3" style="display:none;">
-    <div class="card">
-      <div class="card-title">👤 ابحث عن عميل</div>
-      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap;">
-        <div class="field" style="flex:1;min-width:200px;">
-          <label>رقم الهاتف</label>
-          <input id="profPhone" placeholder="مثال: 99887766" style="direction:ltr;text-align:left;" onkeydown="if(event.key==='Enter')loadProfile()">
-        </div>
-        <button class="btn" id="profBtn" onclick="loadProfile()"><span id="profBtnTxt">بحث</span><div class="spinner" id="profSpin"></div></button>
-      </div>
-    </div>
-    <div id="profResult"></div>
-  </div>
-
-  <!-- ===== TAB 4: PAYMENT LINK ===== -->
-  <div id="tabContent4" style="display:none;">
-    <div class="card">
-      <div class="card-title">💳 إنشاء رابط دفع للعميل</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">اختر الخدمة وأدخل بيانات العميل لتوليد رابط دفع Tap جاهز للإرسال.</p>
-
-      <div class="field" style="margin-bottom:14px;">
-        <label>الخدمة / المبلغ</label>
-        <select id="payPlan" onchange="togCustom()">
-          <option value="دفع_شهادة|مشترك|15">شهادة معتمدة — ١٥ د.ك</option>
-          <option value="دفع_اشتراك|اشتراك شهر — ١٥ د.ك|15">اشتراك شهر — ١٥ د.ك</option>
-          <option value="دفع_اشتراك|اشتراك ٦ أشهر — ٤٠ د.ك|40">اشتراك ٦ أشهر — ٤٠ د.ك</option>
-          <option value="دفع_اشتراك|اشتراك ١٢ شهر — ٧٠ د.ك|70">اشتراك ١٢ شهر — ٧٠ د.ك</option>
-          <option value="دفع_اشتراك|باقة الذكاء الاصطناعي|45">باقة الذكاء الاصطناعي — ٤٥ د.ك</option>
-          <option value="دفع_اشتراك|باقة فن الإدارة|45">باقة فن الإدارة — ٤٥ د.ك</option>
-          <option value="custom">✏️ مبلغ مخصص...</option>
+    <!-- CLIENTS -->
+    <div class="view" id="view-clients">
+      <div class="toolbar">
+        <input id="cSearch" class="search" placeholder="ابحث باسم أو رقم..." oninput="renderClients()">
+        <select id="cFilter" class="filter" onchange="renderClients()">
+          <option value="">كل العملاء</option>
+          <option value="لم يدفع">لم يدفع</option>
+          <option value="قيد الدفع">قيد الدفع</option>
+          <option value="تم الدفع">تم الدفع</option>
         </select>
       </div>
-      <div id="customFields" style="display:none;background:var(--cream);border-radius:14px;padding:14px;margin-bottom:14px;">
-        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">
-          <div class="field" id="pf-amount"><label>المبلغ (د.ك)</label><input id="payAmount" type="number" min="0.001" step="0.001" placeholder="مثال: 12.500" style="direction:ltr;text-align:left;"></div>
-          <div class="field" id="pf-desc"><label>وصف الخدمة</label><input id="payDesc" placeholder="مثال: باقة خاصة — عرض"></div>
+      <div id="clientsList"></div>
+    </div>
+
+    <!-- PENDING -->
+    <div class="view" id="view-pending">
+      <div class="sect-title">طلبات قيد الدفع — أولوية الإغلاق</div>
+      <div id="pendingList"></div>
+      <div class="sect-title">باقات معلّقة (٤٥ د.ك = ٣ بيعات)</div>
+      <div id="packagesList"></div>
+    </div>
+
+    <!-- LINK -->
+    <div class="view" id="view-link">
+      <div class="sect-title">توليد رابط دفع</div>
+      <div class="form-card">
+        <div class="fld"><label>اسم العميل</label><input id="lkName" placeholder="اسم العميل"></div>
+        <div class="fld"><label>رقم الواتساب</label><input id="lkPhone" type="tel" inputmode="numeric" placeholder="مثال: 99887766"></div>
+        <div class="fld"><label>المبلغ (د.ك)</label>
+          <select id="lkAmount">
+            <option value="15">شهادة تدريبية — ١٥ د.ك</option>
+            <option value="45">باقة تدريبية — ٤٥ د.ك</option>
+            <option value="40">اشتراك ٦ أشهر — ٤٠ د.ك</option>
+            <option value="70">اشتراك ١٢ شهر — ٧٠ د.ك</option>
+          </select>
+        </div>
+        <div class="fld"><label>وصف (اختياري)</label><input id="lkDesc" placeholder="شهادة تدريبية - أكاديمية مسار"></div>
+        <button class="btn" id="lkBtn" onclick="genLink()">توليد الرابط</button>
+        <div class="result-box" id="lkResult">
+          <div class="lbl">رابط الدفع:</div>
+          <div class="lnk" id="lkUrl"></div>
+          <div class="result-actions">
+            <button class="act a-save" onclick="copyLink()">نسخ الرابط</button>
+            <button class="act a-wa" onclick="sendLinkWa()">إرسال واتساب</button>
+          </div>
         </div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-        <div class="field" id="pf-name"><label>اسم العميل</label><input id="payName" placeholder="الاسم الكامل"></div>
-        <div class="field" id="pf-phone"><label>رقم الهاتف</label><input id="payPhone" placeholder="99887766" style="direction:ltr;text-align:left;"></div>
-      </div>
-      <div class="field" id="pf-email" style="margin-bottom:16px;"><label>الإيميل (اختياري)</label><input id="payEmail" placeholder="name@email.com — اختياري" style="direction:ltr;text-align:left;"></div>
+    </div>
 
-      <button class="btn" id="payBtn" onclick="genPayLink(this)"><span>توليد رابط الدفع ←</span><div class="spinner" id="paySpin"></div></button>
-
-      <div id="payOut" style="display:none;margin-top:18px;background:var(--cream);border-radius:14px;padding:16px;">
-        <div style="font-size:12px;font-weight:800;color:var(--muted);margin-bottom:8px;">رابط الدفع جاهز:</div>
-        <div style="display:flex;gap:8px;align-items:center;background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:10px;padding:10px 12px;">
-          <input id="payUrl" readonly style="flex:1;border:none;outline:none;font-size:12px;direction:ltr;text-align:left;background:transparent;font-family:monospace;">
-          <button class="copy-btn" onclick="copyPayUrl()">نسخ</button>
+    <!-- ADD -->
+    <div class="view" id="view-add">
+      <div class="sect-title">إضافة عميل جديد للتسجيلات</div>
+      <div class="form-card">
+        <div class="fld"><label>الاسم</label><input id="adName" placeholder="اسم العميل"></div>
+        <div class="fld"><label>رقم الواتساب</label><input id="adPhone" type="tel" inputmode="numeric" placeholder="99887766"></div>
+        <div class="fld"><label>الدورة / الخدمة</label><input id="adCourse" placeholder="اسم الدورة"></div>
+        <div class="fld"><label>يبي شهادة؟</label>
+          <select id="adCert"><option value="">غير محدد</option><option value="نعم">نعم</option><option value="لا">لا</option></select>
         </div>
-        <button class="wa-btn" style="margin-top:12px;padding:8px 16px;" onclick="sendPayWa()">إرسال عبر واتساب</button>
-      </div>
-      <div class="hint">ملاحظة: الرابط ينشئ عملية دفع حقيقية عبر Tap — يدفعها العميل بنفسه. الموظف لا يدخل أي بيانات بطاقة.</div>
-    </div>
-  </div>
-
-  <!-- ===== TAB 5: PRICES & REPLIES ===== -->
-  <div id="tabContent5" style="display:none;">
-    <div class="card">
-      <div class="card-title">💰 الأسعار (اضغط للنسخ كرسالة)</div>
-      <div class="price-grid">
-        <div class="price-card" onclick="copyQuote('شهادة معتمدة','١٥ د.ك')"><div class="pc-name">شهادة معتمدة</div><div class="pc-val">١٥</div><div class="pc-sub">د.ك</div></div>
-        <div class="price-card" onclick="copyQuote('اشتراك شهر','١٥ د.ك')"><div class="pc-name">اشتراك شهر</div><div class="pc-val">١٥</div><div class="pc-sub">د.ك</div></div>
-        <div class="price-card" onclick="copyQuote('اشتراك ٦ أشهر','٤٠ د.ك')"><div class="pc-name">اشتراك ٦ أشهر</div><div class="pc-val">٤٠</div><div class="pc-sub">د.ك</div></div>
-        <div class="price-card" onclick="copyQuote('اشتراك سنة','٧٠ د.ك')"><div class="pc-name">اشتراك سنة</div><div class="pc-val">٧٠</div><div class="pc-sub">د.ك</div></div>
-        <div class="price-card" onclick="copyQuote('باقة الذكاء الاصطناعي','٤٥ د.ك')"><div class="pc-name">باقة AI</div><div class="pc-val">٤٥</div><div class="pc-sub">د.ك</div></div>
-        <div class="price-card" onclick="copyQuote('باقة فن الإدارة','٤٥ د.ك')"><div class="pc-name">باقة الإدارة</div><div class="pc-val">٤٥</div><div class="pc-sub">د.ك</div></div>
+        <div class="fld"><label>حالة الدفع</label>
+          <select id="adPay"><option value="لم يدفع">لم يدفع</option><option value="قيد الدفع">قيد الدفع</option><option value="تم الدفع">تم الدفع</option></select>
+        </div>
+        <div class="fld"><label>ملاحظة (اختياري)</label><input id="adNote" placeholder="ملاحظة"></div>
+        <button class="btn" id="adBtn" onclick="addClient()">إضافة العميل</button>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">💬 ردود واتساب جاهزة (اضغط للنسخ)</div>
-      <div id="replyList"></div>
+
+    <!-- NAV -->
+    <div class="nav">
+      <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>
+        <span>لوحتي</span>
+      </div>
+      <div class="nav-item" data-tab="clients" onclick="switchTab('clients')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 6"/><path d="M21 19c0-2.4-1.4-4-3.5-4.6"/></svg>
+        <span>عملائي</span>
+      </div>
+      <div class="nav-item" data-tab="pending" onclick="switchTab('pending')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <span>قيد الدفع</span>
+        <span class="nav-dot" id="navPendingDot" style="display:none">0</span>
+      </div>
+      <div class="nav-item" data-tab="link" onclick="switchTab('link')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a4 4 0 0 0 5.6 0l2.4-2.4a4 4 0 0 0-5.6-5.6L11 6.3"/><path d="M14 11a4 4 0 0 0-5.6 0L6 13.4a4 4 0 0 0 5.6 5.6L13 17.7"/></svg>
+        <span>رابط دفع</span>
+      </div>
+      <div class="nav-item" data-tab="add" onclick="switchTab('add')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        <span>إضافة</span>
+      </div>
     </div>
   </div>
 
+  <div class="toast" id="toast"></div>
 </div>
-
-<!-- WA POPUP -->
-<div class="wa-popup" id="waPopup">
-  <div class="wa-tpls" id="waTpls"></div>
-  <textarea id="waMsg" placeholder="اكتب الرسالة أو اختر قالب..."></textarea>
-  <div style="display:flex;gap:8px;margin-top:10px;">
-    <button class="wa-btn" style="flex:1;justify-content:center;" onclick="sendWaMsg()">إرسال واتساب</button>
-    <button class="btn-ghost btn" style="padding:8px 14px;font-size:12px;" onclick="closeWaPopup()">إغلاق</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════
-//  الإعدادات — نفس سكريبت شيت مسار
-// ════════════════════════════════════
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
-const TODAY = new Date().toISOString().split('T')[0];
-let AGENT = '';
+const STATUSES = ['تم التواصل','مهتم','غير مهتم','يحتاج متابعة','مغلق'];
+let state = { employee:'', pin:'', stats:null, leads:[], packages:[] };
+let lastLink = '';
+let lastLinkPhone = '';
 
-function get(action){return fetch(SCRIPT_URL+'?action='+action+'&t='+Date.now()).then(r=>r.json());}
-function post(body){return fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(r=>r.json());}
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function jsAttr(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;');}
-function toA(n){return String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
-function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'s');t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-function cleanNum(p){const c=String(p||'').replace(/\D/g,'');return c.startsWith('965')?c:'965'+c;}
-
-// ── LOGIN ──
-function doLogin(){
-  const n=document.getElementById('loginName').value.trim();
-  if(!n){toast('اكتب اسمك','w');return;}
-  AGENT=n; try{localStorage.setItem('masar_agent',n);}catch(e){}
-  startApp();
-}
-function doLogout(){AGENT='';try{localStorage.removeItem('masar_agent');}catch(e){}location.reload();}
-function startApp(){
-  document.getElementById('loginOverlay').style.display='none';
-  document.getElementById('appHeader').style.display='flex';
-  document.getElementById('appMain').style.display='block';
-  document.getElementById('agentBadge').textContent='👤 '+AGENT;
-  fLoad(); abClear(); renderReplies();
-}
-try{const a=localStorage.getItem('masar_agent');if(a){AGENT=a;startApp();}}catch(e){}
-
-// ── TABS ──
-function switchTab(n){
-  for(let i=1;i<=5;i++){
-    document.getElementById('tabContent'+i).style.display=i===n?'':'none';
-    document.getElementById('tab'+i).classList.toggle('on',i===n);
-  }
+async function api(body){
+  const r = await fetch(SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(body)
+  });
+  return r.json();
 }
 
-// ════════════════════════════════════
-//  TAB 1 — CRM متابعة العملاء
-// ════════════════════════════════════
-let allLeads=[], sel=new Set(), filter='all', q='';
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function digits(s){ return String(s||'').replace(/\D/g,''); }
+function waNum(phone){ let d=digits(phone); if(d.length===8) d='965'+d; return d; }
 
-async function fLoad(){
-  const box=document.getElementById('fcards');
-  box.innerHTML='<div class="empty"><div class="empty-icon">⏳</div>جاري تحميل العملاء...</div>';
+function toast(msg, type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(type?(' '+type):'');
+  setTimeout(()=>{ t.className='toast'+(type?(' '+type):''); }, 2400);
+}
+
+/* ===== LOGIN ===== */
+document.getElementById('pinInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+async function doLogin(){
+  const pin = document.getElementById('pinInput').value.trim();
+  const err = document.getElementById('loginErr');
+  const btn = document.getElementById('loginBtn');
+  err.textContent='';
+  if(!pin){ err.textContent='اكتب رقمك السري'; return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
   try{
-    const res=await get('getLeads');
-    if(!res||res.ok!==true){throw new Error((res&&res.error)||'الرد غير متوقع من الخادم');}
-    allLeads=Array.isArray(res.data)?res.data:[];
-    render();
-  }catch(e){
-    console.error('fLoad error:',e);
-    box.innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>'+
-      '<div style="font-weight:800;color:var(--text);">تعذّر تحميل البيانات</div>'+
-      '<div style="font-size:12px;margin-top:6px;">'+(e.message||'خطأ غير معروف')+'</div>'+
-      '<button class="btn" style="margin-top:14px;padding:8px 20px;font-size:13px;" onclick="fLoad()">↻ إعادة المحاولة</button>'+
-      '</div>';
-  }
+    const res = await api({type:'salesWorkspace', pin});
+    if(!res || !res.ok){ err.textContent=(res&&res.error)?res.error:'تعذّر الدخول، حاول مرة ثانية'; }
+    else{
+      state.pin = pin;
+      applyWorkspace(res);
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+    }
+  }catch(e){ err.textContent='تعذّر الاتصال بالخادم'; }
+  btn.disabled=false; btn.innerHTML='دخول';
 }
 
-function applyFilter(){
-  let d=allLeads.slice();
-  if(filter==='unpaid')d=d.filter(r=>r.status!=='تم الدفع'&&r.status!=='قيد الدفع');
-  if(filter==='pend')  d=d.filter(r=>r.status==='قيد الدفع');
-  if(filter==='paid')  d=d.filter(r=>r.status==='تم الدفع');
-  if(filter==='cert')  d=d.filter(r=>r.cert==='نعم');
-  if(filter==='nc')    d=d.filter(r=>r.lastContact!==TODAY);
-  if(q){const s=q.toLowerCase();d=d.filter(r=>(r.name||'').toLowerCase().includes(s)||(r.phone||'').includes(s)||(r.course||'').toLowerCase().includes(s));}
-  return d;
+function applyWorkspace(res){
+  state.employee = res.employee || '';
+  state.stats    = res.stats || {};
+  state.leads    = res.leads || [];
+  state.packages = res.packages || [];
+  document.getElementById('hEmp').textContent = 'أهلاً ' + state.employee;
+  renderAll();
 }
 
-function payClass(status){
-  if(status==='تم الدفع')return{strip:'paid',pill:'pp-paid',label:'✓ دفع'};
-  if(status==='قيد الدفع')return{strip:'pay',pill:'pp-pay',label:'🔥 قيد الدفع'};
-  if(!status||status==='لم يدفع')return{strip:'unpay',pill:'pp-unpay',label:'لم يدفع'};
-  return{strip:'none',pill:'pp-unpay',label:status};
-}
-
-function render(){
+async function refresh(){
   try{
-  let d=applyFilter();
-
-  document.getElementById('s1').textContent=toA(allLeads.length);
-  document.getElementById('s2').textContent=toA(allLeads.filter(r=>r.status==='قيد الدفع').length);
-  document.getElementById('s3').textContent=toA(allLeads.filter(r=>r.lastContact!==TODAY).length);
-  document.getElementById('s4').textContent=toA(allLeads.filter(r=>r.contactResult==='سجّل'||r.status==='تم الدفع').length);
-
-  const box=document.getElementById('fcards');
-  if(!allLeads.length){
-    box.innerHTML='<div class="empty"><div class="empty-icon">📭</div>'+
-      '<div style="font-weight:800;color:var(--text);">ما في عملاء في القائمة بعد</div>'+
-      '<div style="font-size:12px;margin-top:6px;">اسحب المسجّلين من ورقة التسجيلات أو أضفهم يدوياً.</div>'+
-      '<button class="btn" style="margin-top:14px;padding:8px 20px;font-size:13px;" onclick="switchTab(2)">➕ إضافة واستيراد</button>'+
-      '</div>';
-    updSelCnt();return;
-  }
-  if(!d.length){box.innerHTML='<div class="empty"><div class="empty-icon">🔍</div>لا توجد نتائج لهذا الفلتر</div>';updSelCnt();return;}
-
-  box.innerHTML=d.map(r=>{
-   try{
-    const p=payClass(r.status);
-    const isSel=sel.has(r.rowIndex);
-    const today=r.lastContact===TODAY;
-    return `
-    <div class="lead-card ${isSel?'sel':''}">
-      <div class="lc-strip ${p.strip}"></div>
-      <div class="lc-body">
-        <div class="lc-top">
-          <input type="checkbox" class="lc-chk" ${isSel?'checked':''} onchange="fTog(${r.rowIndex},this)">
-          <div style="min-width:0;">
-            <div class="lc-name">${esc(r.name)||'—'}</div>
-            ${r.course?`<span class="lc-course">${esc(r.course)}</span>`:''}
-          </div>
-          <span class="lc-paypill ${p.pill}">${p.label}</span>
-        </div>
-
-        <div class="lc-meta">
-          <span>📞 <b class="lc-phone">${esc(r.phone)||'—'}</b></span>
-          ${r.source?`<span class="lc-tag" style="${srcStyle(r.source)}">${esc(r.source)}</span>`:''}
-          ${r.cert==='نعم'?`<span class="lc-tag" style="background:var(--green-bg);color:var(--green);">🎓 يبي شهادة</span>`:''}
-          ${r.attended==='نعم حضر'?`<span class="lc-tag" style="background:var(--green-bg);color:var(--green);">✓ حضر</span>`:''}
-        </div>
-
-        <div class="lc-meta" style="margin-top:6px;">
-          <span>آخر تواصل: ${today?'<span class="lc-today">اليوم ✓</span>':`<b>${esc(r.lastContact)||'—'}</b>`}</span>
-          ${r.agent?`<span>بواسطة: <b>${esc(r.agent)}</b></span>`:''}
-        </div>
-
-        <div class="lc-bottom">
-          ${resultSel(r.rowIndex,r.contactResult)}
-          ${waBtn(r.phone,r.name)}
-        </div>
-      </div>
-    </div>`;
-   }catch(cardErr){
-    console.error('card error rowIndex',r&&r.rowIndex,cardErr);
-    return `<div class="lead-card"><div class="lc-strip none"></div><div class="lc-body" style="font-size:12px;color:var(--muted);">تعذّر عرض سجل #${(r&&r.rowIndex)||'?'} — ${esc(r&&r.name)}</div></div>`;
-   }
-  }).join('');
-  updSelCnt();
-  }catch(err){
-    console.error('render error:',err);
-    document.getElementById('fcards').innerHTML='<div class="empty"><div class="empty-icon">⚠️</div>خطأ في العرض: '+(err.message||err)+'</div>';
-  }
+    const res = await api({type:'salesWorkspace', pin:state.pin});
+    if(res && res.ok) applyWorkspace(res);
+  }catch(e){}
 }
 
-function srcStyle(s){
-  const map={'واتساب':'background:#DCF8C6;color:#128C7E;','التسجيلات':'background:#E8DEF8;color:#4A235A;','الباقات':'background:#FDE8C8;color:#7A3B00;'};
-  return map[s]||'background:var(--cream-2);color:var(--muted);';
-}
+/* ===== RENDER ALL ===== */
+function renderAll(){ renderHome(); renderClients(); renderPending(); }
 
-const RESULTS=[
-  {val:'',label:'— اختر —',cls:'res-new'},{val:'لم يرد',label:'📵 لم يرد',cls:'res-pending'},
-  {val:'يفكر',label:'🤔 يفكر',cls:'res-thinking'},{val:'طلب معلومات',label:'📋 طلب معلومات',cls:'res-info'},
-  {val:'سجّل',label:'✅ سجّل',cls:'res-registered'},{val:'مو مهتم',label:'❌ مو مهتم',cls:'res-notint'},
-  {val:'تواصل لاحقاً',label:'📅 تواصل لاحقاً',cls:'res-later'},
-];
-function resultSel(rowIndex,current){
-  const cls=RESULTS.find(r=>r.val===current)?.cls||'res-new';
-  const opts=RESULTS.map(r=>`<option value="${r.val}" ${r.val===current?'selected':''}>${r.label}</option>`).join('');
-  return`<select class="res-sel ${cls}" onchange="doUpdateResult(${rowIndex},this)">${opts}</select>`;
-}
-async function doUpdateResult(rowIndex,selEl){
-  const val=selEl.value;
-  selEl.className='res-sel '+(RESULTS.find(r=>r.val===val)?.cls||'res-new');
-  try{
-    await post({action:'updateResult',rowIndex,contactResult:val,agent:AGENT});
-    const l=allLeads.find(r=>r.rowIndex===rowIndex);
-    if(l){l.contactResult=val;l.lastContact=TODAY;}
-    render();
-  }catch(e){toast('خطأ في الحفظ','e');}
-}
+/* ===== HOME ===== */
+function renderHome(){
+  const s = state.stats || {};
+  const pts = s.salesPoints||0;
+  const target = s.target||50;
+  const inCycle = pts % target;
+  const pct = Math.min(100, Math.round((inCycle/target)*100));
+  document.getElementById('pcNum').innerHTML = pts + ' <small>/ '+ (s.nextMilestone||target) +'</small>';
+  document.getElementById('pcBar').style.width = pct+'%';
+  let foot = 'الهدف الأساسي '+target+' بيعة';
+  if(s.nextMilestone) foot = 'باقي '+(s.nextMilestone - pts)+' بيعة للمعلم القادم ('+s.nextMilestone+')';
+  document.getElementById('pcFoot').textContent = foot;
+  document.getElementById('mPending').textContent = s.pending||0;
+  document.getElementById('mAssigned').textContent = s.assigned||0;
 
-function setFF(f,btn){filter=f;sel.clear();document.querySelectorAll('.ffilter').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
-function doFSearch(v){q=v;render();}
-function fTog(idx,cb){cb.checked?sel.add(idx):sel.delete(idx);render();}
-function fTogAll(cb){if(cb.checked){applyFilter().forEach(r=>sel.add(r.rowIndex));}else sel.clear();render();}
-function fSelNC(){sel.clear();allLeads.filter(r=>r.lastContact!==TODAY).forEach(r=>sel.add(r.rowIndex));render();}
-function fSelAll(){const d=applyFilter();const allSel=d.length&&d.every(r=>sel.has(r.rowIndex));if(allSel)d.forEach(r=>sel.delete(r.rowIndex));else d.forEach(r=>sel.add(r.rowIndex));render();}
-function copyList(){
-  const d=applyFilter();
-  if(!d.length){toast('لا توجد سجلات لنسخها','w');return;}
-  const labels={all:'الكل',unpaid:'لم يدفع',pend:'قيد الدفع',paid:'دفعوا',cert:'يبي شهادة',nc:'لم يُتواصل اليوم'};
-  const head=`قائمة (${labels[filter]||'الكل'}) — ${d.length} عميل\n${'─'.repeat(22)}\n`;
-  const body=d.map((r,i)=>`${i+1}. ${r.name||'—'} — ${r.phone||'—'} — ${r.status||'لم يدفع'}${r.course?' — '+r.course:''}`).join('\n');
-  navigator.clipboard.writeText(head+body).then(()=>toast('✓ تم نسخ '+d.length+' عميل','s')).catch(()=>toast('تعذّر النسخ','e'));
-}
-function updSelCnt(){
-  document.getElementById('selCnt').textContent=sel.size;
-  document.getElementById('selCnt2').textContent=sel.size;
-  const b=document.getElementById('updBtn');b.disabled=sel.size===0;b.style.opacity=sel.size===0?'.45':'1';
-}
-async function doFUpdate(){
-  if(!sel.size)return;
-  const b=document.getElementById('updBtn');b.textContent='جاري...';b.disabled=true;
-  try{
-    const res=await post({action:'updateContact',rowIndices:Array.from(sel),agent:AGENT});
-    if(!res.ok)throw new Error(res.error||'خطأ');
-    toast('✓ تم تحديث '+(res.data?.updated||sel.size)+' سجل لليوم','s');
-    sel.clear();await fLoad();
-  }catch(e){toast('خطأ: '+e.message,'e');}
-  b.textContent='✓ تحديث آخر تواصل لليوم';b.disabled=false;
-}
-
-// ── WA POPUP ──
-let waNum='', waName='';
-function waBtn(phone,name){return`<button onclick="openWa('${cleanNum(phone)}','${jsAttr(name)}',this)" class="wa-btn">واتساب</button>`;}
-const WA_TPLS={
-  'تذكير':n=>`السلام عليكم ${n} 👋\n\nتذكير بموعد دورتك اليوم الساعة ٥:٠٠ م\n\nرابط زووم بيوصلك قريب\n\nأكاديمية مسار 🎓`,
-  'شهادة':n=>`السلام عليكم ${n} 👋\n\nلاعتماد شهادتك المعتمدة يرجى إتمام دفع الرسوم (١٥ د.ك)\n\nراسلنا هنا للتفاصيل ✅\n\nأكاديمية مسار 🎓`,
-  'اشتراك':n=>`السلام عليكم ${n} 👋\n\nاشتراكك في أكاديمية مسار جاهز للتفعيل ✅\n\nشهر: ١٥ د.ك\n٦ أشهر: ٤٠ د.ك\nسنة: ٧٠ د.ك\n\nللتفعيل راسلنا 🎓`,
-  'متابعة':n=>`السلام عليكم ${n} 👋\n\nحابين نطمئن عليك ونعرف إذا عندك أي استفسار عن دوراتنا 😊\n\nإحنا هنا للمساعدة!\n\nأكاديمية مسار 🎓`,
-  'ترحيب':n=>`السلام عليكم ${n} 👋\n\nأهلاً فيك بأكاديمية مسار 🎓\n\nلمعرفة دوراتنا زر الرابط:\ntamkeenkuw.com/masar-free\n\nأي استفسار إحنا هنا!`
-};
-function openWa(num,name,btn){
-  waNum=num;waName=name;
-  const p=document.getElementById('waPopup');
-  document.getElementById('waTpls').innerHTML=Object.keys(WA_TPLS).map(k=>`<button class="wa-tpl" onclick="setWaTpl(this,'${k}')">${k}</button>`).join('');
-  document.getElementById('waMsg').value='';
-  p.style.display='block';
-  const r=btn.getBoundingClientRect();
-  p.style.top=(window.scrollY+r.bottom+6)+'px';
-  let right=window.innerWidth-r.right;if(right<10)right=10;
-  p.style.right=right+'px';
-}
-function setWaTpl(el,key){document.querySelectorAll('.wa-tpl').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('waMsg').value=WA_TPLS[key](waName);}
-function closeWaPopup(){document.getElementById('waPopup').style.display='none';}
-function sendWaMsg(){const m=document.getElementById('waMsg').value.trim();if(!m||!waNum)return;window.open('https://wa.me/'+waNum+'?text='+encodeURIComponent(m),'_blank');closeWaPopup();}
-document.addEventListener('click',e=>{const p=document.getElementById('waPopup');if(p.style.display==='block'&&!p.contains(e.target)&&!e.target.classList.contains('wa-btn'))closeWaPopup();});
-
-// ════════════════════════════════════
-//  TAB 2 — إضافة واستيراد
-// ════════════════════════════════════
-let abRows=[], abId=1;
-function abMk(){return{id:abId++,name:'',phone:'',course:'',cert:'نعم',status:'قيد الدفع',notes:''};}
-function abClear(){abRows=[abMk()];abId=1;abRender();}
-function abAddRow(){abRows.push(abMk());abRender();setTimeout(()=>{const el=document.querySelector('#abtbody tr:last-child input');if(el)el.focus();},40);}
-function abDel(id){if(abRows.length===1){abClear();return;}abRows=abRows.filter(r=>r.id!==id);abRender();}
-function abUpd(id,f,v){const r=abRows.find(x=>x.id===id);if(r)r[f]=v;abCount();}
-function abCount(){document.getElementById('abCnt').textContent=abRows.length;const ok=abRows.some(r=>r.name&&r.phone);const b=document.getElementById('abSub');b.disabled=!ok;b.style.opacity=ok?'1':'.45';}
-function abRender(){
-  document.getElementById('abtbody').innerHTML=abRows.map((r,i)=>`
-    <tr>
-      <td style="text-align:center;font-size:11px;font-weight:900;color:var(--muted);">${i+1}</td>
-      <td><input class="finp" placeholder="الاسم" value="${r.name}" oninput="abUpd(${r.id},'name',this.value)"></td>
-      <td><input class="finp" placeholder="965XXXXXXXX" value="${r.phone}" oninput="abUpd(${r.id},'phone',this.value)" style="direction:ltr;text-align:left;"></td>
-      <td><input class="finp" placeholder="الدورة" value="${r.course}" oninput="abUpd(${r.id},'course',this.value)"></td>
-      <td><select class="fsel" onchange="abUpd(${r.id},'cert',this.value)"><option ${r.cert==='نعم'?'selected':''}>نعم</option><option ${r.cert==='لا'?'selected':''}>لا</option></select></td>
-      <td><select class="fsel" onchange="abUpd(${r.id},'status',this.value)"><option ${r.status==='قيد الدفع'?'selected':''}>قيد الدفع</option><option ${r.status==='مهتم'?'selected':''}>مهتم</option><option ${r.status==='تم الدفع'?'selected':''}>تم الدفع</option></select></td>
-      <td><input class="finp" placeholder="اختياري" value="${r.notes}" oninput="abUpd(${r.id},'notes',this.value)"></td>
-      <td><button onclick="abDel(${r.id})" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(92,15,15,.1);background:transparent;cursor:pointer;color:var(--muted);">×</button></td>
-    </tr>`).join('');
-  abCount();
-}
-async function abSubmit(){
-  const valid=abRows.filter(r=>r.name&&r.phone);
-  if(!valid.length)return;
-  const b=document.getElementById('abSub');b.textContent='جاري...';b.disabled=true;
-  try{
-    const res=await post({action:'addLeads',agent:AGENT,leads:valid.map(r=>({name:r.name,phone:r.phone,cert:r.cert,status:r.status,notes:r.notes,course:r.course,source:'واتساب'}))});
-    if(!res.ok)throw new Error(res.error||'خطأ');
-    toast(`✓ أُضيف ${res.data?.added||0} — تخطّي ${res.data?.skipped||0} مكرر`,(res.data?.added>0)?'s':'w');
-    abClear();if(res.data?.added>0){allLeads=[];fLoad();}
-  }catch(e){toast('خطأ: '+e.message,'e');}
-  b.textContent='إضافة الكل ←';b.disabled=false;
-}
-async function doImport(btn){
-  btn.disabled=true;btn.querySelector('span').textContent='جاري الاستيراد...';document.getElementById('impSpin').style.display='block';
-  try{
-    const res=await get('import');
-    if(!res.ok)throw new Error(res.error||'خطأ');
-    toast(`✓ أُضيف ${res.data?.added||0} — تخطّي ${res.data?.skipped||0} مكرر`,'s');
-    if(res.data?.added>0){allLeads=[];fLoad();}
-  }catch(e){toast('خطأ: '+e.message,'e');}
-  btn.disabled=false;btn.querySelector('span').textContent='استيراد الآن ←';document.getElementById('impSpin').style.display='none';
-}
-
-// ════════════════════════════════════
-//  TAB 3 — ملف العميل
-// ════════════════════════════════════
-async function loadProfile(){
-  const phone=document.getElementById('profPhone').value.trim();
-  if(!phone){toast('أدخل رقم الهاتف','w');return;}
-  document.getElementById('profBtnTxt').style.display='none';document.getElementById('profSpin').style.display='block';
-  document.getElementById('profResult').innerHTML='';
-  try{
-    const res=await get('getProfile&phone='+encodeURIComponent(phone));
-    renderProfile(res, phone);
-  }catch(e){document.getElementById('profResult').innerHTML='<div class="card empty">تعذّر جلب الملف: '+e.message+'</div>';}
-  document.getElementById('profBtnTxt').style.display='inline';document.getElementById('profSpin').style.display='none';
-}
-function arr(x){return Array.isArray(x)?x:[];}
-function renderProfile(res, phone){
-  const p=res.profile||res.data||res||{};
-  const name=p.name||p.الاسم||'العميل';
-  const regs=arr(p.registrations||p.courses||p.التسجيلات);
-  const subs=arr(p.subscriptions||p.الاشتراكات);
-  const certs=arr(p.certificates||p.certs||p.الشهادات);
-  const found=name!=='العميل'||regs.length||subs.length||certs.length;
-
-  if(res.ok===false||!found){
-    document.getElementById('profResult').innerHTML=`<div class="card"><div class="empty"><div class="empty-icon">🔍</div><div style="font-weight:800;color:var(--text);">ما لقينا عميل بهذا الرقم</div><div style="font-size:13px;margin-top:6px;">تقدر تضيفه من تبويب «إضافة واستيراد»</div></div>
-      <div style="text-align:center;margin-top:8px;">${waBtn(phone,'')}</div></div>`;
-    return;
-  }
-  const section=(title,items,fmt)=>items.length?`<div style="margin-top:16px;"><div style="font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:8px;">${title} (${toA(items.length)})</div>${items.map(fmt).join('')}</div>`:'';
-  const line=(t,s)=>`<div style="background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:13px;"><b>${t}</b>${s?`<span style="color:var(--muted);font-size:12px;"> — ${s}</span>`:''}</div>`;
-
-  document.getElementById('profResult').innerHTML=`
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;">
-        <div class="name-row"><div class="avatar" style="width:44px;height:44px;font-size:18px;">${name.charAt(0)}</div>
-          <div><div style="font-size:18px;font-weight:900;">${name}</div><div style="font-size:12px;color:var(--muted);direction:ltr;text-align:right;">${p.phone||phone}</div></div></div>
-        <div style="display:flex;gap:8px;">${waBtn(p.phone||phone,name)}<button class="btn" style="padding:8px 16px;font-size:12px;" onclick="prefillPay('${name.replace(/'/g,"\\'")}','${(p.phone||phone)}','${p.email||''}')">رابط دفع</button></div>
-      </div>
-      ${section('الدورات / التسجيلات',regs,r=>line(r.course||r.name||r.الدورة||'دورة',(r.type||r.payment||r.status||'')))}
-      ${section('الاشتراكات',subs,s=>line(s.plan||s.الباقة||'اشتراك',(s.status||s.end||'')))}
-      ${section('الشهادات',certs,c=>line(c.course||c.name||c.الدورة||'شهادة',(c.serial||c.date||'')))}
-    </div>`;
-}
-function prefillPay(name,phone,email){
-  switchTab(4);
-  document.getElementById('payName').value=name||'';
-  document.getElementById('payPhone').value=phone||'';
-  document.getElementById('payEmail').value=email||'';
-}
-
-// ════════════════════════════════════
-//  TAB 4 — رابط دفع
-// ════════════════════════════════════
-let lastPayUrl='', lastPayPhone='', lastPayName='', lastPayDesc='', lastPayAmt=0;
-function togCustom(){
-  const isC=document.getElementById('payPlan').value==='custom';
-  document.getElementById('customFields').style.display=isC?'block':'none';
-}
-async function genPayLink(btn){
-  const name=document.getElementById('payName').value.trim();
-  const phone=document.getElementById('payPhone').value.trim();
-  const email=document.getElementById('payEmail').value.trim();
-  let ok=true;
-  [['pf-name',name],['pf-phone',phone]].forEach(([id,v])=>{document.getElementById(id).classList.toggle('invalid',!v);if(!v)ok=false;});
-  document.getElementById('pf-email').classList.remove('invalid');
-
-  const planVal=document.getElementById('payPlan').value;
-  let type,plan,amount;
-  if(planVal==='custom'){
-    type='دفع_مخصص';
-    amount=Number(document.getElementById('payAmount').value);
-    plan=document.getElementById('payDesc').value.trim()||'خدمة مخصصة';
-    const amtBad=!(amount>0);
-    document.getElementById('pf-amount').classList.toggle('invalid',amtBad);
-    if(amtBad)ok=false;
-  }else{
-    [type,plan,amount]=planVal.split('|');amount=Number(amount);
-  }
-  if(!ok){toast('عبّي اسم العميل ورقمه','w');return;}
-
-  btn.disabled=true;btn.querySelector('span').style.display='none';document.getElementById('paySpin').style.display='block';
-  try{
-    const body={type,name,phone,email,amount,description:plan};
-    if(type==='دفع_اشتراك')body.plan=plan;
-    else if(type==='دفع_شهادة')body.courseType=plan;
-    else body.plan=plan; // دفع_مخصص
-    const res=await post(body);
-    if(res.status==='ok'&&res.url){
-      lastPayUrl=res.url;lastPayPhone=cleanNum(phone);lastPayName=name;lastPayDesc=plan;lastPayAmt=amount;
-      document.getElementById('payUrl').value=res.url;
-      document.getElementById('payOut').style.display='block';
-      toast('✓ تم توليد رابط الدفع','s');
-    }else throw new Error(res.error||res.message||'تعذّر التوليد');
-  }catch(e){toast('خطأ: '+e.message,'e');}
-  btn.disabled=false;btn.querySelector('span').style.display='inline';document.getElementById('paySpin').style.display='none';
-}
-function copyPayUrl(){navigator.clipboard.writeText(lastPayUrl).then(()=>toast('✓ تم نسخ الرابط','s'));}
-function sendPayWa(){
-  if(!lastPayUrl||!lastPayPhone)return;
-  const detail=lastPayDesc?`\n${lastPayDesc} — ${toA(lastPayAmt)} د.ك`:'';
-  const msg=`السلام عليكم ${lastPayName} 👋${detail}\n\nهذا رابط الدفع الخاص بك — أكاديمية مسار 🎓\n\n${lastPayUrl}`;
-  window.open('https://wa.me/'+lastPayPhone+'?text='+encodeURIComponent(msg),'_blank');
-}
-
-// ════════════════════════════════════
-//  TAB 5 — الأسعار والردود
-// ════════════════════════════════════
-function copyQuote(name,price){
-  const msg=`السلام عليكم 👋\n\n${name}: ${price}\n\nأكاديمية مسار 🎓\nأي استفسار إحنا هنا!`;
-  navigator.clipboard.writeText(msg).then(()=>toast('✓ تم نسخ رسالة "'+name+'"','s'));
-}
-function renderReplies(){
-  const sample='العميل';
-  document.getElementById('replyList').innerHTML=Object.keys(WA_TPLS).map(k=>{
-    const txt=WA_TPLS[k](sample);
-    return`<div style="background:var(--cream);border-radius:12px;padding:12px 14px;margin-bottom:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-weight:800;font-size:13px;">${k}</span>
-        <button class="copy-btn" onclick='copyReply(${JSON.stringify(txt)})'>نسخ</button>
-      </div>
-      <div style="font-size:12px;color:var(--muted);white-space:pre-line;line-height:1.6;">${txt}</div>
-    </div>`;
+  const ms = [
+    {n:50, t:'الهدف الأساسي'},
+    {n:75, t:'مكافأة ٥٠٪ (٦٢.٥ د.ك)'},
+    {n:100, t:'مكافأة ١٠٠٪ (١٢٥ د.ك)'},
+    {n:150, t:'مكافأة ٢٠٠٪ (٢٥٠ د.ك)'}
+  ];
+  document.getElementById('milestones').innerHTML = ms.map(m=>{
+    const hit = pts >= m.n;
+    return '<div class="ms'+(hit?' hit':'')+'"><div class="ms-l">'+m.t+'</div><div class="ms-r">'+(hit?'تحقق ✓':m.n+' بيعة')+'</div></div>';
   }).join('');
 }
-function copyReply(txt){navigator.clipboard.writeText(txt).then(()=>toast('✓ تم نسخ الرسالة','s'));}
+
+/* ===== CLIENTS ===== */
+function payBadge(p){
+  if(p==='تم الدفع') return '<span class="badge b-paid">تم الدفع</span>';
+  if(p==='قيد الدفع') return '<span class="badge b-pending">قيد الدفع</span>';
+  return '<span class="badge b-none">لم يدفع</span>';
+}
+
+function clientCard(c){
+  const opts = STATUSES.map(s=>'<option'+(c.status===s?' selected':'')+'>'+s+'</option>').join('');
+  const wa = waNum(c.phone);
+  return '<div class="card">'
+    + '<div class="c-top"><div><div class="c-name">'+esc(c.name||'—')+'</div>'
+    + '<div class="c-meta">'+(c.course?('<b>'+esc(c.course)+'</b>'):'')+(c.date?(' · '+esc(c.date)):'')+'<br>'+esc(c.phone||'')+(c.wantCert==='نعم'?' · يبي شهادة':'')+'</div></div>'
+    + payBadge(c.payment)+'</div>'
+    + '<div class="c-controls">'
+    + '<select class="sel" id="st-'+c.row+'"><option value="">— حالة العميل —</option>'+opts+'</select>'
+    + '<textarea class="note" id="nt-'+c.row+'" placeholder="ملاحظة...">'+esc(c.note||'')+'</textarea>'
+    + '</div>'
+    + (c.lastContact?'<div class="last-c">آخر تواصل: '+esc(c.lastContact)+'</div>':'')
+    + '<div class="c-actions three" style="margin-top:10px">'
+    + '<a class="act a-wa" href="https://wa.me/'+wa+'" target="_blank">واتساب</a>'
+    + '<a class="act a-call" href="tel:'+digits(c.phone)+'">اتصال</a>'
+    + '<button class="act a-save" onclick="saveClient('+c.row+')">حفظ</button>'
+    + '</div>'
+    + (c.payment!=='تم الدفع' ? '<div class="c-actions" style="margin-top:8px"><button class="act a-paid" onclick="markPaid('+c.row+',\'reg\')">تأكيد الدفع</button><button class="act a-link" onclick="linkFor('+c.row+')">رابط دفع</button></div>' : '')
+    + '</div>';
+}
+
+function renderClients(){
+  const q = (document.getElementById('cSearch').value||'').trim();
+  const f = document.getElementById('cFilter').value;
+  let list = state.leads.slice();
+  if(f) list = list.filter(c=>(c.payment||'لم يدفع')===f);
+  if(q){ const qd=digits(q); list = list.filter(c=> (c.name||'').includes(q) || digits(c.phone).includes(qd)); }
+  const el = document.getElementById('clientsList');
+  if(!list.length){ el.innerHTML = emptyState('لا يوجد عملاء','جرّب تغيير البحث أو الفلتر'); return; }
+  el.innerHTML = list.map(clientCard).join('');
+}
+
+/* ===== PENDING ===== */
+function pendingCard(c){
+  const wa = waNum(c.phone);
+  return '<div class="card">'
+    + '<div class="c-top"><div><div class="c-name">'+esc(c.name||'—')+'</div>'
+    + '<div class="c-meta"><b>'+esc(c.course||'—')+'</b>'+(c.date?(' · '+esc(c.date)):'')+'<br>'+esc(c.phone||'')+'</div></div>'
+    + '<span class="badge b-pending">قيد الدفع</span></div>'
+    + '<div class="c-actions three" style="margin-top:12px">'
+    + '<a class="act a-wa" href="https://wa.me/'+wa+'" target="_blank">واتساب</a>'
+    + '<button class="act a-link" onclick="linkFor('+c.row+')">رابط دفع</button>'
+    + '<button class="act a-paid" onclick="markPaid('+c.row+',\'reg\')">تم الدفع</button>'
+    + '</div></div>';
+}
+
+function packageCard(p){
+  const wa = waNum(p.phone);
+  return '<div class="card">'
+    + '<div class="c-top"><div><div class="c-name">'+esc(p.name||'—')+'</div>'
+    + '<div class="c-meta"><b>'+esc(p.plan||'باقة')+'</b>'+(p.date?(' · '+esc(p.date)):'')+'<br>'+esc(p.phone||'')+'</div></div>'
+    + '<span class="badge b-pending">معلّق</span></div>'
+    + '<div class="c-actions three" style="margin-top:12px">'
+    + '<a class="act a-wa" href="https://wa.me/'+wa+'" target="_blank">واتساب</a>'
+    + '<button class="act a-link" onclick="linkForPkg('+p.row+')">رابط دفع</button>'
+    + '<button class="act a-paid" onclick="markPaid('+p.row+',\'pkg\')">مكتمل ×٣</button>'
+    + '</div></div>';
+}
+
+function renderPending(){
+  const pend = state.leads.filter(c=> (c.payment||'')==='قيد الدفع');
+  const pl = document.getElementById('pendingList');
+  pl.innerHTML = pend.length ? pend.map(pendingCard).join('') : emptyState('لا توجد طلبات قيد الدفع','ممتاز، كله مغلق!');
+  const pk = document.getElementById('packagesList');
+  pk.innerHTML = state.packages.length ? state.packages.map(packageCard).join('') : emptyState('لا توجد باقات معلّقة','');
+  const dot = document.getElementById('navPendingDot');
+  const total = pend.length + state.packages.length;
+  if(total>0){ dot.style.display='flex'; dot.textContent=total; } else { dot.style.display='none'; }
+}
+
+function emptyState(t,s){
+  return '<div class="empty"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><div class="t">'+t+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+}
+
+/* ===== ACTIONS ===== */
+async function saveClient(row){
+  const status = document.getElementById('st-'+row).value;
+  const note = document.getElementById('nt-'+row).value;
+  const res = await api({type:'salesUpdateClient', row, status, note});
+  if(res && res.ok){
+    const c = state.leads.find(x=>x.row===row);
+    if(c){ c.status=status; c.note=note; c.lastContact=new Date().toISOString().slice(0,10); }
+    toast('تم الحفظ','ok');
+  } else { toast('تعذّر الحفظ','err'); }
+}
+
+async function markPaid(row, kind){
+  if(!confirm('تأكيد أن '+(kind==='pkg'?'هذه الباقة':'هذا العميل')+' دفع؟')) return;
+  const res = await api({type:'salesMarkPaid', row, kind, employee:state.employee});
+  if(res && res.ok){ toast('تم تسجيل الدفع','ok'); await refresh(); }
+  else { toast('تعذّر التحديث','err'); }
+}
+
+function linkFor(row){
+  const c = state.leads.find(x=>x.row===row);
+  if(!c) return;
+  document.getElementById('lkName').value = c.name||'';
+  document.getElementById('lkPhone').value = digits(c.phone);
+  document.getElementById('lkAmount').value = '15';
+  document.getElementById('lkDesc').value = c.course ? ('شهادة '+c.course) : '';
+  document.getElementById('lkResult').className='result-box';
+  switchTab('link');
+}
+
+function linkForPkg(row){
+  const p = state.packages.find(x=>x.row===row);
+  if(!p) return;
+  document.getElementById('lkName').value = p.name||'';
+  document.getElementById('lkPhone').value = digits(p.phone);
+  document.getElementById('lkAmount').value = '45';
+  document.getElementById('lkDesc').value = p.plan||'باقة تدريبية';
+  document.getElementById('lkResult').className='result-box';
+  switchTab('link');
+}
+
+async function genLink(){
+  const name = document.getElementById('lkName').value.trim();
+  const phone = digits(document.getElementById('lkPhone').value);
+  const amount = document.getElementById('lkAmount').value;
+  const desc = document.getElementById('lkDesc').value.trim() || 'أكاديمية مسار';
+  const btn = document.getElementById('lkBtn');
+  if(!phone){ toast('اكتب رقم الواتساب','err'); return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+  try{
+    const res = await api({type:'salesTapLink', name, phone, amount, desc});
+    if(res && res.ok && res.url){
+      lastLink = res.url; lastLinkPhone = waNum(phone);
+      document.getElementById('lkUrl').textContent = res.url;
+      document.getElementById('lkResult').className='result-box show';
+      toast('تم توليد الرابط','ok');
+    } else { toast('تعذّر توليد الرابط','err'); }
+  }catch(e){ toast('خطأ بالاتصال','err'); }
+  btn.disabled=false; btn.innerHTML='توليد الرابط';
+}
+
+function copyLink(){
+  if(!lastLink) return;
+  navigator.clipboard.writeText(lastLink).then(()=>toast('تم نسخ الرابط','ok')).catch(()=>toast('انسخه يدوياً','err'));
+}
+
+function sendLinkWa(){
+  if(!lastLink) return;
+  const msg = 'مرحباً، رابط الدفع الخاص بك من أكاديمية مسار:\n'+lastLink;
+  window.open('https://wa.me/'+lastLinkPhone+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+async function addClient(){
+  const name = document.getElementById('adName').value.trim();
+  const phone = digits(document.getElementById('adPhone').value);
+  const course = document.getElementById('adCourse').value.trim();
+  const wantCert = document.getElementById('adCert').value;
+  const payment = document.getElementById('adPay').value;
+  const note = document.getElementById('adNote').value.trim();
+  const btn = document.getElementById('adBtn');
+  if(!name || !phone){ toast('الاسم والرقم مطلوبان','err'); return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+  try{
+    const res = await api({type:'salesAddClient', name, phone, course, wantCert, payment, note, employee:state.employee});
+    if(res && res.ok){
+      toast('تمت إضافة العميل','ok');
+      ['adName','adPhone','adCourse','adNote'].forEach(id=>document.getElementById(id).value='');
+      await refresh();
+      switchTab('clients');
+    } else { toast('تعذّرت الإضافة','err'); }
+  }catch(e){ toast('خطأ بالاتصال','err'); }
+  btn.disabled=false; btn.innerHTML='إضافة العميل';
+}
+
+/* ===== TABS ===== */
+function switchTab(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
+  window.scrollTo(0,0);
+}
 </script>
 </body>
 </html>
