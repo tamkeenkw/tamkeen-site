@@ -120,6 +120,7 @@ a.link{color:var(--crimson);font-weight:700;text-decoration:none;font-size:13px}
   <div class="tabs">
     <div class="tab active" onclick="showTab('courses',this)">الدورات</div>
     <div class="tab" onclick="showTab('consult',this)">الاستشارات</div>
+    <div class="tab" onclick="showTab('schedule',this)">طلبات المواعيد</div>
     <div class="tab" onclick="showTab('materials',this)">المواد</div>
     <div class="tab" onclick="showTab('members',this)">المتدربون</div>
   </div>
@@ -171,6 +172,15 @@ a.link{color:var(--crimson);font-weight:700;text-decoration:none;font-size:13px}
       <div class="card">
         <div class="card-title">🗓️ الحجوزات</div>
         <div id="bookingsList"></div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE REQUESTS -->
+    <div class="panel" id="panel-schedule">
+      <div class="card">
+        <div class="card-title">📆 طلبات مواعيد إقامة الدورات</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">طلبات المتدربين لتحديد موعد إقامة دوراتهم — وافق أو ارفض مع ذكر السبب. الموافقة تعتمد الموعد فقط؛ تبقى أنت تعلّم المرحلة مكتملة من تبويب المتدربين بعد إقامة الدورة فعلاً.</p>
+        <div id="scheduleList"></div>
       </div>
     </div>
 
@@ -241,7 +251,7 @@ function logout(){ PASS=''; DB=null; location.reload(); }
 
 /* ===== تحميل كل البيانات ===== */
 async function loadAll(){
-  ['coursesList','bookingsList','materialsList','membersList'].forEach(id=>document.getElementById(id).innerHTML='<div class="spinner"></div>');
+  ['coursesList','bookingsList','materialsList','membersList','scheduleList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<div class="spinner"></div>'; });
   const out=await post({type:'admin_data'});
   if(!out||!out.ok){ toast((out&&out.error)||'تعذّر التحميل',true); return; }
   DB=out;
@@ -251,6 +261,7 @@ async function loadAll(){
   renderBookings();
   renderMaterials();
   renderMembers();
+  renderSchedule();
 }
 
 /* ===== التبويبات ===== */
@@ -262,7 +273,7 @@ function showTab(name,el){
 }
 
 /* ===== الدورات ===== */
-function courseStages(){ return DB.stages.filter(s=>s.type==='course'||s.type==='schedule'); }
+function courseStages(){ return DB.stages.filter(s=>s.type==='course'); }
 function stageLabel(key){ const s=DB.stages.find(x=>x.key===key); return s?s.label:key; }
 function fillStageDropdown(){
   document.getElementById('cStage').innerHTML = courseStages().map(s=>`<option value="${s.key}">${esc(s.label)}</option>`).join('');
@@ -420,6 +431,51 @@ async function saveReview(row){
   const notes=document.getElementById('nt_'+row).value.trim();
   const out=await post({type:'admin_review_material',row,review,notes});
   toast(out&&out.ok?'تم حفظ المراجعة ✓':'فشل', !(out&&out.ok));
+}
+
+/* ===== طلبات المواعيد ===== */
+function renderSchedule(){
+  const list=document.getElementById('scheduleList');
+  const reqs=DB.scheduleRequests||[];
+  if(!reqs.length){ list.innerHTML='<div class="empty">ما فيه طلبات مواعيد بعد.</div>'; return; }
+  // الأحدث أول، والمعلّقة فوق
+  const order={'بانتظار الموافقة':0,'مرفوض':1,'معتمد':2};
+  const sorted=reqs.slice().reverse().sort((a,b)=>(order[a.status]??3)-(order[b.status]??3));
+  list.innerHTML=sorted.map(r=>{
+    const pill = r.status==='معتمد' ? '<span class="pill pill-open">معتمد ✓</span>'
+      : r.status==='مرفوض' ? '<span class="pill" style="background:#fdecea;color:var(--red)">مرفوض</span>'
+      : '<span class="pill pill-full">بانتظار الموافقة</span>';
+    const pending = r.status==='بانتظار الموافقة';
+    const actions = pending ? `
+      <div style="margin-top:12px">
+        <label style="margin-top:0">ملاحظة / سبب (اختياري)</label>
+        <input type="text" id="sn_${r.row}" placeholder="يظهر للمتدرب">
+        <div class="item-actions" style="margin-top:10px">
+          <button class="btn btn-green btn-sm" onclick="decideSchedule(${r.row},'معتمد')">موافقة ✓</button>
+          <button class="btn btn-danger btn-sm" onclick="decideSchedule(${r.row},'مرفوض')">رفض</button>
+        </div>
+      </div>` : (r.note?`<div style="font-size:13px;color:var(--muted);margin-top:10px">📝 ${esc(r.note)}</div>`:'');
+    return `<div class="item">
+      <div class="item-head">
+        <div class="item-name">${esc(r.name||r.phone)}</div>
+        ${pill}
+      </div>
+      <div class="item-meta">
+        <span>🎓 <b>${esc(r.courseName)}</b></span>
+        <span>📅 <b>${dLabel(r.courseDate)}</b></span>
+        <span>🕐 <b>${timeText(r.time)}</b></span>
+        <span>📞 ${esc(r.phone)}</span>
+      </div>
+      ${actions}
+    </div>`;
+  }).join('');
+}
+async function decideSchedule(row,decision){
+  const noteEl=document.getElementById('sn_'+row);
+  const note=noteEl?noteEl.value.trim():'';
+  const out=await post({type:'admin_schedule_decision',row,decision,note});
+  if(out&&out.ok){ toast(decision==='معتمد'?'تمت الموافقة ✓':'تم الرفض'); loadAll(); }
+  else toast((out&&out.error)||'فشل',true);
 }
 
 /* ===== المتدربون ===== */

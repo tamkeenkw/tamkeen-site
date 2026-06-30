@@ -319,7 +319,8 @@ function stepHTML(s,i){
 function actionHTML(s,i){
   if(s.type==='consult')  return consultPanel();
   if(s.type==='upload')   return uploadPanel(s);
-  if(s.type==='course' || s.type==='schedule') return coursePanel(s);
+  if(s.type==='schedule') return schedulePanel(s);
+  if(s.type==='course')   return coursePanel(s);
   return '';
 }
 
@@ -442,6 +443,66 @@ function fileToB64(file){
 }
 
 /* ===== دورات / تحديد موعد ===== */
+function schedulePanel(s){
+  const req=s.scheduleRequest;
+  if(req && req.status==='معتمد'){
+    return `<div class="action">
+      <div class="action-title">📆 موعد إقامة دورتك</div>
+      <div style="background:#e8f5e9;border:1.5px solid rgba(46,125,50,.3);border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:15px;font-weight:800;color:var(--green);margin-bottom:10px">✓ تمت الموافقة على موعدك</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text)">${esc(req.courseName)}</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:5px">${dLabel(req.date)} — ${timeText(req.time)}</div>
+        ${req.note?`<div style="font-size:13px;color:var(--muted);margin-top:10px">📝 ${esc(req.note)}</div>`:''}
+      </div>
+    </div>`;
+  }
+  if(req && req.status==='بانتظار الموافقة'){
+    return `<div class="action">
+      <div class="action-title">📆 طلب موعد إقامة دورتك</div>
+      <div style="background:#fff3e0;border:1.5px solid rgba(184,92,0,.3);border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:15px;font-weight:800;color:var(--amber);margin-bottom:10px">⏳ بانتظار موافقة عتيق</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text)">${esc(req.courseName)}</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:5px">${dLabel(req.date)} — ${timeText(req.time)}</div>
+      </div>
+    </div>`;
+  }
+  const rejected = req && req.status==='مرفوض';
+  const inputStyle="width:100%;padding:12px 14px;font-family:inherit;font-size:15px;border:1.5px solid rgba(92,15,15,.12);border-radius:12px;background:#fff;outline:none";
+  return `<div class="action" id="schAction">
+    <div class="action-title">📆 حدد موعد إقامة دورتك</div>
+    ${rejected?`<div style="background:#fdecea;border:1.5px solid rgba(139,26,26,.25);border-radius:14px;padding:14px;margin-bottom:14px"><div style="font-size:14px;font-weight:800;color:#8B1A1A;margin-bottom:4px">طلبك السابق يحتاج تعديل</div>${req.note?`<div style="font-size:13px;color:var(--muted)">📝 ${esc(req.note)}</div>`:''}</div>`:''}
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">اقترح موعد إقامة دورتك، وعتيق بيراجعه ويعتمده.</p>
+    <label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">اسم الدورة</label>
+    <input type="text" id="schName" placeholder="اسم الدورة اللي بتقيمها" style="${inputStyle};margin-bottom:12px">
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div style="flex:1"><label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">التاريخ</label><input type="date" id="schDate" style="${inputStyle}"></div>
+      <div style="flex:1"><label style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">الوقت</label><input type="time" id="schTime" value="17:00" style="${inputStyle}"></div>
+    </div>
+    <button class="btn" id="schBtn" onclick="submitSchedule()">أرسل الطلب للاعتماد ←</button>
+    <div id="schMsg"></div>
+  </div>`;
+}
+async function submitSchedule(){
+  const courseName=document.getElementById('schName').value.trim();
+  const date=document.getElementById('schDate').value;
+  const time=document.getElementById('schTime').value;
+  if(!courseName||!date||!time){ document.getElementById('schMsg').innerHTML='<div class="msg msg-err">عبّي اسم الدورة والتاريخ والوقت</div>'; return; }
+  const btn=document.getElementById('schBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
+  const out=await post({type:'request_schedule', name:DATA.name, phone:DATA.phone, courseName, date, time});
+  if(out&&out.ok){
+    document.getElementById('schAction').innerHTML=`
+      <div class="action-title">📆 طلب موعد إقامة دورتك</div>
+      <div style="background:#fff3e0;border:1.5px solid rgba(184,92,0,.3);border-radius:14px;padding:18px;text-align:center">
+        <div style="font-size:15px;font-weight:800;color:var(--amber);margin-bottom:10px">⏳ بانتظار موافقة عتيق</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text)">${esc(courseName)}</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:5px">${dLabel(date)} — ${timeText(time)}</div>
+      </div>`;
+  } else {
+    document.getElementById('schMsg').innerHTML='<div class="msg msg-err">'+esc(out&&out.error||'تعذّر الإرسال')+'</div>';
+    btn.disabled=false; btn.textContent='أرسل الطلب للاعتماد ←';
+  }
+}
+
 function coursePanel(s){
   const offers=s.offerings||[];
   const myRegs=s.myRegs||[];
