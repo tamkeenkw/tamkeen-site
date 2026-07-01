@@ -110,7 +110,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .toast.ok{background:var(--green);}
 .toast.err{background:var(--red);}
 
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(4,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(5,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
+.tier{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap;}
+.t5{background:var(--green-bg);color:var(--green);}
+.t4{background:var(--purple-bg);color:var(--purple);}
+.t3{background:var(--blue-bg);color:var(--blue);}
+.t2{background:var(--yellow-bg);color:var(--yellow);}
+.t1{background:var(--cream-2);color:var(--muted);}
 .nav-item{padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);position:relative;}
 .nav-item svg{width:23px;height:23px;}
 .nav-item span{font-size:10.5px;font-weight:800;}
@@ -173,6 +179,18 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       <div id="targetsList"></div>
     </div>
 
+    <!-- MARKET -->
+    <div class="view" id="view-market">
+      <div class="sect-title">تسويق برنامج — أنسب العملاء</div>
+      <div class="form-card" style="margin-bottom:14px">
+        <div class="fld" style="margin-bottom:10px"><label>اختر البرنامج</label>
+          <select id="mkProgram"><option value="">— جاري التحميل —</option></select>
+        </div>
+        <button class="btn" id="mkBtn" onclick="runMarket()">اعرض المرشّحين</button>
+      </div>
+      <div id="marketList"></div>
+    </div>
+
     <!-- LINK -->
     <div class="view" id="view-link">
       <div class="sect-title">توليد رابط دفع</div>
@@ -228,6 +246,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
         <span>استهدافي</span>
         <span class="nav-dot" id="navDot" style="display:none">0</span>
+      </div>
+      <div class="nav-item" data-tab="market" onclick="switchTab('market')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1.5-4h15L21 9"/><path d="M4 9v10h16V9"/><path d="M9 9a3 3 0 0 1-6 0M15 9a3 3 0 0 1-6 0M21 9a3 3 0 0 1-6 0"/></svg>
+        <span>تسويق</span>
       </div>
       <div class="nav-item" data-tab="link" onclick="switchTab('link')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a4 4 0 0 0 5.6 0l2.4-2.4a4 4 0 0 0-5.6-5.6L11 6.3"/><path d="M14 11a4 4 0 0 0-5.6 0L6 13.4a4 4 0 0 0 5.6 5.6L13 17.7"/></svg>
@@ -397,11 +419,65 @@ async function addClient(){
   btn.disabled=false; btn.innerHTML='إضافة العميل';
 }
 
+let programsLoaded=false;
+async function loadPrograms(){
+  if(programsLoaded) return;
+  try{
+    const res=await api({type:'salesPrograms', pin:state.pin});
+    const sel=document.getElementById('mkProgram');
+    if(res&&res.ok&&res.programs&&res.programs.length){
+      sel.innerHTML='<option value="">— اختر برنامجاً —</option>'+res.programs.map(p=>'<option>'+esc(p)+'</option>').join('');
+      programsLoaded=true;
+    } else { sel.innerHTML='<option value="">لا توجد برامج</option>'; }
+  }catch(e){ document.getElementById('mkProgram').innerHTML='<option value="">تعذّر التحميل</option>'; }
+}
+
+function tierBadge(t,label){ return '<span class="tier t'+t+'">'+esc(label)+'</span>'; }
+
+function marketCard(c){
+  const wa=waNum(c.phone);
+  return '<div class="card">'
+    + '<div class="c-top"><div><div class="c-name">'+esc(c.name||'—')+'</div>'
+    + '<div class="c-meta">'+esc(c.phone||'')+'</div></div>'+tierBadge(c.tier,c.label)+'</div>'
+    + '<div class="c-actions" style="margin-top:12px">'
+    + '<a class="act a-wa" href="https://wa.me/'+wa+'" target="_blank">واتساب</a>'
+    + '<a class="act a-call" href="tel:'+digits(c.phone)+'">اتصال</a>'
+    + '<button class="act a-link" onclick="linkMarket(\''+encodeURIComponent(c.name||'')+'\',\''+digits(c.phone)+'\')">رابط دفع</button>'
+    + '</div></div>';
+}
+
+function linkMarket(nameEnc, phone){
+  document.getElementById('lkName').value=decodeURIComponent(nameEnc);
+  document.getElementById('lkPhone').value=phone;
+  const prog=document.getElementById('mkProgram').value;
+  document.getElementById('lkDesc').value=prog||'';
+  document.getElementById('lkResult').className='result-box';
+  switchTab('link');
+}
+
+async function runMarket(){
+  const program=document.getElementById('mkProgram').value;
+  const btn=document.getElementById('mkBtn');
+  if(!program){ toast('اختر برنامجاً','err'); return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner"></div>';
+  try{
+    const res=await api({type:'salesProgramTargets', pin:state.pin, program});
+    const el=document.getElementById('marketList');
+    if(res&&res.ok){
+      el.innerHTML = res.candidates.length
+        ? '<div class="sect-title" style="margin-top:0">'+res.count+' مرشّح — مرتّبين حسب الأنسب</div>'+res.candidates.map(marketCard).join('')
+        : emptyState('لا يوجد مرشّحون','جرّب برنامجاً آخر');
+    } else toast('تعذّر التحميل','err');
+  }catch(e){ toast('خطأ بالاتصال','err'); }
+  btn.disabled=false; btn.innerHTML='اعرض المرشّحين';
+}
+
 function switchTab(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
   window.scrollTo(0,0);
+  if(name==='market') loadPrograms();
 }
 </script>
 </body>
