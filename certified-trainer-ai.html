@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إعداد مدرب معتمد في الذكاء الاصطناعي | عتيق خالد العتيق</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cr:#5C0F0F;--cr2:#7A1414;--cr3:#2A0505;
+  --cream:#FAF7F2;--cream2:#F0E9E0;
+  --text:#1A0808;--muted:#6B5050;
+  --border:rgba(92,15,15,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ─── HERO ─── */
+.hero{background:var(--cr3);min-height:100svh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:60px 20px}
+.hero::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:48px 48px}
+.hero-in{position:relative;z-index:2;max-width:760px;text-align:center}
+.badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:13px;font-weight:700;padding:8px 22px;border-radius:100px;margin-bottom:26px}
+.hero h1{font-size:clamp(30px,6vw,54px);font-weight:900;color:#fff;line-height:1.25;margin-bottom:20px}
+.hero h1 .hl{color:#E8B4B4}
+.hero p{font-size:clamp(16px,2.4vw,20px);color:rgba(255,255,255,.65);line-height:1.8;margin-bottom:36px;max-width:600px;margin-inline:auto}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--cr);font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;padding:16px 44px;border-radius:100px;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.hero-cta:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.hero-note{margin-top:18px;font-size:13px;color:rgba(255,255,255,.4)}
+
+/* ─── SECTIONS ─── */
+.sec{padding:clamp(56px,9vw,100px) 20px}
+.sec-in{max-width:1000px;margin:0 auto}
+.sec-label{text-align:center;font-size:12px;font-weight:800;letter-spacing:3px;color:var(--cr);text-transform:uppercase;margin-bottom:12px}
+.sec-title{text-align:center;font-size:clamp(24px,4.5vw,40px);font-weight:900;color:var(--text);line-height:1.3;margin-bottom:18px}
+.sec-sub{text-align:center;font-size:clamp(15px,2vw,18px);color:var(--muted);line-height:1.9;max-width:680px;margin:0 auto 48px}
+
+/* positioning band */
+.band{background:var(--cr);color:#fff;position:relative;overflow:hidden}
+.band::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:44px 44px}
+.band .sec-in{position:relative;z-index:1}
+.band .sec-label{color:#E8B4B4}
+.band .sec-title{color:#fff}
+.band-quote{text-align:center;font-size:clamp(20px,3.5vw,32px);font-weight:800;line-height:1.6;color:#fff;max-width:760px;margin:0 auto}
+.band-quote .hl{color:#E8B4B4}
+.band-sub{text-align:center;font-size:16px;color:rgba(255,255,255,.6);margin-top:20px;line-height:1.9}
+
+/* learn cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.lcard{background:#fff;border:1.5px solid var(--border);border-radius:22px;padding:34px 28px;transition:transform .25s,box-shadow .25s}
+.lcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(92,15,15,.1)}
+.lcard-num{width:52px;height:52px;border-radius:15px;background:var(--cr);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;margin-bottom:20px}
+.lcard h3{font-size:20px;font-weight:800;color:var(--text);margin-bottom:12px;line-height:1.4}
+.lcard p{font-size:15px;color:var(--muted);line-height:1.9}
+
+/* audience list */
+.aud{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:820px;margin:0 auto}
+.aud-item{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:14px;font-size:16px;font-weight:700;color:var(--text)}
+.aud-check{width:34px;height:34px;min-width:34px;border-radius:10px;background:rgba(92,15,15,.08);display:flex;align-items:center;justify-content:center}
+.aud-check svg{width:20px;height:20px;fill:var(--cr)}
+
+/* ─── OPTIONS ─── */
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;max-width:820px;margin:0 auto}
+.opt{background:#fff;border:2px solid var(--border);border-radius:24px;padding:36px 30px;position:relative;transition:all .25s;display:flex;flex-direction:column}
+.opt.best{border-color:var(--cr)}
+.opt-label{position:absolute;top:-14px;right:30px;background:var(--cr);color:#fff;font-size:12px;font-weight:800;padding:6px 18px;border-radius:100px}
+.opt-name{font-size:21px;font-weight:900;color:var(--text);margin-bottom:6px}
+.opt-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;min-height:44px}
+.opt-price{font-size:46px;font-weight:900;color:var(--cr);line-height:1;margin-bottom:6px}
+.opt-price .cur{font-size:18px;font-weight:700;color:var(--muted)}
+.opt-note{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:700}
+.opt-feats{list-style:none;margin-bottom:28px;flex:1}
+.opt-feats li{display:flex;align-items:flex-start;gap:11px;font-size:15px;color:var(--text);margin-bottom:13px;line-height:1.6}
+.opt-feats .ch{width:22px;height:22px;min-width:22px;border-radius:50%;background:rgba(92,15,15,.08);display:flex;align-items:center;justify-content:center;margin-top:2px}
+.opt-feats .ch svg{width:13px;height:13px;fill:var(--cr)}
+.opt-btn{width:100%;padding:15px;background:var(--cream2);color:var(--cr);font-family:'Cairo',sans-serif;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all .2s}
+.opt.best .opt-btn{background:var(--cr);color:#fff}
+.opt-btn:hover{transform:translateY(-2px)}
+
+/* ─── FORM ─── */
+.form-sec{background:var(--cr3)}
+.form-wrap{max-width:520px;margin:0 auto}
+.form-card{background:#fff;border-radius:26px;padding:clamp(28px,5vw,44px)}
+.form-card h2{font-size:26px;font-weight:900;color:var(--text);text-align:center;margin-bottom:8px}
+.form-card .fsub{font-size:15px;color:var(--muted);text-align:center;margin-bottom:30px}
+.fld{margin-bottom:18px}
+.fld label{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px}
+.fld input{width:100%;padding:15px 18px;font-family:'Cairo',sans-serif;font-size:16px;border:1.5px solid var(--border);border-radius:14px;background:var(--cream);color:var(--text);outline:none;transition:border-color .2s}
+.fld input:focus{border-color:var(--cr)}
+.opt-pick{display:flex;flex-direction:column;gap:12px}
+.opick{border:1.5px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.opick.sel{border-color:var(--cr);background:rgba(92,15,15,.04)}
+.opick-l{display:flex;align-items:center;gap:12px}
+.opick-radio{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center}
+.opick.sel .opick-radio{border-color:var(--cr)}
+.opick.sel .opick-radio::after{content:'';width:11px;height:11px;border-radius:50%;background:var(--cr)}
+.opick-name{font-size:15px;font-weight:800;color:var(--text)}
+.opick-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.opick-price{font-size:18px;font-weight:900;color:var(--cr);white-space:nowrap}
+.form-submit{width:100%;margin-top:26px;padding:17px;background:var(--cr);color:#fff;font-family:'Cairo',sans-serif;font-size:18px;font-weight:800;border:none;border-radius:14px;cursor:pointer;transition:all .2s}
+.form-submit:hover{background:var(--cr2)}
+.form-submit:disabled{opacity:.6;cursor:not-allowed}
+.secure{text-align:center;font-size:13px;color:var(--muted);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:7px}
+.secure svg{width:15px;height:15px;fill:var(--muted)}
+
+/* success */
+.success-card{background:#fff;border-radius:26px;padding:48px 32px;text-align:center}
+.success-ic{width:90px;height:90px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.success-ic svg{width:46px;height:46px;fill:#2e7d32}
+.success-card h2{font-size:26px;font-weight:900;color:var(--text);margin-bottom:12px}
+.success-card p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:28px}
+.wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;font-size:16px;font-weight:800;padding:15px 36px;border-radius:100px;text-decoration:none}
+.wa-btn svg{width:22px;height:22px;fill:#fff}
+
+footer{background:var(--cr3);padding:30px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.08)}
+footer p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.8}
+footer a{color:rgba(255,255,255,.6);text-decoration:none}
+</style>
+
+<!-- Facebook Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','2012479919334361');fbq('track','PageView');
+</script>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-in">
+    <div class="badge">معهد تمكين — عتيق خالد العتيق</div>
+    <h1>إعداد مدرب معتمد في <span class="hl">الذكاء الاصطناعي</span></h1>
+    <p>نؤهّلك لتكون مدرّباً محترفاً في أدوات الذكاء الاصطناعي — لا مجرد مستخدم لها. تتعلّم كيف تدرّب، تختار الأداة المناسبة لمجالك، وتدير قاعتك التقنية باحتراف.</p>
+    <a href="#register" class="hero-cta">سجّل الآن ←</a>
+    <div class="hero-note">أماكن محدودة — التسجيل يغلق عند اكتمال العدد</div>
+  </div>
+</section>
+
+<!-- POSITIONING BAND -->
+<section class="sec band">
+  <div class="sec-in">
+    <p class="sec-label">الفكرة</p>
+    <div class="band-quote">القيمة الحقيقية ليست أن تتعلّم <span class="hl">استخدام</span> الأداة —<br>بل أن تصبح قادراً على <span class="hl">تدريب غيرك</span> عليها.</div>
+    <p class="band-sub">أي شخص يقدر يتعلّم أزرار البرنامج من الإنترنت. المهارة النادرة هي أن تقف أمام جمهور وتدرّبهم على أدوات الذكاء الاصطناعي بثقة واحتراف — وهذا ما نبنيه فيك.</p>
+  </div>
+</section>
+
+<!-- WHAT YOU LEARN -->
+<section class="sec">
+  <div class="sec-in">
+    <p class="sec-label">ماذا ستتقن</p>
+    <h2 class="sec-title">ثلاث مهارات تصنع منك مدرّباً في الذكاء الاصطناعي</h2>
+    <p class="sec-sub">لا نعلّمك أداة واحدة — نعلّمك كيف تدرّب على أي أداة، وتوصّل المهارة لجمهورك المستفيد.</p>
+    <div class="cards">
+      <div class="lcard">
+        <div class="lcard-num">١</div>
+        <h3>كيف تدرّب على أدوات الذكاء الاصطناعي</h3>
+        <p>تتعلّم كيف تبسّط الأداة وتوصّل مهارتها لجمهورك خطوة بخطوة، بأسلوب تدريبي يخلّي المتدرب يطبّق بثقة — لا مجرد يتفرّج.</p>
+      </div>
+      <div class="lcard">
+        <div class="lcard-num">٢</div>
+        <h3>كيف تختار الأداة المناسبة لمجالك</h3>
+        <p>تتعلّم كيف تربط الأداة بالحاجة الفعلية لمجالك التدريبي، وتختار الأنسب من بين عشرات الأدوات بدل ما تتوه في الزحمة.</p>
+      </div>
+      <div class="lcard">
+        <div class="lcard-num">٣</div>
+        <h3>كيف تدير الدورة التقنية باحتراف</h3>
+        <p>تتعلّم إدارة القاعة في الدورات التقنية: التطبيق العملي، التعامل مع اختلاف مستويات المتدربين، وضمان إن الجميع يخرج بمهارة حقيقية.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE -->
+<section class="sec" style="background:var(--cream2);padding-top:clamp(48px,7vw,80px);padding-bottom:clamp(48px,7vw,80px)">
+  <div class="sec-in">
+    <p class="sec-label">لمن هذه الدورة</p>
+    <h2 class="sec-title">إذا كنت من هؤلاء، فهذه دورتك</h2>
+    <div class="aud" style="margin-top:40px">
+      <div class="aud-item"><div class="aud-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>مدرب يبي يضيف الذكاء الاصطناعي لمجاله</div>
+      <div class="aud-item"><div class="aud-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>مختص يطمح يدرّب في مجال تقني حديث</div>
+      <div class="aud-item"><div class="aud-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>موظف يبي مهارة تدريبية تميّزه</div>
+      <div class="aud-item"><div class="aud-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>صاحب محتوى يبي يحوّل خبرته لدورة</div>
+    </div>
+  </div>
+</section>
+
+<!-- OPTIONS -->
+<section class="sec">
+  <div class="sec-in">
+    <p class="sec-label">خيارات التسجيل</p>
+    <h2 class="sec-title">اختر طريقة حضورك</h2>
+    <p class="sec-sub">الحضور مؤكد بالخيارين — الفرق في الشهادة والليسن التدريبي المعتمد.</p>
+    <div class="opts">
+
+      <div class="opt" id="opt-attendance">
+        <div class="opt-name">حضور فقط</div>
+        <div class="opt-desc">تحضر الدورة كاملة بدون شهادة — مع تأمين يُسترد بعد حضورك.</div>
+        <div class="opt-price">١٠ <span class="cur">د.ك</span></div>
+        <div class="opt-note">تأمين يُسترد بالكامل بعد الحضور</div>
+        <ul class="opt-feats">
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>حضور الدورة كاملة</li>
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>التطبيقات العملية والتمارين</li>
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>استرداد التأمين بعد الحضور</li>
+        </ul>
+        <button class="opt-btn" onclick="pick('attendance')">اختر هذا الخيار</button>
+      </div>
+
+      <div class="opt best" id="opt-certificate">
+        <div class="opt-label">الأكثر قيمة</div>
+        <div class="opt-name">حضور + شهادة معتمدة</div>
+        <div class="opt-desc">تحضر الدورة وتحصل على شهادة تدريبية معتمدة وليسن تدريبي.</div>
+        <div class="opt-price">٥٩ <span class="cur">د.ك</span></div>
+        <div class="opt-note">رسوم الشهادة والليسن التدريبي</div>
+        <ul class="opt-feats">
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>حضور الدورة كاملة</li>
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>شهادة تدريبية معتمدة</li>
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>ليسن تدريبي معتمد</li>
+          <li><span class="ch"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>التطبيقات العملية والتمارين</li>
+        </ul>
+        <button class="opt-btn" onclick="pick('certificate')">اختر هذا الخيار</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER FORM -->
+<section class="sec form-sec" id="register">
+  <div class="form-wrap">
+
+    <div class="form-card" id="fCard">
+      <h2>سجّل في الدورة</h2>
+      <p class="fsub">عبّي بياناتك واختر خيار حضورك</p>
+
+      <div class="fld">
+        <label>الاسم الكامل</label>
+        <input type="text" id="rName" placeholder="أدخل اسمك كاملاً">
+      </div>
+      <div class="fld">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="rPhone" placeholder="XXXXXXXX">
+      </div>
+      <div class="fld">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="rEmail" placeholder="example@email.com" style="direction:ltr;text-align:right">
+      </div>
+
+      <div class="fld">
+        <label>خيار الحضور</label>
+        <div class="opt-pick">
+          <div class="opick" id="pick-attendance" onclick="pick('attendance')">
+            <div class="opick-l">
+              <div class="opick-radio"></div>
+              <div><div class="opick-name">حضور فقط</div><div class="opick-desc">تأمين يُسترد بعد الحضور</div></div>
+            </div>
+            <div class="opick-price">١٠ د.ك</div>
+          </div>
+          <div class="opick sel" id="pick-certificate" onclick="pick('certificate')">
+            <div class="opick-l">
+              <div class="opick-radio"></div>
+              <div><div class="opick-name">حضور + شهادة معتمدة</div><div class="opick-desc">شهادة وليسن تدريبي</div></div>
+            </div>
+            <div class="opick-price">٥٩ د.ك</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="form-submit" id="fSubmit" onclick="submitReg()">
+        <span id="fTxt">تأكيد التسجيل والدفع ←</span>
+      </button>
+      <div class="secure">
+        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6z"/></svg>
+        دفع آمن عبر Tap Payments
+      </div>
+    </div>
+
+    <div class="success-card" id="fSuccess" style="display:none">
+      <div class="success-ic"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+      <h2>تم تسجيلك بنجاح ✅</h2>
+      <p>وصلنا تسجيلك ودفعتك. بنتواصل معاك قريباً بتفاصيل موعد الدورة. لأي استفسار كلّمنا مباشرة على واتساب.</p>
+      <a class="wa-btn" id="waLink" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        تواصل على واتساب
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>معهد تمكين إيديوكلاود للتدريب الأهلي — <a href="https://tamkeenkuw.com">tamkeenkuw.com</a> | <a href="https://instagram.com/ateiq_alk">@ateiq_alk</a></p>
+</footer>
+
+<script>
+/* نفس رابط Apps Script ونفس آلية الدفع في صفحة certified-trainer */
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec';
+const WA = '96597999768';
+
+const OPT_NAMES  = {
+  attendance:'دورة الذكاء الاصطناعي — حضور فقط (تأمين يُسترد)',
+  certificate:'دورة الذكاء الاصطناعي — حضور + شهادة وليسن معتمد'
+};
+const OPT_PRICES = { attendance:10, certificate:59 };
+let opt = 'certificate';
+
+function pick(v){
+  opt = v;
+  ['attendance','certificate'].forEach(function(k){
+    var p=document.getElementById('pick-'+k); if(p) p.classList.toggle('sel',k===v);
+    var o=document.getElementById('opt-'+k); if(o){ o.classList.toggle('best',k===v); }
+  });
+  document.getElementById('register').scrollIntoView({behavior:'smooth'});
+}
+
+function submitReg(){
+  var name  = document.getElementById('rName').value.trim();
+  var phone = document.getElementById('rPhone').value.trim();
+  var email = document.getElementById('rEmail').value.trim();
+  if(!name || name.length<3){ alert('أدخل اسمك كاملاً'); return; }
+  if(!phone || phone.length<7){ alert('أدخل رقم هاتفك'); return; }
+  if(!email || email.indexOf('@')===-1){ alert('أدخل بريدك الإلكتروني'); return; }
+
+  if(typeof fbq!=='undefined') fbq('track','Lead');
+
+  var btn = document.getElementById('fSubmit');
+  btn.disabled = true;
+  document.getElementById('fTxt').textContent = 'جاري تحويلك للدفع...';
+
+  var redirect = window.location.origin + window.location.pathname
+    + '?payment=success&n=' + encodeURIComponent(name)
+    + '&p=' + encodeURIComponent(phone)
+    + '&e=' + encodeURIComponent(email)
+    + '&c=' + encodeURIComponent(OPT_NAMES[opt]);
+
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = SCRIPT;
+  var fields = {
+    type:'create_charge', name:name, phone:phone, email:email,
+    courses:OPT_NAMES[opt], date:'', amount:OPT_PRICES[opt],
+    redirect: redirect
+  };
+  Object.keys(fields).forEach(function(k){
+    var inp=document.createElement('input');
+    inp.type='hidden'; inp.name=k; inp.value=fields[k];
+    form.appendChild(inp);
+  });
+  document.body.appendChild(form);
+  form.submit();
+}
+
+/* بعد رجوع الدفع الناجح: عرض النجاح + تسجيل في الشيت */
+window.addEventListener('DOMContentLoaded', function(){
+  var waEl=document.getElementById('waLink');
+  if(waEl) waEl.href='https://wa.me/'+WA+'?text='+encodeURIComponent('السلام عليكم، سجّلت في دورة إعداد مدرب معتمد في الذكاء الاصطناعي');
+
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('payment')==='success'){
+    var fc=document.getElementById('fCard'); if(fc) fc.style.display='none';
+    var fs=document.getElementById('fSuccess'); if(fs) fs.style.display='block';
+    var n=p.get('n')||'', ph=p.get('p')||'', em=p.get('e')||'', c=p.get('c')||'';
+    if(typeof fbq!=='undefined') fbq('track','Purchase');
+    if(n){
+      if(waEl) waEl.href='https://wa.me/'+WA+'?text='+encodeURIComponent('السلام عليكم، أنا '+n+' — سجّلت ودفعت في دورة إعداد مدرب معتمد في الذكاء الاصطناعي ('+c+')');
+      fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:em,courses:c,payment:'تم الدفع - Tap',date:''})
+      }).catch(function(){});
+    }
+    window.history.replaceState({},'',window.location.pathname);
+    document.getElementById('register').scrollIntoView({behavior:'smooth'});
+  }
+});
+</script>
+</body>
+</html>
