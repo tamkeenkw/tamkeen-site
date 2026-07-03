@@ -297,8 +297,8 @@ fbq('init','2012479919334361');fbq('track','PageView');
 </footer>
 
 <script>
-/* نفس رابط Apps Script ونفس آلية الدفع في صفحة certified-trainer */
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec';
+/* سكريبت تسجيل الدورة المستقل — نفس حساب Tap للشركة */
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbwml9UUvHeL70h1LX8RStXP9GVvJMv0KN9RfdYZFZeTZ7XME0vpCu27APNKGxhAAvhD/exec';
 const WA = '96597999768';
 
 const OPT_NAMES  = {
@@ -323,7 +323,7 @@ function submitReg(){
   var email = document.getElementById('rEmail').value.trim();
   if(!name || name.length<3){ alert('أدخل اسمك كاملاً'); return; }
   if(!phone || phone.length<7){ alert('أدخل رقم هاتفك'); return; }
-  if(!email || email.indexOf('@')===-1){ alert('أدخل بريدك الإلكتروني'); return; }
+  if(!email || !/.+@.+\..+/.test(email)){ alert('أدخل بريداً إلكترونياً صحيحاً'); return; }
 
   if(typeof fbq!=='undefined') fbq('track','Lead');
 
@@ -331,49 +331,29 @@ function submitReg(){
   btn.disabled = true;
   document.getElementById('fTxt').textContent = 'جاري تحويلك للدفع...';
 
-  var redirect = window.location.origin + window.location.pathname
-    + '?payment=success&n=' + encodeURIComponent(name)
-    + '&p=' + encodeURIComponent(phone)
-    + '&e=' + encodeURIComponent(email)
-    + '&c=' + encodeURIComponent(OPT_NAMES[opt]);
-
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = SCRIPT;
-  var fields = {
-    type:'create_charge', name:name, phone:phone, email:email,
-    courses:OPT_NAMES[opt], date:'', amount:OPT_PRICES[opt],
-    redirect: redirect
-  };
-  Object.keys(fields).forEach(function(k){
-    var inp=document.createElement('input');
-    inp.type='hidden'; inp.name=k; inp.value=fields[k];
-    form.appendChild(inp);
+  fetch(SCRIPT, {
+    method:'POST', headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify({
+      type:'create_charge', name:name, phone:phone, email:email,
+      courses:OPT_NAMES[opt], amount:OPT_PRICES[opt]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if(d && d.ok && d.url){ location.href = d.url; return; }
+    alert((d && d.message) || 'تعذّر بدء الدفع — حاول مرة ثانية');
+    btn.disabled=false; document.getElementById('fTxt').textContent='تأكيد التسجيل والدفع ←';
+  })
+  .catch(function(){
+    alert('خطأ في الاتصال — حاول مرة ثانية');
+    btn.disabled=false; document.getElementById('fTxt').textContent='تأكيد التسجيل والدفع ←';
   });
-  document.body.appendChild(form);
-  form.submit();
 }
 
-/* بعد رجوع الدفع الناجح: عرض النجاح + تسجيل في الشيت */
+/* واتساب فقط — التأكيد والتسجيل يتمان في السكريبت بعد الدفع */
 window.addEventListener('DOMContentLoaded', function(){
   var waEl=document.getElementById('waLink');
   if(waEl) waEl.href='https://wa.me/'+WA+'?text='+encodeURIComponent('السلام عليكم، سجّلت في دورة إعداد مدرب معتمد في الذكاء الاصطناعي');
-
-  var p = new URLSearchParams(window.location.search);
-  if(p.get('payment')==='success'){
-    var fc=document.getElementById('fCard'); if(fc) fc.style.display='none';
-    var fs=document.getElementById('fSuccess'); if(fs) fs.style.display='block';
-    var n=p.get('n')||'', ph=p.get('p')||'', em=p.get('e')||'', c=p.get('c')||'';
-    if(typeof fbq!=='undefined') fbq('track','Purchase');
-    if(n){
-      if(waEl) waEl.href='https://wa.me/'+WA+'?text='+encodeURIComponent('السلام عليكم، أنا '+n+' — سجّلت ودفعت في دورة إعداد مدرب معتمد في الذكاء الاصطناعي ('+c+')');
-      fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:em,courses:c,payment:'تم الدفع - Tap',date:''})
-      }).catch(function(){});
-    }
-    window.history.replaceState({},'',window.location.pathname);
-    document.getElementById('register').scrollIntoView({behavior:'smooth'});
-  }
 });
 </script>
 </body>
