@@ -244,6 +244,11 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
   #letterPrint .letter{box-shadow:none;width:100%;min-height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   @page{size:A4;margin:0;}
 }
+.offer-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px;}
+.offer-table th{background:var(--crimson);color:#fff;font-weight:800;padding:12px 10px;border:1px solid var(--crimson);text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.offer-table td{border:1px solid #d8c9c0;padding:11px 12px;vertical-align:top;white-space:pre-wrap;word-break:break-word;font-weight:600;}
+.offer-table tr:nth-child(even) td{background:#faf6f2;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.lt-notes{font-size:14.5px;line-height:1.9;font-weight:600;white-space:pre-wrap;color:#444;background:#faf6f2;border-right:4px solid var(--crimson);border-radius:8px;padding:14px 16px;margin-top:6px;}
 #letterPrint{display:none;}
 .print-head{text-align:center;margin-bottom:20px;}
 .print-head h1{font-size:24px;color:var(--crimson);}
@@ -334,6 +339,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
       <div class="menu-card" onclick="openSection('letters')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
         <div class="mc-title">الكتب الرسمية</div><div class="mc-desc">إنشاء كتاب رسمي بترويسة وطباعة و PDF</div>
+      </div>
+      <div class="menu-card" onclick="openSection('offer')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><rect x="8" y="12" width="8" height="6"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg></div>
+        <div class="mc-title">العرض المالي</div><div class="mc-desc">عرض سعري للجهات بجدول قابل للتخصيص</div>
       </div>
     </div>
   </div>
@@ -654,6 +663,69 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     </div>
   </div>
 
+  <!-- ===== FINANCIAL OFFER ===== -->
+  <div class="panel" id="p-offer">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>العرض المالي</div><div class="sec-desc">عرض سعري للجهات — بجدول تتحكم بأعمدته وصفوفه، والخلايا تتسع مع النص</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost" onclick="printOffer()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>طباعة</button>
+        <button class="btn btn-primary" onclick="downloadOfferPDF()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تحميل PDF</button>
+      </div>
+    </div>
+
+    <div class="studio">
+      <div class="studio-panel">
+        <div class="acc open">
+          <button class="acc-head" onclick="toggleAcc(this)">بيانات العرض<span class="acc-ico">▾</span></button>
+          <div class="acc-body">
+            <div class="fld"><label>الجهة (إلى)</label><input id="offTo" placeholder="مثال: شركة / إدارة ..." oninput="renderOffer()"></div>
+            <div class="fld"><label>عنوان العرض</label><input id="offSubject" value="عرض مالي" oninput="renderOffer()"></div>
+            <div class="fld"><label>مقدمة (اختياري)</label><textarea id="offIntro" placeholder="نص تمهيدي قبل الجدول..." oninput="renderOffer()"></textarea></div>
+            <div class="studio-divider" style="border-top:none;padding-top:0;margin-top:0;">جدول العرض</div>
+            <div class="grid2">
+              <div class="fld"><label>عدد الأعمدة</label><select id="offCols" onchange="onOfferCols(this.value)"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
+              <div class="fld"><label>عدد الصفوف</label><select id="offRows" onchange="onOfferRows(this.value)"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>10</option><option>12</option><option>15</option></select></div>
+            </div>
+            <div id="offerGrid" style="display:flex;flex-direction:column;gap:6px;overflow-x:auto;"></div>
+            <div class="fld" style="margin-top:14px;"><label>ملاحظات / شروط (اختياري)</label><textarea id="offNotes" placeholder="مثال: الأسعار شاملة الضريبة · العرض ساري 30 يوماً..." oninput="renderOffer()"></textarea></div>
+            <div class="grid2">
+              <div class="fld"><label>اسم الموقّع</label><input id="offSigner" placeholder="الاسم" oninput="renderOffer()"></div>
+              <div class="fld"><label>صفة الموقّع</label><input id="offTitle" placeholder="المسمى" oninput="renderOffer()"></div>
+            </div>
+            <div class="fld"><label>صورة التوقيع / الختم (اختياري)</label>
+              <input type="file" id="offSigImg" accept="image/*" onchange="onOfferSig(event)" class="file-in">
+              <button id="rmOffSig" onclick="clearOfferSig()" class="rm-btn" style="display:none;">إزالة التوقيع</button>
+            </div>
+          </div>
+        </div>
+        <div class="acc">
+          <button class="acc-head" onclick="toggleAcc(this)">الترويسة والإعدادات<span class="acc-ico">▾</span></button>
+          <div class="acc-body">
+            <div class="fld"><label>اسم الجهة (الترويسة)</label><input id="offOrg" value="معهد تمكين" oninput="renderOffer()"></div>
+            <div class="grid2">
+              <div class="fld"><label>رقم العرض</label><input id="offRef" oninput="renderOffer()"></div>
+              <div class="fld"><label>التاريخ</label><input id="offDate" oninput="renderOffer()"></div>
+            </div>
+            <div class="grid2">
+              <div class="fld"><label>الموقع</label><input id="offSite" value="tamkeenkuw.com" oninput="renderOffer()"></div>
+              <div class="fld"><label>رقم الهاتف</label><input id="offPhone" value="97999768" oninput="renderOffer()"></div>
+            </div>
+            <div class="fld"><label>نوع الخط</label>
+              <div class="seg" style="margin-bottom:0;flex-wrap:wrap;"><button class="on" data-of="Cairo" onclick="setOfferFont(this,'Cairo')">كايرو</button><button data-of="Tajawal" onclick="setOfferFont(this,'Tajawal')">Tajawal</button><button data-of="Amiri" onclick="setOfferFont(this,'Amiri')">رسمي</button></div>
+            </div>
+            <label style="display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;cursor:pointer;margin-top:12px;"><input type="checkbox" id="offShowLogo" checked onchange="renderOffer()" style="width:18px;height:18px;accent-color:var(--crimson);">إظهار الشعار الرسمي</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-col">
+        <div style="width:100%;overflow-x:auto;display:flex;justify-content:center;">
+          <div id="offerScale" style="transform-origin:top center;"><div class="letter" id="offerA4"></div></div>
+        </div>
+        <div class="stage-note">معاينة بمقاس A4 — الطباعة و PDF بالحجم الكامل</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
@@ -696,7 +768,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -706,6 +778,7 @@ function openSection(id){
   window.scrollTo(0,0);
   if(id==='designs') initDesigns();
   if(id==='letters') initLetters();
+  if(id==='offer') initOffer();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1503,6 +1576,94 @@ async function downloadLetterPDF(){
     let pos=0; while(pos<ph){ pdf.addImage(img,'PNG',0,-pos,pw,ph); pos+=page; if(pos<ph) pdf.addPage(); }
   }
   pdf.save('كتاب-رسمي.pdf');
+}
+
+/* ============ العرض المالي ============ */
+let offerCols=3, offerRows=3, offerHeaders=['','',''], offerData=[], offerFont='Cairo', offerSig=null;
+function offerResize(){
+  offerHeaders.length=offerCols;
+  for(let c=0;c<offerCols;c++) if(offerHeaders[c]==null) offerHeaders[c]='';
+  offerData.length=offerRows;
+  for(let r=0;r<offerRows;r++){ if(!offerData[r]) offerData[r]=[]; offerData[r].length=offerCols; for(let c=0;c<offerCols;c++) if(offerData[r][c]==null) offerData[r][c]=''; }
+}
+function buildOfferGrid(){
+  const g=document.getElementById('offerGrid'); if(!g) return;
+  let h='<div style="display:flex;gap:5px;min-width:'+(offerCols*80)+'px;">';
+  for(let c=0;c<offerCols;c++) h+='<input value="'+esc(offerHeaders[c]||'')+'" oninput="offSetHeader('+c+',this.value)" placeholder="عنوان '+(c+1)+'" style="flex:1;min-width:72px;padding:7px;border:1.5px solid var(--crimson);border-radius:8px;font-family:inherit;font-size:12px;font-weight:800;background:#fff;">';
+  h+='</div>';
+  for(let r=0;r<offerRows;r++){
+    h+='<div style="display:flex;gap:5px;min-width:'+(offerCols*80)+'px;">';
+    for(let c=0;c<offerCols;c++) h+='<textarea oninput="offSetCell('+r+','+c+',this.value)" rows="1" placeholder="—" style="flex:1;min-width:72px;padding:7px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:12px;background:var(--cream);resize:vertical;">'+esc(offerData[r][c]||'')+'</textarea>';
+    h+='</div>';
+  }
+  g.innerHTML=h;
+}
+function offSetHeader(c,v){ offerHeaders[c]=v; renderOffer(); }
+function offSetCell(r,c,v){ if(!offerData[r]) offerData[r]=[]; offerData[r][c]=v; renderOffer(); }
+function onOfferCols(v){ offerCols=parseInt(v,10); offerResize(); buildOfferGrid(); renderOffer(); }
+function onOfferRows(v){ offerRows=parseInt(v,10); offerResize(); buildOfferGrid(); renderOffer(); }
+function setOfferFont(btn,f){ offerFont=f; document.querySelectorAll('[data-of]').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); renderOffer(); }
+function onOfferSig(e){ const f=e.target.files&&e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ offerSig=r.result; document.getElementById('rmOffSig').style.display='inline-block'; renderOffer(); }; r.readAsDataURL(f); }
+function clearOfferSig(){ offerSig=null; document.getElementById('offSigImg').value=''; document.getElementById('rmOffSig').style.display='none'; renderOffer(); }
+function offerTableHTML(){
+  let h='<table class="offer-table"><thead><tr>';
+  for(let c=0;c<offerCols;c++) h+='<th>'+esc(offerHeaders[c]||'')+'</th>';
+  h+='</tr></thead><tbody>';
+  for(let r=0;r<offerRows;r++){ h+='<tr>'; for(let c=0;c<offerCols;c++) h+='<td>'+esc((offerData[r]&&offerData[r][c])||'')+'</td>'; h+='</tr>'; }
+  h+='</tbody></table>';
+  return h;
+}
+function offerHTML(){
+  const org=esc(lval('offOrg')||'معهد تمكين');
+  const logo=document.getElementById('offShowLogo').checked?'<img src="'+TAMKEEN_LOGO+'" alt="">':'';
+  const to=esc(lval('offTo')), subj=esc(lval('offSubject')||'عرض مالي'), intro=esc(lval('offIntro')), notes=esc(lval('offNotes'));
+  const signer=esc(lval('offSigner')), title=esc(lval('offTitle'));
+  const foot=[esc(lval('offSite')),esc(lval('offPhone'))].filter(Boolean).join('  ·  ');
+  const ref=esc(lval('offRef')), date=esc(lval('offDate'));
+  return '<div class="lt-head">'+logo+'<div class="lt-org">'+org+'<small>الكويت · دولة الكويت</small></div></div>'+
+    '<div class="lt-meta"><span>الرقم: '+ref+'</span><span>التاريخ: '+date+'</span></div>'+
+    (to?'<div class="lt-to">'+to+'</div>':'')+
+    (subj?'<div class="lt-subject">'+subj+'</div>':'')+
+    (intro?'<div class="lt-body" style="flex:0 0 auto;">'+intro+'</div>':'')+
+    offerTableHTML()+
+    (notes?'<div class="lt-notes">'+notes+'</div>':'')+
+    '<div style="flex:1;"></div>'+
+    ((signer||title||offerSig)?'<div class="lt-sign">'+(signer?'<div class="n">'+signer+'</div>':'')+(title?'<div class="t">'+title+'</div>':'')+(offerSig?'<img src="'+offerSig+'" style="height:95px;width:auto;display:block;margin-top:10px;">':'')+'</div>':'')+
+    (foot?'<div class="lt-foot">'+foot+'</div>':'');
+}
+function renderOffer(){
+  const a4=document.getElementById('offerA4'); if(!a4) return;
+  a4.className='letter font-'+offerFont;
+  a4.innerHTML=offerHTML();
+  const wrap=document.getElementById('offerScale');
+  const avail=wrap.parentNode.clientWidth;
+  const s=Math.min(1, avail/794);
+  wrap.style.transform='scale('+s+')';
+  wrap.parentNode.style.height=(a4.offsetHeight*s)+'px';
+}
+function initOffer(){
+  const d=new Date();
+  if(!document.getElementById('offDate').value) document.getElementById('offDate').value=d.getDate()+' '+MONTHS_AR[d.getMonth()]+' '+d.getFullYear()+'م';
+  if(!document.getElementById('offRef').value){ const seq=String(d.getHours())+String(d.getMinutes()).padStart(2,'0'); document.getElementById('offRef').value='ع/'+d.getFullYear()+'/'+String(d.getMonth()+1).padStart(2,'0')+'-'+seq; }
+  if(offerHeaders.every(x=>!x)) offerHeaders=['البند','الوصف','السعر (د.ك)'];
+  offerResize(); buildOfferGrid(); renderOffer();
+}
+function printOffer(){
+  let pr=document.getElementById('letterPrint'); if(!pr){ pr=document.createElement('div'); pr.id='letterPrint'; document.body.appendChild(pr); }
+  pr.innerHTML='<div class="letter font-'+offerFont+'">'+offerHTML()+'</div>';
+  window.print();
+}
+async function downloadOfferPDF(){
+  if(typeof html2canvas==='undefined' || !window.jspdf){ toast('مكتبة الـ PDF لم تُحمّل — تأكد من الاتصال'); return; }
+  const a4=document.getElementById('offerA4');
+  const canvas=await html2canvas(a4,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+  const img=canvas.toDataURL('image/png');
+  const { jsPDF }=window.jspdf;
+  const pdf=new jsPDF('p','mm','a4');
+  const pw=210, ph=canvas.height*210/canvas.width, page=297;
+  if(ph<=page){ pdf.addImage(img,'PNG',0,0,pw,ph); }
+  else { let pos=0; while(pos<ph){ pdf.addImage(img,'PNG',0,-pos,pw,ph); pos+=page; if(pos<ph) pdf.addPage(); } }
+  pdf.save('عرض-مالي.pdf');
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
