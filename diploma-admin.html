@@ -408,11 +408,19 @@ function renderBookings(){
           ${['مؤكد','تم','ملغى'].map(o=>`<option ${b.status===o?'selected':''}>${o}</option>`).join('')}
         </select>
       </div>
+      <label style="margin-top:12px">ملاحظة للعميل (تظهر له في صفحته)</label>
+      <input type="text" id="bn_${b.row}" placeholder="اكتب ملاحظتك..." value="${esc(b.note||'')}">
+      <button class="btn btn-sm btn-full" style="margin-top:8px" onclick="saveBookingNote(${b.row})">حفظ الملاحظة</button>
     </div>`).join('');
 }
 async function setBooking(row,status){
   const out=await post({type:'admin_booking_status',row,status});
   toast(out&&out.ok?'تم التحديث ✓':'فشل', !(out&&out.ok));
+}
+async function saveBookingNote(row){
+  const note=document.getElementById('bn_'+row).value.trim();
+  const out=await post({type:'admin_booking_status',row,note});
+  toast(out&&out.ok?'تم حفظ الملاحظة ✓':'فشل', !(out&&out.ok));
 }
 
 /* ===== المواد ===== */

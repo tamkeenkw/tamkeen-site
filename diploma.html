@@ -81,6 +81,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .appt-label{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:8px}
 .appt-day{font-size:18px;font-weight:900;color:var(--text);margin-bottom:3px}
 .appt-time{font-size:14px;color:var(--muted)}
+.appt-note{font-size:14px;color:var(--text);margin-top:12px;background:#fff;border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:12px 14px;line-height:1.7}
 
 /* path */
 .path{background:#fff;border-radius:22px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden}
@@ -251,6 +252,7 @@ function render(){
       <div class="appt-label">📅 موعد استشارتك القادم</div>
       <div class="appt-day">${dLabel(d.myAppointment.date)}</div>
       <div class="appt-time">الساعة ${timeText(d.myAppointment.time)} — ${esc(d.myAppointment.status||'مؤكد')}</div>
+      ${d.myAppointment.note ? `<div class="appt-note">📝 ${esc(d.myAppointment.note)}</div>` : ''}
     </div>` : '';
 
   const steps = d.stages.map((s,i)=>stepHTML(s,i)).join('');
