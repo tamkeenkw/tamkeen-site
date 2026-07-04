@@ -278,6 +278,12 @@ table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
         <input class="inp" id="fStart" type="date" style="text-align:right">
       </div>
 
+      <div class="field">
+        <label>ملف البرنامج (اختياري)</label>
+        <p class="hint">تقدر ترفق ملف البرنامج التفصيلي — PDF أو Word أو عرض تقديمي (الحد الأقصى ٢٠MB).</p>
+        <input class="inp" id="fFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" style="padding:10px 12px">
+      </div>
+
       <div class="sec-title">
         <b>محاور البرنامج</b><div class="ln"></div>
       </div>
@@ -514,6 +520,29 @@ function submitForm(){
     topicsJson: JSON.stringify(state.days)
   };
 
+  // ملف البرنامج (اختياري) — نقرأه كـbase64 قبل الإرسال
+  var file = $('fFile') && $('fFile').files ? $('fFile').files[0] : null;
+  if(file){
+    if(file.size > 20*1024*1024){
+      btn.disabled=false; sp.style.display='none'; txt.textContent='تقديم الترشيح';
+      err.textContent='حجم الملف كبير — الحد الأقصى ٢٠MB.'; return;
+    }
+    var reader=new FileReader();
+    reader.onload=function(){
+      payload.fileBase64   = String(reader.result).split(',')[1];
+      payload.fileName     = file.name;
+      payload.fileMimeType = file.type || 'application/octet-stream';
+      doSend(payload);
+    };
+    reader.onerror=function(){ doSend(payload); }; // أرسل بدون ملف عند فشل القراءة
+    reader.readAsDataURL(file);
+  } else {
+    doSend(payload);
+  }
+}
+
+function doSend(payload){
+  var btn=$('submitBtn'), txt=$('submitTxt'), sp=$('submitSpinner'), err=$('formErr');
   fetch(SCRIPT_URL, {
     method:'POST', mode:'no-cors',
     headers:{ 'Content-Type':'application/json' },

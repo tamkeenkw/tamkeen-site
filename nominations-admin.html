@@ -61,6 +61,10 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .b-ok{background:rgba(28,125,63,.1);color:var(--ok)}
 .b-rej{background:rgba(192,57,43,.1);color:var(--rej)}
 .card .acts{display:flex;gap:8px;flex-wrap:wrap;width:100%;margin-top:4px;justify-content:flex-end}
+.card .cnote{width:100%;background:#f6efe9;border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;font-size:12.5px;color:var(--ink);font-weight:600;line-height:1.7}
+.card a.btn{text-decoration:none}
+.nofile{font-size:12px;color:var(--muted);font-weight:600;align-self:center;margin-inline-end:auto}
 .empty{background:#fff;border:1px dashed var(--line-2);border-radius:16px;padding:40px 20px;
   text-align:center;color:var(--muted);font-weight:600}
 .spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--crimson);
@@ -264,6 +268,7 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
             <option value="مرفوض">مرفوض</option>
           </select>
         </div>
+        <div class="efield"><label>ملاحظة الإدارة على المادة</label><textarea class="einp" id="eNote" placeholder="اكتب ملاحظتك على البرنامج المقدّم (تظهر في اللوحة)"></textarea></div>
 
         <div class="esec">محاور البرنامج</div>
         <div id="eDays"></div>
@@ -361,7 +366,7 @@ function loadData(){
   $('count').textContent='';
   var tab = 'ترشيحات الحكومية';
   var url = 'https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+
-            '/values/'+encodeURIComponent(tab)+'!A:J?key='+API_KEY;
+            '/values/'+encodeURIComponent(tab)+'!A:L?key='+API_KEY;
   fetch(url).then(function(r){ return r.json(); }).then(function(d){
     if(d.error){ $('cards').innerHTML='<div class="empty">تعذّر القراءة: '+esc(d.error.message)+'</div>'; return; }
     var rows = d.values||[];
@@ -378,7 +383,9 @@ function loadData(){
         start:   String(c[6]||'').replace(/^'/,''),
         topics:  c[7]||'',
         status:  c[8]||'جديد',
-        json:    c[9]||''
+        json:    c[9]||'',
+        file:    c[10]||'',
+        note:    c[11]||''
       };
     }).reverse(); // الأحدث أولاً
     render();
@@ -428,7 +435,11 @@ function render(){
         '</div>'+
       '</div>'+
       '<div class="side">'+statusBadge(r.status)+'</div>'+
+      (r.note ? '<div class="cnote">📝 '+esc(r.note)+'</div>' : '')+
       '<div class="acts">'+
+        (r.file && /^https?:\/\//.test(r.file)
+          ? '<a class="btn btn-line" href="'+esc(r.file)+'" target="_blank" rel="noopener">⬇ تحميل ملف البرنامج</a>'
+          : '<span class="nofile">لا يوجد ملف مرفق</span>')+
         '<button class="btn btn-line" onclick="openEditor('+idx+')">✏️ تعديل</button>'+
         '<button class="btn btn-primary" onclick="openPreview('+idx+')">🖨️ طباعة بفورمة تمكين</button>'+
       '</div>'+
@@ -451,6 +462,7 @@ function openEditor(idx){
   $('eStart').value    = /^\d{4}-\d{2}-\d{2}$/.test(r.start) ? r.start : '';
   $('eObjective').value= r.objective || '';
   $('eStatus').value   = ['جديد','مقبول','مرفوض'].indexOf(r.status)>=0 ? r.status : 'جديد';
+  $('eNote').value     = r.note || '';
 
   var days = parseDays(r);
   editDays = days.length ? days.map(function(d){
@@ -556,6 +568,7 @@ function saveEdit(){
   var start    = ($('eStart').value||'').trim();
   var objective= ($('eObjective').value||'').trim();
   var status   = $('eStatus').value;
+  var note     = ($('eNote').value||'').trim();
   var topicsText = buildEditTopicsText();
   var topicsJson = JSON.stringify(editDays.map(function(d){ return { rows:d.rows }; }));
 
@@ -566,7 +579,7 @@ function saveEdit(){
     type:'تحديث ترشيح', rowIndex:r._row,
     memberId:member, trainerName:trainer, programName:program,
     objective:objective, duration:duration, startDate:start,
-    status:status, topicsText:topicsText, topicsJson:topicsJson
+    status:status, topicsText:topicsText, topicsJson:topicsJson, note:note
   };
 
   fetch(SCRIPT_URL, {
@@ -577,7 +590,7 @@ function saveEdit(){
     // تحديث النسخة المحلية فوراً
     r.program=program; r.trainer=trainer; r.memberId=member; r.duration=duration;
     r.start=start; r.objective=objective; r.status=status;
-    r.topics=topicsText; r.json=topicsJson;
+    r.topics=topicsText; r.json=topicsJson; r.note=note;
     btn.disabled=false; sp.style.display='none'; txt.textContent='حفظ التعديلات';
     closeEditor();
     render();
