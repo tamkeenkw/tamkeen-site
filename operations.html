@@ -344,6 +344,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><rect x="8" y="12" width="8" height="6"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg></div>
         <div class="mc-title">العرض المالي</div><div class="mc-desc">عرض سعري للجهات بجدول قابل للتخصيص</div>
       </div>
+      <div class="menu-card" onclick="openSection('nominations')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"/></svg></div>
+        <div class="mc-title">الترشيحات الحكومية</div><div class="mc-desc">مراجعة وتعديل وطباعة الترشيحات الحكومية</div>
+      </div>
     </div>
   </div>
 
@@ -402,6 +406,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <button data-f="pending" onclick="setJnFilter(this,'pending')">قيد المراجعة</button>
         <button data-f="done" onclick="setJnFilter(this,'done')">مقبول</button>
       </div>
+      <select id="jn-month" onchange="renderJoins()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
     </div>
     <div class="list" id="joinsList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
@@ -726,6 +731,16 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     </div>
   </div>
 
+  <!-- ===== GOVERNMENT NOMINATIONS ===== -->
+  <div class="panel" id="p-nominations">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>الترشيحات الحكومية</div><div class="sec-desc">مراجعة وتعديل وطباعة الترشيحات الحكومية</div></div>
+      <button class="btn btn-ghost" onclick="window.open('nominations-admin.html','_blank')"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>فتح في صفحة مستقلة</button>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(92,15,15,.04);">
+      <iframe src="nominations-admin.html" title="الترشيحات الحكومية" style="width:100%;height:calc(100vh - 210px);min-height:820px;border:none;display:block;background:#fff;"></iframe>
+    </div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
@@ -768,7 +783,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1029,6 +1044,17 @@ async function loadJoins(){
   try{ DATA.joins = await readTab(tab); }catch(e){ DATA.joins={tab,headers:[],data:[]}; }
   renderJoins(); updateStats(); renderOverview();
 }
+function buildJoinMonths(dateI){
+  const sel=document.getElementById('jn-month'); if(!sel||!DATA.joins||!DATA.joins.tab) return;
+  if(dateI==null){ const h=DATA.joins.headers; dateI=colIdx(h,'تاريخ'); }
+  if(dateI<0){ sel.style.display='none'; return; }
+  sel.style.display='';
+  const cur=sel.value, set={}, list=[];
+  DATA.joins.data.forEach(r=>{ const d=parseDate(cell(r,dateI)); if(d){ const k=monthKey(d); if(!set[k]){ set[k]=1; list.push({k,label:MONTHS_AR[d.getMonth()]+' '+d.getFullYear(),t:d.getTime()}); } } });
+  list.sort((a,b)=>b.t-a.t);
+  sel.innerHTML='<option value="">كل الأشهر</option>'+list.map(m=>'<option value="'+m.k+'">'+m.label+'</option>').join('');
+  if(cur && list.some(m=>m.k===cur)) sel.value=cur;
+}
 function setJnFilter(btn,f){ document.querySelectorAll('#jn-filter button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); jnFilter=f; renderJoins(); }
 function renderJoins(){
   const box=document.getElementById('joinsList');
@@ -1036,6 +1062,8 @@ function renderJoins(){
   if(!DATA.joins.tab){ box.innerHTML='<div class="empty">لم يُعثر على تبويب «هيئة التدريب» — يُنشأ تلقائياً عند أول طلب انضمام.</div>'; updateBadge('joins',0); return; }
   const h=DATA.joins.headers;
   const nameI=colIdx(h,'اسم'), phoneI=colIdx(h,'هاتف','جوال','واتس'), mailI=colIdx(h,'إيميل','بريد','ايميل'), specI=colIdx(h,'تخصص','مجال'), dateI=colIdx(h,'تاريخ'), scI=statusCol(h);
+  buildJoinMonths(dateI);
+  const jnMonth=(document.getElementById('jn-month')||{}).value||'';
   const q=(document.getElementById('jn-search').value||'').trim();
   let rows=DATA.joins.data.map(r=>r).reverse();
   const pend=rows.filter(r=>statusClass(cell(r,scI))==='st-pending').length;
@@ -1045,6 +1073,7 @@ function renderJoins(){
     if(jnFilter==='pending'&&sc!=='st-pending') return false;
     if(jnFilter==='done'&&sc!=='st-done') return false;
     if(q && cell(r,nameI).indexOf(q)===-1) return false;
+    if(jnMonth){ const d=parseDate(cell(r,dateI)); if(!d||monthKey(d)!==jnMonth) return false; }
     return true;
   });
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد طلبات مطابقة.</div>'; return; }
