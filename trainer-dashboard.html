@@ -260,6 +260,12 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
         <div class="txt"><h3>تنظيم الاستشارات التدريبية</h3><p>جهّز أنواع استشاراتك ومواعيدها واحصل على رابط الحجز</p></div>
         <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
       </a>
+
+      <a class="action-card" id="cardExpert">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg></div>
+        <div class="txt"><h3>احجز استشارتك مع خبير</h3><p>استشارة تدريبية مجانية مع أحد خبراء تمكين — مرة شهرياً</p></div>
+        <div class="arrow"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      </a>
     </div>
 
     <div class="section-title" style="margin-top:30px;">دوراتي هذا الشهر
@@ -299,7 +305,8 @@ const PAGES = {
   attendance:   'attendance.html',             // حضور الجلسات التدريبية
   material:     'trainer.html',                // رفع / اعتماد المادة التدريبية
   nominations:  'government-nominations.html', // الترشيحات الحكومية
-  consultations:'consultation-setup.html'      // تنظيم الاستشارات التدريبية
+  consultations:'consultation-setup.html',     // تنظيم الاستشارات التدريبية
+  expert:       'member-consultation.html'      // حجز استشارة مع خبير تمكين
 };
 
 /* صفحة تقييم الدورة العامة (تُبنى منها الروابط المشتركة للحضور) */
@@ -316,6 +323,7 @@ document.getElementById('cardAttend').addEventListener('click', function(){ goTo
 document.getElementById('cardMaterial').addEventListener('click', function(){ goTo(PAGES.material); });
 document.getElementById('cardNominations').addEventListener('click', function(){ goTo(PAGES.nominations); });
 document.getElementById('cardConsult').addEventListener('click', function(){ goTo(PAGES.consultations); });
+document.getElementById('cardExpert').addEventListener('click', function(){ goTo(PAGES.expert); });
 
 /* السماح بالدخول بزر Enter */
 document.getElementById('memberInput').addEventListener('keydown', function(e){
