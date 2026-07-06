@@ -17,8 +17,6 @@
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 a{color:inherit;}
 
-
-  
 /* ===== LOGIN GATE ===== */
 .gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
 .gate-card{background:#fff;border-radius:24px;padding:40px 34px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
@@ -255,6 +253,30 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 .print-head{text-align:center;margin-bottom:20px;}
 .print-head h1{font-size:24px;color:var(--crimson);}
 .print-head p{font-size:13px;color:var(--muted);margin-top:4px;}
+/* ===== مواعيد الاستشارات (إضافة) ===== */
+.cs-add{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.cs-add-title{font-weight:900;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.cs-add-title svg{width:18px;height:18px;stroke:var(--crimson);fill:none;stroke-width:2;}
+.cs-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.cs-row .fld{flex:1;min-width:130px;}
+.cs-row label{display:block;font-size:12.5px;font-weight:800;margin-bottom:6px;color:var(--text);}
+.cs-row input{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;font-family:inherit;font-size:14px;font-weight:600;background:var(--cream);outline:none;}
+.cs-row input:focus{border-color:var(--crimson);background:#fff;}
+.cs-queue{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.cs-chip{display:inline-flex;align-items:center;gap:7px;background:var(--cream);border:1.5px solid var(--line);border-radius:100px;padding:7px 8px 7px 13px;font-size:13px;font-weight:800;}
+.cs-chip button{width:20px;height:20px;border:none;border-radius:50%;background:#eadfd7;color:var(--crimson);font-weight:900;cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;}
+.cs-chip button:hover{background:var(--crimson);color:#fff;}
+.cs-day{background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.cs-day-head{background:var(--cream);padding:12px 16px;font-weight:900;font-size:14.5px;color:var(--crimson);border-bottom:1.5px solid var(--line);}
+.cs-slots{display:flex;flex-wrap:wrap;gap:10px;padding:16px;}
+.cs-slot{display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--line);border-radius:12px;padding:9px 9px 9px 14px;font-size:14px;font-weight:800;}
+.cs-slot.free{background:#fff;}
+.cs-slot.booked{background:#f7f3ef;border-style:dashed;color:var(--muted);}
+.cs-slot .st{font-size:11px;font-weight:800;padding:3px 9px;border-radius:100px;}
+.cs-slot.free .st{background:rgba(31,122,61,.1);color:#1f7a3d;}
+.cs-slot.booked .st{background:#eadfd7;color:var(--crimson);}
+.cs-slot .del{width:22px;height:22px;border:none;border-radius:50%;background:#f0e6df;color:var(--crimson);cursor:pointer;font-weight:900;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;}
+.cs-slot .del:hover{background:var(--crimson);color:#fff;}
 </style>
 </head>
 <body>
@@ -349,6 +371,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
       <div class="menu-card" onclick="openSection('nominations')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"/></svg></div>
         <div class="mc-title">الترشيحات الحكومية</div><div class="mc-desc">مراجعة وتعديل وطباعة الترشيحات الحكومية</div>
+      </div>
+      <div class="menu-card" onclick="openConsultSlots()">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg></div>
+        <div class="mc-title">مواعيد الاستشارات</div><div class="mc-desc">تحديد المواعيد المتاحة لاستشارات الأعضاء</div>
       </div>
     </div>
   </div>
@@ -746,6 +772,26 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     </div>
   </div>
 
+  <!-- ===== CONSULTATION SLOTS ===== -->
+  <div class="panel" id="p-consultslots">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>مواعيد الاستشارات</div><div class="sec-desc">حدّد المواعيد المتاحة — تظهر مباشرة للأعضاء في صفحة حجز الاستشارة</div></div>
+      <button class="btn btn-ghost" onclick="loadConsultSlots()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    </div>
+
+    <div class="cs-add">
+      <div class="cs-add-title"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة مواعيد جديدة</div>
+      <div class="cs-row">
+        <div class="fld"><label>التاريخ</label><input type="date" id="cs-date"></div>
+        <div class="fld"><label>الوقت</label><input type="time" id="cs-time"></div>
+        <button class="btn btn-ghost" onclick="csQueueAdd()" style="min-width:120px;"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>أضف للقائمة</button>
+      </div>
+      <div class="cs-queue" id="cs-queue"></div>
+      <button class="btn btn-primary" id="cs-save" onclick="csSaveQueue()" style="margin-top:16px;display:none;"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span id="cs-save-txt">حفظ المواعيد</span></button>
+    </div>
+
+    <div class="list" id="csList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
@@ -765,6 +811,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGv
 const OPS_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzS5Eae2sAmIAmsroBxzNCI3S4uEUQXXaYe_YNYQYm4b5Xhu7Gk-U6nCUOuRhZPPiQF/exec';
 const OPS_TOKEN  = 'tmk-ops-2026';         // ← يطابق TOKEN في OperationsBackend.gs
 const OPS_PIN    = '1990';                 // ← غيّر رمز الدخول هنا
+const MEMBERCONSULT_URL = 'https://script.google.com/macros/s/AKfycbyNOojt45KFHroNbCLDDjH1kYk72Ja6Gxy6eciqQEeJGRBDOT2PpVHUKi8VOSHVV-Q79w/exec'; // باك-اند استشارات الأعضاء
 const INST_PAGE  = 'institutional-register.html'; // صفحة تسجيل المدربين (تُبنى لاحقاً)
 
 /* ============ حالة ============ */
@@ -789,7 +836,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', consultslots:'مواعيد الاستشارات'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1802,6 +1849,124 @@ async function downloadOfferPDF(){
   if(ph<=page){ pdf.addImage(img,'PNG',0,0,pw,ph); }
   else { let pos=0; while(pos<ph){ pdf.addImage(img,'PNG',0,-pos,pw,ph); pos+=page; if(pos<ph) pdf.addPage(); } }
   pdf.save('عرض-مالي.pdf');
+}
+
+/* ============ مواعيد الاستشارات (إضافة) ============ */
+const CONSULT_SLOTS_TAB = 'مواعيد الاستشارات';
+let csQueue = [];   // مواعيد بانتظار الحفظ [{date,time}]
+
+function openConsultSlots(){
+  openSection('consultslots');
+  loadConsultSlots();
+}
+
+/* قراءة المواعيد من الشيت مباشرة عبر Sheets API */
+async function loadConsultSlots(){
+  const box = document.getElementById('csList');
+  box.innerHTML = '<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  let rows = [];
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(CONSULT_SLOTS_TAB)}!A:E?key=${API_KEY}`;
+    const res = await fetch(url);
+    if(res.ok){ const j = await res.json(); rows = j.values || []; }
+  }catch(e){ rows = []; }
+  renderConsultSlots(rows);
+}
+
+function renderConsultSlots(rows){
+  const box = document.getElementById('csList');
+  if(!rows || rows.length < 2){
+    box.innerHTML = '<div class="empty" style="text-align:center;color:var(--muted);padding:30px;font-weight:600;">لا توجد مواعيد بعد — أضف مواعيد من الأعلى لتظهر للأعضاء.</div>';
+    return;
+  }
+  const head = rows[0].map(h=>String(h).replace(/\s+/g,' ').trim());
+  const ci = keys => { for(let i=0;i<head.length;i++){ for(const k of keys){ if(head[i].indexOf(k)>-1) return i; } } return -1; };
+  const cId=ci(['معرف','المعرف']), cDate=ci(['التاريخ']), cTime=ci(['الوقت','التوقيت']), cStat=ci(['الحالة']);
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const byDay = {};
+  for(let r=1;r<rows.length;r++){
+    const row = rows[r]; if(!row || !row.length) continue;
+    const id = cId>=0?String(row[cId]||'').trim():'';
+    const date = cDate>=0?String(row[cDate]||'').trim():'';
+    const time = cTime>=0?String(row[cTime]||'').trim():'';
+    const stat = cStat>=0?String(row[cStat]||'').trim():'';
+    if(!date) continue;
+    (byDay[date]=byDay[date]||[]).push({id,date,time,stat});
+  }
+  const days = Object.keys(byDay).sort();
+  if(!days.length){ box.innerHTML='<div class="empty" style="text-align:center;color:var(--muted);padding:30px;font-weight:600;">لا توجد مواعيد بعد.</div>'; return; }
+
+  box.innerHTML = days.map(d=>{
+    const slots = byDay[d].sort((a,b)=>String(a.time).localeCompare(String(b.time)));
+    return '<div class="cs-day"><div class="cs-day-head">'+fmtDate(d)+'</div><div class="cs-slots">'+
+      slots.map(s=>{
+        const booked = s.stat==='محجوز';
+        return '<div class="cs-slot '+(booked?'booked':'free')+'">'+
+          '<span>'+csTime12(s.time)+'</span>'+
+          '<span class="st">'+(booked?'محجوز':'متاح')+'</span>'+
+          (booked?'':'<button class="del" title="حذف" onclick="delConsultSlot(\''+s.id+'\')">×</button>')+
+        '</div>';
+      }).join('')+
+    '</div></div>';
+  }).join('');
+}
+
+function csTime12(t){ const p=String(t).split(':'); if(p.length<2) return t; let h=+p[0]; const m=p[1]; const ap=h<12?'ص':'م'; let hh=h%12; if(hh===0)hh=12; return hh+':'+m+' '+ap; }
+
+/* قائمة الإضافة */
+function csQueueAdd(){
+  const date = document.getElementById('cs-date').value;
+  const time = document.getElementById('cs-time').value;
+  if(!date || !time){ toast('حدد التاريخ والوقت أولاً'); return; }
+  if(csQueue.some(x=>x.date===date && x.time===time)){ toast('هذا الموعد مضاف بالفعل'); return; }
+  csQueue.push({date,time});
+  document.getElementById('cs-time').value='';
+  csRenderQueue();
+}
+function csRenderQueue(){
+  const q = document.getElementById('cs-queue');
+  const save = document.getElementById('cs-save');
+  if(!csQueue.length){ q.innerHTML=''; save.style.display='none'; return; }
+  csQueue.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  q.innerHTML = csQueue.map((x,i)=>'<span class="cs-chip">'+fmtDate(x.date)+' · '+csTime12(x.time)+'<button onclick="csRemoveQueue('+i+')">×</button></span>').join('');
+  save.style.display='inline-flex';
+}
+function csRemoveQueue(i){ csQueue.splice(i,1); csRenderQueue(); }
+
+/* حفظ القائمة في الباك-اند */
+async function csSaveQueue(){
+  if(!csQueue.length) return;
+  const btn=document.getElementById('cs-save'), txt=document.getElementById('cs-save-txt');
+  btn.disabled=true; txt.textContent='جاري الحفظ...';
+  try{
+    const r = await fetch(MEMBERCONSULT_URL,{
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ type:'addSlots', token:OPS_TOKEN, slots:csQueue })
+    });
+    const d = await r.json();
+    if(d.ok){
+      toast('تم حفظ '+(d.added||csQueue.length)+' موعد');
+      csQueue=[]; csRenderQueue();
+      loadConsultSlots();
+    } else { toast(d.message||'تعذّر الحفظ'); }
+  }catch(e){ toast('خطأ في الاتصال — حاول مجدداً'); }
+  btn.disabled=false; txt.textContent='حفظ المواعيد';
+}
+
+/* حذف موعد متاح */
+async function delConsultSlot(id){
+  if(!id) return;
+  if(!confirm('حذف هذا الموعد؟')) return;
+  try{
+    const r = await fetch(MEMBERCONSULT_URL,{
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ type:'delSlot', token:OPS_TOKEN, id:id })
+    });
+    const d = await r.json();
+    if(d.ok){ toast('تم حذف الموعد'); loadConsultSlots(); }
+    else { toast(d.message||'تعذّر الحذف'); }
+  }catch(e){ toast('خطأ في الاتصال'); }
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
