@@ -17,7 +17,6 @@
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 a{color:inherit;}
 
-  
 /* ===== LOGIN GATE ===== */
 .gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
 .gate-card{background:#fff;border-radius:24px;padding:40px 34px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
@@ -376,6 +375,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <button data-f="done" onclick="setBkFilter(this,'done')">معتمد</button>
         <button data-f="reject" onclick="setBkFilter(this,'reject')">مرفوض</button>
       </div>
+      <select id="bk-month" onchange="renderBookings()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
     </div>
     <div class="list" id="bookingsList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
@@ -383,6 +383,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
   <!-- ===== MATERIALS ===== -->
   <div class="panel" id="p-materials">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>اعتماد المواد التدريبية</div><div class="sec-desc">مراجعة المواد المرفوعة من المدربين واعتمادها</div></div></div>
+    <div class="toolbar"><select id="mt-month" onchange="renderMaterials()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select></div>
     <div class="list" id="materialsList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
@@ -416,6 +417,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
   <div class="panel" id="p-schedule">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>الجدول التدريبي</div><div class="sec-desc">الدورات المعتمدة مرتّبة زمنياً — جاهزة للاعتماد والتصدير</div></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="sch-month" onchange="renderSchedule()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
         <button class="btn btn-ghost" onclick="window.print()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>تصدير / طباعة PDF</button>
         <button class="btn btn-primary" onclick="approveSchedule()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد كل القيد مراجعة</button>
       </div>
@@ -856,16 +858,17 @@ function statusCol(headers){
 function cell(row, idx){ return idx>-1 ? (row.cells[idx]||'') : ''; }
 
 /* ============ كتابة (اعتماد) عبر السكريبت ============ */
-async function setStatus(tab, rowNumber, colIndex, value){
+async function setStatus(tab, rowNumber, colIndex, value, notify){
   // colIndex صفري → نحوّله لحرف عمود (A=0)
   const colLetter = String.fromCharCode(65+colIndex);
   if(!OPS_BACKEND_URL || OPS_BACKEND_URL.indexOf('exec')===-1){ return false; }
   try{
     await fetch(OPS_BACKEND_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ type:'تحديث_حالة', token:OPS_TOKEN, sheet:tab, row:rowNumber, col:colLetter, value }) });
+      body: JSON.stringify({ type:'تحديث_حالة', token:OPS_TOKEN, sheet:tab, row:rowNumber, col:colLetter, value, notify: notify||'' }) });
     return true;
   }catch(e){ return false; }
 }
+async function approveMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تم','مادة'); toast('تم اعتماد المادة ✓ (سيصل إيميل للمدرب)'); markLocal('bookings',row,col,'تم'); }
 
 /* ============ تحميل عام ============ */
 async function init(){
@@ -913,12 +916,15 @@ function renderBookings(){
   const h=DATA.bookings.headers;
   const q=(document.getElementById('bk-search').value||'').trim();
   let rows=DATA.bookings.data.map(r=>mapBooking(h,r)).reverse();
+  fillMonths('bk-month', rows, r=>r.start||r.date);
+  const bkMonth=(document.getElementById('bk-month')||{}).value||'';
   rows=rows.filter(r=>{
     const sc=statusClass(r.status);
     if(bkFilter==='pending'&&sc!=='st-pending') return false;
     if(bkFilter==='done'&&sc!=='st-done') return false;
     if(bkFilter==='reject'&&sc!=='st-reject') return false;
     if(q && (r.trainer+r.course).indexOf(q)===-1) return false;
+    if(bkMonth){ const d=parseDate(r.start||r.date); if(!d||monthKey(d)!==bkMonth) return false; }
     return true;
   });
   const pend=DATA.bookings.data.map(r=>mapBooking(h,r)).filter(r=>statusClass(r.status)==='st-pending').length;
@@ -990,6 +996,10 @@ function renderMaterials(){
     return;
   }
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد مواد مرفوعة للمراجعة.</div>'; return; }
+  fillMonths('mt-month', rows, r=>r.start||r.date);
+  const mtMonth=(document.getElementById('mt-month')||{}).value||'';
+  if(mtMonth) rows=rows.filter(r=>{ const d=parseDate(r.start||r.date); return d&&monthKey(d)===mtMonth; });
+  if(!rows.length){ box.innerHTML='<div class="empty">لا توجد مواد في هذا الشهر.</div>'; return; }
   box.innerHTML = rows.map(r=>{
     const sc=statusClass(r.status), isPending=sc==='st-pending';
     const isUrl=/^https?:\/\//.test(String(r.file).trim());
@@ -998,7 +1008,7 @@ function renderMaterials(){
       : `<span class="chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(r.file)}</span>`;
     let actions=`<div class="card-actions">${fileChip}`;
     if(isPending){
-      actions+=`<button class="act act-approve" onclick="approveBooking('${DATA.bookings.tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد المادة</button>
+      actions+=`<button class="act act-approve" onclick="approveMaterial('${DATA.bookings.tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد المادة</button>
       <button class="act act-reject" onclick="rejectBooking('${DATA.bookings.tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button>`;
     }
     actions+='</div>';
@@ -1099,13 +1109,32 @@ async function approveJoin(tab,row,col){ await setStatus(tab,row,col,'مقبول
 async function rejectJoin(tab,row,col){ await setStatus(tab,row,col,'مرفوض'); toast('تم الرفض'); markLocal('joins',row,col,'مرفوض'); }
 
 /* ============ الجدول التدريبي ============ */
+function fillMonths(selId, rows, getDate){
+  const sel=document.getElementById(selId); if(!sel) return;
+  const cur=sel.value, set={}, list=[];
+  rows.forEach(r=>{ const d=parseDate(getDate(r)); if(d){ const k=monthKey(d); if(!set[k]){ set[k]=1; list.push({k,label:MONTHS_AR[d.getMonth()]+' '+d.getFullYear(),t:d.getTime()}); } } });
+  list.sort((a,b)=>b.t-a.t);
+  sel.innerHTML='<option value="">كل الأشهر</option>'+list.map(m=>'<option value="'+m.k+'">'+m.label+'</option>').join('');
+  if(cur && list.some(m=>m.k===cur)) sel.value=cur;
+}
+function buildScheduleMonths(){
+  const sel=document.getElementById('sch-month'); if(!sel||!DATA.bookings||!DATA.bookings.tab) return;
+  const h=DATA.bookings.headers, cur=sel.value, set={}, list=[];
+  DATA.bookings.data.map(r=>mapBooking(h,r)).forEach(r=>{ if(statusClass(r.status)==='st-reject') return; const d=parseDate(r.start); if(d){ const k=monthKey(d); if(!set[k]){ set[k]=1; list.push({k,label:MONTHS_AR[d.getMonth()]+' '+d.getFullYear(),t:d.getTime()}); } } });
+  list.sort((a,b)=>b.t-a.t);
+  sel.innerHTML='<option value="">كل الأشهر</option>'+list.map(m=>'<option value="'+m.k+'">'+m.label+'</option>').join('');
+  if(cur && list.some(m=>m.k===cur)) sel.value=cur;
+}
 function renderSchedule(){
   const box=document.getElementById('schedWrap');
   if(!DATA.bookings||!DATA.bookings.tab){ box.innerHTML='<div class="empty">لا توجد بيانات.</div>'; return; }
   const h=DATA.bookings.headers;
+  buildScheduleMonths();
+  const schMonth=(document.getElementById('sch-month')||{}).value||'';
   let rows=DATA.bookings.data.map(r=>mapBooking(h,r))
     .filter(r=>statusClass(r.status)!=='st-reject' && r.start)
-    .sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+    .filter(r=>{ if(!schMonth) return true; const d=parseDate(r.start); return d && monthKey(d)===schMonth; })
+    .sort((a,b)=>{ const da=parseDate(a.start), db=parseDate(b.start); return (da?da.getTime():Infinity)-(db?db.getTime():Infinity); });
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد دورات في الجدول.</div>'; return; }
   const rowsHtml = rows.map(r=>`<tr>
       <td>${esc(fmtDate(r.start))}${r.end&&r.end!==r.start?'<br><span style="color:var(--muted);font-size:12px">حتى '+esc(fmtDate(r.end))+'</span>':''}</td>
