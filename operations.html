@@ -17,8 +17,6 @@
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 a{color:inherit;}
 
-
-  
 /* ===== LOGIN GATE ===== */
 .gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px;}
 .gate-card{background:#fff;border-radius:24px;padding:40px 34px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
@@ -771,7 +769,7 @@ const INST_PAGE  = 'institutional-register.html'; // صفحة تسجيل الم�
 const DAYS_AR   = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 let TABS = [];
-let DATA = { bookings:null, attendance:null, joins:null };
+let DATA = { bookings:null, attendance:null, joins:null, materials:null };
 let bkFilter='all', jnFilter='all';
 
 /* ============ دخول ============ */
@@ -870,7 +868,8 @@ async function setStatus(tab, rowNumber, colIndex, value, notify){
     return true;
   }catch(e){ return false; }
 }
-async function approveMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تم','مادة'); toast('تم اعتماد المادة ✓ (سيصل إيميل للمدرب)'); markLocal('bookings',row,col,'تم'); }
+async function approveMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تم','مادة'); toast('تم اعتماد المادة ✓ (سيصل إيميل للمدرب)'); markLocal('materials',row,col,'تم'); }
+async function rejectMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'مرفوض'); toast('تم رفض المادة'); markLocal('materials',row,col,'مرفوض'); }
 
 /* ============ تحميل عام ============ */
 async function init(){
@@ -879,17 +878,17 @@ async function init(){
   initPlanRows();
 }
 async function refreshAll(){
-  loadBookings(); loadAttendance(); loadJoins();
+  loadBookings(); loadMaterials(); loadAttendance(); loadJoins();
 }
 
 /* ============ طلبات الحجز ============ */
 async function loadBookings(){
   const tab = findTab('طلبات الحجز','حجز الدورات','حجز');
-  if(!tab){ DATA.bookings={tab:null,headers:[],data:[]}; renderBookings(); renderMaterials(); renderSchedule(); updateStats(); return; }
+  if(!tab){ DATA.bookings={tab:null,headers:[],data:[]}; renderBookings(); renderSchedule(); updateStats(); return; }
   try{
     DATA.bookings = await readTab(tab);
   }catch(e){ DATA.bookings={tab,headers:[],data:[]}; }
-  renderBookings(); renderMaterials(); renderSchedule(); updateStats(); renderOverview();
+  renderBookings(); renderSchedule(); updateStats(); renderOverview();
 }
 function mapBooking(h,row){
   return {
@@ -982,10 +981,72 @@ function markLocal(which,row,col,val){
   const r=d.data.find(x=>x._row===row); if(r) r.cells[col]=val;
   if(which==='bookings'){ renderBookings(); renderSchedule(); updateStats(); renderOverview(); }
   if(which==='joins'){ renderJoins(); updateStats(); }
+  if(which==='materials'){ renderMaterials(); updateStats(); }
 }
 
 /* ============ المواد التدريبية ============ */
+async function readTabLinks(tab){
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?ranges=${encodeURIComponent(tab)}!A:N&fields=sheets(data(rowData(values(formattedValue,hyperlink))))&key=${API_KEY}`;
+  const r = await fetch(url); const d = await r.json();
+  const grid = ((((((d.sheets||[])[0]||{}).data||[])[0]||{}).rowData))||[];
+  const vals = rd => (rd.values||[]).map(c=> c ? (c.formattedValue||'') : '');
+  const lnks = rd => (rd.values||[]).map(c=> c ? (c.hyperlink||'') : '');
+  const headers = grid.length ? vals(grid[0]) : [];
+  const data = grid.slice(1).map((rd,i)=>({ _row:i+2, cells:vals(rd), links:lnks(rd) }));
+  return { tab, headers, data };
+}
+function pickCol(h, keys, fb){ const i=colIdx(h,...keys); return i>-1 ? i : ((fb!=null && fb<24) ? fb : -1); }
+async function loadMaterials(){
+  const tab = findTab('اعتماد المواد','المواد التدريبية','المواد','مواد','حقائب','حقيبة','مادة');
+  if(!tab){ DATA.materials={tab:null,headers:[],data:[]}; renderMaterials(); updateStats(); return; }
+  try{ DATA.materials = await readTabLinks(tab); }catch(e){ try{ DATA.materials = await readTab(tab); }catch(e2){ DATA.materials={tab,headers:[],data:[]}; } }
+  renderMaterials(); updateStats(); renderOverview();
+}
 function renderMaterials(){
+  const box=document.getElementById('materialsList');
+  if(!DATA.materials){ return; }
+  if(!DATA.materials.tab){ box.innerHTML='<div class="empty">لم يُعثر على تبويب المواد في الشيت. تأكد أن اسم التبويب يحتوي كلمة «المواد» أو «مواد».</div>'; updateBadge('materials',0); return; }
+  const h=DATA.materials.headers;
+  const courseI = pickCol(h, ['اسم المادة','عنوان المادة','عنوان','دورة','المادة'], 3),
+        trainerI= pickCol(h, ['مدرب','الاسم'], 2),
+        codeI   = pickCol(h, ['رمز','كود','رقم'], 0),
+        fileI   = pickCol(h, ['رابط','ملف','مرفق','لينك','اضغط','مادة'], 5),
+        dateI   = colIdx(h,'تاريخ'), scI = statusCol(h);
+  const mtSel=document.getElementById('mt-month'); if(mtSel) mtSel.style.display=(dateI>-1)?'':'none';
+  let rows=DATA.materials.data.slice().reverse();
+  const pend = scI>-1 ? rows.filter(r=>statusClass(cell(r,scI))==='st-pending').length : 0;
+  updateBadge('materials', pend);
+  if(dateI>-1){
+    fillMonths('mt-month', rows, r=>cell(r,dateI));
+    const mtMonth=(document.getElementById('mt-month')||{}).value||'';
+    if(mtMonth) rows=rows.filter(r=>{ const d=parseDate(cell(r,dateI)); return d&&monthKey(d)===mtMonth; });
+  }
+  if(!rows.length){ box.innerHTML='<div class="empty">لا توجد مواد.</div>'; return; }
+  box.innerHTML = rows.map(r=>{
+    const st = scI>-1 ? cell(r,scI) : '', sc=statusClass(st), isPending = scI>-1 && sc==='st-pending';
+    const linkUrl = (r.links && r.links[fileI]) ? r.links[fileI] : '';
+    const fileText = cell(r,fileI);
+    const href = linkUrl || (/^https?:\/\//.test(String(fileText).trim()) ? String(fileText).trim() : '');
+    const meta=[];
+    if(codeI>-1 && cell(r,codeI)) meta.push(chip('tag', cell(r,codeI)));
+    if(dateI>-1 && cell(r,dateI)) meta.push(chip('cal', cell(r,dateI)));
+    const fileChip = href
+      ? `<a class="act act-link" href="${esc(href)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>فتح المادة</a>`
+      : (fileText ? `<span class="chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(fileText)}</span>` : '');
+    let actions = '';
+    if(isPending){
+      actions=`<div class="card-actions">${fileChip}
+        <button class="act act-approve" onclick="approveMaterial('${DATA.materials.tab}',${r._row},${scI})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد المادة</button>
+        <button class="act act-reject" onclick="rejectMaterial('${DATA.materials.tab}',${r._row},${scI})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button></div>`;
+    } else if(fileChip){ actions=`<div class="card-actions">${fileChip}</div>`; }
+    const statusChip = scI>-1 ? `<span class="status ${sc}">${esc(statusLabel(st))}</span>` : '';
+    return `<div class="card"><div class="card-top">
+        <div><div class="card-title">${esc(cell(r,courseI)||'مادة تدريبية')}</div><div class="card-sub">${esc(cell(r,trainerI)||'')}</div></div>
+        ${statusChip}
+      </div>${meta.length?'<div class="card-meta">'+meta.join('')+'</div>':''}${actions}</div>`;
+  }).join('');
+}
+function OLD_renderMaterials(){
   const box=document.getElementById('materialsList');
   if(!DATA.bookings||!DATA.bookings.tab){ box.innerHTML='<div class="empty">لم يُعثر على بيانات المواد.</div>'; return; }
   const h=DATA.bookings.headers;
@@ -1167,7 +1228,9 @@ async function approveSchedule(){
 function updateStats(){
   if(DATA.bookings){ const h=DATA.bookings.headers; const m=DATA.bookings.data.map(r=>mapBooking(h,r));
     document.getElementById('s-bookings').textContent = m.filter(r=>statusClass(r.status)==='st-pending').length;
-    document.getElementById('s-materials').textContent = m.filter(r=>r.file&&statusClass(r.status)==='st-pending').length;
+  }
+  if(DATA.materials){ const mh=DATA.materials.headers, msc=statusCol(mh);
+    document.getElementById('s-materials').textContent = (DATA.materials.data||[]).filter(r=>statusClass(cell(r,msc))==='st-pending').length;
   }
   if(DATA.attendance) document.getElementById('s-attendance').textContent = (DATA.attendance.data||[]).length;
   if(DATA.joins){ const scI=statusCol(DATA.joins.headers);
