@@ -770,6 +770,7 @@ const DAYS_AR   = ['الأحد','الإثنين','الثلاثاء','الأرب�
 const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 let TABS = [];
 let DATA = { bookings:null, attendance:null, joins:null, materials:null };
+let materialStatus = {};
 let bkFilter='all', jnFilter='all';
 
 /* ============ دخول ============ */
@@ -868,8 +869,16 @@ async function setStatus(tab, rowNumber, colIndex, value, notify){
     return true;
   }catch(e){ return false; }
 }
-async function approveMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تم','مادة'); toast('تم اعتماد المادة ✓ (سيصل إيميل للمدرب)'); markLocal('materials',row,col,'تم'); }
-async function rejectMaterial(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'مرفوض'); toast('تم رفض المادة'); markLocal('materials',row,col,'مرفوض'); }
+async function materialAction(tab,row,value){
+  if(!OPS_BACKEND_URL || OPS_BACKEND_URL.indexOf('exec')===-1){ toast('الباك إند غير مهيأ — حدّث السكربت'); return false; }
+  try{
+    await fetch(OPS_BACKEND_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'اعتماد_مادة', token:OPS_TOKEN, sheet:tab, row:row, value:value, notify:'مادة' }) });
+    return true;
+  }catch(e){ return false; }
+}
+async function approveMaterial(tab,row){ await materialAction(tab,row,'تم'); materialStatus[row]='تم'; renderMaterials(); toast('تم اعتماد المادة ✓ (إن وُجد بريد المدرب سيصله إشعار)'); }
+async function rejectMaterial(tab,row){ await materialAction(tab,row,'مرفوض'); materialStatus[row]='مرفوض'; renderMaterials(); toast('تم رفض المادة'); }
 
 /* ============ تحميل عام ============ */
 async function init(){
@@ -1014,7 +1023,7 @@ function renderMaterials(){
         dateI   = colIdx(h,'تاريخ'), scI = statusCol(h);
   const mtSel=document.getElementById('mt-month'); if(mtSel) mtSel.style.display=(dateI>-1)?'':'none';
   let rows=DATA.materials.data.slice().reverse();
-  const pend = scI>-1 ? rows.filter(r=>statusClass(cell(r,scI))==='st-pending').length : 0;
+  const pend = rows.filter(r=>{ const st=materialStatus[r._row]||(scI>-1?cell(r,scI):''); const sc=statusClass(st); return !st||sc==='st-pending'; }).length;
   updateBadge('materials', pend);
   if(dateI>-1){
     fillMonths('mt-month', rows, r=>cell(r,dateI));
@@ -1023,7 +1032,8 @@ function renderMaterials(){
   }
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد مواد.</div>'; return; }
   box.innerHTML = rows.map(r=>{
-    const st = scI>-1 ? cell(r,scI) : '', sc=statusClass(st), isPending = scI>-1 && sc==='st-pending';
+    const st = materialStatus[r._row] || (scI>-1 ? cell(r,scI) : '');
+    const sc = statusClass(st), canAct = (!st || sc==='st-pending');
     const linkUrl = (r.links && r.links[fileI]) ? r.links[fileI] : '';
     const fileText = cell(r,fileI);
     const href = linkUrl || (/^https?:\/\//.test(String(fileText).trim()) ? String(fileText).trim() : '');
@@ -1033,13 +1043,13 @@ function renderMaterials(){
     const fileChip = href
       ? `<a class="act act-link" href="${esc(href)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>فتح المادة</a>`
       : (fileText ? `<span class="chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(fileText)}</span>` : '');
-    let actions = '';
-    if(isPending){
-      actions=`<div class="card-actions">${fileChip}
-        <button class="act act-approve" onclick="approveMaterial('${DATA.materials.tab}',${r._row},${scI})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد المادة</button>
-        <button class="act act-reject" onclick="rejectMaterial('${DATA.materials.tab}',${r._row},${scI})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button></div>`;
-    } else if(fileChip){ actions=`<div class="card-actions">${fileChip}</div>`; }
-    const statusChip = scI>-1 ? `<span class="status ${sc}">${esc(statusLabel(st))}</span>` : '';
+    let actions = `<div class="card-actions">${fileChip}`;
+    if(canAct){
+      actions+=`<button class="act act-approve" onclick="approveMaterial('${DATA.materials.tab}',${r._row})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد المادة</button>
+        <button class="act act-reject" onclick="rejectMaterial('${DATA.materials.tab}',${r._row})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button>`;
+    }
+    actions+='</div>';
+    const statusChip = st ? `<span class="status ${sc}">${esc(statusLabel(st))}</span>` : '<span class="status st-pending">بانتظار الاعتماد</span>';
     return `<div class="card"><div class="card-top">
         <div><div class="card-title">${esc(cell(r,courseI)||'مادة تدريبية')}</div><div class="card-sub">${esc(cell(r,trainerI)||'')}</div></div>
         ${statusChip}
@@ -1230,7 +1240,7 @@ function updateStats(){
     document.getElementById('s-bookings').textContent = m.filter(r=>statusClass(r.status)==='st-pending').length;
   }
   if(DATA.materials){ const mh=DATA.materials.headers, msc=statusCol(mh);
-    document.getElementById('s-materials').textContent = (DATA.materials.data||[]).filter(r=>statusClass(cell(r,msc))==='st-pending').length;
+    document.getElementById('s-materials').textContent = (DATA.materials.data||[]).filter(r=>{ const st=materialStatus[r._row]||(msc>-1?cell(r,msc):''); const sc=statusClass(st); return !st||sc==='st-pending'; }).length;
   }
   if(DATA.attendance) document.getElementById('s-attendance').textContent = (DATA.attendance.data||[]).length;
   if(DATA.joins){ const scI=statusCol(DATA.joins.headers);
