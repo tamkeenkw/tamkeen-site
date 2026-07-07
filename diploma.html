@@ -183,7 +183,7 @@ footer a{color:rgba(255,255,255,.55);text-decoration:none}
         دخول
       </button>
     </div>
-    <p class="search-hint">خاص بمنتسبي الدبلوم — إذا ما طلعت بياناتك تواصل مع عتيق</p>
+    <p class="search-hint">هذه الصفحة خاصة بمنتسبي <b>الدبلوم التدريبي</b> فقط. إذا كنت تبي متابعة خطتك وشهادتك في دورة إعداد مدرب معتمد، تروح <a href="https://tamkeenkuw.com/ateiq.html" style="color:var(--crimson);font-weight:800">صفحة تتبّع الخطة والشهادة</a>.</p>
   </div>
 </div>
 
@@ -234,7 +234,7 @@ async function doSearch(){
 }
 
 function notFoundHTML(msg){
-  return `<div class="notfound"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><p>${esc(msg)}</p></div>`;
+  return `<div class="notfound"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><p>${esc(msg)}</p><p style="margin-top:14px;font-size:14px">تبي تتابع خطتك وشهادتك في دورة إعداد مدرب معتمد؟ <a href="https://tamkeenkuw.com/ateiq.html" style="color:var(--crimson);font-weight:800">افتح صفحة تتبّع الخطة والشهادة</a></p></div>`;
 }
 
 function render(){
