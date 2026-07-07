@@ -3,1199 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عتيق العتيق — مدرب معتمد | تمكين</title>
+<title>تتبّع خطتك التدريبية | عتيق خالد العتيق</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --crimson: #5C0F0F;
-  --crimson-2: #6B1212;
-  --cream: #FAF7F2;
-  --cream-2: #F2EDE5;
-  --white: #FFFFFF;
-  --text: #1A0808;
-  --muted: #7A6060;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--text); overflow-x:hidden; }
-
-/* NAV */
-.nav {
-  background:var(--crimson);
-  padding:16px 32px;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-.nav-logo img { height:40px; width:auto; filter:brightness(0) invert(1); opacity:.9; }
-.nav-logo span { font-size:20px; font-weight:900; color:#fff; }
-.nav-back {
-  color:rgba(255,255,255,.7); text-decoration:none;
-  font-size:14px; font-weight:600;
-  display:flex; align-items:center; gap:6px; transition:color .2s;
-}
-.nav-back:hover { color:#fff; }
-
-/* HERO */
-.hero {
-  background:var(--crimson);
-  padding:72px 24px 96px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.hero::before {
-  content:''; position:absolute; inset:0;
-  background-image:
-    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
-    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
-  background-size:52px 52px;
-  background-position:0 0,0 26px,26px -26px,-26px 0;
-}
-.hero-inner { position:relative; z-index:1; max-width:760px; margin:0 auto; }
-
-/* BIG PHOTO */
-.trainer-photo-wrap {
-  margin-bottom:36px;
-  display:inline-block;
-  position:relative;
-}
-.trainer-photo-wrap::before {
-  content:'';
-  position:absolute;
-  inset:-6px;
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,.15);
-}
-.trainer-photo-wrap::after {
-  content:'';
-  position:absolute;
-  inset:-14px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.07);
-}
-.trainer-photo {
-  width:240px;
-  height:240px;
-  border-radius:50%;
-  object-fit:cover;
-  object-position:top center;
-  display:block;
-  border:5px solid rgba(255,255,255,.18);
-  box-shadow:0 24px 72px rgba(0,0,0,.3);
-}
-.trainer-badge {
-  display:inline-block;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.22);
-  color:rgba(255,255,255,.85);
-  font-size:13px; font-weight:700;
-  padding:6px 22px; border-radius:100px;
-  margin-bottom:20px;
-}
-.trainer-name {
-  font-size:clamp(36px,7vw,64px);
-  font-weight:900;
-  color:#fff;
-  line-height:1.15;
-  margin-bottom:12px;
-}
-.trainer-title {
-  font-size:clamp(16px,2.5vw,20px);
-  color:rgba(255,255,255,.6);
-  margin-bottom:48px;
-}
-
-/* STATS ROW */
-.stats-row {
-  display:flex;
-  justify-content:center;
-  gap:clamp(24px,6vw,72px);
-  flex-wrap:wrap;
-}
-.stat { text-align:center; }
-.stat-n {
-  font-size:clamp(32px,6vw,52px);
-  font-weight:900;
-  color:#fff;
-  line-height:1;
-  margin-bottom:6px;
-}
-.stat-l {
-  font-size:13px;
-  color:rgba(255,255,255,.5);
-  line-height:1.4;
-}
-
-/* CONTENT */
-.content { max-width:900px; margin:0 auto; padding:clamp(56px,8vw,96px) 24px; }
-.section { margin-bottom:64px; }
-.section-label { font-size:11px; font-weight:800; letter-spacing:3px; color:var(--crimson); text-transform:uppercase; margin-bottom:10px; }
-.section-title { font-size:clamp(24px,4vw,36px); font-weight:900; color:var(--text); margin-bottom:20px; line-height:1.3; }
-.bio-text { font-size:17px; color:var(--muted); line-height:1.9; }
-
-/* ORGS */
-.orgs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
-.org-item {
-  background:#fff; border-radius:16px; padding:20px 22px;
-  display:flex; align-items:center; gap:14px;
-  border:1.5px solid rgba(92,15,15,.08);
-  font-size:15px; font-weight:700; color:var(--text); line-height:1.5;
-  transition:all .25s;
-}
-.org-item:hover { border-color:rgba(92,15,15,.2); box-shadow:0 8px 24px rgba(92,15,15,.08); transform:translateY(-2px); }
-.org-icon { width:40px; height:40px; min-width:40px; display:flex; align-items:center; justify-content:center; }
-.org-icon svg { width:26px; height:26px; fill:var(--crimson); }
-
-/* COURSES */
-.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
-.course-card {
-  background:#fff; border-radius:20px; padding:32px 28px;
-  border:1.5px solid rgba(92,15,15,.08); transition:all .25s;
-  position:relative; overflow:hidden;
-}
-.course-card::before {
-  content:''; position:absolute; top:0; right:0;
-  width:90px; height:90px; background:var(--crimson); opacity:.04;
-  border-radius:0 20px 0 90px;
-}
-.course-card:hover { transform:translateY(-4px); box-shadow:0 20px 48px rgba(92,15,15,.1); border-color:rgba(92,15,15,.18); }
-.course-icon { width:44px; height:44px; margin-bottom:16px; }
-.course-icon svg { width:40px; height:40px; fill:var(--crimson); }
-.course-title { font-size:17px; font-weight:800; color:var(--text); margin-bottom:8px; }
-.course-desc { font-size:14px; color:var(--muted); line-height:1.7; }
-
-/* CTA */
-.cta-section {
-  background:var(--crimson); border-radius:28px;
-  padding:clamp(40px,6vw,64px) clamp(28px,5vw,56px);
-  text-align:center; position:relative; overflow:hidden;
-}
-.cta-section::before {
-  content:''; position:absolute; inset:0;
-  background-image:
-    linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),
-    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
-  background-size:44px 44px; background-position:0 0,0 22px,22px -22px,-22px 0;
-}
-.cta-section>* { position:relative; z-index:1; }
-.cta-section h2 { font-size:clamp(24px,4vw,38px); font-weight:900; color:#fff; margin-bottom:12px; }
-.cta-section p { font-size:16px; color:rgba(255,255,255,.6); margin-bottom:36px; }
-.btn-contact {
-  display:inline-flex; align-items:center; gap:12px;
-  background:#fff; color:var(--crimson);
-  font-family:'Tajawal',sans-serif;
-  font-size:18px; font-weight:900;
-  padding:18px 52px; border-radius:100px;
-  text-decoration:none; transition:all .28s;
-  box-shadow:0 8px 28px rgba(0,0,0,.15);
-}
-.btn-contact:hover { background:var(--cream-2); transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.2); }
-.btn-contact svg { width:22px; height:22px; fill:var(--crimson); }
-
-/* =====================================================
-   قسم البحث عن المتدربين — جديد
-   ===================================================== */
-.search-section {
-  background:#fff;
-  border-radius:28px;
-  padding:clamp(40px,6vw,56px) clamp(28px,5vw,48px);
-  border:1.5px solid rgba(92,15,15,.08);
-  position:relative;
-  overflow:hidden;
-}
-.search-section::before {
-  content:'';
-  position:absolute;
-  top:0; left:0;
-  width:200px; height:200px;
-  background:var(--crimson);
-  opacity:.025;
-  border-radius:0 0 200px 0;
-}
-.search-bar {
-  display:flex;
-  gap:10px;
-  margin-top:24px;
-}
-.search-bar input {
-  flex:1;
-  padding:14px 20px;
-  font-family:'Tajawal',sans-serif;
-  font-size:16px;
-  border:1.5px solid rgba(92,15,15,.15);
-  border-radius:14px;
-  background:var(--cream);
-  color:var(--text);
-  direction:rtl;
-  outline:none;
-  transition:border-color .2s;
-}
-.search-bar input:focus { border-color:var(--crimson); }
-.search-bar input::placeholder { color:var(--muted); }
-.search-btn {
-  padding:14px 28px;
-  background:var(--crimson);
-  color:#fff;
-  font-family:'Tajawal',sans-serif;
-  font-size:16px;
-  font-weight:800;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:all .2s;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.search-btn:hover { background:var(--crimson-2); transform:translateY(-1px); }
-.search-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
-.search-btn svg { width:18px; height:18px; fill:#fff; }
-
-/* نتيجة البحث */
-.search-result { margin-top:32px; display:none; }
-.search-result.show { display:block; }
-
-/* بطاقة المتدرب */
-.trainee-card {
-  background:var(--crimson);
-  border-radius:24px;
-  overflow:hidden;
-  position:relative;
-}
-.trainee-card::before {
-  content:''; position:absolute; inset:0;
-  background-image:
-    linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%),
-    linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%),
-    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.03) 75%),
-    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.03) 75%);
-  background-size:40px 40px;
-  background-position:0 0,0 20px,20px -20px,-20px 0;
-}
-.trainee-card-top {
-  position:relative; z-index:1;
-  padding:36px 32px 28px;
-  text-align:center;
-}
-.trainee-avatar {
-  width:80px; height:80px;
-  border-radius:50%;
-  background:rgba(255,255,255,.15);
-  border:3px solid rgba(255,255,255,.25);
-  display:flex; align-items:center; justify-content:center;
-  font-size:28px; font-weight:900; color:#fff;
-  margin:0 auto 16px;
-}
-.trainee-name {
-  font-size:clamp(20px,4vw,28px);
-  font-weight:900; color:#fff;
-  margin-bottom:8px; line-height:1.2;
-}
-.trainee-institute {
-  font-size:13px; color:rgba(255,255,255,.55);
-  margin-bottom:20px;
-}
-.trainee-status-pill {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:10px 24px; border-radius:100px;
-  font-size:15px; font-weight:800;
-}
-.status-pass {
-  background:rgba(255,255,255,.15);
-  border:1.5px solid rgba(255,255,255,.3);
-  color:#fff;
-}
-.status-progress {
-  background:rgba(255,255,255,.1);
-  border:1.5px solid rgba(255,255,255,.18);
-  color:rgba(255,255,255,.8);
-}
-.status-dot {
-  width:8px; height:8px; border-radius:50%;
-}
-.dot-pass     { background:#4caf50; box-shadow:0 0 6px rgba(76,175,80,.6); }
-.dot-progress { background:#ffc107; box-shadow:0 0 6px rgba(255,193,7,.5); }
-
-/* الشريط السفلي من البطاقة */
-.trainee-card-bottom {
-  position:relative; z-index:1;
-  background:rgba(0,0,0,.18);
-  padding:20px 32px;
-  display:flex;
-  justify-content:center;
-  gap:clamp(24px,8vw,64px);
-  flex-wrap:wrap;
-}
-.tc-stat { text-align:center; }
-.tc-stat-n {
-  font-size:22px; font-weight:900; color:#fff;
-  line-height:1; margin-bottom:4px;
-}
-.tc-stat-l {
-  font-size:12px; color:rgba(255,255,255,.5);
-}
-
-/* مسار التدريب */
-.trainee-path {
-  margin-top:16px;
-  background:#fff;
-  border-radius:20px;
-  border:1.5px solid rgba(92,15,15,.08);
-  overflow:hidden;
-}
-.tp-header {
-  padding:18px 24px;
-  border-bottom:1.5px solid rgba(92,15,15,.06);
-  font-size:12px; font-weight:800;
-  letter-spacing:2px; color:var(--crimson);
-  text-transform:uppercase;
-}
-.tp-body { padding:24px; }
-.tp-step {
-  display:flex; align-items:flex-start; gap:16px;
-  position:relative;
-}
-.tp-left {
-  display:flex; flex-direction:column;
-  align-items:center; flex-shrink:0; width:36px;
-}
-.tp-circle {
-  width:36px; height:36px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:800; flex-shrink:0; position:relative; z-index:1;
-}
-.tp-circle.done    { background:#2e7d32; color:#fff; }
-.tp-circle.current { background:var(--crimson); color:#fff; outline:3px solid rgba(92,15,15,.18); outline-offset:2px; }
-.tp-circle.pending { background:var(--cream-2); color:var(--muted); border:1.5px solid rgba(92,15,15,.1); }
-.tp-line {
-  width:2px; flex:1; min-height:24px; margin:3px 0;
-}
-.tp-line.done    { background:#2e7d32; }
-.tp-line.pending { background:rgba(92,15,15,.08); }
-.tp-content { flex:1; padding-bottom:24px; }
-.tp-step:last-child .tp-content { padding-bottom:0; }
-.tp-name { font-size:15px; font-weight:800; color:var(--text); margin-bottom:3px; line-height:1.3; }
-.tp-name.muted { color:var(--muted); font-weight:600; }
-.tp-sub  { font-size:13px; color:var(--muted); }
-.tp-tag  {
-  display:inline-block; margin-top:7px;
-  font-size:12px; font-weight:800;
-  padding:4px 12px; border-radius:100px;
-}
-.tag-done    { background:#e8f5e9; color:#2e7d32; }
-.tag-current { background:rgba(92,15,15,.08); color:var(--crimson); }
-.tag-pending { background:var(--cream-2); color:var(--muted); }
-
-/* رسالة الخطأ */
-.result-notfound {
-  text-align:center; padding:40px 24px;
-  background:#fff; border-radius:20px;
-  border:1.5px dashed rgba(92,15,15,.15);
-}
-.result-notfound svg { width:44px; height:44px; fill:rgba(92,15,15,.18); margin-bottom:14px; display:block; margin-inline:auto; }
-.result-notfound p { font-size:16px; color:var(--muted); line-height:1.7; }
-
-/* حالة التحميل */
-.search-loading {
-  text-align:center;
-  padding:36px;
-  display:none;
-}
-.search-loading.show { display:block; }
-.spinner {
-  width:36px; height:36px;
-  border:3px solid rgba(92,15,15,.12);
-  border-top-color:var(--crimson);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  margin:0 auto 12px;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* خط المسار الزمني */
-.tl-wrap { padding:20px 24px; }
-.tl-step { display:flex; align-items:flex-start; gap:14px; }
-.tl-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:36px; }
-.tl-circle {
-  width:36px; height:36px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:13px; font-weight:800; flex-shrink:0; position:relative; z-index:1;
-}
-.tl-done    { background:#2e7d32; color:#fff; }
-.tl-current { background:var(--crimson); color:#fff; box-shadow:0 0 0 4px rgba(92,15,15,.12); }
-.tl-pending { background:var(--cream-2); color:var(--muted); border:1.5px solid rgba(92,15,15,.1); }
-.tl-line { width:2px; flex:1; min-height:24px; margin:3px 0; }
-.tl-line-done    { background:#2e7d32; }
-.tl-line-pending { background:rgba(92,15,15,.1); }
-.tl-body { flex:1; padding-bottom:22px; }
-.tl-body-last { padding-bottom:0; }
-.tl-name { font-size:15px; font-weight:800; color:var(--text); margin-bottom:3px; line-height:1.3; }
-.tl-name-muted { color:var(--muted); font-weight:600; }
-.tl-date { font-size:12px; color:var(--muted); margin-bottom:4px; }
-.tl-tag {
-  display:inline-block; font-size:11px; font-weight:800;
-  padding:3px 12px; border-radius:100px; margin-top:4px;
-}
-.tl-tag-done    { background:#e8f5e9; color:#2e7d32; }
-.tl-tag-current { background:rgba(92,15,15,.08); color:var(--crimson); }
-.tl-tag-pending { background:var(--cream-2); color:var(--muted); }
-
-/* FOOTER */
-footer { background:var(--crimson-2); padding:28px; text-align:center; margin-top:clamp(48px,8vw,80px); }
-footer p { font-size:13px; color:rgba(255,255,255,.3); }
-footer a { color:rgba(255,255,255,.55); text-decoration:none; }
-
-@media(max-width:600px){
-  .trainer-photo { width:190px; height:190px; }
-  .stats-row { gap:24px; }
-  .search-bar { flex-direction:column; }
-  .search-btn { justify-content:center; }
-}
+:root{--crimson:#5C0F0F;--crimson-2:#6B1212;--cream:#FAF7F2;--cream-2:#F2EDE5;--text:#1A0808;--muted:#7A6060;--green:#2e7d32;--amber:#B85C00}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+.nav{background:var(--crimson);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav span{font-size:19px;font-weight:900;color:#fff}
+.nav a{color:rgba(255,255,255,.7);text-decoration:none;font-size:14px;font-weight:600}
+.hero{background:var(--crimson);padding:48px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);background-size:48px 48px;background-position:0 0,0 24px,24px -24px,-24px 0}
+.hero-in{position:relative;z-index:1;max-width:620px;margin:0 auto}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.85);font-size:13px;font-weight:700;padding:6px 20px;border-radius:100px;margin-bottom:18px}
+.hero h1{font-size:clamp(26px,5vw,40px);font-weight:900;color:#fff;line-height:1.25;margin-bottom:12px}
+.hero p{font-size:15px;color:rgba(255,255,255,.6);line-height:1.7}
+.search-wrap{max-width:620px;margin:-32px auto 0;padding:0 20px;position:relative;z-index:5}
+.search-card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 18px 48px rgba(92,15,15,.14);border:1.5px solid rgba(92,15,15,.06)}
+.search-bar{display:flex;gap:10px}
+.search-bar input{flex:1;padding:14px 18px;font-family:inherit;font-size:16px;border:1.5px solid rgba(92,15,15,.15);border-radius:14px;background:var(--cream);color:var(--text);outline:none;transition:border-color .2s}
+.search-bar input:focus{border-color:var(--crimson)}
+.search-btn{padding:14px 26px;background:var(--crimson);color:#fff;font-family:inherit;font-size:16px;font-weight:800;border:none;border-radius:14px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:all .2s}
+.search-btn:hover{background:var(--crimson-2)}
+.search-btn:disabled{opacity:.55;cursor:not-allowed}
+.search-btn svg{width:18px;height:18px;fill:#fff}
+.search-hint{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+.container{max-width:620px;margin:0 auto;padding:28px 20px 60px}
+.loading{text-align:center;padding:40px;display:none}
+.loading.show{display:block}
+.spinner{width:38px;height:38px;border:3px solid rgba(92,15,15,.12);border-top-color:var(--crimson);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#result{display:none}
+#result.show{display:block}
+.tcard{background:var(--crimson);border-radius:24px;overflow:hidden;position:relative;margin-bottom:18px}
+.tcard::before{content:'';position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(255,255,255,.03) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.03) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.03) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.03) 75%);background-size:40px 40px;background-position:0 0,0 20px,20px -20px,-20px 0}
+.tcard-top{position:relative;z-index:1;padding:32px 28px 24px;text-align:center}
+.tavatar{width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#fff;margin:0 auto 14px}
+.tname{font-size:clamp(20px,4vw,26px);font-weight:900;color:#fff;margin-bottom:6px}
+.tsub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:18px}
+.tpill{display:inline-flex;align-items:center;gap:8px;padding:9px 22px;border-radius:100px;font-size:14px;font-weight:800;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.28);color:#fff}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot-on{background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,.6)}
+.dot-prog{background:#ffc107;box-shadow:0 0 6px rgba(255,193,7,.5)}
+.tprog{position:relative;z-index:1;padding:0 28px 20px}
+.tprog-track{height:8px;background:rgba(255,255,255,.15);border-radius:100px;overflow:hidden}
+.tprog-fill{height:100%;background:#fff;border-radius:100px;transition:width .6s ease}
+.tcard-bottom{position:relative;z-index:1;background:rgba(0,0,0,.18);padding:18px 28px;display:flex;justify-content:center;gap:48px}
+.tc-n{font-size:22px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px}
+.tc-l{font-size:12px;color:rgba(255,255,255,.55)}
+.path{background:#fff;border-radius:22px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden}
+.path-head{padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase}
+.path-body{padding:22px 20px}
+.step{display:flex;align-items:flex-start;gap:14px}
+.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:38px}
+.circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;z-index:1}
+.circle.done{background:var(--green);color:#fff}
+.circle.current{background:var(--crimson);color:#fff;outline:3px solid rgba(92,15,15,.18);outline-offset:2px}
+.circle.none{background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.1)}
+.circle svg{width:16px;height:16px}
+.vline{width:2px;flex:1;min-height:20px;margin:4px 0}
+.step-content{flex:1;padding-bottom:26px}
+.step:last-child .step-content{padding-bottom:0}
+.step-name{font-size:16px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:3px}
+.step-name.muted{color:var(--muted);font-weight:600}
+.step-tag{display:inline-block;margin-top:8px;font-size:12px;font-weight:800;padding:4px 13px;border-radius:100px}
+.tag-done{background:#e8f5e9;color:var(--green)}
+.tag-sched{background:#fff3e0;color:var(--amber)}
+.tag-none{background:var(--cream-2);color:var(--muted)}
+.notfound{text-align:center;padding:40px 24px;background:#fff;border-radius:18px;border:1.5px dashed rgba(92,15,15,.15)}
+.notfound svg{width:44px;height:44px;fill:rgba(92,15,15,.18);margin:0 auto 14px;display:block}
+.notfound p{font-size:16px;color:var(--muted);line-height:1.7}
+footer{background:var(--crimson-2);padding:24px;text-align:center;margin-top:40px}
+footer p{font-size:13px;color:rgba(255,255,255,.35)}
+footer a{color:rgba(255,255,255,.55);text-decoration:none}
+@media(max-width:520px){.search-bar{flex-direction:column}.search-btn{justify-content:center}.tcard-bottom{gap:32px}}
 </style>
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-F5NXSHGNE6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-F5NXSHGNE6");
-</script>
 </head>
 <body>
-
-<!-- NAV -->
-<nav class="nav">
-  <a href="/" class="nav-logo">
-    <img src="Untitled_design__2_.png" alt="تمكين" onerror="this.style.display='none'">
-    <span>تمكين</span>
-  </a>
-  <a href="/" class="nav-back">← العودة للرئيسية</a>
-</nav>
-
-<!-- HERO -->
+<nav class="nav"><span>تتبّع خطتك التدريبية</span><a href="/">← الرئيسية</a></nav>
 <section class="hero">
-  <div class="hero-inner">
-
-    <div class="trainer-photo-wrap">
-      <img src="trainer-ateiq.jpg" alt="عتيق العتيق" class="trainer-photo"
-        onerror="this.style.background='rgba(255,255,255,.08)'">
-    </div>
-
-    <div class="trainer-badge">مدرب معتمد — معهد تمكين</div>
-
-    <h1 class="trainer-name">عتيق خالد العتيق</h1>
-    <p class="trainer-title">متخصص في تأهيل وتدريب المدربين</p>
-
-    <div class="stats-row">
-      <div class="stat">
-        <div class="stat-n">+١١٠</div>
-        <div class="stat-l">دفعة تدريبية</div>
-      </div>
-      <div class="stat">
-        <div class="stat-n">+٦٧٠٠</div>
-        <div class="stat-l">مدرب ومدربة مخرّجين</div>
-      </div>
-      <div class="stat">
-        <div class="stat-n">٤+</div>
-        <div class="stat-l">جهات حكومية</div>
-      </div>
-    </div>
-
+  <div class="hero-in">
+    <div class="hero-badge">معهد تمكين — عتيق خالد العتيق</div>
+    <h1>تحقّق من خطتك التدريبية وإنجازك</h1>
+    <p>ادخل برقم هاتفك لتشوف اسمك، دوراتك، وحالة إنجازك في المسار التدريبي</p>
   </div>
 </section>
-
-<!-- CONTENT -->
-<div class="content">
-
-  <!-- BIO -->
-  <div class="section">
-    <p class="section-label">نبذة</p>
-    <h2 class="section-title">من هو عتيق العتيق؟</h2>
-    <p class="bio-text">
-      مدرب معتمد متخصص في تأهيل وتدريب المدربين، قدّم أكثر من ١١٠ دفعة من دورة إعداد مدرب معتمد، وأسهم في تخريج أكثر من ٦٧٠٠ مدرب ومدربة لسوق العمل التدريبي في الكويت. له تجربة واسعة مع كبرى الجهات الحكومية والتعليمية.
-    </p>
-  </div>
-
-  <!-- قسم الفيديو -->
-  <div class="section">
-    <p class="section-label">تعرف على عتيق</p>
-    <h2 class="section-title">شلون تفيدك دورة مدرب معتمد؟</h2>
-    <div style="max-width:360px;margin:0 auto;border-radius:20px;overflow:hidden;border:1.5px solid rgba(92,15,15,.08)">
-      <div style="position:relative;padding-bottom:177.77%;height:0;overflow:hidden">
-        <iframe
-          src="https://www.youtube.com/embed/EQPFodebnmM"
-          style="position:absolute;top:0;right:0;width:100%;height:100%;border:none"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
-      </div>
+<div class="search-wrap">
+  <div class="search-card">
+    <div class="search-bar">
+      <input type="text" id="q" placeholder="رقم هاتفك المسجّل..." maxlength="40" autocomplete="off">
+      <button class="search-btn" id="goBtn" onclick="doSearch()">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        بحث
+      </button>
     </div>
+    <p class="search-hint">تقدر تبحث باسمك الكامل أو رقم هاتفك</p>
   </div>
-
-  <!-- ORGS -->
-  <div class="section">
-    <p class="section-label">الجهات</p>
-    <h2 class="section-title">الجهات التي تعامل معها</h2>
-    <div class="orgs-grid">
-      <div class="org-item">
-        <div class="org-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-        </div>
-        الهيئة العامة للتعليم والتدريب التطبيقي — مركز القياس والتقويم
-      </div>
-      <div class="org-item">
-        <div class="org-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-        </div>
-        جامعة الكويت — جمعية كلية التربية
-      </div>
-      <div class="org-item">
-        <div class="org-icon">
-          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        </div>
-        جمعية المعلمين الكويتية
-      </div>
-    </div>
-  </div>
-
-  <!-- COURSES -->
-  <div class="section">
-    <p class="section-label">الدورات</p>
-    <h2 class="section-title">الدورات المقدّمة</h2>
-    <div class="courses-grid">
-      <div class="course-card">
-        <div class="course-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-        </div>
-        <div class="course-title">إعداد مدرب معتمد</div>
-        <div class="course-desc">الدورة الأشمل لتأهيل المدربين وإعدادهم للحصول على الاعتماد الرسمي في سوق العمل التدريبي</div>
-      </div>
-      <div class="course-card">
-        <div class="course-icon">
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-        </div>
-        <div class="course-title">كيف تبني دورة رابحة</div>
-        <div class="course-desc">دورة متخصصة في بناء وتصميم الدورات التدريبية الناجحة التي تحقق نتائج حقيقية</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- =====================================================
-       قسم البحث عن المتدربين — جديد
-       ===================================================== -->
-  <div class="section">
-    <div class="search-section">
-      <p class="section-label">بوابة المتدربين</p>
-      <h2 class="section-title">تحقق من شهادتك وخطتك التدريبية</h2>
-      <p class="bio-text" style="margin-bottom:0">ابحث باسمك أو رقمك المدني لتعرف دفعتك وحالة دوراتك</p>
-
-      <div class="search-bar">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="اكتب اسمك أو رقم هاتفك..."
-          maxlength="60"
-          autocomplete="off"
-        />
-        <button class="search-btn" id="searchBtn" onclick="doSearch()">
-          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-          بحث
-        </button>
-      </div>
-
-      <!-- حالة التحميل -->
-      <div class="search-loading" id="searchLoading">
-        <div class="spinner"></div>
-        <p style="color:var(--muted);font-size:14px">جاري البحث...</p>
-      </div>
-
-      <!-- النتيجة -->
-      <div class="search-result" id="searchResult"></div>
-    </div>
-  </div>
-
-  <!-- قسم الاختبار -->
-  <div class="section">
-    <div class="search-section" id="quizSection">
-      <p class="section-label">أداة مجانية</p>
-      <h2 class="section-title">هل دورتك التدريبية جاهزة للنجاح؟</h2>
-      <p class="bio-text" style="margin-bottom:28px">أجب على ٨ أسئلة سريعة واحصل على تقرير فوري يكشف نقاط قوة دورتك وما يحتاج تطوير</p>
-
-      <!-- زر البدء -->
-      <div id="quizStart">
-        <button class="search-btn" style="width:100%;justify-content:center;padding:16px;font-size:17px;border-radius:14px" onclick="quizInit()">
-          ابدأ التقييم المجاني ←
-        </button>
-      </div>
-
-      <!-- محتوى الاختبار -->
-      <div id="quizBody" style="display:none">
-
-        <!-- شريط التقدم -->
-        <div id="qProgressWrap" style="margin-bottom:28px">
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px">
-            <span id="qProgressText">السؤال ١ من ٨</span>
-            <span id="qProgressPct">٠٪</span>
-          </div>
-          <div style="height:6px;background:rgba(92,15,15,.1);border-radius:100px;overflow:hidden">
-            <div id="qProgressFill" style="height:100%;background:var(--crimson);border-radius:100px;transition:width .4s ease;width:0%"></div>
-          </div>
-        </div>
-
-        <!-- الأسئلة -->
-        <div id="qStepQuiz">
-          <div id="qNum" style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px"></div>
-          <div id="qText" style="font-size:clamp(18px,3vw,22px);font-weight:800;color:var(--text);line-height:1.4;margin-bottom:24px"></div>
-          <div id="qOptions" style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px"></div>
-          <button class="search-btn" id="qNextBtn" onclick="qNext()" disabled style="width:100%;justify-content:center;padding:14px;font-size:16px;border-radius:14px">التالي ←</button>
-        </div>
-
-        <!-- نموذج البيانات -->
-        <div id="qStepLead" style="display:none">
-          <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px">خطوة أخيرة</div>
-          <div style="font-size:clamp(18px,3vw,22px);font-weight:800;color:var(--text);margin-bottom:8px">تقريرك جاهز!</div>
-          <p style="font-size:15px;color:var(--muted);margin-bottom:24px">أدخل بياناتك لتشوف نتيجتك</p>
-          <div style="margin-bottom:16px">
-            <label style="display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">الاسم الكامل</label>
-            <input type="text" id="qLeadName" placeholder="أدخل اسمك الكامل" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:16px;color:var(--text);outline:none;direction:rtl">
-          </div>
-          <div style="margin-bottom:24px">
-            <label style="display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">رقم الهاتف</label>
-            <input type="tel" id="qLeadPhone" placeholder="XXXXXXXX" style="width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:16px;color:var(--text);outline:none;direction:rtl">
-          </div>
-          <button class="search-btn" id="qLeadBtn" onclick="qShowResult()" disabled style="width:100%;justify-content:center;padding:14px;font-size:16px;border-radius:14px">اعرض نتيجتي ←</button>
-        </div>
-
-        <!-- النتيجة -->
-        <div id="qStepResult" style="display:none"></div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- CTA -->
-  <div class="section">
-    <div class="cta-section">
-      <h2>تواصل مع عتيق مباشرة</h2>
-      <p>للاستفسار عن الدورات والتسجيل</p>
-      <a href="https://wa.me/96597999768?text=السلام عليكم، أبي أستفسر عن دورات المدرب عتيق العتيق" class="btn-contact" target="_blank">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        تواصل على واتساب
-      </a>
-    </div>
-  </div>
-
 </div>
-
-<!-- FOOTER -->
-<footer>
-  <p>معهد تمكين — <a href="/">tamkeenkuw.com</a> | <a href="https://instagram.com/tamkeen.kw" target="_blank">@tamkeen.kw</a></p>
-</footer>
-
-<!-- =====================================================
-     سكريبت البحث — يتصل بـ Apps Script
-     ===================================================== -->
+<div class="container">
+  <div class="loading" id="loading"><div class="spinner"></div><p style="color:var(--muted);font-size:14px">جاري البحث...</p></div>
+  <div id="result"></div>
+</div>
+<footer><p>معهد تمكين — <a href="/">tamkeenkuw.com</a></p></footer>
 <script>
-// ⬇️ ضع هنا رابط الـ Web App بعد النشر على Apps Script
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyI9FK1Woo4k0xvbfS_fB1b8qAOjne9BK_O6KEN4Uuth7hLW6eR1lOC2jw_iLKPvuaX/exec";
-
-const statusMap = {
-  "مكتملة":     { label:"مكتملة ✓",       cls:"s-done"    },
-  "متبقية":     { label:"متبقية",          cls:"s-pending" },
-  "قيد التسجيل":{ label:"قيد التسجيل",    cls:"s-reg"     },
-};
-
-function getInitials(name) {
-  return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('');
+const API = "https://script.google.com/macros/s/AKfycbyH7MT8kS93S_otXPhrGPdmyJRs3vzQF0qNtBCYZaGkLZ6qbLVB_wnKO2oQS8osE-UW/exec";
+let DATA=null;
+const toAr=s=>String(s).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function initials(n){return n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('');}
+function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function dateLabel(v){ // "2026-05-09" → "٩ مايو ٢٠٢٦"
+  var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(v); if(!m) return esc(v);
+  return toAr(parseInt(m[3],10))+' '+MONTHS[parseInt(m[2],10)-1]+' '+toAr(m[1]);
 }
-
-async function doSearch() {
-  const q = document.getElementById('searchInput').value.trim();
-  if (!q) { document.getElementById('searchInput').focus(); return; }
-
-  const btn     = document.getElementById('searchBtn');
-  const loading = document.getElementById('searchLoading');
-  const result  = document.getElementById('searchResult');
-
-  btn.disabled = true;
-  loading.classList.add('show');
-  result.classList.remove('show');
-  result.innerHTML = '';
-
-  try {
-    const res  = await fetch(`${APPS_SCRIPT_URL}?q=${encodeURIComponent(q)}`);
-    const data = await res.json();
-    renderResult(data);
-  } catch (err) {
-    renderResult({ found: false, message: "تعذّر الاتصال بالخادم — حاول مجدداً" });
-  } finally {
-    btn.disabled = false;
-    loading.classList.remove('show');
-  }
+async function doSearch(){
+  const q=document.getElementById('q').value.trim();
+  if(!q){document.getElementById('q').focus();return;}
+  const btn=document.getElementById('goBtn'),L=document.getElementById('loading'),R=document.getElementById('result');
+  btn.disabled=true;L.classList.add('show');R.classList.remove('show');R.innerHTML='';
+  try{
+    const res=await fetch(API+'?q='+encodeURIComponent(q));
+    DATA=await res.json();
+    render();
+  }catch(e){
+    R.innerHTML=notFoundHTML('تعذّر الاتصال — حاول مرة ثانية');R.classList.add('show');
+  }finally{btn.disabled=false;L.classList.remove('show');}
 }
-
-function renderResult(data) {
-  const el = document.getElementById('searchResult');
-
-  if (!data.found) {
-    el.innerHTML = `
-      <div class="result-notfound">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        <p>${data.message || "لم يُعثر على نتائج — تواصل مع المعهد للمساعدة"}</p>
-      </div>`;
-    el.classList.add('show');
-    return;
-  }
-
-  const initials = getInitials(data.name);
-  const courses  = data.courses || [];
-  const done     = courses.filter(c => c.status === "تم الانجاز").length;
-  const total    = courses.length;
-  const pct      = total ? Math.round((done / total) * 100) : 0;
-
-  /* أول دورة غير مكتملة = "أنت هنا" — تلقائي بدون أي إعداد */
-  const currentIdx = courses.findIndex(c => c.status !== "تم الانجاز");
-
-  const isPassed   = data.passed;
-  const statusPill = isPassed
-    ? `<span class="trainee-status-pill status-pass"><span class="status-dot dot-pass"></span>اجتاز البرنامج</span>`
-    : `<span class="trainee-status-pill status-progress"><span class="status-dot dot-progress"></span>قيد التدريب</span>`;
-
-  const batchStat = '';
-
-  const progressStat = total ? `
-    <div class="tc-stat"><div class="tc-stat-n">${pct}%</div><div class="tc-stat-l">نسبة الإنجاز</div></div>
-    <div class="tc-stat"><div class="tc-stat-n">${done}/${total}</div><div class="tc-stat-l">الدورات المكتملة</div></div>` : '';
-
-  /* خط المسار — يقرأ كل الدورات من الشيت تلقائياً */
-  const steps = courses.map((c, i) => {
-    const isDone    = c.status === "تم الانجاز";
-    const isCurrent = i === currentIdx;
-    const isLast    = i === courses.length - 1;
-    const nextDone  = !isLast && courses[i + 1]?.status === "تم الانجاز";
-
-    const circleClass = isDone ? 'tp-done' : isCurrent ? 'tp-current' : 'tp-pending';
-    const circleInner = isDone
-      ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`
-      : (i + 1);
-
-    const lineColor = isDone && nextDone ? '#2e7d32' : 'rgba(92,15,15,.1)';
-    const lineHtml  = isLast ? '' : `<div style="width:2px;flex:1;min-height:24px;margin:3px 0;background:${lineColor}"></div>`;
-
-    const nameStyle  = (!isDone && !isCurrent) ? 'color:var(--muted);font-weight:600' : 'font-weight:800;color:var(--text)';
-    const tagStyle   = isDone
-      ? 'background:#e8f5e9;color:#2e7d32'
-      : isCurrent
-        ? 'background:rgba(92,15,15,.08);color:var(--crimson)'
-        : 'background:var(--cream-2);color:var(--muted)';
-    const isDate = (s) => s && s !== 'متبقية' && s !== 'قيد التسجيل' && s !== 'تم الانجاز';
-    const hasPlanDate = !isDone && isDate(c.status);
-    const tagLabel   = isDone ? 'تم الانجاز ✓' : hasPlanDate ? '📅 مجدولة' : isCurrent ? 'أنت هنا' : 'متبقية';
-    const subLabel   = isDone && c.date ? c.date : hasPlanDate ? 'تبدأ الخطة في ' + c.status : isCurrent ? 'الدورة الحالية' : 'لم تبدأ بعد';
-
-    const circleStyle = isDone
-      ? 'background:#2e7d32;color:#fff'
-      : isCurrent
-        ? 'background:var(--crimson);color:#fff;outline:3px solid rgba(92,15,15,.2);outline-offset:2px'
-        : 'background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.12)';
-
-    return `
-      <div style="display:flex;align-items:flex-start;gap:16px">
-        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px">
-          <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-family:'Tajawal',sans-serif;${circleStyle}">${circleInner}</div>
-          ${lineHtml}
-        </div>
-        <div style="flex:1;padding-bottom:${isLast ? '0' : '22px'}">
-          <div style="font-size:15px;line-height:1.3;margin-bottom:3px;${nameStyle}">${c.name}</div>
-          <div style="font-size:13px;color:var(--muted)">${subLabel}</div>
-          <span style="display:inline-block;margin-top:7px;font-size:12px;font-weight:800;font-family:'Tajawal',sans-serif;padding:4px 12px;border-radius:100px;${tagStyle}">${tagLabel}</span>
-        </div>
-      </div>`;
-  }).join('');
-
-  const pathBlock = steps ? `
-    <div style="margin-top:16px;background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden">
-      <div style="padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase">مسار التدريب</div>
-      <div style="padding:24px">${steps}</div>
-    </div>` : '';
-
-  /* نحفظ بيانات المتدرب عشان نظام حجز الاستشارات يستخدمها */
-  window.__trainee = {
-    name:  data.name,
-    phone: data.phone || '',
-    bookedSlots: data.bookedSlots || [],
-    appointment: data.appointment || null
-  };
-
-  /* بطاقة الموعد القادم (تظهر لو عند المتدرب حجز مؤكد) */
-  const appointmentBlock = buildAppointmentCard(data.appointment);
-
-  /* كتلة حجز الاستشارة */
-  const bookingBlock = `
-    <div id="bookingWrap" style="margin-top:16px;background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.08);overflow:hidden">
-      <div style="padding:18px 24px;border-bottom:1.5px solid rgba(92,15,15,.06);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase">حجز استشارة مع عتيق</div>
-      <div style="padding:24px">
-        <div id="bookingPanel"></div>
-      </div>
-    </div>`;
-
-  el.innerHTML = `
-    <div class="trainee-card">
-      <div class="trainee-card-top">
-        <div class="trainee-avatar">${initials}</div>
-        <div class="trainee-name">${data.name}</div>
-        <div class="trainee-institute">معهد تمكين — برنامج إعداد المدربين</div>
-        ${statusPill}
-      </div>
-      <div class="trainee-card-bottom">
-        ${batchStat}
-        ${progressStat}
-      </div>
-    </div>
-    ${appointmentBlock}
-    ${pathBlock}
-    ${bookingBlock}`;
-
-  el.classList.add('show');
-  bookingInit();
-  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function notFoundHTML(msg){
+  return '<div class="notfound"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><p>'+esc(msg)+'</p></div>';
 }
-
-// Enter للبحث
-document.getElementById('searchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
-});
-</script>
-
-
-<!-- =====================================================
-     سكريبت حجز الاستشارات — يكتب في شيت عتيق عبر doPost
-     ===================================================== -->
-<script>
-/* ===== الإعدادات (عدّلها وقت ما تحب) ===== */
-// أيام الإتاحة: 6 = السبت ، 2 = الثلاثاء  (الأرقام حسب getDay: الأحد=0 ... السبت=6)
-const AVAIL_DAYS = [6, 2];
-// كم أسبوع نعرض من المواعيد القادمة
-const WEEKS_AHEAD = 3;
-// الأوقات المتاحة لكل يوم  (v = القيمة المخزّنة 24 ساعة ، t = نص العرض)
-const BK_SLOTS = [
-  { v:'17:00', t:'٥:٠٠ م' },
-  { v:'18:00', t:'٦:٠٠ م' },
-  { v:'19:00', t:'٧:٠٠ م' },
-];
-
-/* ===== أدوات مساعدة ===== */
-const BK_DAYNAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-const BK_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-function bkAr(s){ return String(s).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); }
-function bkPad(n){ return n < 10 ? '0' + n : '' + n; }
-function bkKey(d){ return d.getFullYear() + '-' + bkPad(d.getMonth()+1) + '-' + bkPad(d.getDate()); } // YYYY-MM-DD
-function bkLabel(d){ return BK_DAYNAMES[d.getDay()] + ' ' + bkAr(d.getDate()) + ' ' + BK_MONTHS[d.getMonth()]; }
-function bkSlotText(v){ const s = BK_SLOTS.find(x => x.v === v); return s ? s.t : v; }
-
-/* يولّد قائمة التواريخ المتاحة القادمة (سبت + ثلاثاء) */
-function bkUpcomingDates(){
-  const out = [], today = new Date(); today.setHours(0,0,0,0);
-  const end = new Date(today); end.setDate(end.getDate() + WEEKS_AHEAD * 7);
-  for (let d = new Date(today); d <= end; d.setDate(d.getDate()+1)){
-    if (AVAIL_DAYS.includes(d.getDay())) out.push(new Date(d));
-  }
-  return out;
-}
-
-let bkSelDate = null, bkSelSlot = null;
-
-/* بطاقة "موعدك القادم" — تُبنى من renderResult */
-function buildAppointmentCard(appt){
-  if (!appt || !appt.date) return '';
-  const d = new Date(appt.date + 'T00:00:00');
-  const dayTxt = isNaN(d) ? (appt.dayLabel || '') : bkLabel(d);
-  return `
-    <div style="margin-top:16px;background:rgba(92,15,15,.04);border:1.5px solid rgba(92,15,15,.18);border-radius:20px;padding:22px 24px">
-      <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:10px">📅 موعد استشارتك القادم</div>
-      <div style="font-size:19px;font-weight:900;color:var(--text);margin-bottom:4px">${dayTxt}</div>
-      <div style="font-size:15px;color:var(--muted)">الساعة ${bkSlotText(appt.time)} — ${appt.status || 'مؤكد'}</div>
-    </div>`;
-}
-
-/* تهيئة لوحة الحجز بعد عرض نتيجة البحث */
-function bookingInit(){
-  bkSelDate = null; bkSelSlot = null;
-  const panel = document.getElementById('bookingPanel');
-  if (!panel) return;
-
-  // لو عنده موعد محجوز أصلاً، نعرض خيار حجز موعد إضافي بزر فقط
-  const dates = bkUpcomingDates();
-
-  // شريط أيام الأسبوع — يبيّن إن باقي الأيام محجوزة
-  const weekStrip = BK_DAYNAMES.map((nm, i) => {
-    const open = AVAIL_DAYS.includes(i);
-    return `<div style="flex:1;min-width:60px;text-align:center;padding:10px 6px;border-radius:12px;font-size:12px;font-weight:800;
-      ${open ? 'background:rgba(92,15,15,.06);color:var(--crimson);border:1.5px solid rgba(92,15,15,.18)'
-             : 'background:var(--cream-2);color:var(--muted);border:1.5px solid rgba(92,15,15,.06)'}">
-      ${nm}${open ? '' : '<div style="font-size:10px;margin-top:2px;opacity:.7">محجوز</div>'}</div>`;
-  }).join('');
-
-  const dateCards = dates.map(d => {
-    const key = bkKey(d);
-    return `<div class="bk-date" data-date="${key}" onclick="bkSelectDate('${key}')"
-      style="padding:14px 18px;border-radius:14px;border:1.5px solid rgba(92,15,15,.12);background:var(--cream);
-      cursor:pointer;font-size:15px;font-weight:700;color:var(--text);transition:all .2s">${bkLabel(d)}</div>`;
-  }).join('');
-
-  panel.innerHTML = `
-    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px">
-      الاستشارات متاحة أيام <b style="color:var(--crimson)">السبت والثلاثاء</b> فقط — باقي أيام الأسبوع محجوزة.</p>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px">${weekStrip}</div>
-
-    <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">١ — اختر اليوم</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px">${dateCards}</div>
-
-    <div id="bkSlotsWrap" style="display:none;margin-top:22px">
-      <div style="font-size:12px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">٢ — اختر الوقت</div>
-      <div id="bkSlots" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px"></div>
-    </div>
-
-    <button id="bkConfirmBtn" class="search-btn" onclick="bkConfirm()" disabled
-      style="width:100%;justify-content:center;padding:15px;font-size:16px;border-radius:14px;margin-top:24px">
-      تأكيد الحجز ←</button>
-    <div id="bkMsg" style="margin-top:14px"></div>`;
-}
-
-function bkSelectDate(key){
-  bkSelDate = key; bkSelSlot = null;
-  document.querySelectorAll('.bk-date').forEach(el => {
-    const on = el.dataset.date === key;
-    el.style.borderColor = on ? 'var(--crimson)' : 'rgba(92,15,15,.12)';
-    el.style.background  = on ? 'rgba(92,15,15,.05)' : 'var(--cream)';
-    el.style.color       = on ? 'var(--crimson)' : 'var(--text)';
-  });
-
-  const booked = (window.__trainee && window.__trainee.bookedSlots) || [];
-  const slotsHTML = BK_SLOTS.map(s => {
-    const taken = booked.includes(key + '|' + s.v);
-    return `<div class="bk-slot" data-slot="${s.v}" ${taken ? '' : `onclick="bkSelectSlot('${s.v}')"`}
-      style="padding:13px;border-radius:12px;text-align:center;font-size:15px;font-weight:700;border:1.5px solid rgba(92,15,15,.12);
-      ${taken ? 'background:var(--cream-2);color:var(--muted);cursor:not-allowed;text-decoration:line-through;opacity:.6'
-              : 'background:var(--cream);color:var(--text);cursor:pointer'}">${s.t}${taken ? '<div style="font-size:10px;margin-top:2px">مكتمل</div>' : ''}</div>`;
-  }).join('');
-
-  document.getElementById('bkSlots').innerHTML = slotsHTML;
-  document.getElementById('bkSlotsWrap').style.display = 'block';
-  document.getElementById('bkConfirmBtn').disabled = true;
-}
-
-function bkSelectSlot(v){
-  bkSelSlot = v;
-  document.querySelectorAll('.bk-slot').forEach(el => {
-    const on = el.dataset.slot === v;
-    if (el.style.cursor === 'not-allowed') return;
-    el.style.borderColor = on ? 'var(--crimson)' : 'rgba(92,15,15,.12)';
-    el.style.background  = on ? 'rgba(92,15,15,.05)' : 'var(--cream)';
-    el.style.color       = on ? 'var(--crimson)' : 'var(--text)';
-  });
-  document.getElementById('bkConfirmBtn').disabled = false;
-}
-
-async function bkConfirm(){
-  if (!bkSelDate || !bkSelSlot) return;
-  const t = window.__trainee || {};
-  const name = (t.name || '').trim();
-  const phone = (t.phone || document.getElementById('searchInput').value || '').trim();
-
-  if (!phone){
-    document.getElementById('bkMsg').innerHTML =
-      '<p style="color:#8B1A1A;font-size:14px">لازم تبحث برقم هاتفك أول عشان نربط الحجز فيك.</p>';
-    return;
-  }
-
-  const btn = document.getElementById('bkConfirmBtn');
-  btn.disabled = true; btn.textContent = 'جاري الحجز...';
-
-  let raw = '', httpInfo = '';
-  try {
-    const body = new URLSearchParams({
-      type: 'حجز_استشارة',
-      name: name,
-      phone: phone,
-      date: bkSelDate,
-      time: bkSelSlot
-    });
-
-    const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: body });
-    httpInfo = 'HTTP ' + res.status;
-    raw = await res.text();
-
-    let out;
-    try { out = JSON.parse(raw); }
-    catch (e) { throw new Error('bad_response'); }
-
-    if (out && out.ok){
-      const d = new Date(bkSelDate + 'T00:00:00');
-      document.getElementById('bookingPanel').innerHTML = `
-        <div style="text-align:center;padding:20px 8px">
-          <div style="width:84px;height:84px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="#2e7d32"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-          </div>
-          <div style="font-size:22px;font-weight:900;color:var(--text);margin-bottom:8px">تم تأكيد حجزك ✅</div>
-          <div style="font-size:16px;color:var(--text);font-weight:700;margin-bottom:4px">${bkLabel(d)}</div>
-          <div style="font-size:15px;color:var(--muted);margin-bottom:22px">الساعة ${bkSlotText(bkSelSlot)}</div>
-          <a href="https://wa.me/96597999768?text=${encodeURIComponent('السلام عليكم، أنا ' + name + ' — حجزت استشارة يوم ' + bkLabel(d) + ' الساعة ' + bkSlotText(bkSelSlot))}"
-            target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:800;padding:13px 30px;border-radius:100px;text-decoration:none">
-            تواصل مع عتيق للتأكيد</a>
-        </div>`;
-      document.getElementById('bookingWrap').scrollIntoView({ behavior:'smooth', block:'nearest' });
-    } else if (out && out.taken){
-      if (window.__trainee){
-        window.__trainee.bookedSlots = window.__trainee.bookedSlots || [];
-        window.__trainee.bookedSlots.push(bkSelDate + '|' + bkSelSlot);
-      }
-      document.getElementById('bkMsg').innerHTML =
-        '<p style="color:#B85C00;font-size:14px;font-weight:700">هذا الموعد مكتمل — اختر وقت ثاني.</p>';
-      btn.textContent = 'تأكيد الحجز ←';
-      bkSelectDate(bkSelDate);
-    } else {
-      throw new Error('not_ok');
+function render(){
+  const R=document.getElementById('result');
+  if(!DATA||!DATA.found){R.innerHTML=notFoundHTML(DATA&&DATA.message||'لم يُعثر على بياناتك');R.classList.add('show');return;}
+  const d=DATA,p=d.progress;
+  const passed=p.done>=p.total&&p.total>0;
+  const pill=passed?'<span class="tpill"><span class="dot dot-on"></span>أكمل خطته</span>':'<span class="tpill"><span class="dot dot-prog"></span>قيد التقدّم</span>';
+  const firstCurrent=d.courses.findIndex(c=>c.status!=='done');
+  const steps=d.courses.map((c,i)=>{
+    const isLast=i===d.courses.length-1;
+    let cls,inner,tag;
+    if(c.status==='done'){
+      cls='done';
+      inner='<svg viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+      tag='<span class="step-tag tag-done">تم الإنجاز ✓</span>';
+    }else if(c.status==='scheduled'){
+      cls=(i===firstCurrent)?'current':'none';
+      inner=toAr(i+1);
+      tag='<span class="step-tag tag-sched">تبدأ في '+dateLabel(c.value)+'</span>';
+    }else{
+      cls=(i===firstCurrent)?'current':'none';
+      inner=toAr(i+1);
+      tag='<span class="step-tag tag-none">لم تبدأ بعد</span>';
     }
-  } catch (err){
-    const dbg = (raw || ('لا يوجد رد — ' + err.message)).toString().slice(0, 600);
-    document.getElementById('bkMsg').innerHTML =
-      '<p style="color:#8B1A1A;font-size:14px;font-weight:700;margin-bottom:8px">تعذّر إتمام الحجز.</p>' +
-      '<div style="font-size:12px;color:var(--muted);margin-bottom:4px">رد السيرفر (' + httpInfo + '):</div>' +
-      '<pre style="background:var(--cream-2);border:1.5px solid rgba(92,15,15,.1);border-radius:10px;padding:12px;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left;max-height:200px;overflow:auto">' +
-      dbg.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
-    btn.disabled = false; btn.textContent = 'تأكيد الحجز ←';
-  }
+    const lineColor=c.status==='done'?'var(--green)':'rgba(92,15,15,.1)';
+    const vline=isLast?'':'<div class="vline" style="background:'+lineColor+'"></div>';
+    const nameCls=(c.status==='none')?'step-name muted':'step-name';
+    return '<div class="step"><div class="step-left"><div class="circle '+cls+'">'+inner+'</div>'+vline+'</div>'+
+      '<div class="step-content"><div class="'+nameCls+'">'+esc(c.name)+'</div>'+tag+'</div></div>';
+  }).join('');
+  R.innerHTML=
+    '<div class="tcard"><div class="tcard-top">'+
+      '<div class="tavatar">'+esc(initials(d.name))+'</div>'+
+      '<div class="tname">'+esc(d.name)+'</div>'+
+      '<div class="tsub">'+(d.batch?('الدفعة '+toAr(d.batch)+' — '):'')+'معهد تمكين</div>'+pill+
+    '</div>'+
+    '<div class="tprog"><div class="tprog-track"><div class="tprog-fill" style="width:0%"></div></div></div>'+
+    '<div class="tcard-bottom">'+
+      '<div><div class="tc-n">'+toAr(p.pct)+'%</div><div class="tc-l">نسبة الإنجاز</div></div>'+
+      '<div><div class="tc-n">'+toAr(p.done)+'/'+toAr(p.total)+'</div><div class="tc-l">الدورات المكتملة</div></div>'+
+    '</div></div>'+
+    '<div class="path"><div class="path-head">مسارك التدريبي</div><div class="path-body">'+steps+'</div></div>';
+  R.classList.add('show');
+  setTimeout(()=>{const f=R.querySelector('.tprog-fill');if(f)f.style.width=p.pct+'%';},100);
+  R.scrollIntoView({behavior:'smooth',block:'start'});
 }
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
 </script>
-
-
-<!-- سكريبت اختبار الدورة -->
-<script>
-const qQuestions = [
-  { text:"هل لديك هدف تعليمي واضح لدورتك؟", options:[{text:"نعم، محدد وقابل للقياس",score:3},{text:"نعم، لكنه عام",score:2},{text:"لا يوجد هدف واضح",score:0}] },
-  { text:"هل محتوى دورتك مقسّم إلى وحدات أو مراحل؟", options:[{text:"نعم، مقسّم بشكل منظم",score:3},{text:"مقسّم جزئياً",score:1},{text:"لا، المحتوى غير مقسّم",score:0}] },
-  { text:"هل تستخدم أساليب تدريب متنوعة؟", options:[{text:"نعم، أكثر من ٣ أساليب",score:3},{text:"أسلوبين فقط",score:1},{text:"أسلوب واحد فقط",score:0}] },
-  { text:"هل لديك آلية لقياس نتائج المتدربين؟", options:[{text:"نعم، اختبارات أو تقييم عملي",score:3},{text:"تقييم غير رسمي فقط",score:1},{text:"لا يوجد تقييم",score:0}] },
-  { text:"هل دورتك تحتوي على أنشطة تفاعلية؟", options:[{text:"نعم، أنشطة متعددة",score:3},{text:"نشاط واحد فقط",score:1},{text:"لا يوجد",score:0}] },
-  { text:"هل لديك مواد داعمة للمتدربين؟", options:[{text:"نعم، مذكرات وملفات كاملة",score:3},{text:"مواد جزئية",score:1},{text:"لا يوجد",score:0}] },
-  { text:"هل دورتك معتمدة من جهة رسمية؟", options:[{text:"نعم، معتمدة",score:3},{text:"قيد الاعتماد",score:1},{text:"غير معتمدة",score:0}] },
-  { text:"هل قدّمت دورتك من قبل وجمعت تغذية راجعة؟", options:[{text:"نعم، وطوّرتها بناءً عليها",score:3},{text:"قدّمتها لكن بدون تغذية راجعة",score:1},{text:"لم أقدمها بعد",score:0}] }
-];
-const qFeedback = [
-  { good:"هدفك التعليمي واضح ومحدد — هذا أساس كل دورة ناجحة", warn:"هدفك العام يحتاج تحديد أكثر", bad:"غياب الهدف يضعف دورتك — ابدأ بتحديد هدف SMART واضح" },
-  { good:"تقسيم المحتوى ممتاز — يسهّل الفهم ويرفع الاحتراف", warn:"تقسيم المحتوى جزئي — أكمل تنظيمه في وحدات واضحة", bad:"محتوى غير مقسّم = تجربة فوضوية للمتدرب" },
-  { good:"تنوع الأساليب يرفع مستوى التفاعل والاستيعاب", warn:"أضف أسلوباً ثالثاً على الأقل لتجنب الرتابة", bad:"أسلوب واحد يضعف الانتباه — نوّع بين المحاضرة والنقاش والتطبيق" },
-  { good:"وجود التقييم يثبت قيمة دورتك ويزيد مصداقيتها", warn:"حوّل تقييمك غير الرسمي لأداة قياس واضحة", bad:"بدون تقييم لا تعرف هل المتدرب استفاد أم لا" },
-  { good:"الأنشطة التفاعلية تضاعف الاستيعاب والرضا", warn:"أضف أنشطة أكثر — حتى ورقة عمل بسيطة تفرق", bad:"دورة بدون تفاعل = محاضرة — المتدربون يحتاجون التطبيق" },
-  { good:"المواد الداعمة تعطي المتدرب قيمة تستمر بعد الدورة", warn:"أكمل مواد الدورة — المذكرة الجيدة تفرق كثيراً", bad:"المواد الداعمة أساسية — ابدأ بمذكرة بسيطة على الأقل" },
-  { good:"الاعتماد الرسمي يفتح لك أبواباً كثيرة", warn:"الاعتماد قيد التنفيذ — أكمله قريباً", bad:"الاعتماد يرفع قيمتك — معهد تمكين يساعدك في ذلك" },
-  { good:"التطوير المستمر بناءً على الملاحظات يميزك عن غيرك", warn:"استخدم تجربتك السابقة لجمع ملاحظات وطوّر دورتك", bad:"أول تقديم مهم — خطّط له جيداً وجمّع ملاحظات بعده" }
-];
-
-let qCurrent=0, qScores=[], qSelected=null, qName='', qPhone='';
-
-function quizInit(){
-  document.getElementById('quizStart').style.display='none';
-  document.getElementById('quizBody').style.display='block';
-  qLoadQuestion(0);
-}
-
-function qLoadQuestion(idx){
-  qSelected=null;
-  document.getElementById('qNextBtn').disabled=true;
-  const q=qQuestions[idx], total=qQuestions.length, pct=Math.round((idx/total)*100);
-  document.getElementById('qNum').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
-  document.getElementById('qProgressText').textContent='السؤال '+toAr(idx+1)+' من '+toAr(total);
-  document.getElementById('qProgressPct').textContent=toAr(pct)+'٪';
-  document.getElementById('qProgressFill').style.width=pct+'%';
-  document.getElementById('qText').textContent=q.text;
-  const wrap=document.getElementById('qOptions'); wrap.innerHTML='';
-  q.options.forEach((opt,i)=>{
-    const div=document.createElement('div');
-    div.style.cssText='background:var(--cream);border:1.5px solid rgba(92,15,15,.08);border-radius:14px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;font-size:15px;font-weight:600;color:var(--text);transition:all .2s';
-    div.innerHTML='<div style="width:20px;height:20px;min-width:20px;border-radius:50%;border:2px solid rgba(92,15,15,.2);display:flex;align-items:center;justify-content:center" id="qdot'+i+'"></div><span>'+opt.text+'</span>';
-    div.onclick=()=>qSelectOption(i); div.id='qopt'+i; wrap.appendChild(div);
-  });
-}
-
-function qSelectOption(idx){
-  qQuestions[qCurrent].options.forEach((_,i)=>{
-    const el=document.getElementById('qopt'+i), dot=document.getElementById('qdot'+i);
-    el.style.borderColor='rgba(92,15,15,.08)'; el.style.background='var(--cream)'; el.style.color='var(--text)';
-    dot.innerHTML=''; dot.style.background='';
-  });
-  const sel=document.getElementById('qopt'+idx), dot=document.getElementById('qdot'+idx);
-  sel.style.borderColor='var(--crimson)'; sel.style.background='rgba(92,15,15,.04)'; sel.style.color='var(--crimson)';
-  dot.style.background='var(--crimson)'; dot.innerHTML='<div style="width:8px;height:8px;background:#fff;border-radius:50%"></div>';
-  qSelected=idx; document.getElementById('qNextBtn').disabled=false;
-}
-
-function qNext(){
-  qScores.push(qQuestions[qCurrent].options[qSelected].score);
-  qCurrent++;
-  if(qCurrent<qQuestions.length){ qLoadQuestion(qCurrent); }
-  else {
-    document.getElementById('qProgressFill').style.width='100%';
-    document.getElementById('qProgressPct').textContent='١٠٠٪';
-    document.getElementById('qStepQuiz').style.display='none';
-    document.getElementById('qStepLead').style.display='block';
-    ['qLeadName','qLeadPhone'].forEach(id=>{ document.getElementById(id).addEventListener('input',qCheckLead); });
-  }
-}
-
-function qCheckLead(){
-  const n=document.getElementById('qLeadName').value.trim(), p=document.getElementById('qLeadPhone').value.trim();
-  document.getElementById('qLeadBtn').disabled=!(n.length>2&&p.length>6);
-}
-
-function qShowResult(){
-  qName=document.getElementById('qLeadName').value.trim();
-  const qPhone2=document.getElementById('qLeadPhone').value.trim();
-  document.getElementById('qStepLead').style.display='none';
-  document.getElementById('qProgressWrap').style.display='none';
-  const total=qQuestions.length*3, score=qScores.reduce((a,b)=>a+b,0), pct=Math.round((score/total)*100);
-  let level,color,subtitle;
-  if(pct>=70){ level='دورتك جاهزة للإطلاق ✅'; color='#1A7A3A'; subtitle='دورتك تمتلك مقومات النجاح — مع بعض اللمسات تصبح استثنائية'; }
-  else if(pct>=40){ level='دورتك تحتاج تطوير ⚠️'; color='#B85C00'; subtitle='عندك أساس جيد لكن في نقاط محددة تحتاج تحسين قبل الإطلاق'; }
-  else { level='دورتك تحتاج إعادة بناء 🔧'; color='#8B1A1A'; subtitle='لا بأس — كل مدرب محترف مرّ بهذه المرحلة، والتطوير ممكن'; }
-  saveQuizResult('اختبار', qName, qPhone2, pct + '%', level);
-  let goodHTML='', warnHTML='';
-  qScores.forEach((s,i)=>{
-    const f=qFeedback[i];
-    const txt=s===3?f.good:s===1?f.warn:f.bad;
-    const dc=s===3?'#1A7A3A':s===1?'#B85C00':'#8B1A1A';
-    const item=`<div style="background:var(--cream);border-radius:14px;padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;border:1.5px solid rgba(92,15,15,.06)"><div style="width:8px;height:8px;min-width:8px;border-radius:50%;background:${dc};margin-top:5px"></div><div style="font-size:14px;color:var(--text);font-weight:600">${txt}</div></div>`;
-    if(s===3) goodHTML+=item; else warnHTML+=item;
-  });
-  const waMsg=encodeURIComponent('السلام عليكم، أنا '+qName+' — أكملت تقييم دورتي في تمكين وحصلت على '+pct+'٪. أبي أعرف كيف أطور دورتي');
-  document.getElementById('qStepResult').innerHTML=`
-    <div style="text-align:center;margin-bottom:32px">
-      <div style="width:130px;height:130px;border-radius:50%;border:3px solid ${color};background:${color}18;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px">
-        <div style="font-size:42px;font-weight:900;color:${color};line-height:1">${toAr(pct)}٪</div>
-        <div style="font-size:12px;color:var(--muted)">النتيجة</div>
-      </div>
-      <div style="font-size:clamp(20px,4vw,28px);font-weight:900;color:${color};margin-bottom:8px">${level}</div>
-      <p style="font-size:15px;color:var(--muted);line-height:1.7">${subtitle}</p>
-    </div>
-    ${goodHTML?`<div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin-bottom:12px">نقاط قوتك</div>${goodHTML}`:''}
-    ${warnHTML?`<div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--crimson);text-transform:uppercase;margin:20px 0 12px">ما يحتاج تطوير</div>${warnHTML}`:''}
-    <div style="background:var(--crimson);border-radius:20px;padding:28px;text-align:center;margin-top:24px">
-      <h3 style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px">تبي تطور دورتك مع تمكين؟</h3>
-      <p style="font-size:14px;color:rgba(255,255,255,.65);margin-bottom:20px">عتيق جاهز يساعدك تبني دورة احترافية معتمدة</p>
-      <a href="https://wa.me/96597999768?text=${waMsg}" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:14px 36px;border-radius:100px;text-decoration:none">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        تواصل مع تمكين
-      </a>
-    </div>`;
-  document.getElementById('qStepResult').style.display='block';
-  document.getElementById('qStepResult').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-</script>
-
 </body>
 </html>
