@@ -306,6 +306,7 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
         <div class="gl">حقول إضافية (اختياري)</div>
         <div class="fld"><label>الجهة المستفيدة</label><input id="fBenef" placeholder="مثال: وزارة التربية" oninput="applyExtras()"></div>
         <div class="fld"><label>رقم مرجعي للمستند</label><input id="fRef" placeholder="مثال: TMK-2026-014" oninput="applyExtras()"></div>
+        <div class="fld"><label>رقم التواصل</label><input id="fPhone" value="97999768" oninput="applyExtras()"></div>
       </div>
 
       <div class="row">
@@ -670,7 +671,7 @@ function printRow(idx){
     '<div class="pdoc">'+
       '<div class="pdoc-head" id="secLogoRow">'+logoHtml(true)+
         '<div class="org"><h1 class="ed" contenteditable="true">معهد تمكين</h1>'+
-        '<p class="ed" contenteditable="true">إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: 97999768</p></div>'+
+        '<p class="ed" contenteditable="true">إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: <span id="vPhone">97999768</span></p></div>'+
       '</div>'+
       '<div class="pdoc-title ed" contenteditable="true">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
       '<div class="pdoc-meta">'+
@@ -735,6 +736,8 @@ function applyExtras(){
   if($('rowBenef')){ $('rowBenef').style.display = b ? 'flex' : 'none'; $('vBenef').textContent=b; }
   var rf=($('fRef').value||'').trim();
   if($('rowRef')){ $('rowRef').style.display = rf ? 'flex' : 'none'; $('vRef').textContent=rf; }
+  var ph=($('fPhone') && $('fPhone').value.trim()) || '97999768';
+  if($('vPhone')){ $('vPhone').textContent = ph; }
 }
 
 async function downloadPdf(){
