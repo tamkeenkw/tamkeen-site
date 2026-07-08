@@ -900,7 +900,7 @@ async function init(){
   initPlanRows();
 }
 async function refreshAll(){
-  loadBookings(); loadMaterials(); loadAttendance(); loadJoins();
+  loadBookings(); loadMaterials(); loadAttendance(); loadJoins(); if(document.getElementById('cvList')) loadCVs();
 }
 
 /* ============ طلبات الحجز ============ */
