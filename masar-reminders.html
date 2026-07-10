@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التذكيرات — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515;
+  --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060; --white:#fff;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --blue:#1565C0; --blue-bg:#E3F2FD;
+  --yellow:#F57F17; --yellow-bg:#FFF9C4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--crimson);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header-logo{display:flex;align-items:center;gap:12px;}
+.header-logo-text{font-size:20px;font-weight:900;color:#fff;}
+.header-logo-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:2px;}
+.header-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);}
+
+/* MAIN */
+.main{max-width:920px;margin:0 auto;padding:32px 20px;}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.tab{padding:10px 20px;border-radius:100px;font-size:14px;font-weight:800;cursor:pointer;border:1.5px solid rgba(92,15,15,.1);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;transition:all .15s;}
+.tab.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+
+/* CARD */
+.card{background:#fff;border-radius:20px;padding:26px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);margin-bottom:22px;}
+.card-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title span{font-size:20px;}
+
+/* SELECT */
+.msel{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:13px 15px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;color:var(--text);outline:none;cursor:pointer;transition:border .2s;}
+.msel:focus{border-color:var(--crimson);background:#fff;}
+
+/* COURSE CARDS */
+.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.course-grid{grid-template-columns:1fr;}}
+.course-card{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:16px;padding:18px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.course-card:hover{border-color:var(--crimson);box-shadow:0 6px 20px rgba(92,15,15,.1);transform:translateY(-2px);}
+.course-card.active{border-color:var(--crimson);background:linear-gradient(180deg,#fff,#FDF6F6);box-shadow:0 6px 20px rgba(92,15,15,.12);}
+.cc-name{font-size:15px;font-weight:900;color:var(--text);margin-bottom:10px;line-height:1.4;}
+.cc-meta{display:flex;flex-direction:column;gap:5px;}
+.cc-line{font-size:12.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;}
+.cc-mode{display:inline-block;margin-top:10px;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:800;}
+.cc-mode.online{background:var(--blue-bg);color:var(--blue);}
+.cc-mode.onsite{background:var(--green-bg);color:var(--green);}
+
+/* STUDENTS */
+.results-header{padding:0 0 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.results-title{font-size:16px;font-weight:900;color:var(--text);}
+.results-count{font-size:13px;font-weight:700;color:var(--muted);margin-top:2px;}
+.remind-btn{background:#25D366;color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;padding:12px 22px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.remind-btn:hover{opacity:.9;transform:translateY(-1px);}
+.remind-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.table-wrap{overflow-x:auto;border-top:1px solid rgba(92,15,15,.06);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--cream);padding:12px 16px;text-align:right;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1px;border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
+td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(92,15,15,.02);}
+.row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
+.name-row{display:flex;align-items:center;gap:10px;}
+
+/* EMPTY / LOADING */
+.empty{text-align:center;padding:44px 20px;}
+.empty-icon{font-size:38px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--muted);}
+.loading{text-align:center;padding:40px;}
+.loading-dots{display:inline-flex;gap:6px;}
+.loading-dots span{width:9px;height:9px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,8,8,.5);z-index:9998;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:22px;max-width:460px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:600;}
+.preview-box{background:#075E54;border-radius:14px;padding:16px;margin-bottom:8px;}
+.preview-bubble{background:#DCF8C6;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13px;line-height:1.85;color:#1A2E1A;white-space:pre-wrap;font-weight:600;direction:rtl;}
+.preview-note{font-size:11px;color:var(--muted);text-align:center;margin:8px 0 18px;font-weight:600;}
+.modal-actions{display:flex;gap:10px;}
+.mbtn{flex:1;padding:13px;border-radius:100px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;border:none;transition:all .2s;}
+.mbtn-cancel{background:var(--cream-2);color:var(--muted);}
+.mbtn-send{background:#25D366;color:#fff;}
+.mbtn-send:hover{opacity:.9;}
+.mbtn-cancel:hover{background:#E8E0D4;}
+
+/* TOAST */
+.toast{display:none;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:800;margin-top:14px;}
+
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* WIP banner */
+.wip{background:var(--yellow-bg);border:1.5px solid rgba(245,127,23,.25);border-radius:14px;padding:14px 18px;margin-bottom:22px;font-size:13px;font-weight:700;color:#8a5a00;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <div>
+      <div class="header-logo-text">أكاديمية مسار</div>
+      <div class="header-logo-sub">TAMKEEN EDUCLOUD</div>
+    </div>
+  </div>
+  <div class="header-badge">لوحة التذكيرات</div>
+</div>
+
+<div class="main">
+
+  <div class="tabs">
+    <button class="tab on" id="tab1" onclick="switchTab(1)">📅 جدول الدورات</button>
+  </div>
+
+  <!-- TAB 1: جدول الدورات -->
+  <div id="tabContent1">
+
+    <div class="wip">
+      ⏳ <b>ملاحظة:</b> عرض الشهر والدورات والمسجّلين يعمل الآن من شيت مسار مباشرة. زر «تذكير الكل» يعرض معاينة الرسالة — والإرسال الفعلي عبر ManyChat يُفعّل في الخطوة القادمة.
+    </div>
+
+    <!-- MONTH SELECT -->
+    <div class="card">
+      <div class="card-title"><span>🗓️</span> اختر الشهر</div>
+      <select class="msel" id="monthSelect" onchange="renderCourses()">
+        <option value="">جاري تحميل الدورات...</option>
+      </select>
+    </div>
+
+    <!-- COURSES -->
+    <div class="card" id="coursesCard" style="display:none;">
+      <div class="card-title"><span>📚</span> الدورات التدريبية</div>
+      <div class="course-grid" id="courseGrid"></div>
+      <div class="empty" id="coursesEmpty" style="display:none;">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">لا توجد دورات في هذا الشهر</div>
+        <div class="empty-sub">جرّب اختيار شهر آخر</div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="card" id="studentsCard" style="display:none;">
+      <div class="results-header">
+        <div>
+          <div class="results-title" id="stTitle">—</div>
+          <div class="results-count" id="stCount">—</div>
+        </div>
+        <button class="remind-btn" id="remindBtn" onclick="openReminderPreview()" disabled>
+          <span id="remindTxt">📲 تذكير الكل</span>
+          <div class="spinner" id="remindSpinner"></div>
+        </button>
+      </div>
+      <div id="stLoading" class="loading" style="display:none;">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="table-wrap" id="stTableWrap" style="display:none;">
+        <table>
+          <thead><tr><th style="width:44px;">#</th><th>الاسم</th><th>الواتساب</th></tr></thead>
+          <tbody id="stBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="stEmpty" style="display:none;">
+        <div class="empty-icon">👥</div>
+        <div class="empty-title">لا يوجد مسجّلون في هذه الدورة</div>
+        <div class="empty-sub">تحقق من اسم الدورة في الشيت</div>
+      </div>
+      <div class="toast" id="stToast"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- REMINDER PREVIEW MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-title">📲 معاينة التذكير</div>
+    <div class="modal-sub" id="modalSub">سيُرسل هذا التذكير للمسجّلين</div>
+    <div class="preview-box">
+      <div class="preview-bubble" id="previewBubble"></div>
+    </div>
+    <div class="preview-note">👆 نموذج بالاسم الأول — كل متدرب يستلم رسالته باسمه</div>
+    <div class="modal-actions">
+      <button class="mbtn mbtn-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="mbtn mbtn-send" onclick="confirmSend()">تأكيد الإرسال ←</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+
+/* أرقام عربية */
+function toA(n){return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+
+/* أشهر */
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MONTH_ALIASES = {'ابريل':'أبريل','اغسطس':'أغسطس','اكتوبر':'أكتوبر','مايو':'مايو'};
+
+/* استخراج الشهر من نص التاريخ */
+function detectMonth(dateStr){
+  if(!dateStr) return 'أخرى';
+  let s = String(dateStr);
+  for(const m of MONTHS){ if(s.indexOf(m)>-1) return m; }
+  for(const a in MONTH_ALIASES){ if(s.indexOf(a)>-1) return MONTH_ALIASES[a]; }
+  // محاولة قراءة تاريخ رقمي مثل 2026-07-15 أو 15/7/2026
+  const digits = s.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  let mm = null;
+  let iso = digits.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if(iso) mm = parseInt(iso[2]);
+  else { let dmy = digits.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})/); if(dmy) mm = parseInt(dmy[2]); }
+  if(mm && mm>=1 && mm<=12) return MONTHS[mm-1];
+  return 'أخرى';
+}
+
+/* نظام الحضور */
+function attendMode(course){
+  const z = (course.zoom||'').trim();
+  if(z) return {label:'🖥️ أونلاين', cls:'online', line:'🖥️ أونلاين (زوم)', link:z};
+  return {label:'📍 حضوري', cls:'onsite', line:'📍 حضوري', link:''};
+}
+
+let coursesData = [];      // كل الدورات
+let coursesByMonth = {};   // شهر → [دورات]
+let currentCourse = null;  // الدورة المختارة
+let currentStudents = [];  // مسجّلو الدورة الحالية
+
+/* تحميل الدورات */
+async function loadCourses(){
+  try{
+    const [r1,r2] = await Promise.all([
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'))
+    ]);
+    const [d1,d2] = await Promise.all([r1.json(), r2.json()]);
+    coursesData = [...(d1.courses||[]), ...(d2.courses||[])];
+
+    // تجميع حسب الشهر
+    coursesByMonth = {};
+    coursesData.forEach(c=>{
+      const m = detectMonth(c.date);
+      (coursesByMonth[m] = coursesByMonth[m] || []).push(c);
+    });
+
+    // بناء قائمة الأشهر (بالترتيب)
+    const present = MONTHS.filter(m=>coursesByMonth[m]);
+    if(coursesByMonth['أخرى']) present.push('أخرى');
+
+    const sel = document.getElementById('monthSelect');
+    if(present.length===0){
+      sel.innerHTML='<option value="">لا توجد دورات منشورة</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="__all">كل الأشهر ('+toA(coursesData.length)+')</option>' +
+      present.map(m=>'<option value="'+m+'">'+m+' ('+toA(coursesByMonth[m].length)+')</option>').join('');
+    // اختيار افتراضي: كل الأشهر
+    sel.value='__all';
+    renderCourses();
+  }catch(err){
+    document.getElementById('monthSelect').innerHTML='<option value="">خطأ في تحميل الدورات</option>';
+  }
+}
+
+/* عرض الدورات حسب الشهر */
+function renderCourses(){
+  const m = document.getElementById('monthSelect').value;
+  if(!m) return;
+  const list = (m==='__all') ? coursesData : (coursesByMonth[m]||[]);
+
+  document.getElementById('coursesCard').style.display='block';
+  document.getElementById('studentsCard').style.display='none';
+  currentCourse=null;
+
+  const grid = document.getElementById('courseGrid');
+  const empty = document.getElementById('coursesEmpty');
+  if(list.length===0){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  grid.innerHTML = list.map((c,i)=>{
+    const mode = attendMode(c);
+    const gi = coursesData.indexOf(c);
+    return `<div class="course-card" data-gi="${gi}" onclick="openCourse(${gi}, this)">
+      <div class="cc-name">${c.name||'—'}</div>
+      <div class="cc-meta">
+        ${c.date?`<div class="cc-line">📅 ${c.date}</div>`:''}
+        ${c.time?`<div class="cc-line">⏰ ${c.time}</div>`:''}
+        ${c.trainer?`<div class="cc-line">👤 ${c.trainer}</div>`:''}
+      </div>
+      <span class="cc-mode ${mode.cls}">${mode.label}</span>
+    </div>`;
+  }).join('');
+}
+
+/* فتح دورة → جلب المسجّلين */
+async function openCourse(gi, el){
+  const c = coursesData[gi];
+  currentCourse = c;
+
+  document.querySelectorAll('.course-card').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  document.getElementById('studentsCard').style.display='block';
+  document.getElementById('stTitle').textContent = c.name;
+  document.getElementById('stCount').textContent = 'جاري التحميل...';
+  document.getElementById('stTableWrap').style.display='none';
+  document.getElementById('stEmpty').style.display='none';
+  document.getElementById('stLoading').style.display='block';
+  document.getElementById('remindBtn').disabled=true;
+  document.getElementById('stToast').style.display='none';
+  document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  try{
+    const url = SCRIPT_URL+'?action=getStudents&course='+encodeURIComponent(c.name)+'&date='+encodeURIComponent(c.date||'');
+    const res = await fetch(url);
+    const data = await res.json();
+    document.getElementById('stLoading').style.display='none';
+
+    currentStudents = (data.students||[]).filter(s=>s.phone);
+    if(currentStudents.length===0){
+      document.getElementById('stCount').textContent='لا يوجد مسجّلون';
+      document.getElementById('stEmpty').style.display='block';
+      return;
+    }
+    renderStudents(currentStudents);
+  }catch(err){
+    document.getElementById('stLoading').style.display='none';
+    document.getElementById('stCount').textContent='خطأ في التحميل';
+    document.getElementById('stEmpty').style.display='block';
+  }
+}
+
+function renderStudents(students){
+  document.getElementById('stCount').textContent = toA(students.length)+' مسجّل';
+  const body = document.getElementById('stBody');
+  body.innerHTML = students.map((s,i)=>{
+    const initial = s.name ? s.name.charAt(0) : '؟';
+    return `<tr>
+      <td class="row-num">${toA(i+1)}</td>
+      <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
+      <td style="font-family:monospace;font-size:13px;letter-spacing:1px;direction:ltr;text-align:right;">${s.phone||'—'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('stTableWrap').style.display='block';
+  document.getElementById('remindBtn').disabled=false;
+}
+
+/* بناء نص الرسالة لمتدرب */
+function buildMessage(name){
+  const c = currentCourse;
+  const mode = attendMode(c);
+  const modeLine = mode.link ? (mode.line+'\nالرابط: '+mode.link) : mode.line;
+  return `🌿 معهد تمكين — تذكير بدورتك
+
+عزيزنا ${name}،
+نذكّرك بدورة: ${c.name}
+
+📅 التاريخ: ${c.date||'—'}
+⏰ الوقت: ${c.time||'—'}
+${modeLine}
+
+لتأكيد حضورك، رد بكلمة: حاضر ✅`;
+}
+
+/* معاينة التذكير */
+function openReminderPreview(){
+  if(!currentCourse || currentStudents.length===0) return;
+  const sample = currentStudents[0].name || 'المتدرب';
+  document.getElementById('previewBubble').textContent = buildMessage(sample);
+  document.getElementById('modalSub').textContent = 'سيُرسل هذا التذكير لـ '+toA(currentStudents.length)+' مسجّل في «'+currentCourse.name+'»';
+  document.getElementById('modalBg').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+
+/* تأكيد الإرسال — سيُربط بـ ManyChat في الخطوة القادمة */
+function confirmSend(){
+  closeModal();
+  stToast('⏳ الإرسال الفعلي عبر ManyChat يُفعّل في الخطوة القادمة (نحتاج ربط الـ API). المعاينة والبيانات جاهزة ✅','w');
+}
+
+function stToast(msg,type){
+  const t=document.getElementById('stToast');
+  const colors={s:'background:#E8F5E9;color:#2E7D32;',w:'background:#FFF9C4;color:#8a5a00;',e:'background:#FFEBEE;color:#C62828;'};
+  t.style.cssText='display:block;'+(colors[type]||colors.s);
+  t.className='toast'; t.style.padding='12px 18px'; t.style.borderRadius='12px';
+  t.style.fontSize='13.5px'; t.style.fontWeight='800'; t.style.marginTop='14px';
+  t.textContent=msg;
+}
+
+function switchTab(n){ /* تبويب واحد حالياً */ }
+
+/* إغلاق المودال بالضغط خارجه */
+document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
+
+loadCourses();
+</script>
+
+</body>
+</html>
