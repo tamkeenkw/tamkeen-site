@@ -491,7 +491,7 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
     <div class="modal-info-row">
       <div class="modal-info-chip">👤 <span id="modalTrainer"></span></div>
       <div class="modal-info-chip">📅 <span id="modalDate"></span></div>
-      <div class="modal-info-chip">🕔 <span id="modalTime"></span></div>
+      <div class="modal-info-chip">🕔 ٥:٠٠ م</div>
     </div>
     <input type="hidden" id="courseNameInput">
     <input type="hidden" id="courseDateInput">
@@ -559,6 +559,10 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
           </label>
         </div>
         <div class="err">يرجى اختيار إجابة</div>
+      </div>
+      <div style="background:var(--cream);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.7;border:1.5px solid rgba(92,15,15,.08);display:flex;align-items:flex-start;gap:9px;">
+        <span style="font-size:15px;flex-shrink:0;line-height:1.4;">✅</span>
+        <span>بتسجيلي في الدورة، أوافق على استقبال إشعارات وتذكيرات الدورات عبر <b style="color:var(--crimson);">واتساب</b> من معهد تمكين — مثل تذكير موعد الدورة، الوقت، ورابط الحضور.</span>
       </div>
       <button type="submit" class="modal-submit" id="cBtn">
         <span id="cBtnTxt">سجّل الآن</span>
@@ -766,12 +770,11 @@ function selectPlan(plan, el) {
   document.getElementById('subForm').style.display = '';
 }
 
-function openCourseModal(course, trainer, date, time) {
+function openCourseModal(course, trainer, date) {
   document.getElementById('modalCourseTag').textContent = 'دورة مجانية — ' + date;
   document.getElementById('modalCourseTitle').textContent = course;
   document.getElementById('modalTrainer').textContent = trainer;
   document.getElementById('modalDate').textContent = date;
-  document.getElementById('modalTime').textContent = time || '';
   document.getElementById('courseNameInput').value = course;
   document.getElementById('courseDateInput').value = date;
   document.getElementById('step1Phone').value = '';
@@ -1086,7 +1089,7 @@ async function loadFreeCourses() {
             ${modeTag}
           </div>
           ${locationInfo}
-          <button class="course-register-btn" onclick="openCourseModal('${c.name}','${c.trainer}','${dateLabel}','${c.time}')">سجّل مجاناً</button>
+          <button class="course-register-btn" onclick="openCourseModal('${c.name}','${c.trainer}','${dateLabel}')">سجّل مجاناً</button>
         </div>
       </div>`;
     }).join('');
