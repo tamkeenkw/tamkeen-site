@@ -146,6 +146,15 @@ tr:hover td{background:rgba(92,15,15,.02);}
 .result-ok{background:var(--green-bg);border-radius:16px;padding:26px;text-align:center;border:1.5px solid rgba(46,125,50,.15);}
 .result-ok a{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;padding:11px 26px;border-radius:100px;text-decoration:none;margin-top:10px;}
 
+/* ===== CERT LIBRARY ===== */
+.lib-toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.lib-toolbar .msel{max-width:none;flex:1;min-width:200px;}
+.lib-search{flex:1;min-width:200px;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14.5px;color:var(--text);outline:none;}
+.lib-search:focus{border-color:var(--crimson);background:#fff;}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;padding:7px 14px;border-radius:100px;text-decoration:none;white-space:nowrap;}
+.dl-btn:hover{opacity:.9;}
+.dl-none{color:var(--muted);font-size:12.5px;}
+
 /* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(26,8,8,.5);z-index:9998;align-items:center;justify-content:center;padding:20px;}
 .modal-bg.show{display:flex;}
@@ -207,6 +216,10 @@ tr:hover td{background:rgba(92,15,15,.02);}
         <div class="tab" data-tab="certs" onclick="switchTab('certs')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"/></svg>
           تصدير الشهادات
+        </div>
+        <div class="tab" data-tab="library" onclick="switchTab('library')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 5h11v15H6a2 2 0 01-2-2z"/><path d="M15 5h3a2 2 0 012 2v13H15z"/><path d="M7 9h5M7 12h5"/></svg>
+          مكتبة الشهادات
         </div>
       </div>
     </div>
@@ -385,6 +398,29 @@ tr:hover td{background:rgba(92,15,15,.02);}
 
       </div>
 
+      <!-- ===== مكتبة الشهادات ===== -->
+      <div class="view" id="view-library">
+        <div class="card">
+          <div class="card-title"><span>📚</span> مكتبة الشهادات<span id="libCount" style="font-size:12.5px;font-weight:700;color:var(--muted);"></span></div>
+          <div class="lib-toolbar">
+            <select class="msel" id="libCourseFilter" onchange="renderLibrary()"><option value="">كل الدورات</option></select>
+            <input class="lib-search" id="libSearch" placeholder="ابحث باسم العميل أو رقمه..." oninput="renderLibrary()">
+          </div>
+          <div id="libLoading" class="loading" style="display:none;">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="table-wrap" id="libTableWrap" style="display:none;">
+            <table>
+              <thead><tr>
+                <th style="width:40px;">#</th><th>اسم العميل</th><th>رقم العميل</th><th>اسم الدورة</th><th>تاريخ الإصدار</th><th>رقم المادة</th><th>الشهادة</th>
+              </tr></thead>
+              <tbody id="libBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="libEmpty" style="display:none;"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -406,6 +442,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
 <script>
 /* ================== الإعدادات ================== */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+const LIB_URL = 'https://script.google.com/macros/s/AKfycbyyQ23LWvMC8-UIDIUi-An3jxdK5zvy7hJE9CGqPkuPa65npbXicBMX5LavmIEWEzO_ow/exec';
 const OP_PASSWORD = 'masar@12';   // الرقم السري لدخول الصفحة
 const SESSION_KEY = 'masarOpAuth';
 
@@ -460,6 +497,7 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
   if(name==='reminders') ensureCourses();
   if(name==='certs') ensureCertCourses();
+  if(name==='library') ensureLibrary();
   window.scrollTo(0,0);
 }
 
@@ -900,6 +938,66 @@ async function issueCertificates(){
     document.getElementById('issueCertTxt').style.display='block';
     document.getElementById('issueCertSpinner').style.display='none';
   }
+}
+
+/* ================== مكتبة الشهادات ================== */
+let libLoaded=false;
+let libData=[];
+function ensureLibrary(){ if(libLoaded){return;} libLoaded=true; loadLibrary(); }
+
+async function loadLibrary(){
+  document.getElementById('libLoading').style.display='block';
+  document.getElementById('libTableWrap').style.display='none';
+  document.getElementById('libEmpty').style.display='none';
+  try{
+    const res=await fetch(LIB_URL+'?action=getCertLibrary');
+    const data=await res.json();
+    document.getElementById('libLoading').style.display='none';
+    if(!data || !Array.isArray(data.certs)){
+      showLibMsg('⚠️','لم يُفعّل رابط المكتبة بعد','أضف كود «مكتبة الشهادات» في Apps Script ثم أعد النشر.');
+      return;
+    }
+    libData=data.certs;
+    const courses=[...new Set(libData.map(c=>c.course).filter(Boolean))].sort();
+    const sel=document.getElementById('libCourseFilter');
+    sel.innerHTML='<option value="">كل الدورات ('+toA(libData.length)+')</option>'+courses.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+    renderLibrary();
+  }catch(err){
+    document.getElementById('libLoading').style.display='none';
+    showLibMsg('⚠️','تعذّر الاتصال','تأكد من رابط السكريبت أو الشبكة.');
+  }
+}
+
+function showLibMsg(icon,title,sub){
+  const e=document.getElementById('libEmpty');
+  document.getElementById('libTableWrap').style.display='none';
+  e.style.display='block';
+  e.innerHTML='<div class="empty-icon">'+icon+'</div><div class="empty-title">'+title+'</div>'+(sub?'<div class="empty-sub">'+sub+'</div>':'');
+}
+
+function renderLibrary(){
+  const course=document.getElementById('libCourseFilter').value;
+  const q=(document.getElementById('libSearch').value||'').trim();
+  const qd=q.replace(/\D/g,'');
+  let list=libData.slice();
+  if(course) list=list.filter(c=>c.course===course);
+  if(q) list=list.filter(c=> (c.name||'').includes(q) || (qd && String(c.phone||'').replace(/\D/g,'').includes(qd)) );
+  document.getElementById('libCount').textContent=' — '+toA(list.length)+' شهادة';
+  if(list.length===0){ showLibMsg('📭','لا توجد شهادات مطابقة','جرّب دورة أخرى أو امسح البحث'); return; }
+  document.getElementById('libEmpty').style.display='none';
+  document.getElementById('libTableWrap').style.display='block';
+  document.getElementById('libBody').innerHTML=list.map((c,i)=>{
+    const dl=c.url?('<a class="dl-btn" href="'+esc(c.url)+'" target="_blank">📥 تحميل</a>'):'<span class="dl-none">—</span>';
+    return '<tr>'
+      +'<td class="row-num">'+toA(i+1)+'</td>'
+      +'<td style="font-weight:700;">'+esc(c.name||'—')+'</td>'
+      +'<td style="font-family:monospace;font-size:13px;direction:ltr;text-align:right;">'+esc(c.phone||'—')+'</td>'
+      +'<td>'+esc(c.course||'—')+'</td>'
+      +'<td style="white-space:nowrap;">'+esc(c.date||'—')+'</td>'
+      +'<td style="font-weight:700;color:var(--muted);">'+esc(c.materialCode||'—')+'</td>'
+      +'<td>'+dl+'</td>'
+      +'</tr>';
+  }).join('');
 }
 
 /* ================== بدء التشغيل ================== */
