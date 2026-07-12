@@ -1054,7 +1054,8 @@ async function downloadSelectedZip(){
       if(data.skipped) msg+=' — تخطّى '+toA(data.skipped)+' بدون رابط صحيح';
       toast(msg,'ok');
     }else{
-      toast('تعذّر تجهيز الملف — تأكد من الروابط','err');
+      console.log('ZIP error:', data);
+      toast('تعذّر: '+(data.firstErr||data.msg||'تأكد من الروابط'),'err');
     }
   }catch(err){
     toast('حدث خطأ في التحميل المجمّع','err');
