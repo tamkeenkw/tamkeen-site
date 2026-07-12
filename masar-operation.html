@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مسار اوبريشن — أكاديمية مسار</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -13,117 +13,160 @@
   --yellow:#B26A00; --yellow-bg:#FFF3D6;
   --blue:#1565C0; --blue-bg:#E3F2FD;
   --red:#C62828;
+  --maxw:1060px;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+*{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
-.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--cream);}
 
 /* ===== LOGIN ===== */
 #login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;}
-.login-logo{font-size:26px;font-weight:900;color:var(--crimson);}
-.login-sub{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:3px;margin-top:4px;margin-bottom:34px;}
-.login-card{background:#fff;border-radius:22px;padding:30px 24px;width:100%;box-shadow:0 8px 30px rgba(92,15,15,.08);border:1.5px solid rgba(92,15,15,.06);}
-.login-card h2{font-size:18px;font-weight:900;margin-bottom:6px;text-align:center;}
-.login-card p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:22px;}
+.login-logo{font-size:30px;font-weight:900;color:var(--crimson);}
+.login-sub{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:3px;margin-top:4px;margin-bottom:34px;}
+.login-card{background:#fff;border-radius:22px;padding:36px 30px;width:100%;max-width:420px;box-shadow:0 12px 40px rgba(92,15,15,.1);border:1.5px solid rgba(92,15,15,.06);}
+.login-card h2{font-size:20px;font-weight:900;margin-bottom:6px;text-align:center;}
+.login-card p{font-size:13.5px;color:var(--muted);text-align:center;margin-bottom:24px;}
 .pin-input{width:100%;text-align:center;font-size:22px;font-weight:900;letter-spacing:4px;padding:16px;border:1.5px solid rgba(92,15,15,.12);border-radius:14px;background:var(--cream);color:var(--text);outline:none;font-family:'Tajawal',sans-serif;}
 .pin-input:focus{border-color:var(--crimson);background:#fff;}
 .btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:14px;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn:active{background:var(--crimson-2);}
+.btn:hover{background:var(--crimson-2);}
 .btn[disabled]{opacity:.6;}
 .login-err{color:var(--red);font-size:13px;font-weight:700;text-align:center;margin-top:14px;min-height:18px;}
 
 /* ===== APP ===== */
-#app{display:none;padding-bottom:78px;}
-.header{background:var(--crimson);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;}
-.header .h-title{font-size:17px;font-weight:900;color:#fff;}
-.header .h-sub{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-top:2px;}
-.header .h-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:6px 13px;border-radius:100px;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.15);cursor:pointer;}
+#app{display:none;}
+.header{background:var(--crimson);}
+.header-inner{max-width:var(--maxw);margin:0 auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;}
+.header .h-title{font-size:20px;font-weight:900;color:#fff;}
+.header .h-sub{font-size:11.5px;color:rgba(255,255,255,.6);font-weight:700;margin-top:2px;letter-spacing:1px;}
+.header .h-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);padding:8px 16px;border-radius:100px;font-size:13px;font-weight:800;border:1px solid rgba(255,255,255,.15);cursor:pointer;}
+.header .h-badge:hover{background:rgba(255,255,255,.2);}
 
-.view{display:none;padding:18px 16px;}
+/* ===== TOP TABS ===== */
+.tabbar{background:#fff;border-bottom:1.5px solid rgba(92,15,15,.08);position:sticky;top:0;z-index:30;box-shadow:0 2px 12px rgba(92,15,15,.03);}
+.tabbar-inner{max-width:var(--maxw);margin:0 auto;padding:12px 28px;display:flex;gap:10px;flex-wrap:wrap;}
+.tab{padding:10px 22px;border-radius:100px;font-size:14px;font-weight:800;cursor:pointer;border:1.5px solid rgba(92,15,15,.12);background:transparent;color:var(--muted);font-family:'Tajawal',sans-serif;display:flex;align-items:center;gap:7px;transition:all .15s;}
+.tab:hover{border-color:var(--crimson);color:var(--crimson);}
+.tab.active{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.tab svg{width:18px;height:18px;}
+
+/* ===== MAIN ===== */
+.main{max-width:var(--maxw);margin:0 auto;padding:28px;}
+.view{display:none;}
 .view.active{display:block;}
-.sect-title{font-size:15px;font-weight:900;margin:22px 4px 12px;}
 
-/* Empty state */
-.empty{text-align:center;padding:60px 20px;color:var(--muted);}
-.empty .ico{width:52px;height:52px;margin:0 auto 14px;opacity:.35;}
-.empty .t{font-size:16px;font-weight:800;color:var(--text);}
-.empty .s{font-size:13px;margin-top:6px;line-height:1.7;}
+/* Empty state (home) */
+.empty{text-align:center;padding:70px 20px;color:var(--muted);}
+.empty .ico{width:60px;height:60px;margin:0 auto 16px;opacity:.35;}
+.empty .t{font-size:18px;font-weight:800;color:var(--text);}
+.empty .s{font-size:14px;margin-top:8px;line-height:1.8;}
 
 /* Toast */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:800;z-index:60;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:13px 26px;border-radius:100px;font-size:14px;font-weight:800;z-index:60;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
 .toast.ok{background:var(--green);}
 .toast.err{background:var(--red);}
 
-/* ===== REMINDERS / EXPORT TAB ===== */
-.wip{background:var(--yellow-bg);border:1.5px solid rgba(245,127,23,.25);border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:12.5px;font-weight:700;color:#8a5a00;line-height:1.75;}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 12px rgba(92,15,15,.04);border:1.5px solid rgba(92,15,15,.06);margin-bottom:16px;}
-.card-title{font-size:15px;font-weight:900;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.card-title span{font-size:19px;}
-.msel{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:700;color:var(--text);outline:none;cursor:pointer;}
+/* ===== REMINDERS / EXPORT ===== */
+.wip{background:var(--yellow-bg);border:1.5px solid rgba(245,127,23,.25);border-radius:14px;padding:16px 20px;margin-bottom:22px;font-size:13.5px;font-weight:700;color:#8a5a00;line-height:1.8;}
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);margin-bottom:20px;}
+.card-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title span{font-size:20px;}
+.msel{width:100%;max-width:420px;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:13px 15px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;color:var(--text);outline:none;cursor:pointer;}
 .msel:focus{border-color:var(--crimson);background:#fff;}
-.course-grid{display:grid;grid-template-columns:1fr;gap:12px;}
-.course-card{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:16px;cursor:pointer;transition:all .18s;}
-.course-card:active{transform:scale(.99);}
-.course-card.active{border-color:var(--crimson);background:linear-gradient(180deg,#fff,#FDF6F6);box-shadow:0 4px 16px rgba(92,15,15,.1);}
-.cc-name{font-size:14.5px;font-weight:900;color:var(--text);margin-bottom:9px;line-height:1.4;}
-.cc-meta{display:flex;flex-direction:column;gap:4px;}
-.cc-line{font-size:12px;color:var(--muted);font-weight:600;}
-.cc-mode{display:inline-block;margin-top:9px;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:800;}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.course-card{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:16px;padding:18px;cursor:pointer;transition:all .18s;}
+.course-card:hover{border-color:var(--crimson);box-shadow:0 6px 20px rgba(92,15,15,.1);transform:translateY(-2px);}
+.course-card.active{border-color:var(--crimson);background:linear-gradient(180deg,#fff,#FDF6F6);box-shadow:0 6px 20px rgba(92,15,15,.12);}
+.cc-name{font-size:15px;font-weight:900;color:var(--text);margin-bottom:10px;line-height:1.4;}
+.cc-meta{display:flex;flex-direction:column;gap:5px;}
+.cc-line{font-size:12.5px;color:var(--muted);font-weight:600;}
+.cc-mode{display:inline-block;margin-top:10px;padding:3px 12px;border-radius:100px;font-size:11.5px;font-weight:800;}
 .cc-mode.online{background:var(--blue-bg);color:var(--blue);}
 .cc-mode.onsite{background:var(--green-bg);color:var(--green);}
-.results-header{padding:0 0 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.results-title{font-size:15px;font-weight:900;color:var(--text);}
-.results-count{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:2px;}
-.remind-btn{background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;padding:11px 18px;border:none;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.results-header{padding:0 0 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.results-title{font-size:16px;font-weight:900;color:var(--text);}
+.results-count{font-size:13px;font-weight:700;color:var(--muted);margin-top:2px;}
+.remind-btn{background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;padding:12px 22px;border:none;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.remind-btn:hover{opacity:.92;}
 .remind-btn:disabled{opacity:.4;cursor:not-allowed;}
-.preview-btn{background:transparent;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;padding:11px 14px;border:1.5px solid rgba(92,15,15,.2);border-radius:100px;cursor:pointer;white-space:nowrap;}
+.preview-btn{background:transparent;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:800;padding:12px 18px;border:1.5px solid rgba(92,15,15,.2);border-radius:100px;cursor:pointer;white-space:nowrap;}
+.preview-btn:hover{background:rgba(92,15,15,.05);}
 .preview-btn:disabled{opacity:.4;cursor:not-allowed;}
 .table-wrap{overflow-x:auto;border-top:1px solid rgba(92,15,15,.06);margin-top:4px;}
 table{width:100%;border-collapse:collapse;}
-th{background:var(--cream);padding:11px 12px;text-align:right;font-size:11.5px;font-weight:800;color:var(--muted);border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
-td{padding:12px;font-size:13.5px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
+th{background:var(--cream);padding:13px 16px;text-align:right;font-size:12.5px;font-weight:800;color:var(--muted);border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
+td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-.row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
-.name-row{display:flex;align-items:center;gap:9px;}
-.loading{text-align:center;padding:36px;}
+tr:hover td{background:rgba(92,15,15,.02);}
+.row-num{font-size:12.5px;font-weight:900;color:var(--muted);text-align:center;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
+.name-row{display:flex;align-items:center;gap:10px;}
+.loading{text-align:center;padding:40px;}
 .loading-dots{display:inline-flex;gap:6px;}
 .loading-dots span{width:9px;height:9px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
 .loading-dots span:nth-child(2){animation-delay:.15s;}
 .loading-dots span:nth-child(3){animation-delay:.3s;}
 @keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
-.empty-icon{font-size:36px;margin-bottom:10px;}
-.empty-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:5px;}
-.empty-sub{font-size:12.5px;color:var(--muted);}
-.st-toast{display:none;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:800;margin-top:14px;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--muted);}
+.st-toast{display:none;padding:13px 18px;border-radius:12px;font-size:13.5px;font-weight:800;margin-top:16px;}
 .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== CERTIFICATES ===== */
+.cert-done{background:var(--green-bg);color:var(--green);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
+.cert-no{background:var(--cream-2);color:var(--muted);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;display:inline-block;}
+.cert-pending{background:var(--yellow-bg);color:var(--yellow);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:800;display:inline-block;}
+.mode-toggle{display:flex;gap:8px;margin-bottom:18px;}
+.mode-btn{flex:1;padding:12px;border-radius:12px;border:1.5px solid rgba(92,15,15,.2);background:var(--cream);color:var(--text);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;}
+.mode-btn.on{border-color:var(--crimson);background:var(--crimson);color:#fff;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bottom:6px;}
+.field input,.field select{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14.5px;color:var(--text);outline:none;}
+.field input:focus,.field select:focus{border-color:var(--crimson);background:#fff;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:520px){.field-row{grid-template-columns:1fr;}}
+.wbtn{width:100%;justify-content:center;padding:14px;border-radius:14px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;color:#fff;}
+.wbtn.crimson{background:var(--crimson);}
+.wbtn.crimson:hover{background:var(--crimson-2);}
+.wbtn.green{background:var(--green);}
+.wbtn.green:hover{opacity:.92;}
+.wbtn:disabled{opacity:.6;cursor:not-allowed;}
+.addbox{background:#FFF8E1;border-radius:16px;padding:16px 20px;margin-bottom:16px;border:1.5px solid rgba(245,127,23,.2);}
+.addbox-title{font-size:13.5px;font-weight:900;color:#8a5a00;margin-bottom:12px;}
+.addbox-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.addbox-row .fl{flex:2;min-width:150px;}
+.addbox-row .fs{flex:1;min-width:130px;}
+.addbox-row label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;font-weight:700;}
+.addbox-row input{width:100%;padding:10px 13px;border:1.5px solid rgba(92,15,15,.15);border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13.5px;background:#fff;outline:none;}
+.addbox-row button{padding:11px 22px;background:var(--crimson);color:#fff;border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.selall-bar{padding:12px 16px;background:var(--cream);border-bottom:1px solid rgba(92,15,15,.06);display:flex;align-items:center;gap:10px;border-radius:12px 12px 0 0;}
+.selall-bar label{font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;}
+.result-ok{background:var(--green-bg);border-radius:16px;padding:26px;text-align:center;border:1.5px solid rgba(46,125,50,.15);}
+.result-ok a{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;padding:11px 26px;border-radius:100px;text-decoration:none;margin-top:10px;}
 
 /* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(26,8,8,.5);z-index:9998;align-items:center;justify-content:center;padding:20px;}
 .modal-bg.show{display:flex;}
-.modal{background:#fff;border-radius:22px;max-width:440px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
-.modal-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:600;}
-.preview-box{background:#075E54;border-radius:14px;padding:14px;margin-bottom:8px;}
-.preview-bubble{background:#DCF8C6;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:12.5px;line-height:1.85;color:#1A2E1A;white-space:pre-wrap;font-weight:600;direction:rtl;}
-.preview-note{font-size:11px;color:var(--muted);text-align:center;margin:8px 0 16px;font-weight:600;}
+.modal{background:#fff;border-radius:22px;max-width:460px;width:100%;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:600;}
+.preview-box{background:#075E54;border-radius:14px;padding:16px;margin-bottom:8px;}
+.preview-bubble{background:#DCF8C6;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13px;line-height:1.85;color:#1A2E1A;white-space:pre-wrap;font-weight:600;direction:rtl;}
+.preview-note{font-size:11.5px;color:var(--muted);text-align:center;margin:8px 0 18px;font-weight:600;}
 .modal-actions{display:flex;gap:10px;}
-.mbtn{flex:1;padding:12px;border-radius:100px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;cursor:pointer;border:none;}
+.mbtn{flex:1;padding:13px;border-radius:100px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;border:none;}
 .mbtn-cancel{background:var(--cream-2);color:var(--muted);}
 .mbtn-send{background:var(--green);color:#fff;}
 
-/* Bottom nav */
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(2,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
-.nav-item{padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);position:relative;}
-.nav-item svg{width:23px;height:23px;}
-.nav-item span{font-size:10.5px;font-weight:800;}
-.nav-item.active{color:var(--crimson);}
+@media(max-width:640px){
+  .header-inner,.tabbar-inner,.main{padding-left:16px;padding-right:16px;}
+  .main{padding-top:20px;}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
   <!-- ===== LOGIN ===== -->
   <div id="login">
@@ -141,87 +184,208 @@ tr:last-child td{border-bottom:none;}
   <!-- ===== APP ===== -->
   <div id="app">
     <div class="header">
-      <div>
-        <div class="h-title">مسار اوبريشن</div>
-        <div class="h-sub">لوحة العمليات</div>
-      </div>
-      <div class="h-badge" onclick="logout()">خروج</div>
-    </div>
-
-    <!-- HOME (فاضية — نعبّيها بالأقسام خطوة خطوة) -->
-    <div class="view active" id="view-home">
-      <div class="empty">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-        </svg>
-        <div class="t">لوحة العمليات جاهزة</div>
-        <div class="s">الهيكل جاهز — نبدأ نضيف الأقسام<br>واحد واحد حسب حاجتك.</div>
+      <div class="header-inner">
+        <div>
+          <div class="h-title">مسار اوبريشن</div>
+          <div class="h-sub">لوحة العمليات</div>
+        </div>
+        <div class="h-badge" onclick="logout()">خروج</div>
       </div>
     </div>
 
-    <!-- ===== التذكيرات / تصدير البيانات ===== -->
-    <div class="view" id="view-reminders">
-
-      <div class="wip">
-        📤 <b>تصدير البيانات:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«تصدير CSV»</b> فينزل ملف جاهز يفتح في Excel أو يُرفع في ManyChat (Import). الأرقام تُنسّق تلقائياً بصيغة ‎+965‎.
+    <!-- TOP TABS -->
+    <div class="tabbar">
+      <div class="tabbar-inner">
+        <div class="tab active" data-tab="home" onclick="switchTab('home')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+          الرئيسية
+        </div>
+        <div class="tab" data-tab="reminders" onclick="switchTab('reminders')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v11"/><path d="M8 10l4 4 4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          تصدير بيانات العملاء
+        </div>
+        <div class="tab" data-tab="certs" onclick="switchTab('certs')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="9" r="5"/><path d="M8.5 13.5L7 21l5-2.5L17 21l-1.5-7.5"/></svg>
+          تصدير الشهادات
+        </div>
       </div>
+    </div>
 
-      <!-- اختيار الشهر -->
-      <div class="card">
-        <div class="card-title"><span>🗓️</span> اختر الشهر</div>
-        <select class="msel" id="monthSelect" onchange="renderCourses()">
-          <option value="">جاري تحميل الدورات...</option>
-        </select>
-      </div>
+    <div class="main">
 
-      <!-- الدورات -->
-      <div class="card" id="coursesCard" style="display:none;">
-        <div class="card-title"><span>📚</span> الدورات</div>
-        <div class="course-grid" id="courseGrid"></div>
-        <div class="empty" id="coursesEmpty" style="display:none;">
-          <div class="empty-icon">📭</div>
-          <div class="empty-title">لا توجد دورات في هذا الشهر</div>
-          <div class="empty-sub">جرّب اختيار شهر آخر</div>
+      <!-- HOME -->
+      <div class="view active" id="view-home">
+        <div class="empty">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <div class="t">لوحة العمليات جاهزة</div>
+          <div class="s">الهيكل جاهز — نبدأ نضيف الأقسام واحد واحد حسب حاجتك.</div>
         </div>
       </div>
 
-      <!-- المسجّلون -->
-      <div class="card" id="studentsCard" style="display:none;">
-        <div class="results-header">
-          <div>
-            <div class="results-title" id="stTitle">—</div>
-            <div class="results-count" id="stCount">—</div>
+      <!-- التذكيرات / تصدير البيانات -->
+      <div class="view" id="view-reminders">
+
+        <div class="wip">
+          📤 <b>تصدير البيانات:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«تصدير CSV»</b> فينزل ملف جاهز يفتح في Excel أو يُرفع في ManyChat (Import). الأرقام تُنسّق تلقائياً بصيغة ‎+965‎.
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>🗓️</span> اختر الشهر</div>
+          <select class="msel" id="monthSelect" onchange="renderCourses()">
+            <option value="">جاري تحميل الدورات...</option>
+          </select>
+        </div>
+
+        <div class="card" id="coursesCard" style="display:none;">
+          <div class="card-title"><span>📚</span> الدورات</div>
+          <div class="course-grid" id="courseGrid"></div>
+          <div class="empty" id="coursesEmpty" style="display:none;">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">لا توجد دورات في هذا الشهر</div>
+            <div class="empty-sub">جرّب اختيار شهر آخر</div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="remind-btn" id="csvBtn" onclick="downloadCSV()" disabled><span id="csvTxt">⬇️ تصدير CSV</span></button>
-            <button class="preview-btn" id="remindBtn" onclick="openReminderPreview()" disabled>👁️ معاينة</button>
+        </div>
+
+        <div class="card" id="studentsCard" style="display:none;">
+          <div class="results-header">
+            <div>
+              <div class="results-title" id="stTitle">—</div>
+              <div class="results-count" id="stCount">—</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="remind-btn" id="csvBtn" onclick="downloadCSV()" disabled><span id="csvTxt">⬇️ تصدير CSV</span></button>
+              <button class="preview-btn" id="remindBtn" onclick="openReminderPreview()" disabled>👁️ معاينة</button>
+            </div>
+          </div>
+          <div id="stLoading" class="loading" style="display:none;">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="table-wrap" id="stTableWrap" style="display:none;">
+            <table>
+              <thead><tr>
+                <th style="width:44px;text-align:center;"><input type="checkbox" id="selectAllChk" checked onchange="toggleAllStudents(this)" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></th>
+                <th style="width:44px;">#</th><th>الاسم</th><th>الواتساب</th>
+              </tr></thead>
+              <tbody id="stBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="stEmpty" style="display:none;">
+            <div class="empty-icon">👥</div>
+            <div class="empty-title">لا يوجد مسجّلون في هذه الدورة</div>
+            <div class="empty-sub">تحقق من اسم الدورة في الشيت</div>
+          </div>
+          <div class="st-toast" id="stToast"></div>
+        </div>
+
+      </div>
+
+      <!-- ===== تصدير الشهادات ===== -->
+      <div class="view" id="view-certs">
+
+        <div class="wip">
+          🎓 <b>تصدير الشهادات:</b> اختر الدورة ← يظهر المسجّلون اللي <b>حالتهم «تم الدفع»</b> ← حدّد المطلوب ← اكتب رقم المادة ← اضغط <b>«تصدير الشهادات المحددة»</b>. تُصدر PDF وتُسجّل في ورقة «إصدار الشهادات».
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>🎓</span> إصدار الشهادات</div>
+
+          <div class="mode-toggle">
+            <button id="btnModeList" class="mode-btn on" onclick="setCertMode('list')">📋 اختر من القائمة</button>
+            <button id="btnModeManual" class="mode-btn" onclick="setCertMode('manual')">✏️ أدخل يدوياً</button>
+          </div>
+
+          <!-- من القائمة -->
+          <div class="field" id="fc-course">
+            <label>الدورة <span style="color:var(--crimson);">*</span></label>
+            <select id="certCourseSelect" onchange="onCertCourseChange()">
+              <option value="">-- اختر الدورة --</option>
+            </select>
+          </div>
+
+          <!-- يدوي -->
+          <div id="fc-manual" style="display:none;">
+            <div class="field">
+              <label>اسم الدورة <span style="color:var(--crimson);">*</span></label>
+              <input type="text" id="certCourseManual" list="courseNamesList" placeholder="ابدأ بالكتابة لتظهر الاقتراحات..." oninput="onManualCourseInput(this.value)">
+              <datalist id="courseNamesList"></datalist>
+              <div id="manualCourseHint" style="font-size:11.5px;color:var(--muted);margin-top:5px;display:none;">👤 المدرب: <span id="manualTrainerHint"></span></div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>رقم المادة التدريبية <span style="color:var(--crimson);">*</span></label>
+              <input type="text" id="certMaterialCode" placeholder="مثال: TM0060">
+            </div>
+            <div class="field">
+              <label>المدرب</label>
+              <input type="text" id="certTrainer" placeholder="يُعبّى تلقائياً">
+            </div>
+          </div>
+
+          <button class="wbtn crimson" id="loadCertStudentsBtn" onclick="loadCertStudents()">
+            <span id="loadCertTxt">عرض المسجلين للشهادة</span>
+            <div class="spinner" id="loadCertSpinner"></div>
+          </button>
+        </div>
+
+        <!-- إضافة متدرب يدوياً -->
+        <div class="addbox" id="addStudentSection" style="display:none;">
+          <div class="addbox-title">➕ إضافة متدرب للحضور</div>
+          <div class="addbox-row">
+            <div class="fl"><label>الاسم الكامل</label><input id="addStudentName" placeholder="اسم المتدرب"></div>
+            <div class="fs"><label>رقم الواتساب</label><input id="addStudentPhone" placeholder="مثال: 99444335" type="tel"></div>
+            <button onclick="addManualStudent()">إضافة ✓</button>
           </div>
         </div>
-        <div id="stLoading" class="loading" style="display:none;">
-          <div class="loading-dots"><span></span><span></span><span></span></div>
+
+        <!-- قائمة المسجلين -->
+        <div class="card" id="certStudentsCard" style="display:none;padding:0;overflow:hidden;">
+          <div class="results-header" style="padding:20px 24px 14px;">
+            <div class="results-title">المسجلون الذين يريدون شهادة</div>
+            <div class="results-count" id="certStudentsCount"></div>
+          </div>
+          <div class="selall-bar" style="border-radius:0;">
+            <input type="checkbox" id="selectAll" onchange="toggleAll(this)" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;">
+            <label for="selectAll">تحديد الكل</label>
+          </div>
+          <div class="table-wrap" style="border-top:none;">
+            <table>
+              <thead><tr><th style="width:44px;text-align:center;">✓</th><th>الاسم</th><th>رقم الواتساب</th><th>حالة الدفع</th><th>تسلسل مؤقت</th></tr></thead>
+              <tbody id="certStudentsBody"></tbody>
+            </table>
+          </div>
+          <div style="padding:20px 24px;border-top:1px solid rgba(92,15,15,.06);">
+            <button class="wbtn green" id="issueCertBtn" onclick="issueCertificates()">
+              <span id="issueCertTxt">تصدير الشهادات المحددة</span>
+              <div class="spinner" id="issueCertSpinner"></div>
+            </button>
+          </div>
         </div>
-        <div class="table-wrap" id="stTableWrap" style="display:none;">
-          <table>
-            <thead><tr>
-              <th style="width:36px;text-align:center;"><input type="checkbox" id="selectAllChk" checked onchange="toggleAllStudents(this)" style="width:17px;height:17px;accent-color:var(--crimson);cursor:pointer;"></th>
-              <th style="width:34px;">#</th><th>الاسم</th><th>الواتساب</th>
-            </tr></thead>
-            <tbody id="stBody"></tbody>
-          </table>
+
+        <!-- النتيجة -->
+        <div id="certResult" style="display:none;margin-top:4px;">
+          <div class="result-ok">
+            <div style="font-size:34px;margin-bottom:8px;">✅</div>
+            <div style="font-size:17px;font-weight:900;color:var(--green);margin-bottom:4px;" id="certResultTitle"></div>
+            <a id="certFolderLink" href="#" target="_blank">📁 افتح مجلد الشهادات</a>
+          </div>
         </div>
-        <div class="empty" id="stEmpty" style="display:none;">
-          <div class="empty-icon">👥</div>
-          <div class="empty-title">لا يوجد مسجّلون في هذه الدورة</div>
-          <div class="empty-sub">تحقق من اسم الدورة في الشيت</div>
+
+        <div id="certEmpty" style="display:none;">
+          <div class="empty"><div class="empty-icon">📭</div><div class="empty-title">لا يوجد مسجلون يريدون شهادة</div><div class="empty-sub">تأكد أن حالة الدفع «تم الدفع»</div></div>
         </div>
-        <div class="st-toast" id="stToast"></div>
+
+        <div id="certLoading" style="display:none;">
+          <div class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+        </div>
+
       </div>
 
     </div>
-
   </div>
 
   <!-- ===== REMINDER PREVIEW MODAL ===== -->
@@ -238,22 +402,7 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
 
-  <!-- ===== BOTTOM NAV (نضيف تبويبات مع كل قسم) ===== -->
-  <div class="nav" id="nav">
-    <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
-      <span>الرئيسية</span>
-    </div>
-    <div class="nav-item" data-tab="reminders" onclick="switchTab('reminders')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v11"/><path d="M8 10l4 4 4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-      <span>تصدير</span>
-    </div>
-  </div>
-
-</div>
-
-<div class="toast" id="toast"></div>
-
+  <div class="toast" id="toast"></div>
 <script>
 /* ================== الإعدادات ================== */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
@@ -308,8 +457,9 @@ function switchTab(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   const view=document.getElementById('view-'+name);
   if(view) view.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
+  document.querySelectorAll('.tab').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
   if(name==='reminders') ensureCourses();
+  if(name==='certs') ensureCertCourses();
   window.scrollTo(0,0);
 }
 
@@ -548,6 +698,209 @@ function stToast(msg,type){
 }
 
 document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
+
+/* ================== تبويب تصدير الشهادات ================== */
+let certCoursesLoaded=false;
+function ensureCertCourses(){ if(certCoursesLoaded){return;} certCoursesLoaded=true; loadCertCourses(); }
+
+let certCoursesData = [];
+let certStudentsList = [];
+let certMode = 'list';
+
+async function loadCertCourses(){
+  try{
+    const [res1,res2] = await Promise.all([
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'))
+    ]);
+    const [d1,d2] = await Promise.all([res1.json(), res2.json()]);
+    certCoursesData = [...(d1.courses||[]), ...(d2.courses||[])];
+    const sel = document.getElementById('certCourseSelect');
+    sel.innerHTML = '<option value="">-- اختر الدورة --</option>';
+    certCoursesData.forEach((c,i)=>{
+      const opt=document.createElement('option');
+      opt.value=i; opt.textContent=c.name+' — '+(c.date||'');
+      sel.appendChild(opt);
+    });
+    populateCourseDatalist();
+  }catch(err){}
+}
+
+function onCertCourseChange(){
+  const idx=document.getElementById('certCourseSelect').value;
+  if(idx==='') return;
+  const c=certCoursesData[parseInt(idx)];
+  if(!c) return;
+  document.getElementById('certTrainer').value=c.trainer||'';
+  document.getElementById('certMaterialCode').value=c.materialCode||'';
+  document.getElementById('certStudentsCard').style.display='none';
+  document.getElementById('certResult').style.display='none';
+  document.getElementById('certEmpty').style.display='none';
+}
+
+async function loadCertStudents(){
+  let courseName, courseDate;
+  if(certMode==='manual'){
+    courseName=(document.getElementById('certCourseManual').value||'').trim();
+    if(!courseName){ document.getElementById('certCourseManual').style.borderColor='#C62828'; return; }
+    document.getElementById('certCourseManual').style.borderColor='';
+    courseDate='all';
+  }else{
+    const idx=document.getElementById('certCourseSelect').value;
+    if(idx===''){ document.getElementById('certCourseSelect').style.borderColor='#C62828'; return; }
+    document.getElementById('certCourseSelect').style.borderColor='';
+    const c=certCoursesData[parseInt(idx)];
+    courseName=c.name; courseDate=c.date;
+    document.getElementById('certTrainer').value=c.trainer||'';
+    document.getElementById('certMaterialCode').value=c.materialCode||'';
+  }
+  document.getElementById('loadCertStudentsBtn').disabled=true;
+  document.getElementById('loadCertTxt').style.display='none';
+  document.getElementById('loadCertSpinner').style.display='block';
+  document.getElementById('certLoading').style.display='block';
+  document.getElementById('certStudentsCard').style.display='none';
+  document.getElementById('certEmpty').style.display='none';
+  document.getElementById('certResult').style.display='none';
+  try{
+    const url=SCRIPT_URL+'?action=getStudents&course='+encodeURIComponent(courseName)+'&date='+encodeURIComponent(courseDate);
+    const res=await fetch(url);
+    const data=await res.json();
+    const filtered=(data.students||[]).filter(s=>s.payment==='تم الدفع');
+    document.getElementById('certLoading').style.display='none';
+    if(filtered.length===0){ document.getElementById('certEmpty').style.display='block'; return; }
+    certStudentsList=filtered;
+    const now=new Date();
+    const prefix='TM02'+String(now.getFullYear()).slice(-2)+String(now.getMonth()+1).padStart(2,'0')+'-';
+    document.getElementById('certStudentsCount').textContent=toA(filtered.length)+' متدرب';
+    document.getElementById('certStudentsBody').innerHTML=filtered.map((s,i)=>{
+      const didAttend=s.attended==='نعم حضر';
+      return `<tr style="${!didAttend?'background:#FFF9F9;':''}">
+        <td style="text-align:center;"><input type="checkbox" class="cert-chk" data-idx="${i}" checked style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></td>
+        <td><div class="name-row"><div class="avatar">${(s.name||'؟').charAt(0)}</div><div><span style="font-weight:700;">${s.name||'—'}</span>${!didAttend?'<span style="display:block;font-size:10.5px;color:#C62828;font-weight:700;">⚠️ لم يحضر</span>':''}</div></div></td>
+        <td style="font-family:monospace;font-size:13px;">${s.phone||'—'}</td>
+        <td>${s.payment==='تم الدفع'?'<span class="cert-done">تم الدفع ✓</span>':s.payment==='قيد الدفع'?'<span class="cert-pending">قيد الدفع</span>':'<span class="cert-no">لم يدفع</span>'}</td>
+        <td style="font-size:12px;color:var(--muted);font-weight:700;">${prefix}${i+1}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('certStudentsCard').style.display='block';
+  }catch(err){
+    document.getElementById('certLoading').style.display='none';
+    document.getElementById('certEmpty').style.display='block';
+  }finally{
+    document.getElementById('loadCertStudentsBtn').disabled=false;
+    document.getElementById('loadCertTxt').style.display='block';
+    document.getElementById('loadCertSpinner').style.display='none';
+  }
+}
+
+function setCertMode(mode){
+  certMode=mode;
+  const m=mode==='manual';
+  document.getElementById('fc-course').style.display=m?'none':'block';
+  document.getElementById('fc-manual').style.display=m?'block':'none';
+  document.getElementById('addStudentSection').style.display=m?'block':'none';
+  document.getElementById('btnModeList').classList.toggle('on',!m);
+  document.getElementById('btnModeManual').classList.toggle('on',m);
+  if(m){
+    certStudentsList=[];
+    document.getElementById('certStudentsBody').innerHTML='';
+    document.getElementById('certStudentsCount').textContent='٠ متدرب';
+    document.getElementById('certStudentsCard').style.display='block';
+    document.getElementById('certEmpty').style.display='none';
+  }else{
+    document.getElementById('certStudentsCard').style.display='none';
+  }
+  document.getElementById('certResult').style.display='none';
+}
+
+function populateCourseDatalist(){
+  const dl=document.getElementById('courseNamesList');
+  if(!dl) return;
+  dl.innerHTML=''; const seen={};
+  certCoursesData.forEach(c=>{
+    if(c.name && !seen[c.name]){ seen[c.name]=true; const opt=document.createElement('option'); opt.value=c.name; dl.appendChild(opt); }
+  });
+}
+
+function onManualCourseInput(val){
+  const match=certCoursesData.find(c=>c.name===val);
+  const hint=document.getElementById('manualCourseHint');
+  if(match && match.trainer){
+    document.getElementById('certTrainer').value=match.trainer;
+    document.getElementById('certMaterialCode').value=match.materialCode||'';
+    document.getElementById('manualTrainerHint').textContent=match.trainer;
+    hint.style.display='block';
+  }else{ hint.style.display='none'; }
+}
+
+function addManualStudent(){
+  const name=(document.getElementById('addStudentName').value||'').trim();
+  const phone=(document.getElementById('addStudentPhone').value||'').trim();
+  if(!name){ document.getElementById('addStudentName').style.borderColor='#C62828'; return; }
+  document.getElementById('addStudentName').style.borderColor='';
+  certStudentsList.push({ name, phone, email:'', cert:'نعم', payment:'تم الدفع', attended:'', manual:true });
+  const i=certStudentsList.length-1;
+  const now=new Date();
+  const prefix='TM02'+String(now.getFullYear()).slice(-2)+String(now.getMonth()+1).padStart(2,'0')+'-';
+  const serial=prefix+(i+1);
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td style="text-align:center;"><input type="checkbox" class="cert-chk" data-idx="${i}" checked style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></td>
+    <td><div class="name-row"><div class="avatar">${name.charAt(0)}</div><div><span style="font-weight:700;">${name}</span><span style="display:block;font-size:10.5px;color:#F57F17;font-weight:700;">✏️ مُضاف يدوياً</span></div></div></td>
+    <td style="font-family:monospace;font-size:13px;">${phone||'—'}</td>
+    <td><span class="cert-done">تم الدفع ✓</span></td>
+    <td style="font-size:12px;color:var(--muted);font-weight:700;">${serial}</td>`;
+  document.getElementById('certStudentsBody').appendChild(tr);
+  document.getElementById('certStudentsCount').textContent=toA(certStudentsList.length)+' متدرب';
+  document.getElementById('certStudentsCard').style.display='block';
+  document.getElementById('addStudentName').value='';
+  document.getElementById('addStudentPhone').value='';
+  document.getElementById('addStudentName').focus();
+}
+
+function toggleAll(cb){ document.querySelectorAll('.cert-chk').forEach(c=>c.checked=cb.checked); }
+
+async function issueCertificates(){
+  const materialCode=document.getElementById('certMaterialCode').value.trim();
+  if(!materialCode){ document.getElementById('certMaterialCode').style.borderColor='#C62828'; toast('اكتب رقم المادة','err'); return; }
+  document.getElementById('certMaterialCode').style.borderColor='';
+  const checked=[...document.querySelectorAll('.cert-chk:checked')].map(c=>certStudentsList[parseInt(c.dataset.idx)]).filter(Boolean);
+  if(checked.length===0){ toast('حدّد متدرب واحد على الأقل','err'); return; }
+  let courseName, courseDate;
+  if(certMode==='manual'){
+    courseName=(document.getElementById('certCourseManual').value||'').trim();
+    courseDate=new Date().toLocaleDateString('en-GB').split('/').join('-');
+  }else{
+    const idx=document.getElementById('certCourseSelect').value;
+    const c=certCoursesData[parseInt(idx)];
+    courseName=c?c.name:''; courseDate=c?c.date:'';
+  }
+  document.getElementById('issueCertBtn').disabled=true;
+  document.getElementById('issueCertTxt').style.display='none';
+  document.getElementById('issueCertSpinner').style.display='block';
+  try{
+    const res=await fetch(SCRIPT_URL,{ method:'POST', headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ type:'إصدار شهادات', course:courseName, date:courseDate,
+        trainer:document.getElementById('certTrainer').value, materialCode, students:checked,
+        timestamp:new Date().toLocaleString('ar-SA') }) });
+    let data={}; try{ data=await res.json(); }catch(e){ data={}; }
+    const count=data.count||checked.length;
+    const folderUrl=data.folderUrl||'https://drive.google.com/drive/folders/1YakqQyj3KSj8VvMwbUlrmVeqD3MB6eG1';
+    const downloadUrl=data.downloadUrl||folderUrl;
+    document.getElementById('certResult').style.display='block';
+    document.getElementById('certResultTitle').textContent='تم إصدار '+toA(count)+' شهادة بنجاح';
+    document.getElementById('certFolderLink').href=downloadUrl;
+    document.getElementById('certFolderLink').textContent=count>1?'📥 تحميل ملف الشهادات (PDF واحد)':'📥 تحميل الشهادة';
+    document.getElementById('certStudentsCard').style.display='none';
+    document.getElementById('certResult').scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(err){
+    toast('حدث خطأ في الإصدار','err');
+  }finally{
+    document.getElementById('issueCertBtn').disabled=false;
+    document.getElementById('issueCertTxt').style.display='block';
+    document.getElementById('issueCertSpinner').style.display='none';
+  }
+}
 
 /* ================== بدء التشغيل ================== */
 (function init(){
