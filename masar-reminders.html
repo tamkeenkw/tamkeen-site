@@ -61,6 +61,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .remind-btn{background:#25D366;color:#fff;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;padding:12px 22px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
 .remind-btn:hover{opacity:.9;transform:translateY(-1px);}
 .remind-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.preview-btn{background:transparent;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:800;padding:12px 18px;border:1.5px solid rgba(92,15,15,.2);border-radius:100px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.preview-btn:hover{background:rgba(92,15,15,.05);}
+.preview-btn:disabled{opacity:.4;cursor:not-allowed;}
 
 .table-wrap{overflow-x:auto;border-top:1px solid rgba(92,15,15,.06);}
 table{width:100%;border-collapse:collapse;}
@@ -132,7 +135,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
   <div id="tabContent1">
 
     <div class="wip">
-      ⏳ <b>ملاحظة:</b> عرض الشهر والدورات والمسجّلين يعمل الآن من شيت مسار مباشرة. زر «تذكير الكل» يعرض معاينة الرسالة — والإرسال الفعلي عبر ManyChat يُفعّل في الخطوة القادمة.
+      📋 <b>طريقة العمل:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«تحميل CSV»</b> فينزل ملف جاهز. افتحه في ManyChat ← <b>Import</b> ← ثم <b>Broadcast</b> بقالب «تذكير» مع فلتر <b>تاق الدورة</b>. الأرقام تُنسّق تلقائياً بصيغة +965.
     </div>
 
     <!-- MONTH SELECT -->
@@ -161,17 +164,22 @@ tr:hover td{background:rgba(92,15,15,.02);}
           <div class="results-title" id="stTitle">—</div>
           <div class="results-count" id="stCount">—</div>
         </div>
-        <button class="remind-btn" id="remindBtn" onclick="openReminderPreview()" disabled>
-          <span id="remindTxt">📲 تذكير الكل</span>
-          <div class="spinner" id="remindSpinner"></div>
-        </button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="remind-btn" id="csvBtn" onclick="downloadCSV()" disabled>
+            <span id="csvTxt">⬇️ تحميل CSV</span>
+          </button>
+          <button class="preview-btn" id="remindBtn" onclick="openReminderPreview()" disabled>👁️ معاينة الرسالة</button>
+        </div>
       </div>
       <div id="stLoading" class="loading" style="display:none;">
         <div class="loading-dots"><span></span><span></span><span></span></div>
       </div>
       <div class="table-wrap" id="stTableWrap" style="display:none;">
         <table>
-          <thead><tr><th style="width:44px;">#</th><th>الاسم</th><th>الواتساب</th></tr></thead>
+          <thead><tr>
+            <th style="width:40px;text-align:center;"><input type="checkbox" id="selectAllChk" checked onchange="toggleAllStudents(this)" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></th>
+            <th style="width:40px;">#</th><th>الاسم</th><th>الواتساب</th>
+          </tr></thead>
           <tbody id="stBody"></tbody>
         </table>
       </div>
@@ -197,7 +205,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
     <div class="preview-note">👆 نموذج بالاسم الأول — كل متدرب يستلم رسالته باسمه</div>
     <div class="modal-actions">
       <button class="mbtn mbtn-cancel" onclick="closeModal()">إلغاء</button>
-      <button class="mbtn mbtn-send" onclick="confirmSend()">تأكيد الإرسال ←</button>
+      <button class="mbtn mbtn-send" onclick="confirmSend()">⬇️ تحميل CSV</button>
     </div>
   </div>
 </div>
@@ -239,6 +247,7 @@ let coursesData = [];      // كل الدورات
 let coursesByMonth = {};   // شهر → [دورات]
 let currentCourse = null;  // الدورة المختارة
 let currentStudents = [];  // مسجّلو الدورة الحالية
+let selectedIdx = new Set(); // المسجّلون المحدّدون للتذكير
 
 /* تحميل الدورات */
 async function loadCourses(){
@@ -345,18 +354,45 @@ async function openCourse(gi, el){
 }
 
 function renderStudents(students){
+  selectedIdx = new Set(students.map((s,i)=>i)); // الكل محدّد افتراضياً
   document.getElementById('stCount').textContent = toA(students.length)+' مسجّل';
   const body = document.getElementById('stBody');
   body.innerHTML = students.map((s,i)=>{
     const initial = s.name ? s.name.charAt(0) : '؟';
     return `<tr>
+      <td style="text-align:center;"><input type="checkbox" class="st-check" data-i="${i}" checked onchange="toggleStudent(${i},this)" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></td>
       <td class="row-num">${toA(i+1)}</td>
       <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
       <td style="font-family:monospace;font-size:13px;letter-spacing:1px;direction:ltr;text-align:right;">${s.phone||'—'}</td>
     </tr>`;
   }).join('');
   document.getElementById('stTableWrap').style.display='block';
-  document.getElementById('remindBtn').disabled=false;
+  const allChk = document.getElementById('selectAllChk');
+  if(allChk) allChk.checked = true;
+  updateRemindBtn();
+}
+
+/* تحديد مسجّل واحد */
+function toggleStudent(i, cb){
+  if(cb.checked) selectedIdx.add(i); else selectedIdx.delete(i);
+  const allChk = document.getElementById('selectAllChk');
+  if(allChk) allChk.checked = (selectedIdx.size === currentStudents.length);
+  updateRemindBtn();
+}
+
+/* تحديد / إلغاء الكل */
+function toggleAllStudents(cb){
+  selectedIdx = cb.checked ? new Set(currentStudents.map((s,i)=>i)) : new Set();
+  document.querySelectorAll('.st-check').forEach(c=>{ c.checked = cb.checked; });
+  updateRemindBtn();
+}
+
+/* تحديث الأزرار حسب العدد المحدّد */
+function updateRemindBtn(){
+  const n = selectedIdx.size;
+  document.getElementById('csvTxt').textContent = n>0 ? ('⬇️ تحميل CSV ('+toA(n)+')') : '⬇️ اختر مسجّلين';
+  document.getElementById('csvBtn').disabled = (n===0);
+  document.getElementById('remindBtn').disabled = (n===0);
 }
 
 /* بناء نص الرسالة لمتدرب */
@@ -376,12 +412,74 @@ ${modeLine}
 لتأكيد حضورك، رد بكلمة: حاضر ✅`;
 }
 
+/* المسجّلون المحدّدون */
+function getSelectedStudents(){
+  return currentStudents.filter((s,i)=>selectedIdx.has(i));
+}
+
+/* ===== توليد ملف CSV للاستيراد في ManyChat ===== */
+const OFFICE_LOCATION = 'مدينة الكويت - برج أولى - دور 7';
+
+// الاسم الأول فقط
+function firstNameOnly(full){
+  const parts = String(full||'').trim().split(/\s+/);
+  return parts[0] || String(full||'');
+}
+
+// تنسيق الرقم: يضيف +965 فقط إذا كان ناقصاً
+function normPhoneCSV(raw){
+  let d = String(raw||'').replace(/[^\d]/g,'');
+  if(d.indexOf('00')===0) d = d.substring(2);
+  if(d.indexOf('965')===0) return '+'+d;      // فيه 965 → أضف + فقط
+  if(d.length===8) return '+965'+d;            // كويتي ناقص → أضف +965
+  return '+'+d;                                 // أي رقم آخر
+}
+
+// نظام الدورة: رابط زوم إن وُجد، وإلا مكان القاعة
+function coursePlaceCSV(c){
+  const z = (c.zoom||'').trim();
+  return z ? z : OFFICE_LOCATION;
+}
+
+// تهريب خلية CSV
+function csvCell(v){
+  v = String(v==null?'':v);
+  if(/[",\n\r]/.test(v)) v = '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+
+// تحميل الملف
+function downloadCSV(){
+  if(!currentCourse) return;
+  const chosen = getSelectedStudents();
+  if(chosen.length===0){ stToast('اختر مسجّلين أول','w'); return; }
+  const c = currentCourse;
+  const place = coursePlaceCSV(c);
+
+  const rows = [['الاسم','الرقم','الدورة','التاريخ','الوقت','المكان']];
+  chosen.forEach(s=>{
+    rows.push([ firstNameOnly(s.name), normPhoneCSV(s.phone), c.name||'', c.date||'', c.time||'', place ]);
+  });
+
+  const csv = '\uFEFF' + rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (c.name||'دورة').replace(/[\/\\:*?"<>|]+/g,'').trim().slice(0,40);
+  a.href = url; a.download = 'تذكير - '+safeName+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  stToast('✅ تم تحميل ملف '+toA(chosen.length)+' مسجّل — افتح ManyChat ← Import وارفعه، ثم أرسل بتاق الدورة','s');
+}
+
 /* معاينة التذكير */
 function openReminderPreview(){
-  if(!currentCourse || currentStudents.length===0) return;
-  const sample = currentStudents[0].name || 'المتدرب';
+  if(!currentCourse) return;
+  const chosen = getSelectedStudents();
+  if(chosen.length===0) return;
+  const sample = chosen[0].name || 'المتدرب';
   document.getElementById('previewBubble').textContent = buildMessage(sample);
-  document.getElementById('modalSub').textContent = 'سيُرسل هذا التذكير لـ '+toA(currentStudents.length)+' مسجّل في «'+currentCourse.name+'»';
+  document.getElementById('modalSub').textContent = 'سيُرسل هذا التذكير لـ '+toA(chosen.length)+' مسجّل محدّد في «'+currentCourse.name+'»';
   document.getElementById('modalBg').classList.add('show');
 }
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
@@ -389,7 +487,7 @@ function closeModal(){ document.getElementById('modalBg').classList.remove('show
 /* تأكيد الإرسال — سيُربط بـ ManyChat في الخطوة القادمة */
 function confirmSend(){
   closeModal();
-  stToast('⏳ الإرسال الفعلي عبر ManyChat يُفعّل في الخطوة القادمة (نحتاج ربط الـ API). المعاينة والبيانات جاهزة ✅','w');
+  downloadCSV();
 }
 
 function stToast(msg,type){
