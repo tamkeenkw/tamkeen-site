@@ -406,13 +406,21 @@ tr:hover td{background:rgba(92,15,15,.02);}
             <select class="msel" id="libCourseFilter" onchange="renderLibrary()"><option value="">كل الدورات</option></select>
             <input class="lib-search" id="libSearch" placeholder="ابحث باسم العميل أو رقمه..." oninput="renderLibrary()">
           </div>
+          <div id="libActions" style="display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:12px 18px;background:var(--green-bg);border-radius:12px;border:1.5px solid rgba(46,125,50,.15);">
+            <span id="libSelCount" style="font-weight:900;color:var(--green);font-size:14px;"></span>
+            <button class="remind-btn" id="libZipBtn" onclick="downloadSelectedZip()">
+              <span id="libZipTxt">⬇️ تحميل المحدد (ZIP)</span>
+              <div class="spinner" id="libZipSpin"></div>
+            </button>
+          </div>
           <div id="libLoading" class="loading" style="display:none;">
             <div class="loading-dots"><span></span><span></span><span></span></div>
           </div>
           <div class="table-wrap" id="libTableWrap" style="display:none;">
             <table>
               <thead><tr>
-                <th style="width:40px;">#</th><th>اسم العميل</th><th>رقم العميل</th><th>اسم الدورة</th><th>تاريخ الإصدار</th><th>رقم المادة</th><th>الشهادة</th>
+                <th style="width:40px;text-align:center;"><input type="checkbox" id="libSelectAll" onchange="libToggleAll(this)" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;"></th>
+                <th style="width:36px;">#</th><th>اسم العميل</th><th>رقم العميل</th><th>اسم الدورة</th><th>تاريخ الإصدار</th><th>رقم المادة</th><th>الشهادة</th>
               </tr></thead>
               <tbody id="libBody"></tbody>
             </table>
@@ -982,13 +990,19 @@ function renderLibrary(){
   let list=libData.slice();
   if(course) list=list.filter(c=>c.course===course);
   if(q) list=list.filter(c=> (c.name||'').includes(q) || (qd && String(c.phone||'').replace(/\D/g,'').includes(qd)) );
+  libRendered=list;
   document.getElementById('libCount').textContent=' — '+toA(list.length)+' شهادة';
+  document.getElementById('libSelectAll').checked=false;
+  document.getElementById('libActions').style.display='none';
   if(list.length===0){ showLibMsg('📭','لا توجد شهادات مطابقة','جرّب دورة أخرى أو امسح البحث'); return; }
   document.getElementById('libEmpty').style.display='none';
   document.getElementById('libTableWrap').style.display='block';
   document.getElementById('libBody').innerHTML=list.map((c,i)=>{
-    const dl=c.url?('<a class="dl-btn" href="'+esc(c.url)+'" target="_blank">📥 تحميل</a>'):'<span class="dl-none">—</span>';
+    const hasUrl=c.url && /^https?:\/\//.test(c.url);
+    const dl=hasUrl?('<a class="dl-btn" href="'+esc(c.url)+'" target="_blank">📥 تحميل</a>'):'<span class="dl-none">—</span>';
+    const chk=hasUrl?('<input type="checkbox" class="lib-chk" data-i="'+i+'" onchange="libOnCheck()" style="width:18px;height:18px;accent-color:var(--crimson);cursor:pointer;">'):'';
     return '<tr>'
+      +'<td style="text-align:center;">'+chk+'</td>'
       +'<td class="row-num">'+toA(i+1)+'</td>'
       +'<td style="font-weight:700;">'+esc(c.name||'—')+'</td>'
       +'<td style="font-family:monospace;font-size:13px;direction:ltr;text-align:right;">'+esc(c.phone||'—')+'</td>'
@@ -998,6 +1012,57 @@ function renderLibrary(){
       +'<td>'+dl+'</td>'
       +'</tr>';
   }).join('');
+}
+
+/* ===== تحديد + تحميل مجمّع (ZIP) ===== */
+let libRendered=[];
+
+function libToggleAll(cb){
+  document.querySelectorAll('.lib-chk').forEach(c=>c.checked=cb.checked);
+  libOnCheck();
+}
+
+function libOnCheck(){
+  const n=document.querySelectorAll('.lib-chk:checked').length;
+  const bar=document.getElementById('libActions');
+  bar.style.display = n>0 ? 'flex' : 'none';
+  document.getElementById('libSelCount').textContent='محدَّد: '+toA(n)+' شهادة';
+  const total=document.querySelectorAll('.lib-chk').length;
+  document.getElementById('libSelectAll').checked = (n>0 && n===total);
+}
+
+function getLibSelected(){
+  return [...document.querySelectorAll('.lib-chk:checked')]
+    .map(c=>libRendered[parseInt(c.dataset.i)])
+    .filter(x=>x && x.url);
+}
+
+async function downloadSelectedZip(){
+  const chosen=getLibSelected();
+  if(chosen.length===0){ toast('اختر شهادة واحدة على الأقل','err'); return; }
+  if(chosen.length>80 && !confirm('حددت '+chosen.length+' شهادة — الأعداد الكبيرة قد تاخذ وقت أطول. تكمل؟')) return;
+  document.getElementById('libZipBtn').disabled=true;
+  document.getElementById('libZipTxt').style.display='none';
+  document.getElementById('libZipSpin').style.display='block';
+  try{
+    const res=await fetch(LIB_URL,{ method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({ type:'zipCerts', items:chosen.map(c=>({name:c.name,serial:c.serial,url:c.url})) }) });
+    const data=await res.json();
+    if(data.ok && data.url){
+      window.open(data.url,'_blank');
+      let msg='✅ تجهّز ملف فيه '+toA(data.count)+' شهادة';
+      if(data.skipped) msg+=' — تخطّى '+toA(data.skipped)+' بدون رابط صحيح';
+      toast(msg,'ok');
+    }else{
+      toast('تعذّر تجهيز الملف — تأكد من الروابط','err');
+    }
+  }catch(err){
+    toast('حدث خطأ في التحميل المجمّع','err');
+  }finally{
+    document.getElementById('libZipBtn').disabled=false;
+    document.getElementById('libZipTxt').style.display='block';
+    document.getElementById('libZipSpin').style.display='none';
+  }
 }
 
 /* ================== بدء التشغيل ================== */
