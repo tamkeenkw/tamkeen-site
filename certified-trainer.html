@@ -694,6 +694,21 @@ function submitReg(){
   btn.disabled = true;
   document.getElementById('fTxt').textContent = 'جاري الإعداد...';
 
+  // تسجيل مبدئي "لم يكمل الدفع" قبل التحويل لتاب — لو ما كمّل تبقى بياناته
+  try {
+    var pend = JSON.stringify({
+      type:'تسجيل_دورة', name:name, phone:phone, email:email,
+      courses:PKG_NAMES[pkg], amount:PKG_PRICES[pkg], date:date,
+      payment:'لم يكمل الدفع'
+    });
+    if(navigator.sendBeacon){
+      navigator.sendBeacon(SCRIPT, new Blob([pend], {type:'text/plain;charset=UTF-8'}));
+    } else {
+      fetch(SCRIPT,{method:'POST',mode:'no-cors',keepalive:true,
+        headers:{'Content-Type':'text/plain;charset=UTF-8'},body:pend}).catch(function(){});
+    }
+  } catch(e){}
+
   // إرسال لـ Apps Script عبر form
   var form = document.createElement('form');
   form.method = 'POST';
@@ -701,7 +716,7 @@ function submitReg(){
   var fields = {
     type:'create_charge', name:name, phone:phone, email:email,
     courses:PKG_NAMES[pkg], date:date, amount:PKG_PRICES[pkg],
-    redirect: window.location.origin+window.location.pathname+'?payment=success&n='+encodeURIComponent(name)+'&p='+encodeURIComponent(phone)+'&c='+encodeURIComponent(PKG_NAMES[pkg])+'&d='+encodeURIComponent(date)
+    redirect: window.location.origin+window.location.pathname+'?payment=success&n='+encodeURIComponent(name)+'&p='+encodeURIComponent(phone)+'&c='+encodeURIComponent(PKG_NAMES[pkg])+'&d='+encodeURIComponent(date)+'&a='+encodeURIComponent(PKG_PRICES[pkg])
   };
   Object.keys(fields).forEach(function(k){
     var inp = document.createElement('input');
@@ -719,10 +734,12 @@ window.addEventListener('DOMContentLoaded', function(){
     if(fc) fc.style.display='none';
     var fs=document.getElementById('fSuccess');
     if(fs) fs.style.display='block';
-    var n=p.get('n')||'', ph=p.get('p')||'', c=p.get('c')||'', d=p.get('d')||'';
+    var n=p.get('n')||'', ph=p.get('p')||'', c=p.get('c')||'', d=p.get('d')||'', am=p.get('a')||'';
+    // Tap يرجّع معرّف الشحنة كـ tap_id — نلتقطه لنخزّنه في عمود charge_id
+    var chargeId=p.get('tap_id')||p.get('charge_id')||'';
     if(n){
       fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:'',courses:c,payment:'تم الدفع - Tap',date:d})
+        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:'',courses:c,amount:am,charge_id:chargeId,payment:'تم الدفع - Tap',date:d})
       }).catch(function(){});
     }
     window.history.replaceState({},'',window.location.pathname);
