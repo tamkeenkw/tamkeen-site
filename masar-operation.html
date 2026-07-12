@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مسار اوبريشن — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515; --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --yellow:#B26A00; --yellow-bg:#FFF3D6;
+  --blue:#1565C0; --blue-bg:#E3F2FD;
+  --red:#C62828;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--cream);}
+
+/* ===== LOGIN ===== */
+#login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;}
+.login-logo{font-size:26px;font-weight:900;color:var(--crimson);}
+.login-sub{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:3px;margin-top:4px;margin-bottom:34px;}
+.login-card{background:#fff;border-radius:22px;padding:30px 24px;width:100%;box-shadow:0 8px 30px rgba(92,15,15,.08);border:1.5px solid rgba(92,15,15,.06);}
+.login-card h2{font-size:18px;font-weight:900;margin-bottom:6px;text-align:center;}
+.login-card p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:22px;}
+.pin-input{width:100%;text-align:center;font-size:22px;font-weight:900;letter-spacing:4px;padding:16px;border:1.5px solid rgba(92,15,15,.12);border-radius:14px;background:var(--cream);color:var(--text);outline:none;font-family:'Tajawal',sans-serif;}
+.pin-input:focus{border-color:var(--crimson);background:#fff;}
+.btn{width:100%;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;padding:15px;border:none;border-radius:14px;cursor:pointer;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn:active{background:var(--crimson-2);}
+.btn[disabled]{opacity:.6;}
+.login-err{color:var(--red);font-size:13px;font-weight:700;text-align:center;margin-top:14px;min-height:18px;}
+
+/* ===== APP ===== */
+#app{display:none;padding-bottom:78px;}
+.header{background:var(--crimson);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;}
+.header .h-title{font-size:17px;font-weight:900;color:#fff;}
+.header .h-sub{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-top:2px;}
+.header .h-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:6px 13px;border-radius:100px;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.15);cursor:pointer;}
+
+.view{display:none;padding:18px 16px;}
+.view.active{display:block;}
+.sect-title{font-size:15px;font-weight:900;margin:22px 4px 12px;}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty .ico{width:52px;height:52px;margin:0 auto 14px;opacity:.35;}
+.empty .t{font-size:16px;font-weight:800;color:var(--text);}
+.empty .s{font-size:13px;margin-top:6px;line-height:1.7;}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:800;z-index:60;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.2);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+.toast.ok{background:var(--green);}
+.toast.err{background:var(--red);}
+
+/* Bottom nav */
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(1,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
+.nav-item{padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);position:relative;}
+.nav-item svg{width:23px;height:23px;}
+.nav-item span{font-size:10.5px;font-weight:800;}
+.nav-item.active{color:var(--crimson);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== LOGIN ===== -->
+  <div id="login">
+    <div class="login-logo">أكاديمية مسار</div>
+    <div class="login-sub">مسار اوبريشن</div>
+    <div class="login-card">
+      <h2>تسجيل الدخول</h2>
+      <p>أدخل الرقم السري للدخول إلى لوحة العمليات</p>
+      <input id="pinInput" class="pin-input" type="password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+      <button id="loginBtn" class="btn" onclick="doLogin()">دخول</button>
+      <div id="loginErr" class="login-err"></div>
+    </div>
+  </div>
+
+  <!-- ===== APP ===== -->
+  <div id="app">
+    <div class="header">
+      <div>
+        <div class="h-title">مسار اوبريشن</div>
+        <div class="h-sub">لوحة العمليات</div>
+      </div>
+      <div class="h-badge" onclick="logout()">خروج</div>
+    </div>
+
+    <!-- HOME (فاضية — نعبّيها بالأقسام خطوة خطوة) -->
+    <div class="view active" id="view-home">
+      <div class="empty">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <div class="t">لوحة العمليات جاهزة</div>
+        <div class="s">الهيكل جاهز — نبدأ نضيف الأقسام<br>واحد واحد حسب حاجتك.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== BOTTOM NAV (نضيف تبويبات مع كل قسم) ===== -->
+  <div class="nav" id="nav">
+    <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+      <span>الرئيسية</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== الإعدادات ================== */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+const OP_PASSWORD = 'masar@12';   // الرقم السري لدخول الصفحة
+const SESSION_KEY = 'masarOpAuth';
+
+/* ================== أدوات مساعدة ================== */
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(type?(' '+type):'');
+  setTimeout(()=>t.className='toast',2200);
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// اتصال بالسكريبت (جاهز نستخدمه لما نضيف الأقسام)
+async function api(body){
+  const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  return await r.json();
+}
+
+// تخزين آمن (يشتغل حتى لو التخزين معطّل)
+function saveAuth(){ try{ sessionStorage.setItem(SESSION_KEY,'1'); }catch(e){} }
+function isAuthed(){ try{ return sessionStorage.getItem(SESSION_KEY)==='1'; }catch(e){ return false; } }
+function clearAuth(){ try{ sessionStorage.removeItem(SESSION_KEY); }catch(e){} }
+
+/* ================== الدخول والخروج ================== */
+function doLogin(){
+  const val=(document.getElementById('pinInput').value||'').trim();
+  const err=document.getElementById('loginErr');
+  if(val===OP_PASSWORD){
+    err.textContent='';
+    saveAuth();
+    showApp();
+  }else{
+    err.textContent='الرقم السري غير صحيح';
+    document.getElementById('pinInput').value='';
+  }
+}
+function logout(){
+  clearAuth();
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+  document.getElementById('pinInput').value='';
+}
+function showApp(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+/* ================== التبويبات ================== */
+function switchTab(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const view=document.getElementById('view-'+name);
+  if(view) view.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
+  window.scrollTo(0,0);
+}
+
+/* ================== بدء التشغيل ================== */
+(function init(){
+  if(isAuthed()) showApp();
+  else document.getElementById('pinInput').focus();
+})();
+</script>
+</body>
+</html>
