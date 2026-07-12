@@ -55,8 +55,67 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .toast.ok{background:var(--green);}
 .toast.err{background:var(--red);}
 
+/* ===== REMINDERS / EXPORT TAB ===== */
+.wip{background:var(--yellow-bg);border:1.5px solid rgba(245,127,23,.25);border-radius:14px;padding:14px 16px;margin-bottom:18px;font-size:12.5px;font-weight:700;color:#8a5a00;line-height:1.75;}
+.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 12px rgba(92,15,15,.04);border:1.5px solid rgba(92,15,15,.06);margin-bottom:16px;}
+.card-title{font-size:15px;font-weight:900;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-title span{font-size:19px;}
+.msel{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:700;color:var(--text);outline:none;cursor:pointer;}
+.msel:focus{border-color:var(--crimson);background:#fff;}
+.course-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+.course-card{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:14px;padding:16px;cursor:pointer;transition:all .18s;}
+.course-card:active{transform:scale(.99);}
+.course-card.active{border-color:var(--crimson);background:linear-gradient(180deg,#fff,#FDF6F6);box-shadow:0 4px 16px rgba(92,15,15,.1);}
+.cc-name{font-size:14.5px;font-weight:900;color:var(--text);margin-bottom:9px;line-height:1.4;}
+.cc-meta{display:flex;flex-direction:column;gap:4px;}
+.cc-line{font-size:12px;color:var(--muted);font-weight:600;}
+.cc-mode{display:inline-block;margin-top:9px;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:800;}
+.cc-mode.online{background:var(--blue-bg);color:var(--blue);}
+.cc-mode.onsite{background:var(--green-bg);color:var(--green);}
+.results-header{padding:0 0 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.results-title{font-size:15px;font-weight:900;color:var(--text);}
+.results-count{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:2px;}
+.remind-btn{background:var(--green);color:#fff;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;padding:11px 18px;border:none;border-radius:100px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.remind-btn:disabled{opacity:.4;cursor:not-allowed;}
+.preview-btn{background:transparent;color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;padding:11px 14px;border:1.5px solid rgba(92,15,15,.2);border-radius:100px;cursor:pointer;white-space:nowrap;}
+.preview-btn:disabled{opacity:.4;cursor:not-allowed;}
+.table-wrap{overflow-x:auto;border-top:1px solid rgba(92,15,15,.06);margin-top:4px;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--cream);padding:11px 12px;text-align:right;font-size:11.5px;font-weight:800;color:var(--muted);border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
+td{padding:12px;font-size:13.5px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.name-row{display:flex;align-items:center;gap:9px;}
+.loading{text-align:center;padding:36px;}
+.loading-dots{display:inline-flex;gap:6px;}
+.loading-dots span{width:9px;height:9px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.empty-icon{font-size:36px;margin-bottom:10px;}
+.empty-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:5px;}
+.empty-sub{font-size:12.5px;color:var(--muted);}
+.st-toast{display:none;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:800;margin-top:14px;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,8,8,.5);z-index:9998;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:22px;max-width:440px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.modal-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;font-weight:600;}
+.preview-box{background:#075E54;border-radius:14px;padding:14px;margin-bottom:8px;}
+.preview-bubble{background:#DCF8C6;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:12.5px;line-height:1.85;color:#1A2E1A;white-space:pre-wrap;font-weight:600;direction:rtl;}
+.preview-note{font-size:11px;color:var(--muted);text-align:center;margin:8px 0 16px;font-weight:600;}
+.modal-actions{display:flex;gap:10px;}
+.mbtn{flex:1;padding:12px;border-radius:100px;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;cursor:pointer;border:none;}
+.mbtn-cancel{background:var(--cream-2);color:var(--muted);}
+.mbtn-send{background:var(--green);color:#fff;}
+
 /* Bottom nav */
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(1,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);display:grid;grid-template-columns:repeat(2,1fr);z-index:40;box-shadow:0 -4px 20px rgba(92,15,15,.05);}
 .nav-item{padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted);position:relative;}
 .nav-item svg{width:23px;height:23px;}
 .nav-item span{font-size:10.5px;font-weight:800;}
@@ -103,6 +162,80 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
+    <!-- ===== التذكيرات / تصدير البيانات ===== -->
+    <div class="view" id="view-reminders">
+
+      <div class="wip">
+        📤 <b>تصدير البيانات:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«تصدير CSV»</b> فينزل ملف جاهز يفتح في Excel أو يُرفع في ManyChat (Import). الأرقام تُنسّق تلقائياً بصيغة ‎+965‎.
+      </div>
+
+      <!-- اختيار الشهر -->
+      <div class="card">
+        <div class="card-title"><span>🗓️</span> اختر الشهر</div>
+        <select class="msel" id="monthSelect" onchange="renderCourses()">
+          <option value="">جاري تحميل الدورات...</option>
+        </select>
+      </div>
+
+      <!-- الدورات -->
+      <div class="card" id="coursesCard" style="display:none;">
+        <div class="card-title"><span>📚</span> الدورات</div>
+        <div class="course-grid" id="courseGrid"></div>
+        <div class="empty" id="coursesEmpty" style="display:none;">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">لا توجد دورات في هذا الشهر</div>
+          <div class="empty-sub">جرّب اختيار شهر آخر</div>
+        </div>
+      </div>
+
+      <!-- المسجّلون -->
+      <div class="card" id="studentsCard" style="display:none;">
+        <div class="results-header">
+          <div>
+            <div class="results-title" id="stTitle">—</div>
+            <div class="results-count" id="stCount">—</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="remind-btn" id="csvBtn" onclick="downloadCSV()" disabled><span id="csvTxt">⬇️ تصدير CSV</span></button>
+            <button class="preview-btn" id="remindBtn" onclick="openReminderPreview()" disabled>👁️ معاينة</button>
+          </div>
+        </div>
+        <div id="stLoading" class="loading" style="display:none;">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="table-wrap" id="stTableWrap" style="display:none;">
+          <table>
+            <thead><tr>
+              <th style="width:36px;text-align:center;"><input type="checkbox" id="selectAllChk" checked onchange="toggleAllStudents(this)" style="width:17px;height:17px;accent-color:var(--crimson);cursor:pointer;"></th>
+              <th style="width:34px;">#</th><th>الاسم</th><th>الواتساب</th>
+            </tr></thead>
+            <tbody id="stBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="stEmpty" style="display:none;">
+          <div class="empty-icon">👥</div>
+          <div class="empty-title">لا يوجد مسجّلون في هذه الدورة</div>
+          <div class="empty-sub">تحقق من اسم الدورة في الشيت</div>
+        </div>
+        <div class="st-toast" id="stToast"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ===== REMINDER PREVIEW MODAL ===== -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <div class="modal-title">📲 معاينة التذكير</div>
+      <div class="modal-sub" id="modalSub">سيُرسل هذا التذكير للمسجّلين</div>
+      <div class="preview-box"><div class="preview-bubble" id="previewBubble"></div></div>
+      <div class="preview-note">👆 نموذج بالاسم الأول — كل متدرب يستلم رسالته باسمه</div>
+      <div class="modal-actions">
+        <button class="mbtn mbtn-cancel" onclick="closeModal()">إلغاء</button>
+        <button class="mbtn mbtn-send" onclick="confirmSend()">⬇️ تصدير CSV</button>
+      </div>
+    </div>
   </div>
 
   <!-- ===== BOTTOM NAV (نضيف تبويبات مع كل قسم) ===== -->
@@ -110,6 +243,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
       <span>الرئيسية</span>
+    </div>
+    <div class="nav-item" data-tab="reminders" onclick="switchTab('reminders')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v11"/><path d="M8 10l4 4 4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <span>تصدير</span>
     </div>
   </div>
 
@@ -172,8 +309,245 @@ function switchTab(name){
   const view=document.getElementById('view-'+name);
   if(view) view.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.tab===name));
+  if(name==='reminders') ensureCourses();
   window.scrollTo(0,0);
 }
+
+/* ================== تبويب التصدير (التذكيرات) ================== */
+let coursesLoaded=false;
+function ensureCourses(){ if(coursesLoaded){return;} coursesLoaded=true; loadCourses(); }
+
+/* أرقام عربية */
+function toA(n){return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+
+/* أشهر */
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MONTH_ALIASES = {'ابريل':'أبريل','اغسطس':'أغسطس','اكتوبر':'أكتوبر','مايو':'مايو'};
+
+function detectMonth(dateStr){
+  if(!dateStr) return 'أخرى';
+  let s = String(dateStr);
+  for(const m of MONTHS){ if(s.indexOf(m)>-1) return m; }
+  for(const a in MONTH_ALIASES){ if(s.indexOf(a)>-1) return MONTH_ALIASES[a]; }
+  const dg = s.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  let mm = null;
+  let iso = dg.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if(iso) mm = parseInt(iso[2]);
+  else { let dmy = dg.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})/); if(dmy) mm = parseInt(dmy[2]); }
+  if(mm && mm>=1 && mm<=12) return MONTHS[mm-1];
+  return 'أخرى';
+}
+
+function attendMode(course){
+  const z = (course.zoom||'').trim();
+  if(z) return {label:'🖥️ أونلاين', cls:'online', line:'🖥️ أونلاين (زوم)', link:z};
+  return {label:'📍 حضوري', cls:'onsite', line:'📍 حضوري', link:''};
+}
+
+let coursesData = [];
+let coursesByMonth = {};
+let currentCourse = null;
+let currentStudents = [];
+let selectedIdx = new Set();
+
+async function loadCourses(){
+  try{
+    const [r1,r2] = await Promise.all([
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة'))
+    ]);
+    const [d1,d2] = await Promise.all([r1.json(), r2.json()]);
+    coursesData = [...(d1.courses||[]), ...(d2.courses||[])];
+
+    coursesByMonth = {};
+    coursesData.forEach(c=>{
+      const m = detectMonth(c.date);
+      (coursesByMonth[m] = coursesByMonth[m] || []).push(c);
+    });
+
+    const present = MONTHS.filter(m=>coursesByMonth[m]);
+    if(coursesByMonth['أخرى']) present.push('أخرى');
+
+    const sel = document.getElementById('monthSelect');
+    if(present.length===0){ sel.innerHTML='<option value="">لا توجد دورات منشورة</option>'; return; }
+    sel.innerHTML = '<option value="__all">كل الأشهر ('+toA(coursesData.length)+')</option>' +
+      present.map(m=>'<option value="'+m+'">'+m+' ('+toA(coursesByMonth[m].length)+')</option>').join('');
+    sel.value='__all';
+    renderCourses();
+  }catch(err){
+    document.getElementById('monthSelect').innerHTML='<option value="">خطأ في تحميل الدورات</option>';
+  }
+}
+
+function renderCourses(){
+  const m = document.getElementById('monthSelect').value;
+  if(!m) return;
+  const list = (m==='__all') ? coursesData : (coursesByMonth[m]||[]);
+  document.getElementById('coursesCard').style.display='block';
+  document.getElementById('studentsCard').style.display='none';
+  currentCourse=null;
+  const grid = document.getElementById('courseGrid');
+  const empty = document.getElementById('coursesEmpty');
+  if(list.length===0){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  grid.innerHTML = list.map((c)=>{
+    const mode = attendMode(c);
+    const gi = coursesData.indexOf(c);
+    return `<div class="course-card" data-gi="${gi}" onclick="openCourse(${gi}, this)">
+      <div class="cc-name">${c.name||'—'}</div>
+      <div class="cc-meta">
+        ${c.date?`<div class="cc-line">📅 ${c.date}</div>`:''}
+        ${c.time?`<div class="cc-line">⏰ ${c.time}</div>`:''}
+        ${c.trainer?`<div class="cc-line">👤 ${c.trainer}</div>`:''}
+      </div>
+      <span class="cc-mode ${mode.cls}">${mode.label}</span>
+    </div>`;
+  }).join('');
+}
+
+async function openCourse(gi, el){
+  const c = coursesData[gi];
+  currentCourse = c;
+  document.querySelectorAll('.course-card').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('studentsCard').style.display='block';
+  document.getElementById('stTitle').textContent = c.name;
+  document.getElementById('stCount').textContent = 'جاري التحميل...';
+  document.getElementById('stTableWrap').style.display='none';
+  document.getElementById('stEmpty').style.display='none';
+  document.getElementById('stLoading').style.display='block';
+  document.getElementById('remindBtn').disabled=true;
+  document.getElementById('csvBtn').disabled=true;
+  document.getElementById('stToast').style.display='none';
+  document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+  try{
+    const url = SCRIPT_URL+'?action=getStudents&course='+encodeURIComponent(c.name)+'&date='+encodeURIComponent(c.date||'');
+    const res = await fetch(url);
+    const data = await res.json();
+    document.getElementById('stLoading').style.display='none';
+    currentStudents = (data.students||[]).filter(s=>s.phone);
+    if(currentStudents.length===0){
+      document.getElementById('stCount').textContent='لا يوجد مسجّلون';
+      document.getElementById('stEmpty').style.display='block';
+      return;
+    }
+    renderStudents(currentStudents);
+  }catch(err){
+    document.getElementById('stLoading').style.display='none';
+    document.getElementById('stCount').textContent='خطأ في التحميل';
+    document.getElementById('stEmpty').style.display='block';
+  }
+}
+
+function renderStudents(students){
+  selectedIdx = new Set(students.map((s,i)=>i));
+  document.getElementById('stCount').textContent = toA(students.length)+' مسجّل';
+  const body = document.getElementById('stBody');
+  body.innerHTML = students.map((s,i)=>{
+    const initial = s.name ? s.name.charAt(0) : '؟';
+    return `<tr>
+      <td style="text-align:center;"><input type="checkbox" class="st-check" data-i="${i}" checked onchange="toggleStudent(${i},this)" style="width:17px;height:17px;accent-color:var(--crimson);cursor:pointer;"></td>
+      <td class="row-num">${toA(i+1)}</td>
+      <td><div class="name-row"><div class="avatar">${initial}</div><span style="font-weight:700;">${s.name||'—'}</span></div></td>
+      <td style="font-family:monospace;font-size:12.5px;letter-spacing:1px;direction:ltr;text-align:right;">${s.phone||'—'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('stTableWrap').style.display='block';
+  const allChk = document.getElementById('selectAllChk');
+  if(allChk) allChk.checked = true;
+  updateRemindBtn();
+}
+
+function toggleStudent(i, cb){
+  if(cb.checked) selectedIdx.add(i); else selectedIdx.delete(i);
+  const allChk = document.getElementById('selectAllChk');
+  if(allChk) allChk.checked = (selectedIdx.size === currentStudents.length);
+  updateRemindBtn();
+}
+
+function toggleAllStudents(cb){
+  selectedIdx = cb.checked ? new Set(currentStudents.map((s,i)=>i)) : new Set();
+  document.querySelectorAll('.st-check').forEach(c=>{ c.checked = cb.checked; });
+  updateRemindBtn();
+}
+
+function updateRemindBtn(){
+  const n = selectedIdx.size;
+  document.getElementById('csvTxt').textContent = n>0 ? ('⬇️ تصدير CSV ('+toA(n)+')') : '⬇️ اختر مسجّلين';
+  document.getElementById('csvBtn').disabled = (n===0);
+  document.getElementById('remindBtn').disabled = (n===0);
+}
+
+function buildMessage(name){
+  const c = currentCourse;
+  const mode = attendMode(c);
+  const modeLine = mode.link ? (mode.line+'\nالرابط: '+mode.link) : mode.line;
+  return `🌿 معهد تمكين — تذكير بدورتك
+
+عزيزنا ${name}،
+نذكّرك بدورة: ${c.name}
+
+📅 التاريخ: ${c.date||'—'}
+⏰ الوقت: ${c.time||'—'}
+${modeLine}
+
+لتأكيد حضورك، رد بكلمة: حاضر ✅`;
+}
+
+function getSelectedStudents(){ return currentStudents.filter((s,i)=>selectedIdx.has(i)); }
+
+/* ===== تصدير CSV ===== */
+const OFFICE_LOCATION = 'مدينة الكويت - برج أولى - دور 7';
+function firstNameOnly(full){ const parts = String(full||'').trim().split(/\s+/); return parts[0] || String(full||''); }
+function normPhoneCSV(raw){
+  let d = String(raw||'').replace(/[^\d]/g,'');
+  if(d.indexOf('00')===0) d = d.substring(2);
+  if(d.indexOf('965')===0) return '+'+d;
+  if(d.length===8) return '+965'+d;
+  return '+'+d;
+}
+function coursePlaceCSV(c){ const z = (c.zoom||'').trim(); return z ? z : OFFICE_LOCATION; }
+function csvCell(v){ v = String(v==null?'':v); if(/[",\n\r]/.test(v)) v = '"'+v.replace(/"/g,'""')+'"'; return v; }
+
+function downloadCSV(){
+  if(!currentCourse) return;
+  const chosen = getSelectedStudents();
+  if(chosen.length===0){ stToast('اختر مسجّلين أول','w'); return; }
+  const c = currentCourse;
+  const place = coursePlaceCSV(c);
+  const rows = [['الاسم','الرقم','الدورة','التاريخ','الوقت','المكان']];
+  chosen.forEach(s=>{ rows.push([ firstNameOnly(s.name), normPhoneCSV(s.phone), c.name||'', c.date||'', c.time||'', place ]); });
+  const csv = '\uFEFF' + rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = (c.name||'دورة').replace(/[\/\\:*?"<>|]+/g,'').trim().slice(0,40);
+  a.href = url; a.download = 'تذكير - '+safeName+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  stToast('✅ تم تصدير ملف '+toA(chosen.length)+' مسجّل — افتحه في Excel أو ارفعه في ManyChat (Import)','s');
+}
+
+function openReminderPreview(){
+  if(!currentCourse) return;
+  const chosen = getSelectedStudents();
+  if(chosen.length===0) return;
+  const sample = chosen[0].name || 'المتدرب';
+  document.getElementById('previewBubble').textContent = buildMessage(sample);
+  document.getElementById('modalSub').textContent = 'ملف التصدير يشمل '+toA(chosen.length)+' مسجّل محدّد في «'+currentCourse.name+'»';
+  document.getElementById('modalBg').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+function confirmSend(){ closeModal(); downloadCSV(); }
+
+function stToast(msg,type){
+  const t=document.getElementById('stToast');
+  const colors={s:'background:#E8F5E9;color:#2E7D32;',w:'background:#FFF9C4;color:#8a5a00;',e:'background:#FFEBEE;color:#C62828;'};
+  t.style.cssText='display:block;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:800;margin-top:14px;'+(colors[type]||colors.s);
+  t.textContent=msg;
+}
+
+document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
 
 /* ================== بدء التشغيل ================== */
 (function init(){
