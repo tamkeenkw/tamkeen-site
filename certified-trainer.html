@@ -730,16 +730,16 @@ function submitReg(){
 window.addEventListener('DOMContentLoaded', function(){
   var p = new URLSearchParams(window.location.search);
   if(p.get('payment')==='success'){
+    // Tap يرجّع معرّف الشحنة — نطلب من السكربت يتحقق من نجاح الدفع فعلياً
+    var chargeId=p.get('tap_id')||p.get('charge_id')||'';
     var fc=document.getElementById('fCard');
     if(fc) fc.style.display='none';
     var fs=document.getElementById('fSuccess');
     if(fs) fs.style.display='block';
-    var n=p.get('n')||'', ph=p.get('p')||'', c=p.get('c')||'', d=p.get('d')||'', am=p.get('a')||'';
-    // Tap يرجّع معرّف الشحنة كـ tap_id — نلتقطه لنخزّنه في عمود charge_id
-    var chargeId=p.get('tap_id')||p.get('charge_id')||'';
-    if(n){
-      fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'تسجيل_دورة',name:n,phone:ph,email:'',courses:c,amount:am,charge_id:chargeId,payment:'تم الدفع - Tap',date:d})
+    if(chargeId){
+      // السكربت يسأل Tap عن الحالة الحقيقية ويسجّل حسبها (confirmed أو ملغى)
+      fetch(SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},
+        body:JSON.stringify({type:'verify_payment',charge_id:chargeId})
       }).catch(function(){});
     }
     window.history.replaceState({},'',window.location.pathname);
