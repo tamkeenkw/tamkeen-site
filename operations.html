@@ -352,6 +352,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <div class="mc-title">السيرة الذاتية للمدرب</div><div class="mc-desc">تعبئة بيانات المدرب وإخراج سيرة مرتبة PDF</div>
       </div>
+      <div class="menu-card" onclick="openSection('memberconsult')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
+        <div class="mc-title">متابعة استشارات الأعضاء</div><div class="mc-desc">الأعضاء المسجّلون في استشارات تمكين</div>
+      </div>
     </div>
   </div>
 
@@ -756,6 +760,17 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     <div class="list" id="cvList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
+  <!-- ===== MEMBER CONSULTATIONS ===== -->
+  <div class="panel" id="p-memberconsult">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>متابعة استشارات الأعضاء</div><div class="sec-desc">الأعضاء المسجّلون في الاستشارات التي يقدّمها المعهد — لا يشمل استشارات المدربين</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="mc-month" onchange="renderMemberConsults()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
+      </div>
+    </div>
+    <div class="toolbar"><div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="mc-search" placeholder="بحث بالاسم أو رقم العضوية..." oninput="renderMemberConsults()"></div></div>
+    <div class="list" id="mcList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
@@ -781,7 +796,7 @@ const INST_PAGE  = 'institutional-register.html'; // صفحة تسجيل الم�
 const DAYS_AR   = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 let TABS = [];
-let DATA = { bookings:null, attendance:null, joins:null, materials:null };
+let DATA = { bookings:null, attendance:null, joins:null, materials:null, memberconsult:null };
 let materialStatus = {};
 let bkFilter='all', jnFilter='all';
 
@@ -799,7 +814,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -811,6 +826,7 @@ function openSection(id){
   if(id==='letters') initLetters();
   if(id==='offer') initOffer();
   if(id==='cv') loadCVs();
+  if(id==='memberconsult') loadMemberConsults();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -900,7 +916,7 @@ async function init(){
   initPlanRows();
 }
 async function refreshAll(){
-  loadBookings(); loadMaterials(); loadAttendance(); loadJoins(); if(document.getElementById('cvList')) loadCVs();
+  loadBookings(); loadMaterials(); loadAttendance(); loadJoins(); if(document.getElementById('cvList')) loadCVs(); if(document.getElementById('mcList')) loadMemberConsults();
 }
 
 /* ============ طلبات الحجز ============ */
@@ -1018,6 +1034,47 @@ async function readTabLinks(tab){
   return { tab, headers, data };
 }
 function pickCol(h, keys, fb){ const i=colIdx(h,...keys); return i>-1 ? i : ((fb!=null && fb<24) ? fb : -1); }
+async function loadMemberConsults(){
+  const box=document.getElementById('mcList'); if(!box) return;
+  const tab=findTab('استشارات الأعضاء','استشارات الاعضاء','استشارات الأعض','استشارات الاعض');
+  if(!tab){ box.innerHTML='<div class="empty">لم يُعثر على تبويب «استشارات الأعضاء» في الشيت.<br><span style="font-size:12px;color:var(--muted)">يُنشأ تلقائياً عند أول حجز من صفحة استشارة العضو.</span></div>'; updateBadge('memberconsult',0); return; }
+  try{ DATA.memberconsult = await readTab(tab); }catch(e){ box.innerHTML='<div class="empty">تعذّر التحميل.</div>'; return; }
+  renderMemberConsults();
+}
+function renderMemberConsults(){
+  const box=document.getElementById('mcList'); if(!box||!DATA.memberconsult) return;
+  const h=DATA.memberconsult.headers;
+  const nameI=colIdx(h,'اسم','العضو'), idI=colIdx(h,'عضوية'), typeI=colIdx(h,'نوع','النوع','استشارة'),
+        topicI=colIdx(h,'موضوع','وصف','المشكلة','التفاصيل'), dateI=colIdx(h,'تاريخ'),
+        slotI=colIdx(h,'موعد','الموعد','وقت','التوقيت'), phoneI=colIdx(h,'هاتف','جوال','واتس'), scI=statusCol(h);
+  let rows=DATA.memberconsult.data.slice().reverse();
+  fillMonths('mc-month', rows, r=>cell(r,dateI)||cell(r,slotI));
+  const mcMonth=(document.getElementById('mc-month')||{}).value||'';
+  const q=(document.getElementById('mc-search').value||'').trim();
+  rows=rows.filter(r=>{
+    if(q && (cell(r,nameI)+cell(r,idI)).indexOf(q)===-1) return false;
+    if(mcMonth){ const d=parseDate(cell(r,dateI)||cell(r,slotI)); if(!d||monthKey(d)!==mcMonth) return false; }
+    return true;
+  });
+  const pend = scI>-1 ? DATA.memberconsult.data.filter(r=>statusClass(cell(r,scI))==='st-pending').length : 0;
+  updateBadge('memberconsult', pend);
+  if(!rows.length){ box.innerHTML='<div class="empty">لا توجد تسجيلات في هذا العرض.</div>'; return; }
+  box.innerHTML=rows.map(r=>{
+    const st = scI>-1 ? cell(r,scI) : '', sc=statusClass(st);
+    const meta=[];
+    if(idI>-1&&cell(r,idI)) meta.push(chip('id', cell(r,idI)));
+    if(typeI>-1&&cell(r,typeI)) meta.push(chip('book', cell(r,typeI)));
+    if(slotI>-1&&cell(r,slotI)) meta.push(chip('clock', cell(r,slotI)));
+    if(dateI>-1&&cell(r,dateI)) meta.push(chip('cal', cell(r,dateI)));
+    if(phoneI>-1&&cell(r,phoneI)) meta.push(chip('phone', cell(r,phoneI)));
+    const topic = topicI>-1 ? cell(r,topicI) : '';
+    const statusChip = st ? '<span class="status '+sc+'">'+esc(statusLabel(st))+'</span>' : '';
+    return '<div class="card"><div class="card-top"><div><div class="card-title">'+esc(cell(r,nameI)||'عضو')+'</div>'+(typeI>-1&&cell(r,typeI)?'<div class="card-sub">'+esc(cell(r,typeI))+'</div>':'')+'</div>'+statusChip+'</div>'+
+      (meta.length?'<div class="card-meta">'+meta.join('')+'</div>':'')+
+      (topic?'<div style="margin-top:10px;font-size:14px;line-height:1.7;color:var(--text);background:var(--cream);border-radius:10px;padding:11px 13px;white-space:pre-wrap;">'+esc(topic)+'</div>':'')+
+      '</div>';
+  }).join('');
+}
 async function loadCVs(){
   const box=document.getElementById('cvList'); if(!box) return;
   const tab=findTab('السير الذاتية','السيرة الذاتية','السير','سيرة');
