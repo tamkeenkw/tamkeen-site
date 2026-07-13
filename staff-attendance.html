@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>حضور الموظفين — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#6B1212; --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060; --line:#E4DACB;
+  --green:#2E7D32; --green-bg:#E8F5E9; --red:#C62828; --red-bg:#FDECEC;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+/* ===== الدخول ===== */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:var(--crimson);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.025) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(255,255,255,.025) 75%),linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.025) 75%);
+  background-size:52px 52px;}
+.login-card{background:#fff;border-radius:26px;padding:40px 30px;max-width:410px;width:100%;
+  box-shadow:0 18px 60px rgba(0,0,0,.28);text-align:center;animation:fadeUp .5s ease both}
+.brand{font-size:25px;font-weight:900;color:var(--crimson);margin-bottom:4px}
+.brand-sub{font-size:13.5px;color:var(--muted);margin-bottom:26px;font-weight:600}
+.login-card h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.login-card .desc{font-size:13.5px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+.fld{text-align:right;margin-bottom:14px}
+.fld label{display:block;font-size:13px;font-weight:800;color:var(--crimson);margin-bottom:7px}
+.inp{width:100%;padding:15px 17px;border:1.5px solid var(--line);border-radius:14px;
+  font-family:'Tajawal',sans-serif;font-size:16px;background:var(--cream);outline:none;transition:.2s}
+.inp:focus{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(92,15,15,.08);background:#fff}
+.inp.invalid{border-color:var(--red)}
+.login-err{font-size:13px;color:var(--red);min-height:20px;margin:2px 0 10px;font-weight:700}
+.btn{width:100%;padding:16px;background:var(--crimson);color:#fff;border:none;border-radius:14px;
+  font-family:'Tajawal',sans-serif;font-size:17px;font-weight:900;cursor:pointer;transition:.25s;
+  box-shadow:0 8px 24px rgba(92,15,15,.22);display:flex;align-items:center;justify-content:center;gap:10px}
+.btn:hover:not(:disabled){background:var(--crimson-2);transform:translateY(-1px)}
+.btn:disabled{opacity:.65;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--crimson);border:1.6px solid var(--crimson);box-shadow:none}
+.btn.ghost:hover:not(:disabled){background:var(--cream)}
+.spinner{width:20px;height:20px;border:2.6px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+.btn.ghost .spinner{border-color:rgba(92,15,15,.25);border-top-color:var(--crimson)}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ===== اللوحة ===== */
+.dash{display:none;min-height:100vh}
+.hero{background:var(--crimson);
+  background-image:linear-gradient(45deg,rgba(255,255,255,.02) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.02) 25%,transparent 25%);
+  background-size:44px 44px;padding:26px 20px 40px;color:#fff}
+.hero-in{max-width:520px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.hi-wel{font-size:13px;opacity:.75;font-weight:600}
+.hi-name{font-size:22px;font-weight:900;margin-top:3px}
+.logout{background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:11px;padding:9px 15px;
+  font-family:'Tajawal',sans-serif;font-weight:800;font-size:13px;cursor:pointer;transition:.2s}
+.logout:hover{background:rgba(255,255,255,.24)}
+.body{max-width:520px;margin:-24px auto 0;padding:0 20px 60px}
+
+.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 8px 30px rgba(92,15,15,.08);
+  border:1.5px solid rgba(92,15,15,.06);margin-bottom:16px}
+.date-line{font-size:13.5px;color:var(--muted);font-weight:700;text-align:center;margin-bottom:4px}
+.clock{font-size:34px;font-weight:900;color:var(--crimson);text-align:center;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+
+/* حالة اليوم */
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.st{background:var(--cream);border-radius:16px;padding:16px 14px;text-align:center;border:1.5px solid var(--line)}
+.st .lab{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:8px}
+.st .val{font-size:19px;font-weight:900;color:var(--muted)}
+.st.done{background:var(--green-bg);border-color:#BFE3C2}
+.st.done .lab{color:var(--green)}
+.st.done .val{color:var(--green)}
+.st .place{font-size:11px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.5;
+  max-height:44px;overflow:hidden}
+.st.done .place{color:#3d6b40}
+
+.dur-pill{margin-top:14px;text-align:center;font-size:14px;font-weight:800;color:var(--crimson);
+  background:rgba(92,15,15,.06);border-radius:100px;padding:9px 16px;display:none}
+
+.act{margin-top:18px}
+.act .btn{margin-bottom:10px}
+.act .btn.out{background:var(--crimson-2)}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin-top:6px;line-height:1.6;font-weight:600}
+.locbox{display:flex;align-items:center;gap:9px;background:var(--cream);border:1.5px solid var(--line);
+  border-radius:13px;padding:11px 14px;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:4px}
+.locbox svg{width:17px;height:17px;flex-shrink:0;stroke:var(--crimson);fill:none;stroke-width:2}
+.locbox.ok{background:var(--green-bg);border-color:#BFE3C2;color:#3d6b40}
+.locbox.ok svg{stroke:var(--green)}
+.locbox.err{background:var(--red-bg);border-color:#f3c9c9;color:var(--red)}
+.locbox.err svg{stroke:var(--red)}
+
+.done-note{background:var(--green-bg);border:1.5px solid #BFE3C2;color:var(--green);border-radius:14px;
+  padding:14px 16px;text-align:center;font-weight:800;font-size:14px;margin-top:8px}
+
+/* توست */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--text);color:#fff;padding:13px 22px;border-radius:14px;font-weight:800;font-size:14px;
+  box-shadow:0 10px 34px rgba(0,0,0,.3);opacity:0;transition:.35s;z-index:99;max-width:88%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:var(--red)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- ===== شاشة الدخول ===== -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-card">
+    <div class="brand">أكاديمية مسار</div>
+    <div class="brand-sub">نظام حضور الموظفين</div>
+    <h2>تسجيل الدخول</h2>
+    <p class="desc">أدخل اسمك ورقمك السري لتسجيل الحضور والانصراف</p>
+
+    <div class="fld">
+      <label>اسم الموظف</label>
+      <input class="inp" id="nameInp" placeholder="اكتب اسمك كما هو مسجّل" autocomplete="off">
+    </div>
+    <div class="fld">
+      <label>الرقم السري</label>
+      <input class="inp" id="passInp" type="password" inputmode="numeric" placeholder="••••" autocomplete="off">
+    </div>
+
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn" id="loginBtn" onclick="doLogin()">
+      <span id="loginTxt">دخول</span><div class="spinner" id="loginSp"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ===== اللوحة ===== -->
+<div class="dash" id="dashScreen">
+  <div class="hero">
+    <div class="hero-in">
+      <div>
+        <div class="hi-wel">أهلاً بك</div>
+        <div class="hi-name" id="empName">—</div>
+      </div>
+      <button class="logout" onclick="logout()">خروج من الحساب</button>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="card">
+      <div class="date-line" id="todayDate">—</div>
+      <div class="clock" id="clock">--:--</div>
+
+      <div class="status-grid">
+        <div class="st" id="stIn">
+          <div class="lab">تسجيل الدخول</div>
+          <div class="val" id="inVal">—</div>
+          <div class="place" id="inPlace"></div>
+        </div>
+        <div class="st" id="stOut">
+          <div class="lab">تسجيل الخروج</div>
+          <div class="val" id="outVal">—</div>
+          <div class="place" id="outPlace"></div>
+        </div>
+      </div>
+      <div class="dur-pill" id="durPill"></div>
+    </div>
+
+    <div class="card">
+      <div class="locbox" id="locBox">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="locTxt">سيتم تحديد موقعك عند التسجيل</span>
+      </div>
+
+      <div class="act" id="actArea">
+        <button class="btn" id="btnIn" onclick="punch('checkin')">
+          <span id="inTxt">تسجيل الدخول الآن</span><div class="spinner" id="inSp"></div>
+        </button>
+        <button class="btn out" id="btnOut" onclick="punch('checkout')" style="display:none">
+          <span id="outTxt">تسجيل الخروج الآن</span><div class="spinner" id="outSp"></div>
+        </button>
+        <div class="done-note" id="doneNote" style="display:none">✓ اكتمل دوامك لهذا اليوم — شكراً لك</div>
+      </div>
+      <p class="hint">يُسجَّل وقت التسجيل وموقعك الجغرافي تلقائياً. تأكد من تفعيل خدمة الموقع (GPS).</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== الإعداد ================== */
+/* ⬇️ بعد نشر السكربت، الصق رابط /exec هنا (خطوة واحدة فقط) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8IAaZ5dkS-PPmrHqHBVymJRFQKDyuvANhmbeI0wfYcrD4nV6bXA6oUctt2qPauTV/exec';
+
+/* ================== حالة ================== */
+var CUR = { name:'', pass:'' };
+
+/* ساعة حيّة */
+function tick(){
+  var d = new Date();
+  var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+  var ap = h < 12 ? 'ص' : 'م';
+  var h12 = h % 12; if (h12 === 0) h12 = 12;
+  var el = document.getElementById('clock');
+  if (el) el.textContent = pad(h12)+':'+pad(m)+':'+pad(s)+' '+ap;
+}
+function pad(n){ return n < 10 ? '0'+n : ''+n; }
+setInterval(tick, 1000);
+
+var DAYS = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+var MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function showToday(){
+  var d = new Date();
+  document.getElementById('todayDate').textContent =
+    DAYS[d.getDay()]+' — '+d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear();
+}
+
+/* ================== الاتصال ================== */
+function api(payload){
+  return fetch(SCRIPT_URL, {
+    method:'POST',
+    headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json(); });
+}
+
+/* ================== الدخول ================== */
+document.getElementById('passInp').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('nameInp').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('passInp').focus(); });
+
+function doLogin(){
+  var nm = document.getElementById('nameInp').value.trim();
+  var pw = document.getElementById('passInp').value.trim();
+  var err = document.getElementById('loginErr');
+  err.textContent = '';
+  document.getElementById('nameInp').classList.remove('invalid');
+  document.getElementById('passInp').classList.remove('invalid');
+
+  if(!nm){ document.getElementById('nameInp').classList.add('invalid'); err.textContent='اكتب اسمك'; return; }
+  if(!pw){ document.getElementById('passInp').classList.add('invalid'); err.textContent='اكتب الرقم السري'; return; }
+
+  if(SCRIPT_URL.indexOf('PASTE_') === 0){ err.textContent='⚠️ لم يتم ربط الرابط بعد'; return; }
+
+  setBtn('login', true);
+  api({ action:'login', name:nm, pass:pw }).then(function(res){
+    setBtn('login', false);
+    if(res && res.ok){
+      CUR.name = res.name || nm;
+      CUR.pass = pw;
+      openDash(res.status);
+    } else {
+      document.getElementById('nameInp').classList.add('invalid');
+      document.getElementById('passInp').classList.add('invalid');
+      err.textContent = (res && res.message) ? res.message : 'تعذّر التحقق';
+    }
+  }).catch(function(){
+    setBtn('login', false);
+    err.textContent = 'تعذّر الاتصال بالخادم، حاول مجدداً';
+  });
+}
+
+function openDash(status){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('dashScreen').style.display='block';
+  document.getElementById('empName').textContent = CUR.name;
+  showToday(); tick();
+  applyStatus(status || {});
+  window.scrollTo(0,0);
+}
+
+function logout(){
+  CUR = { name:'', pass:'' };
+  document.getElementById('passInp').value='';
+  document.getElementById('dashScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  resetLoc();
+}
+
+/* ================== عرض الحالة ================== */
+function applyStatus(st){
+  var stIn = document.getElementById('stIn'), stOut = document.getElementById('stOut');
+  var btnIn = document.getElementById('btnIn'), btnOut = document.getElementById('btnOut');
+  var done = document.getElementById('doneNote'), durPill = document.getElementById('durPill');
+
+  // الدخول
+  if(st.checkedIn){
+    stIn.classList.add('done');
+    document.getElementById('inVal').textContent = st.checkinTime || '✓';
+  } else {
+    stIn.classList.remove('done');
+    document.getElementById('inVal').textContent = '—';
+  }
+  // الخروج
+  if(st.checkedOut){
+    stOut.classList.add('done');
+    document.getElementById('outVal').textContent = st.checkoutTime || '✓';
+  } else {
+    stOut.classList.remove('done');
+    document.getElementById('outVal').textContent = '—';
+  }
+  // الأزرار
+  btnIn.style.display  = st.checkedIn ? 'none' : 'flex';
+  btnOut.style.display = (st.checkedIn && !st.checkedOut) ? 'flex' : 'none';
+  done.style.display   = (st.checkedIn && st.checkedOut) ? 'block' : 'none';
+
+  // المدة
+  if(st.checkedOut && st.duration){
+    durPill.textContent = 'مدة الدوام: ' + st.duration;
+    durPill.style.display='block';
+  } else { durPill.style.display='none'; }
+}
+
+/* ================== الموقع ================== */
+function resetLoc(){
+  var b = document.getElementById('locBox');
+  b.className = 'locbox';
+  document.getElementById('locTxt').textContent = 'سيتم تحديد موقعك عند التسجيل';
+}
+function getLocation(){
+  return new Promise(function(resolve){
+    var b = document.getElementById('locBox'), t = document.getElementById('locTxt');
+    if(!navigator.geolocation){
+      b.className='locbox err'; t.textContent='جهازك لا يدعم تحديد الموقع';
+      resolve(null); return;
+    }
+    b.className='locbox'; t.textContent='جارٍ تحديد موقعك...';
+    navigator.geolocation.getCurrentPosition(function(pos){
+      b.className='locbox ok';
+      t.textContent='تم تحديد موقعك ✓';
+      resolve({ lat:pos.coords.latitude, lng:pos.coords.longitude, acc:Math.round(pos.coords.accuracy) });
+    }, function(e){
+      b.className='locbox err';
+      t.textContent = (e.code===1) ? 'رفضت إذن الموقع — فعّله من إعدادات المتصفح' : 'تعذّر تحديد الموقع';
+      resolve(null);
+    }, { enableHighAccuracy:true, timeout:12000, maximumAge:0 });
+  });
+}
+
+/* ================== التسجيل ================== */
+function punch(action){
+  var which = action==='checkin' ? 'in' : 'out';
+  setBtn(which, true);
+
+  getLocation().then(function(loc){
+    if(!loc){
+      // إذن الموقع مرفوض — نسأل قبل المتابعة بدون موقع
+      var go = confirm('تعذّر تحديد موقعك. تبي تكمّل التسجيل بدون تسجيل الموقع؟');
+      if(!go){ setBtn(which, false); return; }
+      loc = { lat:'', lng:'', acc:'' };
+    }
+    var payload = {
+      action: action, name: CUR.name, pass: CUR.pass,
+      lat: loc.lat, lng: loc.lng, acc: loc.acc
+    };
+    return api(payload).then(function(res){
+      setBtn(which, false);
+      if(res && res.ok){
+        applyStatus(res.status || {});
+        // حدّث نص الموقع تحت الحالة
+        if(res.address){
+          var el = document.getElementById(which==='in'?'inPlace':'outPlace');
+          if(el) el.textContent = res.address;
+        }
+        toast(res.message || 'تم التسجيل ✓', false);
+      } else {
+        toast((res && res.message) ? res.message : 'تعذّر التسجيل', true);
+      }
+    });
+  }).catch(function(){
+    setBtn(which, false);
+    toast('تعذّر الاتصال بالخادم', true);
+  });
+}
+
+/* ================== أدوات واجهة ================== */
+function setBtn(key, loading){
+  var map = {
+    login:['loginBtn','loginTxt','loginSp'],
+    in:['btnIn','inTxt','inSp'],
+    out:['btnOut','outTxt','outSp']
+  };
+  var ids = map[key]; if(!ids) return;
+  document.getElementById(ids[0]).disabled = loading;
+  document.getElementById(ids[1]).style.opacity = loading ? .5 : 1;
+  document.getElementById(ids[2]).style.display = loading ? 'block' : 'none';
+}
+function toast(msg, isErr){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(function(){ t.className = 'toast' + (isErr ? ' err' : ''); }, 3400);
+}
+
+showToday(); tick();
+</script>
+</body>
+</html>
