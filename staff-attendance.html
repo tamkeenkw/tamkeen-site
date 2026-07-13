@@ -91,6 +91,29 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .done-note{background:var(--green-bg);border:1.5px solid #BFE3C2;color:var(--green);border-radius:14px;
   padding:14px 16px;text-align:center;font-weight:800;font-size:14px;margin-top:8px}
 
+/* سجل الحضور */
+.log-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.log-title{font-size:16px;font-weight:900;color:var(--crimson)}
+.log-ref{background:var(--cream);border:1.5px solid var(--line);border-radius:10px;padding:7px 13px;
+  font-family:'Tajawal',sans-serif;font-weight:800;font-size:12.5px;color:var(--crimson);cursor:pointer}
+.log-ref:hover{background:var(--cream-2)}
+.log-empty{text-align:center;color:var(--muted);font-weight:700;font-size:13.5px;padding:18px 0}
+.log-row{display:flex;align-items:center;gap:10px;padding:13px 2px;border-bottom:1px solid var(--line)}
+.log-row:last-child{border-bottom:none}
+.log-date{flex-shrink:0;width:70px;text-align:center}
+.log-date .d{font-size:13px;font-weight:900;color:var(--text);line-height:1.2}
+.log-date .dd{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.log-times{flex:1;display:flex;gap:7px}
+.log-t{flex:1;background:var(--cream);border-radius:11px;padding:8px 5px;text-align:center;border:1.5px solid var(--line)}
+.log-t .k{font-size:10px;font-weight:800;color:var(--muted);margin-bottom:3px}
+.log-t .v{font-size:12.5px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums}
+.log-t.in{background:var(--green-bg);border-color:#BFE3C2}
+.log-t.in .k{color:var(--green)} .log-t.in .v{color:var(--green)}
+.log-t.out{background:#FDF3E7;border-color:#F0DBBF}
+.log-t.out .k{color:#B26A00} .log-t.out .v{color:#B26A00}
+.log-t.miss .v{color:#C9A0A0}
+.log-dur{flex-shrink:0;font-size:11px;font-weight:800;color:var(--crimson);white-space:nowrap;min-width:52px;text-align:left}
+
 /* توست */
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
   background:var(--text);color:#fff;padding:13px 22px;border-radius:14px;font-weight:800;font-size:14px;
@@ -176,6 +199,14 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
       <p class="hint">يُسجَّل وقت التسجيل وموقعك الجغرافي تلقائياً. تأكد من تفعيل خدمة الموقع (GPS).</p>
     </div>
+
+    <div class="card">
+      <div class="log-head">
+        <span class="log-title">سجل حضوري</span>
+        <button class="log-ref" onclick="loadHistory()" id="logRefBtn">↻ تحديث</button>
+      </div>
+      <div id="logList"><div class="log-empty">لا يوجد سجل بعد</div></div>
+    </div>
   </div>
 </div>
 
@@ -241,7 +272,8 @@ function doLogin(){
     if(res && res.ok){
       CUR.name = res.name || nm;
       CUR.pass = pw;
-      openDash(res.status);
+      saveSession();
+      openDash(res.status, res.history);
     } else {
       document.getElementById('nameInp').classList.add('invalid');
       document.getElementById('passInp').classList.add('invalid');
@@ -253,21 +285,41 @@ function doLogin(){
   });
 }
 
-function openDash(status){
+function openDash(status, history){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('dashScreen').style.display='block';
   document.getElementById('empName').textContent = CUR.name;
   showToday(); tick();
   applyStatus(status || {});
+  renderHistory(history || []);
   window.scrollTo(0,0);
 }
 
 function logout(){
   CUR = { name:'', pass:'' };
+  try{ sessionStorage.removeItem('staff_att'); }catch(e){}
   document.getElementById('passInp').value='';
   document.getElementById('dashScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
   resetLoc();
+}
+
+/* ثبات الجلسة (حتى لا يضيع الدخول عند تحديث الصفحة) */
+function saveSession(){
+  try{ sessionStorage.setItem('staff_att', JSON.stringify(CUR)); }catch(e){}
+}
+function restoreSession(){
+  try{
+    var s = JSON.parse(sessionStorage.getItem('staff_att')||'null');
+    if(s && s.name && s.pass){
+      CUR = s;
+      // نجيب الحالة والسجل من الخادم
+      api({ action:'login', name:CUR.name, pass:CUR.pass }).then(function(res){
+        if(res && res.ok){ openDash(res.status, res.history); }
+        else { try{ sessionStorage.removeItem('staff_att'); }catch(e){} }
+      }).catch(function(){});
+    }
+  }catch(e){}
 }
 
 /* ================== عرض الحالة ================== */
@@ -304,6 +356,47 @@ function applyStatus(st){
   } else { durPill.style.display='none'; }
 }
 
+/* ================== السجل ================== */
+function renderHistory(list){
+  var box = document.getElementById('logList');
+  if(!list || !list.length){
+    box.innerHTML = '<div class="log-empty">لا يوجد سجل بعد</div>';
+    return;
+  }
+  var html = '';
+  for(var i=0;i<list.length;i++){
+    var r = list[i];
+    var dparts = (r.date||'').split('/'); // dd/MM/yyyy
+    var dShort = dparts.length>=2 ? (dparts[0]+'/'+dparts[1]) : (r.date||'—');
+    var inCls  = r.inTime  ? 'in'  : 'miss';
+    var outCls = r.outTime ? 'out' : 'miss';
+    html +=
+      '<div class="log-row">'+
+        '<div class="log-date"><div class="d">'+esc(dShort)+'</div><div class="dd">'+esc(r.day||'')+'</div></div>'+
+        '<div class="log-times">'+
+          '<div class="log-t '+inCls+'"><div class="k">دخول</div><div class="v">'+esc(r.inTime||'—')+'</div></div>'+
+          '<div class="log-t '+outCls+'"><div class="k">خروج</div><div class="v">'+esc(r.outTime||'—')+'</div></div>'+
+        '</div>'+
+        '<div class="log-dur">'+esc(r.duration||'')+'</div>'+
+      '</div>';
+  }
+  box.innerHTML = html;
+}
+
+function loadHistory(){
+  if(!CUR.name) return;
+  var btn = document.getElementById('logRefBtn');
+  if(btn){ btn.disabled=true; btn.textContent='...'; }
+  api({ action:'history', name:CUR.name, pass:CUR.pass }).then(function(res){
+    if(btn){ btn.disabled=false; btn.textContent='↻ تحديث'; }
+    if(res && res.ok) renderHistory(res.history||[]);
+  }).catch(function(){
+    if(btn){ btn.disabled=false; btn.textContent='↻ تحديث'; }
+  });
+}
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
 /* ================== الموقع ================== */
 function resetLoc(){
   var b = document.getElementById('locBox');
@@ -319,9 +412,16 @@ function getLocation(){
     }
     b.className='locbox'; t.textContent='جارٍ تحديد موقعك...';
     navigator.geolocation.getCurrentPosition(function(pos){
-      b.className='locbox ok';
-      t.textContent='تم تحديد موقعك ✓';
-      resolve({ lat:pos.coords.latitude, lng:pos.coords.longitude, acc:Math.round(pos.coords.accuracy) });
+      var acc = Math.round(pos.coords.accuracy);
+      // دقة أكبر من 300م = غالباً موقع شبكة/آيبي (VPN)، مو GPS
+      if(acc > 300){
+        b.className='locbox err';
+        t.textContent='⚠️ دقة الموقع ضعيفة (±'+acc+'م) — الموقع تقريبي من الشبكة. فعّل GPS أو استخدم الجوال.';
+      } else {
+        b.className='locbox ok';
+        t.textContent='تم تحديد موقعك ✓ (دقة ±'+acc+'م)';
+      }
+      resolve({ lat:pos.coords.latitude, lng:pos.coords.longitude, acc:acc });
     }, function(e){
       b.className='locbox err';
       t.textContent = (e.code===1) ? 'رفضت إذن الموقع — فعّله من إعدادات المتصفح' : 'تعذّر تحديد الموقع';
@@ -341,6 +441,10 @@ function punch(action){
       var go = confirm('تعذّر تحديد موقعك. تبي تكمّل التسجيل بدون تسجيل الموقع؟');
       if(!go){ setBtn(which, false); return; }
       loc = { lat:'', lng:'', acc:'' };
+    } else if(loc.acc > 300){
+      // دقة ضعيفة — غالباً شبكة/VPN مو GPS
+      var ok = confirm('دقة موقعك ضعيفة (±'+loc.acc+'م) وقد يكون غير صحيح (شبكة/VPN بدل GPS).\n\nيُفضّل التسجيل من الجوال مع تفعيل GPS.\n\nتبي تكمّل التسجيل بهذا الموقع التقريبي؟');
+      if(!ok){ setBtn(which, false); return; }
     }
     var payload = {
       action: action, name: CUR.name, pass: CUR.pass,
@@ -350,6 +454,7 @@ function punch(action){
       setBtn(which, false);
       if(res && res.ok){
         applyStatus(res.status || {});
+        renderHistory(res.history || []);
         // حدّث نص الموقع تحت الحالة
         if(res.address){
           var el = document.getElementById(which==='in'?'inPlace':'outPlace');
@@ -386,6 +491,7 @@ function toast(msg, isErr){
 }
 
 showToday(); tick();
+restoreSession();
 </script>
 </body>
 </html>
