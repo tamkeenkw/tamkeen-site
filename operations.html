@@ -356,6 +356,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
         <div class="mc-title">متابعة استشارات الأعضاء</div><div class="mc-desc">الأعضاء المسجّلون في استشارات تمكين</div>
       </div>
+      <div class="menu-card" onclick="openSection('masarops')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg></div>
+        <div class="mc-title">مسار اوبريشن</div><div class="mc-desc">لوحة عمليات أكاديمية مسار</div>
+      </div>
     </div>
   </div>
 
@@ -771,6 +775,16 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     <div class="list" id="mcList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
+  <!-- ===== MASAR OPERATIONS ===== -->
+  <div class="panel" id="p-masarops">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg>مسار اوبريشن</div><div class="sec-desc">لوحة عمليات أكاديمية مسار</div></div>
+      <button class="btn btn-ghost" onclick="window.open('masar-operation.html','_blank')"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>فتح في صفحة مستقلة</button>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(92,15,15,.04);">
+      <iframe src="masar-operation.html" title="مسار اوبريشن" style="width:100%;height:calc(100vh - 210px);min-height:820px;border:none;display:block;background:#fff;"></iframe>
+    </div>
+  </div>
+
 </div>
 
 <!-- PRINT AREA (schedule) -->
@@ -814,7 +828,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', masarops:'مسار اوبريشن'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1072,8 +1086,17 @@ function renderMemberConsults(){
     return '<div class="card"><div class="card-top"><div><div class="card-title">'+esc(cell(r,nameI)||'عضو')+'</div>'+(typeI>-1&&cell(r,typeI)?'<div class="card-sub">'+esc(cell(r,typeI))+'</div>':'')+'</div>'+statusChip+'</div>'+
       (meta.length?'<div class="card-meta">'+meta.join('')+'</div>':'')+
       (topic?'<div style="margin-top:10px;font-size:14px;line-height:1.7;color:var(--text);background:var(--cream);border-radius:10px;padding:11px 13px;white-space:pre-wrap;">'+esc(topic)+'</div>':'')+
+      '<div class="card-actions"><button class="act act-approve" onclick="remindConsult('+r._row+')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>إرسال تذكير</button></div>'+
       '</div>';
   }).join('');
+}
+async function remindConsult(row){
+  if(!OPS_BACKEND_URL || OPS_BACKEND_URL.indexOf('exec')===-1){ toast('الباك إند غير مهيأ — حدّث السكربت'); return; }
+  try{
+    await fetch(OPS_BACKEND_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ type:'تذكير_استشارة', token:OPS_TOKEN, sheet:DATA.memberconsult.tab, row:row }) });
+    toast('تم إرسال التذكير للعضو ✓');
+  }catch(e){ toast('تعذّر الإرسال'); }
 }
 async function loadCVs(){
   const box=document.getElementById('cvList'); if(!box) return;
