@@ -38,6 +38,11 @@ h1 span{color:var(--accentlt);display:block;}
 .sec-label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;color:var(--maroon);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;}
 .sec-line{flex:1;height:1px;background:var(--cream2);}
 
+/* TABS */
+.tabs{display:flex;gap:6px;background:rgba(92,15,15,.06);border-radius:100px;padding:5px;margin-bottom:22px;}
+.tab{flex:1;background:transparent;border:none;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:var(--muted);padding:11px 8px;border-radius:100px;cursor:pointer;transition:all .22s;}
+.tab.active{background:var(--maroon);color:#fff;box-shadow:0 4px 14px rgba(92,15,15,.3);}
+
 /* ACCESS BAR */
 .access-bar{background:rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.14);border-radius:16px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .access-bar-text{font-size:13px;color:var(--muted);}
@@ -150,59 +155,71 @@ h1 span{color:var(--accentlt);display:block;}
       <button class="btn-unlock" onclick="openModal('access')">دخول ↗</button>
     </div>
 
-    <!-- PDF DOWNLOAD -->
-    <div id="pdfSection" style="display:none;">
-      <div class="sec-label"><span>ملف الدورة</span><div class="sec-line"></div></div>
-      <div class="pdf-card" id="pdfCard" onclick="openPdf()">
-        <div class="pdf-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
-        </div>
-        <div class="pdf-info">
-          <div class="pdf-title">ملف الدورة (PDF)</div>
-          <span class="vid-badge" id="pdfBadge"></span>
-        </div>
-        <div class="pdf-dl" id="pdfDl">⬇</div>
-      </div>
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" id="tab-videos"    onclick="switchTab('videos')">الفيديوهات</button>
+      <button class="tab"        id="tab-exercises" onclick="switchTab('exercises')">التمارين</button>
     </div>
 
-    <!-- EXERCISES -->
-    <div id="exSection" style="display:none;">
-      <div class="sec-label"><span>تمارين</span><div class="sec-line"></div></div>
-      <div class="pdf-card" id="exCard" onclick="openEx()">
-        <div class="pdf-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <!-- ═══════════ PANE: الفيديوهات ═══════════ -->
+    <div id="pane-videos">
+
+      <!-- VIDEO PLAYER — يظهر فقط بعد الاختيار -->
+      <div class="player-wrap" id="playerWrap" style="display:none;">
+        <div class="player-label">
+          <div class="player-label-dot"></div>
+          <div class="player-label-text" id="playerLabel"></div>
         </div>
-        <div class="pdf-info">
-          <div class="pdf-title">تمارين الدورة</div>
-          <span class="vid-badge" id="exBadge"></span>
+        <div class="player-frame" id="playerFrame">
+          <iframe id="playerIframe" src="" allowfullscreen allow="autoplay; fullscreen" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
         </div>
-        <div class="pdf-dl" id="exDl">⬇</div>
       </div>
+
+      <!-- PDF DOWNLOAD -->
+      <div id="pdfSection" style="display:none;">
+        <div class="sec-label"><span>ملف الدورة</span><div class="sec-line"></div></div>
+        <div class="pdf-card" id="pdfCard" onclick="openPdf()">
+          <div class="pdf-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+          </div>
+          <div class="pdf-info">
+            <div class="pdf-title">ملف الدورة (PDF)</div>
+            <span class="vid-badge" id="pdfBadge"></span>
+          </div>
+          <div class="pdf-dl" id="pdfDl">⬇</div>
+        </div>
+      </div>
+
+      <!-- VIDEO LIST -->
+      <div class="sec-label" style="margin-top:20px;"><span>قائمة المحاضرات</span><div class="sec-line"></div></div>
+
+      <div id="loadingWrap" class="loading-wrap">
+        <div class="loading-spin"></div>
+        <div class="loading-text">جاري تحميل المحاضرات...</div>
+      </div>
+
+      <div class="vid-list" id="vidList" style="display:none;"></div>
+      <div class="empty" id="emptyWrap" style="display:none;">
+        <div class="empty-icon">📭</div>
+        <div class="empty-text">لا يوجد محتوى متاح حالياً</div>
+      </div>
+
     </div>
 
-    <!-- VIDEO PLAYER — يظهر فقط بعد الاختيار -->
-    <div class="player-wrap" id="playerWrap" style="display:none;">
-      <div class="player-label">
-        <div class="player-label-dot"></div>
-        <div class="player-label-text" id="playerLabel"></div>
+    <!-- ═══════════ PANE: التمارين ═══════════ -->
+    <div id="pane-exercises" style="display:none;">
+      <div class="sec-label"><span>تمارين الدورة</span><div class="sec-line"></div></div>
+
+      <div id="exLoading" class="loading-wrap">
+        <div class="loading-spin"></div>
+        <div class="loading-text">جاري تحميل التمارين...</div>
       </div>
-      <div class="player-frame" id="playerFrame">
-        <iframe id="playerIframe" src="" allowfullscreen allow="autoplay; fullscreen" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+
+      <div class="vid-list" id="exList" style="display:none;"></div>
+      <div class="empty" id="exEmpty" style="display:none;">
+        <div class="empty-icon">📝</div>
+        <div class="empty-text">لا توجد تمارين متاحة حالياً</div>
       </div>
-    </div>
-
-    <!-- VIDEO LIST -->
-    <div class="sec-label" style="margin-top:20px;"><span>قائمة المحاضرات</span><div class="sec-line"></div></div>
-
-    <div id="loadingWrap" class="loading-wrap">
-      <div class="loading-spin"></div>
-      <div class="loading-text">جاري تحميل المحاضرات...</div>
-    </div>
-
-    <div class="vid-list" id="vidList" style="display:none;"></div>
-    <div class="empty" id="emptyWrap" style="display:none;">
-      <div class="empty-icon">📭</div>
-      <div class="empty-text">لا يوجد محتوى متاح حالياً</div>
     </div>
 
   </div>
@@ -282,34 +299,35 @@ let hasAccess    = false;
 let activeIndex  = -1;
 let PDF_URL      = '';
 let PDF_TYPE     = 'مدفوع'; // مجاني أو مدفوع — من الشيت
-let EX_URL       = '';
-let EX_TYPE      = 'مدفوع'; // تمارين: مجاني أو مدفوع — من الشيت
+let exercises    = [];      // قائمة التمارين — من تبويب "التمارين"
 
 // ═══════════════════════════════════════════════
 // LOAD VIDEOS
 // ═══════════════════════════════════════════════
 async function loadVideos() {
-  // جلب الفيديوات والرسوم معاً
+  // جلب الفيديوات والرسوم والتمارين معاً
   try {
-    const [vRes, sRes] = await Promise.all([
-      fetch(SCRIPT + '?action=getCourseVideos&course='  + encodeURIComponent(COURSE)),
-      fetch(SCRIPT + '?action=getCourseSettings&course=' + encodeURIComponent(COURSE))
+    const [vRes, sRes, eRes] = await Promise.all([
+      fetch(SCRIPT + '?action=getCourseVideos&course='    + encodeURIComponent(COURSE)),
+      fetch(SCRIPT + '?action=getCourseSettings&course='  + encodeURIComponent(COURSE)),
+      fetch(SCRIPT + '?action=getCourseExercises&course=' + encodeURIComponent(COURSE))
     ]);
     const vData = await vRes.json();
     const sData = await sRes.json();
-    videos   = vData.videos || [];
-    SUB_FEE  = sData.fee     || '15';
-    PDF_URL  = sData.pdf     || '';
-    PDF_TYPE = sData.pdfType || 'مدفوع';
-    EX_URL   = sData.exercises     || '';
-    EX_TYPE  = sData.exercisesType || 'مدفوع';
+    const eData = await eRes.json();
+    videos    = vData.videos    || [];
+    exercises = eData.exercises || [];
+    SUB_FEE   = sData.fee     || '15';
+    PDF_URL   = sData.pdf     || '';
+    PDF_TYPE  = sData.pdfType || 'مدفوع';
     document.getElementById('feeAmount').textContent = SUB_FEE;
   } catch(e) {
     videos = [];
+    exercises = [];
   }
   renderList();
   renderPdf();
-  renderEx();
+  renderExList();
 }
 
 function renderList() {
@@ -381,37 +399,65 @@ function openPdf() {
 }
 
 // ═══════════════════════════════════════════════
-// EXERCISES
+// EXERCISES (قائمة — أكثر من تمرين)
 // ═══════════════════════════════════════════════
-function renderEx() {
-  const sec = document.getElementById('exSection');
-  if (!EX_URL) { sec.style.display = 'none'; return; }
-  sec.style.display = 'block';
+function renderExList() {
+  const loading = document.getElementById('exLoading');
+  const list    = document.getElementById('exList');
+  const empty   = document.getElementById('exEmpty');
 
-  const badge    = document.getElementById('exBadge');
-  const dl       = document.getElementById('exDl');
-  const card     = document.getElementById('exCard');
-  const isFree   = EX_TYPE === 'مجاني';
-  const unlocked = isFree || hasAccess;
+  loading.style.display = 'none';
 
-  card.classList.toggle('locked', !unlocked);
-
-  if (isFree) {
-    badge.className = 'vid-badge free';     badge.textContent = '▶ تحميل مجاني'; dl.textContent = '⬇';
-  } else if (unlocked) {
-    badge.className = 'vid-badge unlocked'; badge.textContent = '🔓 متاح لك';    dl.textContent = '⬇';
-  } else {
-    badge.className = 'vid-badge paid';     badge.textContent = '🔒 يتطلب اشتراك'; dl.textContent = '🔒';
+  if (!exercises.length) {
+    list.style.display  = 'none';
+    empty.style.display = 'block';
+    return;
   }
+
+  empty.style.display = 'none';
+  list.style.display  = 'flex';
+  list.innerHTML = exercises.map((ex, i) => {
+    const isFree     = ex.type === 'مجاني';
+    const isUnlocked = isFree || hasAccess;
+    const lockClass  = isUnlocked ? (isFree ? '' : 'unlocked') : 'locked';
+    const badge      = isFree
+      ? '<span class="vid-badge free">⬇ تحميل مجاني</span>'
+      : isUnlocked
+        ? '<span class="vid-badge unlocked">🔓 متاح لك</span>'
+        : '<span class="vid-badge paid">🔒 يتطلب اشتراك</span>';
+    return `
+      <div class="vid-item ${lockClass}" onclick="openExItem(${i})">
+        <div class="vid-num">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="vid-info">
+          <div class="vid-title">${ex.name}</div>
+          ${badge}
+        </div>
+        <div class="vid-arrow">${isUnlocked ? '⬇' : '🔒'}</div>
+      </div>`;
+  }).join('');
 }
 
-function openEx() {
-  const isFree = EX_TYPE === 'مجاني';
+function openExItem(i) {
+  const ex     = exercises[i];
+  const isFree = ex.type === 'مجاني';
   if (isFree || hasAccess) {
-    window.open(EX_URL, '_blank');
+    window.open(ex.url, '_blank');
   } else {
     goToCart();
   }
+}
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function switchTab(name) {
+  const isVideos = name === 'videos';
+  document.getElementById('pane-videos').style.display    = isVideos ? 'block' : 'none';
+  document.getElementById('pane-exercises').style.display = isVideos ? 'none'  : 'block';
+  document.getElementById('tab-videos').classList.toggle('active', isVideos);
+  document.getElementById('tab-exercises').classList.toggle('active', !isVideos);
 }
 
 // ═══════════════════════════════════════════════
@@ -481,7 +527,7 @@ async function checkAccess() {
       closeModalFull();
       renderList();
       renderPdf();
-      renderEx();
+      renderExList();
     } else {
       showErr('accessError', data.message || 'الرقم غير مشترك أو الاشتراك غير مفعّل بعد');
     }
@@ -608,7 +654,7 @@ async function checkPaymentReturn() {
       updateAccessBar(phone);
       renderList();
       renderPdf();
-      renderEx();
+      renderExList();
       window.history.replaceState({}, '', window.location.pathname);
       setTimeout(function() {
         document.getElementById('overlay').classList.add('show');
