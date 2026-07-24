@@ -207,6 +207,41 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 .acc-body{display:none;padding:14px 15px 4px;}
 .acc.open .acc-body{display:block;}
 
+/* ===== DAILY REPORT ===== */
+.dr-sec{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.dr-sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.dr-sec-title{font-size:16px;font-weight:900;display:flex;align-items:center;gap:9px;color:var(--crimson);}
+.dr-sec-title .dot{width:26px;height:26px;border-radius:9px;background:var(--cream);color:var(--crimson);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.dr-count{background:var(--cream-2);color:var(--crimson);font-size:12px;font-weight:900;padding:5px 13px;border-radius:100px;}
+.dr-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.dr-row{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end;background:var(--cream);border:1.5px solid var(--line);border-radius:13px;padding:11px;}
+.dr-cell{flex:1 1 150px;min-width:132px;}
+.dr-cell label{display:block;font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:5px;}
+.dr-cell input,.dr-cell select{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:13px;background:#fff;color:var(--text);outline:none;}
+.dr-cell input:focus,.dr-cell select:focus{border-color:var(--crimson);}
+.dr-x{width:34px;height:36px;border-radius:10px;background:var(--red-bg);color:var(--red);border:none;font-size:19px;font-weight:900;cursor:pointer;flex:0 0 auto;line-height:1;}
+.dr-x:hover{background:#f8d7d7;}
+.dr-add{background:var(--cream);color:var(--crimson);border:1.5px dashed rgba(92,15,15,.28);border-radius:11px;padding:10px 16px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s;}
+.dr-add:hover{background:var(--cream-2);border-color:var(--crimson);}
+.dr-empty{font-size:13px;color:var(--muted);font-weight:600;padding:10px 2px;}
+.dr-datebar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--crimson);color:#fff;border-radius:18px;padding:18px 22px;margin-bottom:16px;}
+.dr-datebar .dd-lbl{font-size:12px;font-weight:800;opacity:.65;letter-spacing:1px;}
+.dr-datebar .dd-val{font-size:19px;font-weight:900;margin-top:3px;}
+.dr-datebar .dd-who{flex:1;min-width:200px;}
+.dr-datebar .dd-who input{width:100%;padding:11px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:14px;font-weight:700;outline:none;}
+.dr-datebar .dd-who input::placeholder{color:rgba(255,255,255,.55);}
+.dr-view-wrap{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:22px;}
+table.dr-tb{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:6px;}
+table.dr-tb th{background:var(--crimson);color:#fff;font-weight:800;padding:10px 9px;text-align:right;white-space:nowrap;font-size:12.5px;}
+table.dr-tb td{padding:10px 9px;border-bottom:1px solid var(--line);font-weight:600;}
+table.dr-tb tr:last-child td{border-bottom:none;}
+table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
+.dr-lock{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);font-size:12px;font-weight:900;padding:6px 13px;border-radius:100px;}
+.dr-notes-box{background:var(--cream);border-right:4px solid var(--crimson);border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.9;font-weight:600;white-space:pre-wrap;}
+.dr-modal{position:fixed;inset:0;background:rgba(26,8,8,.6);z-index:300;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
+.dr-modal.show{display:flex;}
+.dr-modal-box{background:var(--cream);border-radius:20px;width:100%;max-width:960px;padding:22px;position:relative;}
+
 /* PRINT */
 @media print{
   body{background:#fff;}
@@ -355,6 +390,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
       <div class="menu-card" onclick="openSection('memberconsult')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
         <div class="mc-title">متابعة استشارات الأعضاء</div><div class="mc-desc">الأعضاء المسجّلون في استشارات تمكين</div>
+      </div>
+      <div class="menu-card" onclick="openSection('dailyreport')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2V4a2 2 0 0 1 2-2z"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg></div>
+        <div class="mc-title">التقرير اليومي</div><div class="mc-desc">تعبئة تقرير اليوم وأرشيف التقارير المحفوظة</div>
       </div>
       <div class="menu-card" onclick="openSection('masarops')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg></div>
@@ -775,6 +814,54 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
     <div class="list" id="mcList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
+  <!-- ===== DAILY REPORT ===== -->
+  <div class="panel" id="p-dailyreport">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2V4a2 2 0 0 1 2-2z"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>التقرير اليومي</div><div class="sec-desc">تقرير مسؤول العمليات — يُحفظ نهائياً بعد الإرسال ويُعرض للاطّلاع فقط</div></div></div>
+
+    <div class="seg" id="drSeg">
+      <button class="on" data-dr="new" onclick="setDrTab(this,'new')">تقرير اليوم</button>
+      <button data-dr="archive" onclick="setDrTab(this,'archive')">التقارير المحفوظة</button>
+    </div>
+
+    <!-- ---- NEW REPORT ---- -->
+    <div id="drNew">
+      <div class="dr-datebar">
+        <div>
+          <div class="dd-lbl">تاريخ التقرير</div>
+          <div class="dd-val" id="drDateTxt">—</div>
+        </div>
+        <div class="dd-who">
+          <div class="dd-lbl" style="margin-bottom:6px;">اسم المسؤول</div>
+          <input id="drAuthor" placeholder="اكتب اسمك" autocomplete="off">
+        </div>
+      </div>
+
+      <div id="drForm"></div>
+
+      <div class="dr-sec">
+        <div class="dr-sec-head"><div class="dr-sec-title"><span class="dot">٦</span>الملاحظات</div></div>
+        <div class="fld" style="margin-bottom:0;"><textarea id="drNotes" placeholder="اكتب أي ملاحظات أو عقبات أو أمور تحتاج متابعة..." style="min-height:130px;"></textarea></div>
+      </div>
+
+      <div class="banner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>بعد الإرسال يُقفل التقرير نهائياً — ما يمكن تعديله أو حذفه من اللوحة. راجع بياناتك قبل الإرسال.</div></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="drSaveBtn" onclick="drSave()" style="flex:1;justify-content:center;min-width:200px;"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><span id="drSaveTxt">إرسال وحفظ التقرير</span></button>
+        <button class="btn btn-ghost" onclick="drClearForm()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>تفريغ النموذج</button>
+      </div>
+    </div>
+
+    <!-- ---- ARCHIVE ---- -->
+    <div id="drArchive" style="display:none;">
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="dr-search" placeholder="بحث بالتاريخ أو اسم المسؤول..." oninput="drRenderList()"></div>
+        <select id="dr-month" onchange="drRenderList()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
+        <button class="btn btn-ghost" onclick="drLoadList(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+      </div>
+      <div class="list" id="drList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+    </div>
+  </div>
+
   <!-- ===== MASAR OPERATIONS ===== -->
   <div class="panel" id="p-masarops">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg>مسار اوبريشن</div><div class="sec-desc">لوحة عمليات أكاديمية مسار</div></div>
@@ -791,6 +878,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 <div id="printArea"></div>
 <!-- CAPTURE STAGE (full-size poster render for PNG export) -->
 <div id="captureStage" style="position:fixed;left:-99999px;top:0;"></div>
+
+<div class="dr-modal" id="drModal" onclick="if(event.target===this)drCloseView()">
+  <div class="dr-modal-box" id="drModalBox"></div>
+</div>
 
 <div class="toast" id="toast"></div>
 <footer>© 2026 معهد تمكين — لوحة العمليات</footer>
@@ -828,7 +919,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', masarops:'مسار اوبريشن'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -841,6 +932,7 @@ function openSection(id){
   if(id==='offer') initOffer();
   if(id==='cv') loadCVs();
   if(id==='memberconsult') loadMemberConsults();
+  if(id==='dailyreport') initDaily();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1916,6 +2008,354 @@ async function downloadOfferPDF(){
   else { let pos=0; while(pos<ph){ pdf.addImage(img,'PNG',0,-pos,pw,ph); pos+=page; if(pos<ph) pdf.addPage(); } }
   pdf.save('عرض-مالي.pdf');
 }
+
+/* ============================================================
+   التقرير اليومي — مسؤول العمليات
+   الباك إند: DailyReport.gs (مشروع Apps Script مستقل)
+   ============================================================ */
+const DAILY_URL   = 'https://script.google.com/macros/s/AKfycbxnlqYj3xFMj1LaCoBHCWeRMD-fGCoN9RmGBjb7eYoStQFPA4ahtvTdF8GmJ0IkWWLx/exec';
+const DAILY_TOKEN = 'tmk-daily-2026';   /* يطابق DR_TOKEN في DailyReport.gs */
+
+const DR_SECTIONS = [
+  { key:'contacts', num:'١', title:'التواصل مع الأعضاء', add:'إضافة عضو آخر', unit:'عضو',
+    cols:[
+      {k:'member', label:'اسم العضو'},
+      {k:'reason', label:'سبب التواصل'},
+      {k:'result', label:'الوصف النهائي'}
+    ]},
+  { key:'bookings', num:'٢', title:'طلبات حجز الدورات', add:'إضافة دورة أخرى', unit:'طلب',
+    cols:[
+      {k:'trainer',    label:'اسم المدرب'},
+      {k:'course',     label:'اسم الدورة'},
+      {k:'membership', label:'حالة العضوية', type:'select', opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
+      {k:'date',       label:'تاريخ الدورة', type:'date'},
+      {k:'mode',       label:'نظام الدورة',  type:'select', opts:['حضوري','أونلاين','هجين']},
+      {k:'ctype',      label:'نوع الدورة',   type:'select', opts:['عامة','مؤسسية','خاصة']}
+    ]},
+  { key:'tomorrow', num:'٣', title:'دورات الغد', add:'إضافة دورة أخرى', unit:'دورة',
+    cols:[
+      {k:'course',  label:'اسم الدورة'},
+      {k:'regs',    label:'عدد المسجلين', type:'number'},
+      {k:'certs',   label:'مستخرجو الشهادة', type:'number'},
+      {k:'remind',  label:'حالة التذكير', type:'select', opts:['تم','لم يتم']},
+      {k:'confirm', label:'التأكيد مع المدرب', type:'select', opts:['مؤكد','بانتظار الرد','معتذر']},
+      {k:'mode',    label:'نظام الدورة', type:'select', opts:['حضوري','أونلاين','هجين']}
+    ]},
+  { key:'certs', num:'٤', title:'الشهادات قيد الدفع', add:'إضافة عميل آخر', unit:'شهادة',
+    cols:[
+      {k:'client',  label:'اسم العميل'},
+      {k:'course',  label:'اسم الدورة'},
+      {k:'contact', label:'حالة التواصل', type:'select', opts:['تم التواصل','لم يرد','وعد بالدفع','رفض']}
+    ]},
+  { key:'inst', num:'٥', title:'الدورات المؤسسية', add:'إضافة دورة أخرى', unit:'دورة',
+    cols:[
+      {k:'course',     label:'اسم الدورة'},
+      {k:'provider',   label:'مقدم الدورة'},
+      {k:'membership', label:'حالة العضوية', type:'select', opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
+      {k:'org',        label:'اسم الجهة'}
+    ]}
+];
+
+let DR_LIST = [], DR_READY = false, DR_LOADED = false;
+
+function drSec(key){ for(var i=0;i<DR_SECTIONS.length;i++){ if(DR_SECTIONS[i].key===key) return DR_SECTIONS[i]; } return null; }
+function drTodayISO(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function drPrettyDate(iso){
+  const m=String(iso||'').match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return String(iso||'');
+  const d=new Date(+m[1],+m[2]-1,+m[3]);
+  return DAYS_AR[d.getDay()]+' ‏'+(+m[3])+' '+MONTHS_AR[+m[2]-1]+' '+m[1];
+}
+
+/* ---------- بناء النموذج ---------- */
+function initDaily(){
+  if(!DR_READY){
+    let h='';
+    DR_SECTIONS.forEach(function(sec){
+      h += '<div class="dr-sec" id="drsec-'+sec.key+'">'
+        +   '<div class="dr-sec-head">'
+        +     '<div class="dr-sec-title"><span class="dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
+        +     '<span class="dr-count" id="drcnt-'+sec.key+'">٠ '+esc(sec.unit)+'</span>'
+        +   '</div>'
+        +   '<div class="dr-rows" id="drrows-'+sec.key+'"></div>'
+        +   '<button class="dr-add" onclick="drAddRow(\''+sec.key+'\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'+esc(sec.add)+'</button>'
+        + '</div>';
+    });
+    document.getElementById('drForm').innerHTML = h;
+    DR_SECTIONS.forEach(function(sec){ drAddRow(sec.key); });
+    const a=localStorage.getItem('dr_author'); if(a) document.getElementById('drAuthor').value=a;
+    DR_READY = true;
+  }
+  document.getElementById('drDateTxt').textContent = drPrettyDate(drTodayISO());
+  if(!DR_LOADED) drLoadList();
+}
+
+function drRowHtml(sec, vals){
+  vals = vals||{};
+  let h='<div class="dr-row">';
+  sec.cols.forEach(function(c){
+    const v = esc(vals[c.k]||'');
+    h += '<div class="dr-cell"><label>'+esc(c.label)+'</label>';
+    if(c.type==='select'){
+      h += '<select data-k="'+c.k+'"><option value="">—</option>';
+      c.opts.forEach(function(o){ h += '<option'+(String(vals[c.k]||'')===o?' selected':'')+'>'+esc(o)+'</option>'; });
+      h += '</select>';
+    } else {
+      const t = c.type==='date' ? 'date' : (c.type==='number' ? 'number' : 'text');
+      h += '<input type="'+t+'" data-k="'+c.k+'" value="'+v+'"'+(t==='number'?' min="0"':'')+' placeholder="'+esc(c.label)+'">';
+    }
+    h += '</div>';
+  });
+  h += '<button class="dr-x" onclick="drRemoveRow(this,\''+sec.key+'\')" title="حذف الصف">×</button></div>';
+  return h;
+}
+function drAddRow(key, vals){
+  const sec = drSec(key); if(!sec) return;
+  const box = document.getElementById('drrows-'+key);
+  const tmp = document.createElement('div');
+  tmp.innerHTML = drRowHtml(sec, vals);
+  const row = tmp.firstChild;
+  row.addEventListener('input', function(){ drCount(key); });
+  row.addEventListener('change', function(){ drCount(key); });
+  box.appendChild(row);
+  drCount(key);
+}
+function drRemoveRow(btn, key){
+  const box = document.getElementById('drrows-'+key);
+  if(box.children.length<=1){ drClearRow(btn.parentNode); drCount(key); return; }
+  btn.parentNode.remove(); drCount(key);
+}
+function drClearRow(row){ row.querySelectorAll('input,select').forEach(function(el){ el.value=''; }); }
+function drCount(key){
+  const rows = drReadSection(key);
+  const sec = drSec(key);
+  const el = document.getElementById('drcnt-'+key);
+  if(el) el.textContent = toArNum(rows.length)+' '+sec.unit;
+}
+function toArNum(n){ const d='٠١٢٣٤٥٦٧٨٩'; return String(n).replace(/[0-9]/g,function(c){ return d[+c]; }); }
+
+/* ---------- قراءة البيانات ---------- */
+function drReadSection(key){
+  const sec = drSec(key); const out=[];
+  document.querySelectorAll('#drrows-'+key+' .dr-row').forEach(function(row){
+    const o={}; let any=false;
+    sec.cols.forEach(function(c){
+      const el = row.querySelector('[data-k="'+c.k+'"]');
+      const v = el ? String(el.value||'').trim() : '';
+      o[c.k]=v; if(v) any=true;
+    });
+    if(any) out.push(o);
+  });
+  return out;
+}
+function drCollect(){
+  const data={};
+  DR_SECTIONS.forEach(function(sec){ data[sec.key]=drReadSection(sec.key); });
+  return data;
+}
+
+/* ---------- الحفظ ---------- */
+async function drSave(){
+  if(!DAILY_URL || DAILY_URL.indexOf('exec')===-1){ toast('رابط باك إند التقرير اليومي غير مهيأ'); return; }
+  const author = document.getElementById('drAuthor').value.trim();
+  if(!author){ toast('اكتب اسم المسؤول أولاً'); document.getElementById('drAuthor').focus(); return; }
+  const sections = drCollect();
+  const notes = document.getElementById('drNotes').value.trim();
+  let total=0; DR_SECTIONS.forEach(function(s){ total += sections[s.key].length; });
+  if(total===0 && !notes){ toast('التقرير فارغ — عبّي قسم واحد على الأقل'); return; }
+  if(!confirm('تأكيد الإرسال؟\n\nبعد الحفظ ما يمكن تعديل التقرير أو حذفه من اللوحة.')) return;
+
+  const btn=document.getElementById('drSaveBtn'), txt=document.getElementById('drSaveTxt');
+  btn.disabled=true; txt.textContent='جاري الحفظ...';
+  try{
+    const res = await fetch(DAILY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action:'save', token:DAILY_TOKEN,
+        date: drTodayISO(),
+        author: author,
+        sections: sections,
+        notes: notes
+      })
+    });
+    const out = await res.json();
+    if(!out.ok) throw new Error(out.error||'فشل الحفظ');
+    localStorage.setItem('dr_author', author);
+    toast('تم حفظ التقرير بنجاح ✓');
+    drClearForm(true);
+    DR_LOADED=false; await drLoadList();
+    document.querySelectorAll('#drSeg button').forEach(function(b){ b.classList.remove('on'); if(b.dataset.dr==='archive') b.classList.add('on'); });
+    document.getElementById('drNew').style.display='none';
+    document.getElementById('drArchive').style.display='';
+    window.scrollTo(0,0);
+  }catch(e){
+    toast('خطأ: '+e.message);
+  }finally{
+    btn.disabled=false; txt.textContent='إرسال وحفظ التقرير';
+  }
+}
+function drClearForm(silent){
+  if(!silent && !confirm('تفريغ كل الحقول؟')) return;
+  DR_SECTIONS.forEach(function(sec){
+    document.getElementById('drrows-'+sec.key).innerHTML='';
+    drAddRow(sec.key);
+  });
+  document.getElementById('drNotes').value='';
+  if(!silent) toast('تم تفريغ النموذج');
+}
+
+/* ---------- التبويبات ---------- */
+function setDrTab(el, mode){
+  document.querySelectorAll('#drSeg button').forEach(function(b){ b.classList.remove('on'); });
+  el.classList.add('on');
+  document.getElementById('drNew').style.display     = mode==='new' ? '' : 'none';
+  document.getElementById('drArchive').style.display = mode==='archive' ? '' : 'none';
+  if(mode==='archive' && !DR_LOADED) drLoadList();
+}
+
+/* ---------- الأرشيف ---------- */
+async function drLoadList(force){
+  if(!DAILY_URL || DAILY_URL.indexOf('exec')===-1){
+    document.getElementById('drList').innerHTML='<div class="empty">رابط باك إند التقرير اليومي غير مهيأ بعد.</div>';
+    return;
+  }
+  if(force) document.getElementById('drList').innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    const r = await fetch(DAILY_URL+'?action=list&token='+encodeURIComponent(DAILY_TOKEN)+'&_='+Date.now());
+    const out = await r.json();
+    if(!out.ok) throw new Error(out.error||'خطأ');
+    DR_LIST = out.data||[]; DR_LOADED=true;
+    drFillMonths(); drRenderList();
+  }catch(e){
+    document.getElementById('drList').innerHTML='<div class="empty">تعذّر تحميل التقارير: '+esc(e.message)+'</div>';
+  }
+}
+function drFillMonths(){
+  const sel=document.getElementById('dr-month'); if(!sel) return;
+  const keys=[];
+  DR_LIST.forEach(function(r){ const m=String(r.date||'').slice(0,7); if(m && keys.indexOf(m)===-1) keys.push(m); });
+  keys.sort().reverse();
+  const cur=sel.value;
+  sel.innerHTML='<option value="">كل الأشهر</option>'+keys.map(function(m){
+    const p=m.split('-'); return '<option value="'+m+'">'+MONTHS_AR[+p[1]-1]+' '+p[0]+'</option>';
+  }).join('');
+  if(cur && keys.indexOf(cur)>-1) sel.value=cur;
+}
+function drRenderList(){
+  const box=document.getElementById('drList');
+  const q=(document.getElementById('dr-search').value||'').trim();
+  const mo=document.getElementById('dr-month').value;
+  let d=DR_LIST.slice();
+  if(mo) d=d.filter(function(r){ return String(r.date||'').slice(0,7)===mo; });
+  if(q)  d=d.filter(function(r){ return (String(r.date||'')+' '+String(r.author||'')+' '+drPrettyDate(r.date)).indexOf(q)>-1; });
+  d.sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')) || String(b.time||'').localeCompare(String(a.time||'')); });
+  if(!d.length){ box.innerHTML='<div class="empty">لا توجد تقارير محفوظة.</div>'; return; }
+  box.innerHTML = d.map(function(r){
+    const s=r.sections||{};
+    const chip=function(lbl,n){ return '<span class="chip">'+lbl+': <b>'+toArNum(n||0)+'</b></span>'; };
+    return '<div class="card">'
+      + '<div class="card-top">'
+      +   '<div><div class="card-title">'+esc(drPrettyDate(r.date))+'</div>'
+      +   '<div class="card-sub">أعدّه: '+esc(r.author||'—')+' · أُرسل '+esc(r.time||'')+'</div></div>'
+      +   '<span class="dr-lock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>محفوظ — للعرض فقط</span>'
+      + '</div>'
+      + '<div class="card-meta">'
+      +   chip('التواصل',(s.contacts||[]).length)
+      +   chip('طلبات الحجز',(s.bookings||[]).length)
+      +   chip('دورات الغد',(s.tomorrow||[]).length)
+      +   chip('شهادات قيد الدفع',(s.certs||[]).length)
+      +   chip('مؤسسية',(s.inst||[]).length)
+      + '</div>'
+      + '<div class="card-actions">'
+      +   '<button class="act act-link" onclick="drOpen(\''+esc(r.id)+'\')"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>عرض التقرير</button>'
+      +   '<button class="act act-approve" onclick="drPrint(\''+esc(r.id)+'\')"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>طباعة / PDF</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+/* ---------- عرض تقرير (قراءة فقط) ---------- */
+function drFind(id){ for(var i=0;i<DR_LIST.length;i++){ if(String(DR_LIST[i].id)===String(id)) return DR_LIST[i]; } return null; }
+
+function drReportBody(r){
+  let h='';
+  DR_SECTIONS.forEach(function(sec){
+    const rows=(r.sections||{})[sec.key]||[];
+    h += '<div style="margin-bottom:22px;">'
+      +  '<div class="dr-sec-title" style="margin-bottom:10px;"><span class="dot">'+sec.num+'</span>'+esc(sec.title)+' <span class="dr-count" style="margin-right:6px;">'+toArNum(rows.length)+' '+esc(sec.unit)+'</span></div>';
+    if(!rows.length){ h += '<div class="dr-empty">لا يوجد.</div>'; }
+    else{
+      h += '<div style="overflow-x:auto;"><table class="dr-tb"><thead><tr>';
+      sec.cols.forEach(function(c){ h += '<th>'+esc(c.label)+'</th>'; });
+      h += '</tr></thead><tbody>';
+      rows.forEach(function(o){
+        h += '<tr>';
+        sec.cols.forEach(function(c){
+          let v = o[c.k]||'';
+          if(c.type==='date' && v) v = drPrettyDate(v);
+          h += '<td>'+esc(v||'—')+'</td>';
+        });
+        h += '</tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    h += '</div>';
+  });
+  h += '<div style="margin-bottom:6px;">'
+    +  '<div class="dr-sec-title" style="margin-bottom:10px;"><span class="dot">٦</span>الملاحظات</div>'
+    +  (r.notes ? '<div class="dr-notes-box">'+esc(r.notes)+'</div>' : '<div class="dr-empty">لا توجد ملاحظات.</div>')
+    +  '</div>';
+  return h;
+}
+
+function drOpen(id){
+  const r=drFind(id); if(!r){ toast('التقرير غير موجود'); return; }
+  document.getElementById('drModalBox').innerHTML =
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;">'
+    +   '<div><div style="font-size:20px;font-weight:900;color:var(--crimson);">التقرير اليومي — '+esc(drPrettyDate(r.date))+'</div>'
+    +   '<div class="card-sub">أعدّه: '+esc(r.author||'—')+' · أُرسل '+esc(r.time||'')+'</div></div>'
+    +   '<div style="display:flex;gap:8px;">'
+    +     '<button class="btn btn-ghost" onclick="drPrint(\''+esc(r.id)+'\')">طباعة / PDF</button>'
+    +     '<button class="btn btn-primary" onclick="drCloseView()">إغلاق</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="banner" style="margin-bottom:16px;"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><div>هذا التقرير محفوظ نهائياً — للعرض والطباعة فقط، ولا يمكن تعديله.</div></div>'
+    + '<div class="dr-view-wrap">'+drReportBody(r)+'</div>';
+  document.getElementById('drModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function drCloseView(){ document.getElementById('drModal').classList.remove('show'); document.body.style.overflow=''; }
+
+function drPrint(id){
+  const r=drFind(id); if(!r) return;
+  const css = '<style>'
+    + '@page{size:A4;margin:14mm;}'
+    + 'body{font-family:Tajawal,sans-serif;color:#1A0808;background:#fff;margin:0;}'
+    + '.hd{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #5C0F0F;padding-bottom:12px;margin-bottom:18px;}'
+    + '.hd .o{font-size:24px;font-weight:900;color:#5C0F0F;} .hd .s{font-size:12px;color:#8a6f6f;font-weight:700;}'
+    + '.hd .m{font-size:13px;font-weight:800;text-align:left;color:#444;line-height:1.8;}'
+    + '.dr-sec-title{font-size:15px;font-weight:900;color:#5C0F0F;display:flex;align-items:center;gap:8px;margin-bottom:8px;}'
+    + '.dr-sec-title .dot{width:24px;height:24px;border-radius:8px;background:#F2EDE5;display:inline-flex;align-items:center;justify-content:center;font-size:12px;}'
+    + '.dr-count{background:#F2EDE5;color:#5C0F0F;font-size:11px;font-weight:900;padding:3px 10px;border-radius:100px;}'
+    + 'table.dr-tb{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px;}'
+    + 'table.dr-tb th{background:#5C0F0F;color:#fff;padding:8px;text-align:right;font-weight:800;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+    + 'table.dr-tb td{border-bottom:1px solid #e5dcd6;padding:8px;font-weight:600;}'
+    + 'table.dr-tb tr:nth-child(even) td{background:#faf6f2;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+    + '.dr-empty{font-size:12px;color:#7A6060;padding:4px 0 8px;}'
+    + '.dr-notes-box{background:#faf6f2;border-right:4px solid #5C0F0F;border-radius:8px;padding:12px 14px;font-size:13px;line-height:1.9;white-space:pre-wrap;font-weight:600;}'
+    + '.ft{margin-top:26px;padding-top:10px;border-top:1.5px solid rgba(92,15,15,.15);text-align:center;font-size:11px;color:#8a6f6f;font-weight:700;}'
+    + '</style>';
+  const head = '<div class="hd"><div><div class="o">معهد تمكين</div><div class="s">التقرير اليومي — مسؤول العمليات</div></div>'
+    + '<div class="m">التاريخ: '+esc(drPrettyDate(r.date))+'<br>المسؤول: '+esc(r.author||'—')+'<br>وقت الإرسال: '+esc(r.time||'—')+'</div></div>';
+  const w = window.open('', '_blank');
+  if(!w){ toast('السماح بالنوافذ المنبثقة مطلوب للطباعة'); return; }
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>التقرير اليومي '+esc(r.date)+'</title>'
+    + '<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800;900&display=swap" rel="stylesheet">'
+    + css + '</head><body>' + head + drReportBody(r)
+    + '<div class="ft">© 2026 معهد تمكين — تقرير محفوظ وغير قابل للتعديل</div></body></html>');
+  w.document.close();
+  setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} }, 700);
+}
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
