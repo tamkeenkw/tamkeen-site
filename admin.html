@@ -279,8 +279,10 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
 
   <!-- TAMKEEN -->
   <div class="panel" id="p-tamkeen">
-    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>معهد تمكين</div><div class="sec-desc">الأعضاء والعضويات وطلبات الحجز والدورات المؤسسية</div></div></div>
-    <div class="banner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>هذا القسم بانتظار ربط تبويبات شيت تمكين (بيانات الأعضاء · طلبات الحجز · المؤسسية). أرسل لقطة الصف الأول من تبويب «بيانات الاعضاء» ويُبنى القسم كاملاً.</div></div>
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>معهد تمكين</div><div class="sec-desc">الأعضاء والعضويات وطلبات الحجز والدورات المؤسسية</div></div>
+      <select class="sel" id="tm-month" onchange="tmLoad()"></select>
+    </div>
+    <div id="tmBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
 </div>
@@ -351,6 +353,7 @@ function openSection(id){
   if(id==='tasks')   tkLoad();
   if(id==='reports') rpLoad();
   if(id==='masar')   msInit();
+  if(id==='tamkeen') tmInit();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -621,6 +624,74 @@ async function msLoad(){
             + soon.map(s=>'<tr><td>'+esc(s.name||'—')+'</td><td>'+esc(pretty(s.end))+'</td><td>'+(s.days===0?'اليوم':toAr(s.days)+' يوم')+'</td></tr>').join('')
             + '</tbody></table></div>'
           : '<div class="card"><div class="card-sub">ما فيه اشتراكات تنتهي خلال ١٤ يوم.</div></div>');
+  }catch(e){ box.innerHTML='<div class="empty">تعذّر الحساب: '+esc(e.message)+'</div>'; }
+}
+
+/* ================= تمكين ================= */
+let TM_READY=false;
+function tmInit(){
+  if(TM_READY) return;
+  if(!ready()){ document.getElementById('tmBody').innerHTML='<div class="empty">رابط باك إند الإدارة غير مهيأ بعد.</div>'; return; }
+  const sel=document.getElementById('tm-month'), now=new Date(), out=[];
+  for(let i=0;i<18;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const ym=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    out.push('<option value="'+ym+'">'+monthLabel(ym)+'</option>');
+  }
+  sel.innerHTML=out.join('');
+  TM_READY=true; tmLoad();
+}
+async function tmLoad(){
+  const box=document.getElementById('tmBody');
+  box.innerHTML='<div class="loading"><div class="sp"></div>جاري الحساب...</div>';
+  try{
+    const d=await apiGet({action:'tamkeen',month:document.getElementById('tm-month').value});
+    const soon=d.membersExpiringSoon||[];
+    box.innerHTML =
+      '<div class="sec-head"><div class="sec-title" style="font-size:17px;">العضويات</div></div>'
+      + '<div class="stats">'
+      + '<div class="stat"><div class="n">'+toAr(d.members)+'</div><div class="l">إجمالي الأعضاء</div>'
+      +   (d.membersUnknown?'<div class="x">'+toAr(d.membersUnknown)+' بدون تاريخ انتهاء</div>':'')+'</div>'
+      + '<div class="stat"><div class="n">'+toAr(d.membersActive)+'</div><div class="l">عضوية فعالة</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.membersExpired)+'</div><div class="l">عضوية منتهية</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.membersNewThisMonth)+'</div><div class="l">عضو جديد هذا الشهر</div></div>'
+      + '</div>'
+      + (soon.length
+          ? '<div class="tb-wrap" style="margin-bottom:22px;"><table class="tb"><thead><tr><th>تنتهي عضويته خلال ٣٠ يوم</th><th>رقم العضوية</th><th>التواصل</th><th>تاريخ الانتهاء</th><th>باقي</th></tr></thead><tbody>'
+            + soon.map(s=>'<tr><td>'+esc(s.name||'—')+'</td><td>'+esc(s.id)+'</td>'
+                + '<td>'+(s.phone?'<a href="https://wa.me/965'+esc(String(s.phone).replace(/\D/g,''))+'" target="_blank" style="color:var(--green);font-weight:800;">'+esc(s.phone)+'</a>':'—')+'</td>'
+                + '<td>'+esc(pretty(s.end))+'</td>'
+                + '<td>'+(s.days===0?'اليوم':toAr(s.days)+' يوم')+'</td></tr>').join('')
+            + '</tbody></table></div>'
+          : '<div class="card" style="margin-bottom:22px;"><div class="card-sub">ما فيه عضويات تنتهي خلال ٣٠ يوم.</div></div>')
+      + '<div class="sec-head"><div class="sec-title" style="font-size:17px;">طلبات حجز الدورات</div></div>'
+      + '<div class="stats">'
+      + '<div class="stat"><div class="n">'+toAr(d.bookingsPending)+'</div><div class="l">قيد المراجعة</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.bookingsApproved)+'</div><div class="l">معتمد</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.bookingsRejected)+'</div><div class="l">مرفوض</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.bookingsThisMonth)+'</div><div class="l">طلب هذا الشهر</div>'
+      +   '<div class="x">'+toAr(d.bookingsOnline)+' أونلاين · '+toAr(d.bookingsOnsite)+' حضوري</div></div>'
+      + '</div>'
+      + '<div class="card" style="margin-bottom:26px;"><div class="card-sub">الاعتماد والرفض يتمّان من لوحة العمليات. هنا للمتابعة فقط.</div>'
+      + '<div class="card-actions"><button class="act act-link" onclick="window.open(\'operations.html\',\'_blank\')">فتح لوحة العمليات</button></div></div>'
+      + '<div class="sec-head"><div class="sec-title" style="font-size:17px;">الدورات المؤسسية</div></div>'
+      + '<div class="stats">'
+      + '<div class="stat"><div class="n">'+toAr(d.instTotal||0)+'</div><div class="l">إجمالي الطلبات المؤسسية</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.instThisMonth||0)+'</div><div class="l">طلب هذا الشهر</div></div>'
+      + '<div class="stat"><div class="n">'+toAr(d.instTrainers||0)+'</div><div class="l">مدرب مشارك</div></div>'
+      + '<div class="stat"><div class="n">'+toAr((d.instList||[]).length)+'</div><div class="l">معروض بالجدول</div></div>'
+      + '</div>'
+      + ((d.instList||[]).length
+          ? '<div class="tb-wrap"><table class="tb"><thead><tr><th>اسم البرنامج</th><th>المدرب</th><th>رقم العضوية</th><th>المدة</th><th>تاريخ البدء</th><th>تاريخ الطلب</th></tr></thead><tbody>'
+            + d.instList.map(x=>'<tr>'
+                + '<td>'+esc(x.program||'—')+'</td>'
+                + '<td>'+esc(x.trainer||'—')+'</td>'
+                + '<td>'+esc(x.member||'—')+'</td>'
+                + '<td>'+esc(x.duration||'—')+'</td>'
+                + '<td>'+(x.start?esc(pretty(x.start)):'—')+'</td>'
+                + '<td>'+(x.date?esc(pretty(x.date)):'—')+'</td></tr>').join('')
+            + '</tbody></table></div>'
+          : '<div class="card"><div class="card-sub">لا توجد طلبات مؤسسية مسجّلة.</div></div>');
   }catch(e){ box.innerHTML='<div class="empty">تعذّر الحساب: '+esc(e.message)+'</div>'; }
 }
 

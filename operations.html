@@ -242,6 +242,17 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 .dr-modal.show{display:flex;}
 .dr-modal-box{background:var(--cream);border-radius:20px;width:100%;max-width:960px;padding:22px;position:relative;}
 
+/* ===== MY TASKS ===== */
+.mt-who{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--crimson);color:#fff;border-radius:18px;padding:18px 22px;margin-bottom:16px;}
+.mt-who .lbl{font-size:12px;font-weight:800;opacity:.65;letter-spacing:1px;margin-bottom:6px;}
+.mt-who select{padding:11px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.14);color:#fff;font-family:inherit;font-size:14px;font-weight:800;outline:none;min-width:220px;}
+.mt-who select option{color:var(--text);}
+.mt-note{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;font-family:inherit;font-size:13.5px;background:var(--cream);outline:none;min-height:70px;resize:vertical;margin-top:10px;color:var(--text);}
+.mt-note:focus{border-color:var(--crimson);background:#fff;}
+.pr-urgent{background:var(--red-bg);color:var(--red);}
+.pr-high{background:#FFF3E0;color:#E65100;}
+.pr-normal{background:var(--cream-2);color:var(--muted);}
+
 /* PRINT */
 @media print{
   body{background:#fff;}
@@ -390,6 +401,11 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <div class="menu-card" onclick="openSection('memberconsult')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
         <div class="mc-title">متابعة استشارات الأعضاء</div><div class="mc-desc">الأعضاء المسجّلون في استشارات تمكين</div>
+      </div>
+      <div class="menu-card" onclick="openSection('mytasks')">
+        <span class="mc-badge" id="badge-mytasks" style="display:none">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="mc-title">مهامي</div><div class="mc-desc">المهام المكلّف بها — نفّذها وعلّمها منجزة</div>
       </div>
       <div class="menu-card" onclick="openSection('dailyreport')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2V4a2 2 0 0 1 2-2z"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg></div>
@@ -814,6 +830,26 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
     <div class="list" id="mcList"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
+  <!-- ===== MY TASKS ===== -->
+  <div class="panel" id="p-mytasks">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>مهامي</div><div class="sec-desc">المهام المكلّف بها من الإدارة</div></div></div>
+    <div class="mt-who">
+      <div style="flex:1;min-width:220px;">
+        <div class="lbl">أنا</div>
+        <select id="mtWho" onchange="mtPick()"><option value="">جاري التحميل...</option></select>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="filter" id="mtFilter">
+        <button class="on" data-f="open" onclick="setMtF(this,'open')">المطلوب مني</button>
+        <button data-f="done" onclick="setMtF(this,'done')">المنجز</button>
+        <button data-f="all" onclick="setMtF(this,'all')">الكل</button>
+      </div>
+      <button class="btn btn-ghost" onclick="mtLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    </div>
+    <div class="list" id="mtList"><div class="empty">اختر اسمك من الأعلى لعرض مهامك.</div></div>
+  </div>
+
   <!-- ===== DAILY REPORT ===== -->
   <div class="panel" id="p-dailyreport">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2V4a2 2 0 0 1 2-2z"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>التقرير اليومي</div><div class="sec-desc">تقرير مسؤول العمليات — يُحفظ نهائياً بعد الإرسال ويُعرض للاطّلاع فقط</div></div></div>
@@ -919,7 +955,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -933,6 +969,7 @@ function openSection(id){
   if(id==='cv') loadCVs();
   if(id==='memberconsult') loadMemberConsults();
   if(id==='dailyreport') initDaily();
+  if(id==='mytasks') initMyTasks();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -2354,6 +2391,116 @@ function drPrint(id){
     + '<div class="ft">© 2026 معهد تمكين — تقرير محفوظ وغير قابل للتعديل</div></body></html>');
   w.document.close();
   setTimeout(function(){ try{ w.focus(); w.print(); }catch(e){} }, 700);
+}
+
+
+/* ============================================================
+   مهامي — الموظف (باك إند AdminBackend.gs بصلاحية موظف)
+   ============================================================ */
+const ADMIN_URL_STAFF = 'https://script.google.com/macros/s/AKfycby-o5gkHcrDD0zP-yaTOg86bNCr-7sAQw--TOMe3m8pYit6lTvGDswm_Uppz_vLHfXiqg/exec';
+const STAFF_TOKEN     = 'tmk-staff-2026';
+
+let MT_STAFF=[], MT_TASKS=[], mtF='open', MT_READY=false;
+
+function mtReady(){ return ADMIN_URL_STAFF && ADMIN_URL_STAFF.indexOf('exec')>-1; }
+
+async function mtGet(params){
+  const q = Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
+  const r = await fetch(ADMIN_URL_STAFF+'?token='+encodeURIComponent(STAFF_TOKEN)+'&'+q+'&_='+Date.now());
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error||'خطأ');
+  return j.data;
+}
+async function mtPost(body){
+  body.token = STAFF_TOKEN;
+  const r = await fetch(ADMIN_URL_STAFF,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.error||'خطأ');
+  return j;
+}
+
+async function initMyTasks(){
+  if(MT_READY) return;
+  if(!mtReady()){ document.getElementById('mtList').innerHTML='<div class="empty">رابط باك إند المهام غير مهيأ بعد.</div>'; return; }
+  try{
+    MT_STAFF = await mtGet({action:'staff'});
+    const saved = localStorage.getItem('mt_me')||'';
+    document.getElementById('mtWho').innerHTML =
+      '<option value="">اختر اسمك</option>' +
+      MT_STAFF.map(s=>'<option value="'+esc(s.name)+'"'+(s.name===saved?' selected':'')+'>'+esc(s.name)+' — '+esc(s.role)+'</option>').join('');
+    MT_READY=true;
+    if(saved) mtLoad();
+  }catch(e){
+    document.getElementById('mtList').innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>';
+  }
+}
+
+function mtPick(){
+  const v=document.getElementById('mtWho').value;
+  if(v) localStorage.setItem('mt_me',v); else localStorage.removeItem('mt_me');
+  mtLoad();
+}
+function setMtF(el,f){
+  document.querySelectorAll('#mtFilter button').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); mtF=f; mtRender();
+}
+
+async function mtLoad(force){
+  const me=document.getElementById('mtWho').value;
+  const box=document.getElementById('mtList');
+  if(!me){ box.innerHTML='<div class="empty">اختر اسمك من الأعلى لعرض مهامك.</div>'; return; }
+  if(force||!MT_TASKS.length) box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    MT_TASKS = await mtGet({action:'tasks', me:me});
+    mtRender();
+    const open=MT_TASKS.filter(t=>t.status!=='منجز').length;
+    const b=document.getElementById('badge-mytasks');
+    if(b){ b.style.display = open>0?'flex':'none'; b.textContent=open; }
+  }catch(e){ box.innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>'; }
+}
+
+function mtSt(s){ return s==='منجز'?'st-done':s==='متأخر'?'st-reject':s==='قيد التنفيذ'?'st-pending':'st-new'; }
+function mtPr(p){ return p==='عاجل'?'pr-urgent':p==='عالي'?'pr-high':'pr-normal'; }
+
+function mtRender(){
+  const box=document.getElementById('mtList');
+  let d=MT_TASKS.slice();
+  if(mtF==='open') d=d.filter(t=>t.status!=='منجز');
+  if(mtF==='done') d=d.filter(t=>t.status==='منجز');
+  d.sort(function(a,b){
+    const rank=x=>x.status==='متأخر'?0:x.status==='منجز'?2:1;
+    return rank(a)-rank(b) || String(a.due||'9999').localeCompare(String(b.due||'9999'));
+  });
+  if(!d.length){ box.innerHTML='<div class="empty">ما فيه مهام هنا.</div>'; return; }
+  box.innerHTML=d.map(function(t){
+    return '<div class="card">'
+      + '<div class="card-top"><div><div class="card-title">'+esc(t.title)+'</div>'
+      + '<div class="card-sub">'+(t.due?'التسليم '+esc(fmtDate(t.due)):'بدون موعد تسليم')+'</div></div>'
+      + '<span class="status '+mtSt(t.status)+'">'+esc(t.status)+'</span></div>'
+      + (t.desc?'<div class="card-sub" style="margin-top:10px;line-height:1.9;">'+esc(t.desc)+'</div>':'')
+      + '<div class="card-meta"><span class="status '+mtPr(t.priority)+'">'+esc(t.priority)+'</span>'
+      + (t.fileUrl?'<a class="chip" href="'+esc(t.fileUrl)+'" target="_blank">تحميل المرفق: '+esc(t.fileName||'ملف')+'</a>':'')
+      + '</div>'
+      + (t.status==='منجز'
+          ? (t.note?'<div class="banner" style="margin:12px 0 0;background:var(--green-bg);border-color:#c8e6c9;color:#1b5e20;"><div><b>ملاحظتك:</b> '+esc(t.note)+'</div></div>':'')
+          : '<textarea class="mt-note" id="note-'+esc(t.id)+'" placeholder="اكتب ملاحظتك عن تنفيذ المهمة (اختياري)"></textarea>'
+            + '<div class="card-actions"><button class="act act-approve" onclick="mtDone(\''+esc(t.id)+'\')">'
+            + '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم الإنجاز</button></div>')
+      + '</div>';
+  }).join('');
+}
+
+async function mtDone(id){
+  const me=document.getElementById('mtWho').value;
+  if(!me){ toast('اختر اسمك أولاً'); return; }
+  const el=document.getElementById('note-'+id);
+  const note=el?el.value.trim():'';
+  if(!confirm('تعليم المهمة كمنجزة؟')) return;
+  try{
+    await mtPost({action:'completeTask', id:id, me:me, note:note});
+    toast('تم ✓ سجّلنا إنجازك');
+    await mtLoad(true);
+  }catch(e){ toast('خطأ: '+e.message); }
 }
 
 </script>
