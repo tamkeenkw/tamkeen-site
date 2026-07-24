@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تصدير بيانات الدورات — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515;
+  --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060; --white:#fff;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --blue:#1565C0; --blue-bg:#E3F2FD;
+  --yellow:#F57F17; --yellow-bg:#FFF9C4;
+  --red:#C62828; --red-bg:#FFEBEE;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+.header{background:var(--crimson);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.header-logo-text{font-size:20px;font-weight:900;color:#fff;}
+.header-logo-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:2px;}
+.header-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.15);}
+
+.main{max-width:1180px;margin:0 auto;padding:28px 18px 60px;}
+
+.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(92,15,15,.06);border:1.5px solid rgba(92,15,15,.06);margin-bottom:20px;}
+.card-title{font-size:16px;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+
+.msel{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:12px;padding:13px 15px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;color:var(--text);outline:none;cursor:pointer;transition:border .2s;}
+.msel:focus{border-color:var(--crimson);background:#fff;}
+
+/* COURSE CARDS */
+.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.course-grid{grid-template-columns:1fr;}}
+.course-card{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:16px;padding:18px;cursor:pointer;transition:all .18s;position:relative;}
+.course-card:hover{border-color:var(--crimson);box-shadow:0 6px 20px rgba(92,15,15,.1);transform:translateY(-2px);}
+.course-card.active{border-color:var(--crimson);background:linear-gradient(180deg,#fff,#FDF6F6);box-shadow:0 6px 20px rgba(92,15,15,.12);}
+.cc-name{font-size:15px;font-weight:900;margin-bottom:10px;line-height:1.4;padding-left:70px;}
+.cc-meta{display:flex;flex-direction:column;gap:5px;}
+.cc-line{font-size:12.5px;color:var(--muted);font-weight:600;}
+.cc-count{position:absolute;top:16px;left:16px;background:var(--crimson);color:#fff;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:900;white-space:nowrap;}
+.cc-count.zero{background:var(--cream-2);color:var(--muted);}
+.cc-mode{display:inline-block;margin-top:10px;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:800;}
+.cc-mode.online{background:var(--blue-bg);color:var(--blue);}
+.cc-mode.onsite{background:var(--green-bg);color:var(--green);}
+
+/* MINI STATS */
+.mstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+@media(max-width:640px){.mstats{grid-template-columns:1fr 1fr;}}
+.mstat{background:var(--cream);border-radius:14px;padding:13px 15px;}
+.mstat-num{font-size:21px;font-weight:900;color:var(--crimson);}
+.mstat-lbl{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:2px;}
+
+/* ACTIONS */
+.results-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.results-title{font-size:16px;font-weight:900;}
+.results-count{font-size:13px;font-weight:700;color:var(--muted);margin-top:2px;}
+.actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;padding:12px 20px;border:none;border-radius:100px;cursor:pointer;transition:all .18s;}
+.btn-main{background:var(--crimson);color:#fff;}
+.btn-main:hover{background:var(--crimson-2);transform:translateY(-1px);}
+.btn-main:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;color:var(--crimson);border:1.5px solid rgba(92,15,15,.2);}
+.btn-ghost:hover{background:rgba(92,15,15,.05);}
+.btn-green{background:#25D366;color:#fff;}
+.btn-green:hover{opacity:.9;}
+.btn-green:disabled{opacity:.4;cursor:not-allowed;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;border-top:1px solid rgba(92,15,15,.06);}
+table{width:100%;border-collapse:collapse;min-width:1000px;}
+th{background:var(--cream);padding:11px 12px;text-align:right;font-size:11.5px;font-weight:800;color:var(--muted);border-bottom:1.5px solid rgba(92,15,15,.06);white-space:nowrap;}
+td{padding:11px 12px;font-size:13.5px;border-bottom:1px solid rgba(92,15,15,.04);vertical-align:middle;white-space:nowrap;}
+tr:hover td{background:rgba(92,15,15,.02);}
+.row-num{font-size:12px;font-weight:900;color:var(--muted);text-align:center;}
+.cell-name{font-weight:800;}
+.cell-phone{font-family:monospace;font-size:13px;direction:ltr;text-align:right;}
+.cell-notes{max-width:200px;overflow:hidden;text-overflow:ellipsis;color:var(--muted);}
+.pill{display:inline-block;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:800;}
+.p-green{background:var(--green-bg);color:var(--green);}
+.p-blue{background:var(--blue-bg);color:var(--blue);}
+.p-yellow{background:var(--yellow-bg);color:#8a5a00;}
+.p-red{background:var(--red-bg);color:var(--red);}
+.p-gray{background:var(--cream-2);color:var(--muted);}
+
+.empty{text-align:center;padding:44px 20px;}
+.empty-icon{font-size:38px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:800;margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--muted);}
+.loading{text-align:center;padding:50px;}
+.loading-dots{display:inline-flex;gap:6px;}
+.loading-dots span{width:9px;height:9px;background:var(--crimson);border-radius:50%;animation:bounce .8s ease infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(.8);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.toast{display:none;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:800;margin-top:14px;}
+input[type=checkbox]{width:17px;height:17px;accent-color:var(--crimson);cursor:pointer;}
+.wip{background:var(--yellow-bg);border:1.5px solid rgba(245,127,23,.25);border-radius:14px;padding:14px 18px;margin-bottom:20px;font-size:13px;font-weight:700;color:#8a5a00;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo-text">أكاديمية مسار</div>
+    <div class="header-logo-sub">TAMKEEN EDUCLOUD</div>
+  </div>
+  <div class="header-badge">تصدير بيانات الدورات</div>
+</div>
+
+<div class="main">
+
+  <div class="wip">
+    📋 <b>طريقة العمل:</b> اختر الشهر ← اضغط على الدورة ← تطلع كل بيانات المسجّلين فيها ← <b>«تصدير الدورة»</b> ينزّل ملف بكل الأعمدة.
+    وإذا تبي كل شي مرة وحدة، اضغط <b>«تصدير كل الدورات»</b>.
+  </div>
+
+  <!-- MONTH -->
+  <div class="card">
+    <div class="card-title"><span>🗓️</span> اختر الشهر</div>
+    <select class="msel" id="monthSelect" onchange="renderCourses()">
+      <option value="">جاري التحميل...</option>
+    </select>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="exportAll()">📦 تصدير كل الدورات (ملف واحد)</button>
+      <button class="btn btn-ghost" onclick="loadAll()">🔄 تحديث</button>
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="card" id="coursesCard" style="display:none;">
+    <div class="card-title"><span>📚</span> الدورات التدريبية</div>
+    <div class="course-grid" id="courseGrid"></div>
+    <div class="empty" id="coursesEmpty" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">لا توجد دورات في هذا الشهر</div>
+      <div class="empty-sub">جرّب اختيار شهر آخر</div>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div class="card" id="studentsCard" style="display:none;">
+    <div class="results-header">
+      <div>
+        <div class="results-title" id="stTitle">—</div>
+        <div class="results-count" id="stCount">—</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-main" id="csvBtn" onclick="exportCourse()" disabled>⬇️ تصدير الدورة</button>
+        <button class="btn btn-green" id="waBtn" onclick="exportManyChat()" disabled>📲 ملف ManyChat</button>
+      </div>
+    </div>
+
+    <div class="mstats" id="mstats" style="display:none;">
+      <div class="mstat"><div class="mstat-num" id="mTotal">٠</div><div class="mstat-lbl">مسجّل</div></div>
+      <div class="mstat"><div class="mstat-num" id="mPaid">٠</div><div class="mstat-lbl">تم الدفع</div></div>
+      <div class="mstat"><div class="mstat-num" id="mUnpaid">٠</div><div class="mstat-lbl">لم يدفع</div></div>
+      <div class="mstat"><div class="mstat-num" id="mAttend">٠</div><div class="mstat-lbl">حضروا</div></div>
+    </div>
+
+    <div class="table-wrap" id="stTableWrap" style="display:none;">
+      <table>
+        <thead><tr>
+          <th style="width:36px;text-align:center;"><input type="checkbox" id="allChk" checked onchange="toggleAll(this)"></th>
+          <th style="width:36px;">#</th>
+          <th>الاسم</th>
+          <th>الواتساب</th>
+          <th>الإيميل</th>
+          <th>النوع</th>
+          <th>يبي شهادة</th>
+          <th>تاريخ التسجيل</th>
+          <th>الحضور</th>
+          <th>الشهادة</th>
+          <th>حالة الدفع</th>
+          <th>ملاحظات</th>
+        </tr></thead>
+        <tbody id="stBody"></tbody>
+      </table>
+    </div>
+
+    <div class="empty" id="stEmpty" style="display:none;">
+      <div class="empty-icon">👥</div>
+      <div class="empty-title">لا يوجد مسجّلون في هذه الدورة</div>
+      <div class="empty-sub">تحقق من تطابق اسم الدورة بين ورقة الدورات وورقة التسجيلات</div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <div id="loading" class="loading"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzovQ--ygl6V4ZQ17ChB4CEVhR-AAGZ9H7ag6bh0YpoMnrIjL76qFmMPpa97QafQrgI/exec';
+const OFFICE_LOCATION = 'مدينة الكويت - برج أولى - دور 7';
+
+function toA(n){return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
+
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const MONTH_ALIASES = {'ابريل':'أبريل','اغسطس':'أغسطس','اكتوبر':'أكتوبر'};
+
+function detectMonth(dateStr){
+  if(!dateStr) return 'أخرى';
+  let s = String(dateStr);
+  for(const m of MONTHS){ if(s.indexOf(m)>-1) return m; }
+  for(const a in MONTH_ALIASES){ if(s.indexOf(a)>-1) return MONTH_ALIASES[a]; }
+  const digits = s.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  let mm = null;
+  let iso = digits.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if(iso) mm = parseInt(iso[2]);
+  else { let dmy = digits.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})/); if(dmy) mm = parseInt(dmy[2]); }
+  if(mm && mm>=1 && mm<=12) return MONTHS[mm-1];
+  return 'أخرى';
+}
+
+function attendMode(c){
+  const z = (c.zoom||'').trim();
+  if(z) return {label:'🖥️ أونلاين', cls:'online'};
+  return {label:'📍 حضوري', cls:'onsite'};
+}
+
+/* توحيد اسم الدورة للمطابقة بين الورقتين */
+function normName(s){
+  return String(s||'')
+    .replace(/[\u064B-\u0652]/g,'')
+    .replace(/[أإآ]/g,'ا')
+    .replace(/ى/g,'ي')
+    .replace(/ة/g,'ه')
+    .replace(/\s+/g,' ')
+    .trim().toLowerCase();
+}
+
+let coursesData = [];
+let coursesByMonth = {};
+let allRegs = [];
+let regsByCourse = {};
+let currentCourse = null;
+let currentRows = [];
+let selected = new Set();
+
+/* ===== تحميل كل شي مرة وحدة ===== */
+async function loadAll(){
+  document.getElementById('loading').style.display='block';
+  document.getElementById('coursesCard').style.display='none';
+  document.getElementById('studentsCard').style.display='none';
+  try{
+    const [r1,r2,r3] = await Promise.all([
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('مجاني')),
+      fetch(SCRIPT_URL+'?action=getCourses&type='+encodeURIComponent('خاصة')),
+      fetch(SCRIPT_URL+'?action=getAllStudents')
+    ]);
+    const [d1,d2,d3] = await Promise.all([r1.json(), r2.json(), r3.json()]);
+    coursesData = [...(d1.courses||[]), ...(d2.courses||[])];
+    allRegs = d3.students || [];
+
+    regsByCourse = {};
+    allRegs.forEach(r=>{
+      const k = normName(r.course);
+      if(!k) return;
+      (regsByCourse[k] = regsByCourse[k] || []).push(r);
+    });
+
+    /* دورات موجودة بالتسجيلات وما هي بورقة الدورات → نضيفها عشان ما تضيع */
+    const known = new Set(coursesData.map(c=>normName(c.name)));
+    Object.keys(regsByCourse).forEach(k=>{
+      if(!known.has(k)){
+        const sample = regsByCourse[k][0];
+        coursesData.push({ name: sample.course, date: sample.date||'', time:'', trainer:'', zoom:'', _extra:true });
+      }
+    });
+
+    coursesByMonth = {};
+    coursesData.forEach(c=>{
+      const m = detectMonth(c.date);
+      (coursesByMonth[m] = coursesByMonth[m] || []).push(c);
+    });
+
+    const present = MONTHS.filter(m=>coursesByMonth[m]);
+    if(coursesByMonth['أخرى']) present.push('أخرى');
+
+    const sel = document.getElementById('monthSelect');
+    if(present.length===0){
+      sel.innerHTML='<option value="">لا توجد دورات</option>';
+      document.getElementById('loading').style.display='none';
+      return;
+    }
+    sel.innerHTML = '<option value="__all">كل الأشهر ('+toA(coursesData.length)+' دورة)</option>' +
+      present.map(m=>'<option value="'+m+'">'+m+' ('+toA(coursesByMonth[m].length)+')</option>').join('');
+    sel.value='__all';
+    document.getElementById('loading').style.display='none';
+    renderCourses();
+  }catch(err){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('monthSelect').innerHTML='<option value="">خطأ في التحميل — تأكد من endpoint getAllStudents</option>';
+  }
+}
+
+function regsOf(c){ return regsByCourse[normName(c.name)] || []; }
+
+/* ===== كروت الدورات ===== */
+function renderCourses(){
+  const m = document.getElementById('monthSelect').value;
+  if(!m) return;
+  const list = (m==='__all') ? coursesData : (coursesByMonth[m]||[]);
+
+  document.getElementById('coursesCard').style.display='block';
+  document.getElementById('studentsCard').style.display='none';
+  currentCourse=null;
+
+  const grid = document.getElementById('courseGrid');
+  const empty = document.getElementById('coursesEmpty');
+  if(list.length===0){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  grid.innerHTML = list.map(c=>{
+    const mode = attendMode(c);
+    const gi = coursesData.indexOf(c);
+    const n = regsOf(c).length;
+    return `<div class="course-card" onclick="openCourse(${gi}, this)">
+      <span class="cc-count ${n?'':'zero'}">${toA(n)} مسجّل</span>
+      <div class="cc-name">${c.name||'—'}</div>
+      <div class="cc-meta">
+        ${c.date?`<div class="cc-line">📅 ${c.date}</div>`:''}
+        ${c.time?`<div class="cc-line">⏰ ${c.time}</div>`:''}
+        ${c.trainer?`<div class="cc-line">👤 ${c.trainer}</div>`:''}
+      </div>
+      ${c._extra?'':`<span class="cc-mode ${mode.cls}">${mode.label}</span>`}
+    </div>`;
+  }).join('');
+}
+
+/* ===== فتح دورة ===== */
+function openCourse(gi, el){
+  const c = coursesData[gi];
+  currentCourse = c;
+  currentRows = regsOf(c);
+
+  document.querySelectorAll('.course-card').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  document.getElementById('studentsCard').style.display='block';
+  document.getElementById('stTitle').textContent = c.name;
+  document.getElementById('toast').style.display='none';
+  document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  if(currentRows.length===0){
+    document.getElementById('stCount').textContent='لا يوجد مسجّلون';
+    document.getElementById('stTableWrap').style.display='none';
+    document.getElementById('mstats').style.display='none';
+    document.getElementById('stEmpty').style.display='block';
+    selected = new Set(); updateBtns();
+    return;
+  }
+  document.getElementById('stEmpty').style.display='none';
+  renderRows();
+}
+
+function payPill(p){
+  p = (p||'').trim();
+  if(p==='تم الدفع')  return '<span class="pill p-green">تم الدفع</span>';
+  if(p==='قيد الدفع') return '<span class="pill p-yellow">قيد الدفع</span>';
+  return '<span class="pill p-red">لم يدفع</span>';
+}
+function yesPill(v, txt){
+  return (v||'').includes(txt) ? '<span class="pill p-green">نعم</span>' : '<span class="pill p-gray">—</span>';
+}
+
+function renderRows(){
+  selected = new Set(currentRows.map((r,i)=>i));
+  document.getElementById('allChk').checked = true;
+  document.getElementById('stCount').textContent = toA(currentRows.length)+' مسجّل';
+
+  const paid   = currentRows.filter(r=>(r.payment||'').trim()==='تم الدفع').length;
+  const unpaid = currentRows.filter(r=>{const p=(r.payment||'').trim(); return !p || p==='لم يدفع';}).length;
+  const att    = currentRows.filter(r=>(r.attended||'').includes('حضر')).length;
+  document.getElementById('mTotal').textContent  = toA(currentRows.length);
+  document.getElementById('mPaid').textContent   = toA(paid);
+  document.getElementById('mUnpaid').textContent = toA(unpaid);
+  document.getElementById('mAttend').textContent = toA(att);
+  document.getElementById('mstats').style.display='grid';
+
+  document.getElementById('stBody').innerHTML = currentRows.map((r,i)=>`
+    <tr>
+      <td style="text-align:center;"><input type="checkbox" class="rchk" data-i="${i}" checked onchange="toggleOne(${i},this)"></td>
+      <td class="row-num">${toA(i+1)}</td>
+      <td class="cell-name">${r.name||'—'}</td>
+      <td class="cell-phone">${r.phone||'—'}</td>
+      <td style="font-size:12.5px;color:var(--muted);">${r.email||'—'}</td>
+      <td><span class="pill p-blue">${r.type||'—'}</span></td>
+      <td>${yesPill(r.wantCert,'نعم')}</td>
+      <td style="font-size:12.5px;">${r.date||'—'}</td>
+      <td>${yesPill(r.attended,'حضر')}</td>
+      <td>${yesPill(r.certDone,'نعم')}</td>
+      <td>${payPill(r.payment)}</td>
+      <td class="cell-notes" title="${(r.notes||'').replace(/"/g,'&quot;')}">${r.notes||'—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('stTableWrap').style.display='block';
+  updateBtns();
+}
+
+function toggleOne(i, cb){
+  if(cb.checked) selected.add(i); else selected.delete(i);
+  document.getElementById('allChk').checked = (selected.size === currentRows.length);
+  updateBtns();
+}
+function toggleAll(cb){
+  selected = cb.checked ? new Set(currentRows.map((r,i)=>i)) : new Set();
+  document.querySelectorAll('.rchk').forEach(c=>{ c.checked = cb.checked; });
+  updateBtns();
+}
+function updateBtns(){
+  const n = selected.size;
+  document.getElementById('csvBtn').disabled = (n===0);
+  document.getElementById('waBtn').disabled  = (n===0);
+  document.getElementById('csvBtn').textContent = n>0 ? ('⬇️ تصدير الدورة ('+toA(n)+')') : '⬇️ اختر مسجّلين';
+}
+function getSelected(){ return currentRows.filter((r,i)=>selected.has(i)); }
+
+/* ===== أدوات CSV ===== */
+function csvCell(v){
+  v = String(v==null?'':v);
+  if(/[",\n\r]/.test(v)) v = '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+function normPhone(raw){
+  let d = String(raw||'').replace(/[^\d]/g,'');
+  if(d.indexOf('00')===0) d = d.substring(2);
+  if(d.indexOf('965')===0) return '+'+d;
+  if(d.length===8) return '+965'+d;
+  return d ? '+'+d : '';
+}
+function firstName(full){
+  const p = String(full||'').trim().split(/\s+/);
+  return p[0] || String(full||'');
+}
+function safeFile(s){ return String(s||'ملف').replace(/[\/\\:*?"<>|]+/g,'').trim().slice(0,45); }
+function saveFile(rows, filename){
+  const csv = '\uFEFF' + rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+const HEAD = ['#','الاسم','الواتساب','الإيميل','الدورة','نوع التسجيل','يبي شهادة','تاريخ التسجيل','الحضور','الشهادة صدرت','حالة الدفع','ملاحظات'];
+function rowOf(r, i){
+  return [ i+1, r.name, normPhone(r.phone), r.email, r.course, r.type, r.wantCert, r.date, r.attended, r.certDone, r.payment||'لم يدفع', r.notes ];
+}
+
+/* تصدير الدورة المفتوحة */
+function exportCourse(){
+  const rows = getSelected();
+  if(rows.length===0){ toast('اختر مسجّلين أول','w'); return; }
+  const out = [HEAD];
+  rows.forEach((r,i)=>out.push(rowOf(r,i)));
+  saveFile(out, 'بيانات - '+safeFile(currentCourse.name)+'.csv');
+  toast('✅ تم تحميل '+toA(rows.length)+' سجل من «'+currentCourse.name+'»','s');
+}
+
+/* تصدير كل الدورات في ملف واحد */
+function exportAll(){
+  if(allRegs.length===0){ toast('ما فيه بيانات محمّلة','w'); return; }
+  const out = [HEAD];
+  allRegs.forEach((r,i)=>out.push(rowOf(r,i)));
+  const stamp = new Date().toISOString().slice(0,10);
+  saveFile(out, 'كل بيانات المسجلين - '+stamp+'.csv');
+  toast('✅ تم تحميل '+toA(allRegs.length)+' سجل من كل الدورات','s');
+}
+
+/* ملف ManyChat للدورة المفتوحة */
+function exportManyChat(){
+  const rows = getSelected().filter(r=>r.phone);
+  if(rows.length===0){ toast('ما فيه أرقام في المحدد','w'); return; }
+  const c = currentCourse;
+  const place = (c.zoom||'').trim() || OFFICE_LOCATION;
+  const out = [['الاسم','الرقم','الدورة','التاريخ','الوقت','المكان']];
+  rows.forEach(r=>out.push([ firstName(r.name), normPhone(r.phone), c.name||'', c.date||'', c.time||'', place ]));
+  saveFile(out, 'ManyChat - '+safeFile(c.name)+'.csv');
+  toast('✅ ملف ManyChat جاهز — '+toA(rows.length)+' رقم','s');
+}
+
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  const colors={s:'background:#E8F5E9;color:#2E7D32;',w:'background:#FFF9C4;color:#8a5a00;',e:'background:#FFEBEE;color:#C62828;'};
+  t.style.cssText='display:block;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:800;margin-top:14px;'+(colors[type]||colors.s);
+  t.textContent=msg;
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
