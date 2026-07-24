@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مهامي — معهد تمكين</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515; --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2E7D32; --green-bg:#E8F5E9; --yellow:#B26A00; --yellow-bg:#FFF8E1;
+  --blue:#1565C0; --blue-bg:#E3F2FD; --red:#C62828; --red-bg:#FDECEC;
+  --line:rgba(92,15,15,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+.header{background:var(--crimson);padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:20;}
+.h-logo{display:flex;align-items:center;gap:12px;}
+.h-logo .mark{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;}
+.h-logo .mark svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2.2;}
+.h-title{font-size:17px;font-weight:900;color:#fff;line-height:1.2;}
+.h-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:2px;}
+.h-btn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);padding:8px 15px;border-radius:100px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.h-btn:hover{background:rgba(255,255,255,.22);}
+.h-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;}
+
+.main{max-width:720px;margin:0 auto;padding:22px 16px 70px;}
+
+.pick{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.pick h2{font-size:19px;font-weight:900;margin-bottom:6px;}
+.pick p{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:18px;}
+.pick select{width:100%;max-width:340px;padding:13px 15px;border:1.5px solid var(--line);border-radius:14px;font-family:inherit;font-size:15px;font-weight:800;background:var(--cream);color:var(--text);outline:none;cursor:pointer;}
+.pick select:focus{border-color:var(--crimson);background:#fff;}
+
+.hello{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--crimson);color:#fff;border-radius:20px;padding:20px 24px;margin-bottom:16px;}
+.hello .n{font-size:20px;font-weight:900;}
+.hello .r{font-size:12.5px;font-weight:700;opacity:.7;margin-top:3px;}
+.hello .cnt{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:11px 18px;text-align:center;}
+.hello .cnt b{display:block;font-size:24px;font-weight:900;line-height:1;}
+.hello .cnt span{font-size:11.5px;font-weight:700;opacity:.75;}
+.swap{background:none;border:none;color:rgba(255,255,255,.7);font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;text-decoration:underline;padding:0;margin-top:6px;}
+
+.filter{display:flex;gap:4px;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:4px;margin-bottom:16px;}
+.filter button{flex:1;padding:10px 8px;font-family:inherit;font-size:13.5px;font-weight:800;color:var(--muted);background:none;border:none;border-radius:9px;cursor:pointer;}
+.filter button.on{background:var(--crimson);color:#fff;}
+
+.list{display:flex;flex-direction:column;gap:12px;}
+.card{background:#fff;border-radius:18px;border:1.5px solid var(--line);padding:18px 20px;box-shadow:0 2px 10px rgba(92,15,15,.03);}
+.card.late{border-color:rgba(198,40,40,.35);}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.card-title{font-size:16.5px;font-weight:900;line-height:1.5;}
+.card-sub{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:4px;}
+.desc{font-size:14px;line-height:1.9;font-weight:600;color:var(--text);margin-top:12px;white-space:pre-wrap;}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px;}
+.status{font-size:12px;font-weight:900;padding:6px 13px;border-radius:100px;white-space:nowrap;}
+.st-new{background:var(--blue-bg);color:var(--blue);}
+.st-prog{background:var(--yellow-bg);color:var(--yellow);}
+.st-done{background:var(--green-bg);color:var(--green);}
+.st-late{background:var(--red-bg);color:var(--red);}
+.pr-urgent{background:var(--red-bg);color:var(--red);}
+.pr-high{background:#FFF3E0;color:#E65100;}
+.pr-normal{background:var(--cream-2);color:var(--muted);}
+.dl{display:inline-flex;align-items:center;gap:7px;background:var(--blue-bg);color:var(--blue);border-radius:100px;padding:7px 15px;font-size:12.5px;font-weight:800;text-decoration:none;}
+.dl svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;}
+.note{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:var(--cream);outline:none;min-height:76px;resize:vertical;margin-top:14px;color:var(--text);}
+.note:focus{border-color:var(--crimson);background:#fff;}
+.done-btn{width:100%;margin-top:11px;padding:13px;background:var(--green);color:#fff;border:none;border-radius:13px;font-family:inherit;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.done-btn:hover{background:#1b5e20;}
+.done-btn:disabled{opacity:.6;cursor:not-allowed;}
+.done-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:3;}
+.mynote{background:var(--green-bg);border-right:4px solid var(--green);border-radius:11px;padding:12px 15px;font-size:13.5px;line-height:1.8;font-weight:600;color:#1b5e20;margin-top:13px;white-space:pre-wrap;}
+
+.empty,.loading{text-align:center;padding:48px 20px;color:var(--muted);font-size:14px;font-weight:600;}
+.loading .sp{width:32px;height:32px;border:3px solid var(--cream-2);border-top-color:var(--crimson);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.retry{margin-top:14px;background:#fff;color:var(--crimson);border:1.5px solid var(--line);border-radius:12px;padding:10px 18px;font-family:inherit;font-weight:800;font-size:13.5px;cursor:pointer;}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+footer{text-align:center;padding:22px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-logo">
+    <div class="mark"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+    <div><div class="h-title">مهامي</div><div class="h-sub">معهد تمكين</div></div>
+  </div>
+  <button class="h-btn" onclick="load(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+</div>
+
+<div class="main">
+
+  <div class="pick" id="pickBox">
+    <h2>مرحباً بك</h2>
+    <p>اختر اسمك لعرض المهام المكلّف بها</p>
+    <select id="who" onchange="pick()"><option value="">جاري التحميل...</option></select>
+  </div>
+
+  <div id="body" style="display:none;">
+    <div class="hello">
+      <div>
+        <div class="n" id="myName">—</div>
+        <div class="r" id="myRole"></div>
+        <button class="swap" onclick="swap()">مو أنا؟ غيّر الاسم</button>
+      </div>
+      <div class="cnt"><b id="openCnt">٠</b><span>مهمة مطلوبة</span></div>
+    </div>
+
+    <div class="filter" id="filter">
+      <button class="on" data-f="open" onclick="setF(this,'open')">المطلوب مني</button>
+      <button data-f="done" onclick="setF(this,'done')">المنجز</button>
+      <button data-f="all" onclick="setF(this,'all')">الكل</button>
+    </div>
+
+    <div class="list" id="list"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>© 2026 معهد تمكين</footer>
+
+<script>
+/* ================= إعدادات ================= */
+const API   = 'https://script.google.com/macros/s/AKfycby-o5gkHcrDD0zP-yaTOg86bNCr-7sAQw--TOMe3m8pYit6lTvGDswm_Uppz_vLHfXiqg/exec';
+const TOKEN = 'tmk-staff-2026';
+
+const DAYS_AR   = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+let STAFF=[], TASKS=[], F='open';
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toAr(n){ const d='٠١٢٣٤٥٦٧٨٩'; return String(n).replace(/[0-9]/g,c=>d[+c]); }
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+function pretty(iso){
+  const m=String(iso||'').match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return String(iso||'');
+  const d=new Date(+m[1],+m[2]-1,+m[3]);
+  return DAYS_AR[d.getDay()]+' ‏'+(+m[3])+' '+MONTHS_AR[+m[2]-1];
+}
+
+async function apiGet(params){
+  const q=Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
+  let r;
+  try{ r=await fetch(API+'?token='+encodeURIComponent(TOKEN)+'&'+q+'&_='+Date.now()); }
+  catch(e){ throw new Error('تعذّر الاتصال بالخادم. تحقق من الإنترنت وحاول مرة ثانية.'); }
+  const txt=await r.text();
+  let j; try{ j=JSON.parse(txt); }catch(e){ throw new Error('الخادم رجّع رداً غير متوقع. أبلغ الإدارة.'); }
+  if(!j.ok) throw new Error(j.error||'خطأ');
+  return j.data;
+}
+async function apiPost(body){
+  body.token=TOKEN;
+  let r;
+  try{ r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); }
+  catch(e){ throw new Error('تعذّر الاتصال بالخادم.'); }
+  const txt=await r.text();
+  let j; try{ j=JSON.parse(txt); }catch(e){ throw new Error('الخادم رجّع رداً غير متوقع.'); }
+  if(!j.ok) throw new Error(j.error||'خطأ');
+  return j;
+}
+
+/* ================= بدء ================= */
+async function init(){
+  try{
+    STAFF=await apiGet({action:'staff'});
+    const q=new URLSearchParams(location.search).get('me');
+    const saved=q||localStorage.getItem('me')||'';
+    document.getElementById('who').innerHTML='<option value="">اختر اسمك</option>'+
+      STAFF.map(s=>'<option value="'+esc(s.name)+'"'+(s.name===saved?' selected':'')+'>'+esc(s.name)+' — '+esc(s.role)+'</option>').join('');
+    if(saved && STAFF.some(s=>s.name===saved)){ localStorage.setItem('me',saved); show(saved); load(); }
+  }catch(e){
+    document.getElementById('pickBox').innerHTML='<div class="empty">'+esc(e.message)
+      +'<div><button class="retry" onclick="init()">إعادة المحاولة</button></div></div>';
+  }
+}
+function pick(){
+  const v=document.getElementById('who').value;
+  if(!v){ localStorage.removeItem('me'); return; }
+  localStorage.setItem('me',v); show(v); load(true);
+}
+function show(name){
+  const s=STAFF.find(x=>x.name===name)||{};
+  document.getElementById('myName').textContent=name;
+  document.getElementById('myRole').textContent=s.role||'';
+  document.getElementById('pickBox').style.display='none';
+  document.getElementById('body').style.display='';
+}
+function swap(){
+  localStorage.removeItem('me');
+  document.getElementById('who').value='';
+  document.getElementById('pickBox').style.display='';
+  document.getElementById('body').style.display='none';
+  window.scrollTo(0,0);
+}
+function setF(el,f){
+  document.querySelectorAll('#filter button').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); F=f; render();
+}
+
+async function load(force){
+  const me=localStorage.getItem('me');
+  if(!me) return;
+  const box=document.getElementById('list');
+  if(force||!TASKS.length) box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    TASKS=await apiGet({action:'tasks',me:me});
+    render();
+  }catch(e){
+    box.innerHTML='<div class="empty">'+esc(e.message)+'<div><button class="retry" onclick="load(true)">إعادة المحاولة</button></div></div>';
+  }
+}
+
+function stC(s){ return s==='منجز'?'st-done':s==='متأخر'?'st-late':s==='قيد التنفيذ'?'st-prog':'st-new'; }
+function prC(p){ return p==='عاجل'?'pr-urgent':p==='عالي'?'pr-high':'pr-normal'; }
+
+function render(){
+  const box=document.getElementById('list');
+  const open=TASKS.filter(t=>t.status!=='منجز').length;
+  document.getElementById('openCnt').textContent=toAr(open);
+  let d=TASKS.slice();
+  if(F==='open') d=d.filter(t=>t.status!=='منجز');
+  if(F==='done') d=d.filter(t=>t.status==='منجز');
+  d.sort((a,b)=>{
+    const r=x=>x.status==='متأخر'?0:x.status==='منجز'?2:1;
+    return r(a)-r(b) || String(a.due||'9999').localeCompare(String(b.due||'9999'));
+  });
+  if(!d.length){ box.innerHTML='<div class="empty">'+(F==='open'?'ما عندك مهام مطلوبة — كل شي منجز 👏':'ما فيه مهام هنا.')+'</div>'; return; }
+  box.innerHTML=d.map(t=>
+      '<div class="card'+(t.status==='متأخر'?' late':'')+'">'
+    + '<div class="card-top"><div><div class="card-title">'+esc(t.title)+'</div>'
+    + '<div class="card-sub">'+(t.due?'التسليم '+esc(pretty(t.due)):'بدون موعد تسليم')+'</div></div>'
+    + '<span class="status '+stC(t.status)+'">'+esc(t.status)+'</span></div>'
+    + (t.desc?'<div class="desc">'+esc(t.desc)+'</div>':'')
+    + '<div class="meta"><span class="status '+prC(t.priority)+'">'+esc(t.priority)+'</span>'
+    + (t.fileUrl?'<a class="dl" href="'+esc(t.fileUrl)+'" target="_blank"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'+esc(t.fileName||'تحميل المرفق')+'</a>':'')
+    + '</div>'
+    + (t.status==='منجز'
+        ? (t.note?'<div class="mynote"><b>ملاحظتك:</b> '+esc(t.note)+'</div>':'')
+        : '<textarea class="note" id="n-'+esc(t.id)+'" placeholder="اكتب ملاحظتك عن التنفيذ (اختياري)"></textarea>'
+          +'<button class="done-btn" id="b-'+esc(t.id)+'" onclick="done(\''+esc(t.id)+'\')">'
+          +'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم الإنجاز</button>')
+    + '</div>').join('');
+}
+
+async function done(id){
+  const me=localStorage.getItem('me');
+  if(!me){ toast('اختر اسمك أولاً'); return; }
+  if(!confirm('تعليم المهمة كمنجزة؟')) return;
+  const el=document.getElementById('n-'+id), btn=document.getElementById('b-'+id);
+  const note=el?el.value.trim():'';
+  if(btn) btn.disabled=true;
+  try{
+    await apiPost({action:'completeTask',id:id,me:me,note:note});
+    toast('تم ✓ سجّلنا إنجازك');
+    await load(true);
+  }catch(e){ toast('خطأ: '+e.message); if(btn) btn.disabled=false; }
+}
+
+init();
+</script>
+</body>
+</html>
