@@ -137,6 +137,18 @@ table.tb tr:last-child td{border-bottom:none;}
 table.tb tr:nth-child(even) td{background:#faf6f2;}
 .tb-wrap{background:#fff;border-radius:16px;border:1.5px solid var(--line);overflow:hidden;overflow-x:auto;}
 
+.chart-card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:22px;margin-top:22px;box-shadow:0 2px 12px rgba(92,15,15,.04);}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+.chart-title{font-size:17px;font-weight:900;}
+.chart-sub{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:3px;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 6px;}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--muted);}
+.legend i{width:13px;height:13px;border-radius:4px;display:inline-block;}
+.legend i.ln{height:3px;border-radius:2px;width:17px;}
+.chart-scroll{overflow-x:auto;padding-bottom:4px;}
+.chart-scroll svg{display:block;}
+.chart-scroll svg rect.b:hover{opacity:.75;}
+
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;box-shadow:0 10px 30px rgba(0,0,0,.3);}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 .modal{position:fixed;inset:0;background:rgba(26,8,8,.6);z-index:300;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
@@ -205,6 +217,19 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
         <div class="mc-title">تمكين</div><div class="mc-desc">الأعضاء · العضويات · طلبات الحجز · المؤسسية</div>
       </div>
+    </div>
+    <div class="chart-card" id="chartCard">
+      <div class="chart-head">
+        <div><div class="chart-title">نمو الأعضاء مقابل التسجيل في الدورات</div>
+        <div class="chart-sub">آخر ١٢ شهر</div></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#5C0F0F"></i>أعضاء جدد</span>
+        <span><i style="background:#B26A00"></i>تسجيلات مسار</span>
+        <span><i style="background:#1565C0"></i>راغبون بحضور جلسات تمكين</span>
+        <span><i class="ln" style="background:#2E7D32"></i>إجمالي الأعضاء (تراكمي)</span>
+      </div>
+      <div id="chartBox"><div class="loading"><div class="sp"></div>جاري تجهيز الرسم...</div></div>
     </div>
   </div>
 
@@ -696,8 +721,62 @@ async function tmLoad(){
   }catch(e){ box.innerHTML='<div class="empty">تعذّر الحساب: '+esc(e.message)+'</div>'; }
 }
 
+/* ================= الرسم البياني ================= */
+async function chartLoad(){
+  const box=document.getElementById('chartBox');
+  if(!ready()){ box.innerHTML='<div class="empty">رابط باك إند الإدارة غير مهيأ بعد.</div>'; return; }
+  try{
+    const d=await apiGet({action:'trend',n:12});
+    box.innerHTML=drawChart(d.months||[]);
+  }catch(e){ box.innerHTML='<div class="empty">تعذّر تجهيز الرسم: '+esc(e.message)+'</div>'; }
+}
+
+function drawChart(rows){
+  if(!rows.length) return '<div class="empty">لا توجد بيانات كافية.</div>';
+  const W=Math.max(760, rows.length*66+90), H=320;
+  const PL=54, PR=48, PT=18, PB=52;
+  const iw=W-PL-PR, ih=H-PT-PB;
+  const maxBar=Math.max(1,...rows.map(r=>Math.max(r.newMembers,r.masarRegs,r.tamkeenRegs)));
+  const maxLine=Math.max(1,...rows.map(r=>r.totalMembers));
+  const nice=v=>{ const p=Math.pow(10,String(Math.ceil(v)).length-1); return Math.ceil(v/p)*p||1; };
+  const yB=nice(maxBar), yL=nice(maxLine);
+  const slot=iw/rows.length, bw=Math.min(15,(slot-14)/3);
+  const xAt=i=>PL+slot*i+slot/2;
+  const hB=v=>ih*(v/yB), hL=v=>ih*(v/yL);
+
+  let g='';
+  for(let t=0;t<=4;t++){
+    const y=PT+ih-(ih*t/4);
+    g+='<line x1="'+PL+'" y1="'+y+'" x2="'+(PL+iw)+'" y2="'+y+'" stroke="rgba(92,15,15,.09)" stroke-width="1"/>'
+      +'<text x="'+(PL-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" font-weight="700" fill="#7A6060">'+toAr(Math.round(yB*t/4))+'</text>'
+      +'<text x="'+(PL+iw+8)+'" y="'+(y+4)+'" text-anchor="start" font-size="11" font-weight="700" fill="#2E7D32">'+toAr(Math.round(yL*t/4))+'</text>';
+  }
+
+  let bars='',lbl='';
+  rows.forEach((r,i)=>{
+    const cx=xAt(i), base=PT+ih;
+    const set=[[r.newMembers,'#5C0F0F','أعضاء جدد'],[r.masarRegs,'#B26A00','تسجيلات مسار'],[r.tamkeenRegs,'#1565C0','جلسات تمكين']];
+    set.forEach((s,k)=>{
+      const h=hB(s[0]), x=cx-(bw*1.5+4)+k*(bw+4);
+      bars+='<rect class="b" x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0,h).toFixed(1)+'" rx="3" fill="'+s[1]+'"><title>'+esc(monthLabel(r.ym))+' — '+s[2]+': '+toAr(s[0])+'</title></rect>';
+    });
+    const p=String(r.ym).split('-');
+    lbl+='<text x="'+cx+'" y="'+(base+20)+'" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7A6060">'+esc(MONTHS_AR[+p[1]-1].slice(0,4))+'</text>'
+       + '<text x="'+cx+'" y="'+(base+35)+'" text-anchor="middle" font-size="10" font-weight="700" fill="#B4A5A5">'+toAr(p[0].slice(2))+'</text>';
+  });
+
+  let pts=rows.map((r,i)=>xAt(i).toFixed(1)+','+(PT+ih-hL(r.totalMembers)).toFixed(1)).join(' ');
+  let dots=rows.map((r,i)=>'<circle cx="'+xAt(i).toFixed(1)+'" cy="'+(PT+ih-hL(r.totalMembers)).toFixed(1)+'" r="4" fill="#fff" stroke="#2E7D32" stroke-width="2.5"><title>'+esc(monthLabel(r.ym))+' — إجمالي الأعضاء: '+toAr(r.totalMembers)+'</title></circle>').join('');
+
+  return '<div class="chart-scroll"><svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" xmlns="http://www.w3.org/2000/svg" font-family="Tajawal,sans-serif">'
+    + g + bars
+    + '<polyline points="'+pts+'" fill="none" stroke="#2E7D32" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'
+    + dots + lbl
+    + '</svg></div>';
+}
+
 /* ================= بدء ================= */
-function init(){ if(ready()) loadStaff().catch(()=>{}); }
+function init(){ if(ready()){ loadStaff().catch(()=>{}); chartLoad(); } }
 if(sessionStorage.getItem('adm_ok')==='1') init();
 </script>
 </body>
