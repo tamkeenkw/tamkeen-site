@@ -151,6 +151,61 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .tk-sp{width:30px;height:30px;border:3px solid var(--cream-2);border-top-color:var(--crimson);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 12px}
 .tk-retry{margin-top:12px;background:var(--cream);color:var(--crimson);border:1.5px solid var(--line);border-radius:12px;padding:9px 18px;font-family:'Tajawal',sans-serif;font-weight:800;font-size:13px;cursor:pointer}
 
+/* ===== تقريري ===== */
+.rp-datebar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--crimson);color:#fff;border-radius:18px;padding:16px 20px;margin-bottom:14px}
+.rp-datebar .lbl{font-size:11px;font-weight:800;opacity:.6;letter-spacing:1px}
+.rp-datebar .val{font-size:17px;font-weight:900;margin-top:3px}
+.rp-formtitle{font-size:13px;font-weight:800;background:rgba(255,255,255,.16);border-radius:100px;padding:7px 15px}
+.rp-sec{background:#fff;border:1.5px solid rgba(92,15,15,.06);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 8px 30px rgba(92,15,15,.05)}
+.rp-sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.rp-sec-title{font-size:15px;font-weight:900;color:var(--crimson);display:flex;align-items:center;gap:8px}
+.rp-dot{width:25px;height:25px;border-radius:8px;background:var(--cream);color:var(--crimson);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+.rp-count{background:var(--cream-2);color:var(--crimson);font-size:11.5px;font-weight:900;padding:4px 11px;border-radius:100px}
+.rp-rows{display:flex;flex-direction:column;gap:9px;margin-bottom:10px}
+.rp-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;background:var(--cream);border:1.5px solid var(--line);border-radius:13px;padding:10px}
+.rp-cell{flex:1 1 130px;min-width:118px}
+.rp-cell label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:5px}
+.rp-cell input,.rp-cell select{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;font-family:'Tajawal',sans-serif;font-size:13px;background:#fff;color:var(--text);outline:none}
+.rp-cell input:focus,.rp-cell select:focus{border-color:var(--crimson)}
+.rp-x{width:32px;height:34px;border-radius:9px;background:var(--red-bg);color:var(--red);border:none;font-size:18px;font-weight:900;cursor:pointer;flex:0 0 auto;line-height:1}
+.rp-add{background:var(--cream);color:var(--crimson);border:1.5px dashed rgba(92,15,15,.28);border-radius:11px;padding:9px 15px;font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;cursor:pointer}
+.rp-add:hover{background:var(--cream-2)}
+.rp-notes{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:13px;font-family:'Tajawal',sans-serif;font-size:14px;background:var(--cream);outline:none;min-height:100px;resize:vertical;color:var(--text)}
+.rp-notes:focus{border-color:var(--crimson);background:#fff}
+.rp-warn{background:#FFF8E1;border:1.5px solid #ffe082;border-radius:13px;padding:12px 15px;font-size:12.5px;font-weight:700;color:#8a5a00;margin-bottom:14px;line-height:1.7}
+.rp-seg{display:flex;gap:5px;background:#fff;border:1.5px solid rgba(92,15,15,.06);border-radius:14px;padding:4px;margin-bottom:14px}
+.rp-seg button{flex:1;padding:11px 6px;border:none;border-radius:10px;background:none;font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:800;color:var(--muted);cursor:pointer}
+.rp-seg button.on{background:var(--crimson);color:#fff}
+.rp-histcard{background:#fff;border:1.5px solid rgba(92,15,15,.06);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 8px 30px rgba(92,15,15,.05)}
+.rp-hist-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rp-hist-date{font-size:15.5px;font-weight:900}
+.rp-hist-sub{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+.rp-lock{font-size:11.5px;font-weight:900;background:var(--green-bg);color:var(--green);padding:5px 11px;border-radius:100px;white-space:nowrap}
+.rp-hist-meta{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0}
+.rp-chip{background:var(--cream);border:1px solid var(--line);border-radius:100px;padding:4px 11px;font-size:11.5px;font-weight:700}
+.rp-view{width:100%;padding:11px;background:var(--cream);color:var(--crimson);border:1.5px solid var(--line);border-radius:12px;font-family:'Tajawal',sans-serif;font-weight:800;font-size:13.5px;cursor:pointer}
+.rp-view:hover{background:var(--cream-2)}
+.rp-empty{text-align:center;color:var(--muted);font-weight:700;font-size:14px;padding:40px 16px;background:#fff;border-radius:18px;border:1.5px solid rgba(92,15,15,.06)}
+.rp-sp{width:28px;height:28px;border:3px solid var(--cream-2);border-top-color:var(--crimson);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto 12px}
+.rp-modal{position:fixed;inset:0;background:rgba(26,8,8,.6);z-index:120;display:none;align-items:flex-start;justify-content:center;padding:20px 14px;overflow-y:auto}
+.rp-modal.show{display:flex}
+.rp-modal-box{background:var(--cream);border-radius:20px;width:100%;max-width:560px;padding:20px}
+.rp-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.rp-modal-title{font-size:18px;font-weight:900;color:var(--crimson)}
+.rp-close{background:var(--crimson);color:#fff;border:none;border-radius:11px;padding:9px 16px;font-family:'Tajawal',sans-serif;font-weight:800;font-size:13px;cursor:pointer}
+.rp-view-tt{font-size:14px;font-weight:900;color:var(--crimson);margin:14px 0 8px}
+.rp-tbwrap{overflow-x:auto;background:#fff;border-radius:12px;border:1.5px solid var(--line);margin-bottom:6px}
+.rp-tb{width:100%;border-collapse:collapse;font-size:12.5px}
+.rp-tb th{background:var(--crimson);color:#fff;padding:9px 8px;text-align:right;font-weight:800;white-space:nowrap}
+.rp-tb td{padding:9px 8px;border-bottom:1px solid var(--line);font-weight:600}
+.rp-tb tr:last-child td{border-bottom:none}
+.rp-tb tr:nth-child(even) td{background:#faf6f2}
+.rp-notes-box{background:#fff;border-right:4px solid var(--crimson);border-radius:11px;padding:12px 15px;font-size:13.5px;line-height:1.9;font-weight:600;white-space:pre-wrap}
+.rp-save{width:100%;padding:15px;background:var(--crimson);color:#fff;border:none;border-radius:14px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-top:4px}
+.rp-save:hover{background:var(--crimson-2)}
+.rp-save:disabled{opacity:.6;cursor:not-allowed}
+.rp-clear{width:100%;padding:12px;background:#fff;color:var(--crimson);border:1.5px solid var(--line);border-radius:13px;font-family:'Tajawal',sans-serif;font-weight:800;font-size:13.5px;cursor:pointer;margin-top:10px}
+
 /* توست */
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
   background:var(--text);color:#fff;padding:13px 22px;border-radius:14px;font-weight:800;font-size:14px;
@@ -204,6 +259,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     <div class="tabs" id="tabs">
       <button class="on" data-t="att" onclick="setTab(this,'att')">الحضور والانصراف</button>
       <button data-t="tasks" onclick="setTab(this,'tasks')">مهامي <span class="pill" id="tkPill">0</span></button>
+      <button data-t="report" onclick="setTab(this,'report')">تقريري</button>
     </div>
 
     <div id="tabAtt">
@@ -262,8 +318,36 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       <div id="tkList"><div class="tk-empty"><div class="tk-sp"></div>جاري التحميل...</div></div>
     </div>
 
+    <div id="tabReport" style="display:none">
+      <div class="rp-datebar">
+        <div><div class="lbl">تاريخ التقرير</div><div class="val" id="rpDateTxt">—</div></div>
+        <div class="rp-formtitle" id="rpFormTitle">—</div>
+      </div>
+      <div class="rp-seg" id="rpSeg">
+        <button class="on" data-sub="new" onclick="rpSetSub(this,'new')">تقرير اليوم</button>
+        <button data-sub="archive" onclick="rpSetSub(this,'archive')">تقاريري السابقة</button>
+      </div>
+
+      <div id="rpNew">
+        <div id="rpForm"></div>
+        <div class="rp-sec">
+          <div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">✎</span>الملاحظات</div></div>
+          <textarea class="rp-notes" id="rpNotes" placeholder="اكتب أي ملاحظات أو أمور تحتاج متابعة..."></textarea>
+        </div>
+        <div class="rp-warn">بعد الإرسال يُحفظ التقرير نهائياً ولا يمكن تعديله أو حذفه. راجع بياناتك قبل الإرسال.</div>
+        <button class="rp-save" id="rpSaveBtn" onclick="rpSave()"><span id="rpSaveTxt">إرسال وحفظ التقرير</span></button>
+        <button class="rp-clear" onclick="rpClearForm()">تفريغ النموذج</button>
+      </div>
+
+      <div id="rpArchive" style="display:none">
+        <div id="rpList"><div class="rp-empty"><div class="rp-sp"></div>جاري التحميل...</div></div>
+      </div>
+    </div>
+
   </div>
 </div>
+
+<div class="rp-modal" id="rpModal" onclick="if(event.target===this)rpCloseView()"><div class="rp-modal-box" id="rpModalBox"></div></div>
 
 <div class="toast" id="toast"></div>
 
@@ -273,7 +357,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxo8IAaZ5dkS-PPmrHqHBVymJRFQKDyuvANhmbeI0wfYcrD4nV6bXA6oUctt2qPauTV/exec';
 
 /* ================== حالة ================== */
-var CUR = { name:'', pass:'' };
+var CUR = { name:'', pass:'', role:'' };
 
 /* ساعة حيّة */
 function tick(){
@@ -327,7 +411,9 @@ function doLogin(){
     if(res && res.ok){
       CUR.name = res.name || nm;
       CUR.pass = pw;
+      CUR.role = res.role || '';
       saveSession();
+      fetchRole();
       openDash(res.status, res.history);
     } else {
       document.getElementById('nameInp').classList.add('invalid');
@@ -353,11 +439,15 @@ function openDash(status, history){
 }
 
 function logout(){
-  CUR = { name:'', pass:'' };
+  CUR = { name:'', pass:'', role:'' };
   TK = { list:[], filter:'open', loaded:false }; tkBadge();
+  RP = { type:'operations', built:false, list:[], loaded:false, sub:'new' };
+  document.getElementById('rpForm').innerHTML='';
   var bs = document.querySelectorAll('#tabs button');
   for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-t')==='att');
-  document.getElementById('tabAtt').style.display=''; document.getElementById('tabTasks').style.display='none';
+  document.getElementById('tabAtt').style.display='';
+  document.getElementById('tabTasks').style.display='none';
+  document.getElementById('tabReport').style.display='none';
   try{ sessionStorage.removeItem('staff_att'); }catch(e){}
   document.getElementById('passInp').value='';
   document.getElementById('dashScreen').style.display='none';
@@ -376,7 +466,7 @@ function restoreSession(){
       CUR = s;
       // نجيب الحالة والسجل من الخادم
       api({ action:'login', name:CUR.name, pass:CUR.pass }).then(function(res){
-        if(res && res.ok){ openDash(res.status, res.history); }
+        if(res && res.ok){ if(res.role) CUR.role=res.role; fetchRole(); openDash(res.status, res.history); }
         else { try{ sessionStorage.removeItem('staff_att'); }catch(e){} }
       }).catch(function(){});
     }
@@ -574,10 +664,12 @@ function setTab(el, t){
   var bs = document.querySelectorAll('#tabs button');
   for(var i=0;i<bs.length;i++) bs[i].classList.remove('on');
   el.classList.add('on');
-  document.getElementById('tabAtt').style.display   = (t==='att')?'':'none';
-  document.getElementById('tabTasks').style.display = (t==='tasks')?'':'none';
+  document.getElementById('tabAtt').style.display    = (t==='att')?'':'none';
+  document.getElementById('tabTasks').style.display  = (t==='tasks')?'':'none';
+  document.getElementById('tabReport').style.display = (t==='report')?'':'none';
   window.scrollTo(0,0);
   if(t==='tasks' && !TK.loaded) tkLoad();
+  if(t==='report') rpInit();
 }
 function setTkF(el, f){
   var bs = document.querySelectorAll('#tkFilter button');
@@ -656,6 +748,259 @@ function tkDone(id){
     if(btn) btn.disabled = false;
   });
 }
+
+/* جلب مسمى الموظف من AdminBackend (يحدد نموذج التقرير) */
+var STAFF_URL='https://script.google.com/macros/s/AKfycby-o5gkHcrDD0zP-yaTOg86bNCr-7sAQw--TOMe3m8pYit6lTvGDswm_Uppz_vLHfXiqg/exec';
+var STAFF_TOK='tmk-staff-2026';
+function fetchRole(){
+  if(CUR.role) return;
+  fetch(STAFF_URL+'?action=staff&token='+encodeURIComponent(STAFF_TOK)+'&_='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(j.ok && j.data){
+        for(var i=0;i<j.data.length;i++){
+          if(String(j.data[i].name).trim()===String(CUR.name).trim()){ CUR.role=j.data[i].role||''; break; }
+        }
+      }
+    }).catch(function(){});
+}
+
+/* ================== تقريري (حسب المسمى) ================== */
+var DAILY_URL   = 'https://script.google.com/macros/s/AKfycbxnlqYj3xFMj1LaCoBHCWeRMD-fGCoN9RmGBjb7eYoStQFPA4ahtvTdF8GmJ0IkWWLx/exec';
+var DAILY_TOKEN = 'tmk-daily-2026';
+
+/* نماذج التقارير حسب نوع القسم */
+var RP_FORMS = {
+  operations: {
+    label: 'تقرير العمليات',
+    sections: [
+      { key:'contacts', num:'١', title:'التواصل مع الأعضاء', add:'إضافة عضو آخر', unit:'عضو',
+        cols:[ {k:'member',label:'اسم العضو'},{k:'reason',label:'سبب التواصل'},{k:'result',label:'الوصف النهائي'} ] },
+      { key:'bookings', num:'٢', title:'طلبات حجز الدورات', add:'إضافة دورة أخرى', unit:'طلب',
+        cols:[ {k:'trainer',label:'اسم المدرب'},{k:'course',label:'اسم الدورة'},
+               {k:'membership',label:'حالة العضوية',type:'select',opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
+               {k:'date',label:'تاريخ الدورة',type:'date'},
+               {k:'mode',label:'نظام الدورة',type:'select',opts:['حضوري','أونلاين','هجين']},
+               {k:'ctype',label:'نوع الدورة',type:'select',opts:['عامة','مؤسسية','خاصة']} ] },
+      { key:'tomorrow', num:'٣', title:'دورات الغد', add:'إضافة دورة أخرى', unit:'دورة',
+        cols:[ {k:'course',label:'اسم الدورة'},{k:'regs',label:'عدد المسجلين',type:'number'},
+               {k:'certs',label:'مستخرجو الشهادة',type:'number'},
+               {k:'remind',label:'حالة التذكير',type:'select',opts:['تم','لم يتم']},
+               {k:'confirm',label:'التأكيد مع المدرب',type:'select',opts:['مؤكد','بانتظار الرد','معتذر']},
+               {k:'mode',label:'نظام الدورة',type:'select',opts:['حضوري','أونلاين','هجين']} ] },
+      { key:'certs', num:'٤', title:'الشهادات قيد الدفع', add:'إضافة عميل آخر', unit:'شهادة',
+        cols:[ {k:'client',label:'اسم العميل'},{k:'course',label:'اسم الدورة'},
+               {k:'contact',label:'حالة التواصل',type:'select',opts:['تم التواصل','لم يرد','وعد بالدفع','رفض']} ] },
+      { key:'inst', num:'٥', title:'الدورات المؤسسية', add:'إضافة دورة أخرى', unit:'دورة',
+        cols:[ {k:'course',label:'اسم الدورة'},{k:'provider',label:'مقدم الدورة'},
+               {k:'membership',label:'حالة العضوية',type:'select',opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
+               {k:'org',label:'اسم الجهة'} ] }
+    ]
+  },
+  pr: {
+    label: 'تقرير العلاقات العامة',
+    sections: [
+      { key:'visits', num:'١', title:'زيارات ولقاءات الجهات', add:'إضافة جهة أخرى', unit:'جهة',
+        cols:[ {k:'entity',label:'الجهة'},{k:'dept',label:'القسم'},{k:'withwho',label:'مع مَن'},
+               {k:'offered',label:'ما عُرض عليهم'},
+               {k:'reaction',label:'ردة الفعل',type:'select',opts:['تواصل قريب','قيد الدراسة','رفض']} ] },
+      { key:'requests', num:'٢', title:'طلبات الجهات', add:'إضافة طلب آخر', unit:'طلب',
+        cols:[ {k:'entity',label:'الجهة'},{k:'request',label:'الطلب المحدد'} ] }
+    ]
+  }
+};
+
+/* يحدد نوع التقرير من مسمى الموظف */
+function rpTypeFor(role){
+  var r = String(role||'');
+  if (r.indexOf('علاقات') > -1) return 'pr';
+  return 'operations';   // الافتراضي: عمليات
+}
+
+var RP = { type:'operations', built:false, list:[], loaded:false, sub:'new' };
+
+function rpForm(){ return RP_FORMS[RP.type] || RP_FORMS.operations; }
+function rpSec(key){ var f=rpForm(); for(var i=0;i<f.sections.length;i++){ if(f.sections[i].key===key) return f.sections[i]; } return null; }
+
+function rpTodayISO(){ var d=new Date(),p=function(n){return n<10?'0'+n:''+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function rpPretty(iso){
+  var m=String(iso||'').match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return String(iso||'');
+  var d=new Date(+m[1],+m[2]-1,+m[3]);
+  return DAYS[d.getDay()]+' ‏'+(+m[3])+' '+MONTHS[+m[2]-1]+' '+m[1];
+}
+function rpAr(n){ var d='٠١٢٣٤٥٦٧٨٩'; return String(n).replace(/[0-9]/g,function(c){return d[+c];}); }
+
+/* بناء النموذج عند فتح التبويب */
+function rpInit(){
+  RP.type = rpTypeFor(CUR.role || '');
+  document.getElementById('rpFormTitle').textContent = rpForm().label;
+  if(!RP.built){ rpBuild(); RP.built=true; }
+  document.getElementById('rpDateTxt').textContent = rpPretty(rpTodayISO());
+  if(!RP.loaded) rpLoadList();
+}
+
+function rpBuild(){
+  var f = rpForm(), h='';
+  f.sections.forEach(function(sec){
+    h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
+      +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
+      +     '<span class="rp-count" id="rpcnt-'+sec.key+'">٠ '+esc(sec.unit)+'</span></div>'
+      +   '<div class="rp-rows" id="rprows-'+sec.key+'"></div>'
+      +   '<button class="rp-add" onclick="rpAddRow(\''+sec.key+'\')">+ '+esc(sec.add)+'</button>'
+      + '</div>';
+  });
+  document.getElementById('rpForm').innerHTML = h;
+  f.sections.forEach(function(sec){ rpAddRow(sec.key); });
+}
+
+function rpRowHtml(sec, vals){
+  vals = vals||{}; var h='<div class="rp-row">';
+  sec.cols.forEach(function(c){
+    h += '<div class="rp-cell"><label>'+esc(c.label)+'</label>';
+    if(c.type==='select'){
+      h += '<select data-k="'+c.k+'"><option value="">—</option>';
+      c.opts.forEach(function(o){ h += '<option'+(String(vals[c.k]||'')===o?' selected':'')+'>'+esc(o)+'</option>'; });
+      h += '</select>';
+    } else {
+      var t = c.type==='date'?'date':(c.type==='number'?'number':'text');
+      h += '<input type="'+t+'" data-k="'+c.k+'" value="'+esc(vals[c.k]||'')+'"'+(t==='number'?' min="0"':'')+' placeholder="'+esc(c.label)+'">';
+    }
+    h += '</div>';
+  });
+  h += '<button class="rp-x" onclick="rpRemoveRow(this,\''+sec.key+'\')" title="حذف">×</button></div>';
+  return h;
+}
+function rpAddRow(key, vals){
+  var sec=rpSec(key); if(!sec) return;
+  var box=document.getElementById('rprows-'+key);
+  var tmp=document.createElement('div'); tmp.innerHTML=rpRowHtml(sec,vals);
+  var row=tmp.firstChild;
+  row.addEventListener('input',function(){ rpCount(key); });
+  row.addEventListener('change',function(){ rpCount(key); });
+  box.appendChild(row); rpCount(key);
+}
+function rpRemoveRow(btn,key){
+  var box=document.getElementById('rprows-'+key);
+  if(box.children.length<=1){ btn.parentNode.querySelectorAll('input,select').forEach(function(e){e.value='';}); rpCount(key); return; }
+  btn.parentNode.remove(); rpCount(key);
+}
+function rpReadSection(key){
+  var sec=rpSec(key), out=[];
+  document.querySelectorAll('#rprows-'+key+' .rp-row').forEach(function(row){
+    var o={}, any=false;
+    sec.cols.forEach(function(c){
+      var el=row.querySelector('[data-k="'+c.k+'"]');
+      var v=el?String(el.value||'').trim():''; o[c.k]=v; if(v) any=true;
+    });
+    if(any) out.push(o);
+  });
+  return out;
+}
+function rpCount(key){
+  var el=document.getElementById('rpcnt-'+key);
+  if(el){ var sec=rpSec(key); el.textContent=rpAr(rpReadSection(key).length)+' '+sec.unit; }
+}
+function rpCollect(){
+  var f=rpForm(), data={};
+  f.sections.forEach(function(sec){ data[sec.key]=rpReadSection(sec.key); });
+  return data;
+}
+function rpClearForm(silent){
+  if(!silent && !confirm('تفريغ كل الحقول؟')) return;
+  rpForm().sections.forEach(function(sec){
+    document.getElementById('rprows-'+sec.key).innerHTML=''; rpAddRow(sec.key);
+  });
+  document.getElementById('rpNotes').value='';
+  if(!silent) toast('تم تفريغ النموذج');
+}
+
+function rpSetSub(el, mode){
+  var bs=document.querySelectorAll('#rpSeg button');
+  for(var i=0;i<bs.length;i++) bs[i].classList.remove('on');
+  el.classList.add('on'); RP.sub=mode;
+  document.getElementById('rpNew').style.display     = mode==='new'?'':'none';
+  document.getElementById('rpArchive').style.display = mode==='archive'?'':'none';
+  if(mode==='archive' && !RP.loaded) rpLoadList();
+}
+
+function rpApi(payload){
+  return fetch(DAILY_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(r){ return r.json(); });
+}
+
+function rpSave(){
+  if(!CUR.name){ toast('سجّل دخولك أولاً', true); return; }
+  var sections=rpCollect();
+  var notes=document.getElementById('rpNotes').value.trim();
+  var total=0; rpForm().sections.forEach(function(s){ total += sections[s.key].length; });
+  if(total===0 && !notes){ toast('التقرير فارغ — عبّي قسم واحد على الأقل', true); return; }
+  if(!confirm('تأكيد الإرسال؟\n\nبعد الحفظ ما يمكن تعديل التقرير أو حذفه.')) return;
+  var btn=document.getElementById('rpSaveBtn'), txt=document.getElementById('rpSaveTxt');
+  btn.disabled=true; txt.textContent='جاري الحفظ...';
+  rpApi({ action:'save', token:DAILY_TOKEN, reportType:RP.type,
+          date:rpTodayISO(), author:CUR.name, sections:sections, notes:notes })
+  .then(function(out){
+    if(!out || !out.ok) throw new Error((out&&out.error)||'فشل الحفظ');
+    toast('تم حفظ التقرير بنجاح ✓');
+    rpClearForm(true);
+    RP.loaded=false; rpLoadList();
+    var bs=document.querySelectorAll('#rpSeg button');
+    for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-sub')==='archive');
+    document.getElementById('rpNew').style.display='none';
+    document.getElementById('rpArchive').style.display='';
+    window.scrollTo(0,0);
+  }).catch(function(e){ toast('خطأ: '+e.message, true); })
+  .then(function(){ btn.disabled=false; txt.textContent='إرسال وحفظ التقرير'; });
+}
+
+function rpLoadList(force){
+  var box=document.getElementById('rpList');
+  if(force) box.innerHTML='<div class="rp-empty"><div class="rp-sp"></div>جاري التحميل...</div>';
+  fetch(DAILY_URL+'?action=list&type='+encodeURIComponent(RP.type)+'&token='+encodeURIComponent(DAILY_TOKEN)+'&_='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(!j.ok) throw new Error(j.error||'خطأ');
+      /* أظهر تقارير هذا الموظف فقط */
+      RP.list=(j.data||[]).filter(function(x){ return String(x.author||'')===String(CUR.name||''); });
+      RP.loaded=true; rpRenderList();
+    }).catch(function(e){ box.innerHTML='<div class="rp-empty">تعذّر التحميل: '+esc(e.message)+'</div>'; });
+}
+function rpRenderList(){
+  var box=document.getElementById('rpList');
+  var d=RP.list.slice();
+  d.sort(function(a,b){ return String(b.date).localeCompare(String(a.date)) || String(b.time).localeCompare(String(a.time)); });
+  if(!d.length){ box.innerHTML='<div class="rp-empty">لا توجد تقارير سابقة.</div>'; return; }
+  box.innerHTML=d.map(function(r){
+    var f=RP_FORMS[r.type]||rpForm(), s=r.sections||{};
+    var chips=f.sections.map(function(sec){ return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr((s[sec.key]||[]).length)+'</b></span>'; }).join('');
+    return '<div class="rp-histcard"><div class="rp-hist-top">'
+      + '<div><div class="rp-hist-date">'+esc(rpPretty(r.date))+'</div><div class="rp-hist-sub">أُرسل '+esc(r.time||'')+'</div></div>'
+      + '<span class="rp-lock">🔒 محفوظ</span></div>'
+      + '<div class="rp-hist-meta">'+chips+'</div>'
+      + '<button class="rp-view" onclick="rpOpen(\''+esc(r.id)+'\')">عرض التقرير</button></div>';
+  }).join('');
+}
+function rpOpen(id){
+  var r=null; for(var i=0;i<RP.list.length;i++){ if(String(RP.list[i].id)===String(id)){ r=RP.list[i]; break; } }
+  if(!r) return;
+  var f=RP_FORMS[r.type]||rpForm();
+  var h='<div class="rp-modal-head"><div><div class="rp-modal-title">'+esc(rpPretty(r.date))+'</div>'
+    + '<div class="rp-hist-sub">'+esc(f.label)+' · '+esc(r.time||'')+'</div></div>'
+    + '<button class="rp-close" onclick="rpCloseView()">إغلاق</button></div>';
+  f.sections.forEach(function(sec){
+    var rows=(r.sections||{})[sec.key]||[];
+    h += '<div class="rp-view-tt">'+esc(sec.title)+' — '+rpAr(rows.length)+'</div>';
+    if(!rows.length){ h+='<div class="rp-hist-sub" style="margin-bottom:8px;">لا يوجد.</div>'; return; }
+    h += '<div class="rp-tbwrap"><table class="rp-tb"><thead><tr>'+sec.cols.map(function(c){return '<th>'+esc(c.label)+'</th>';}).join('')+'</tr></thead><tbody>'
+      + rows.map(function(o){ return '<tr>'+sec.cols.map(function(c){ var v=o[c.k]||''; if(c.type==='date'&&v) v=rpPretty(v); return '<td>'+esc(v||'—')+'</td>'; }).join('')+'</tr>'; }).join('')
+      + '</tbody></table></div>';
+  });
+  h += '<div class="rp-view-tt">الملاحظات</div>'+(r.notes?'<div class="rp-notes-box">'+esc(r.notes)+'</div>':'<div class="rp-hist-sub">لا توجد ملاحظات.</div>');
+  document.getElementById('rpModalBox').innerHTML=h;
+  document.getElementById('rpModal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function rpCloseView(){ document.getElementById('rpModal').classList.remove('show'); document.body.style.overflow=''; }
 
 function toast(msg, isErr){
   var t = document.getElementById('toast');
