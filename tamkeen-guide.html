@@ -10,263 +10,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --crimson:#5C0F0F;
-  --crimson-2:#6B1212;
-  --crimson-deep:#3E0A0A;
-  --cream:#FAF7F2;
-  --cream-2:#F2EDE5;
-  --line:rgba(92,15,15,.12);
-  --line-2:rgba(92,15,15,.06);
-  --text:#1A0808;
-  --muted:#7A6060;
-  --green:#2E7D32;
-  --green-bg:#E8F5E9;
-  --amber:#8A5A00;
-  --amber-bg:#FFF6E0;
-  --wash:rgba(92,15,15,.045);
-  --shadow:0 4px 20px rgba(92,15,15,.07);
+  --crimson:#5C0F0F;--crimson-2:#6B1212;--crimson-deep:#3E0A0A;
+  --cream:#FAF7F2;--cream-2:#F2EDE5;
+  --line:rgba(92,15,15,.12);--line-2:rgba(92,15,15,.06);
+  --text:#1A0808;--muted:#634949;
+  --green:#2E7D32;--green-bg:#E8F5E9;
+  --amber:#8A5A00;--amber-bg:#FFF6E0;
+  --wash:rgba(92,15,15,.045);--shadow:0 4px 20px rgba(92,15,15,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;scroll-padding-top:96px;}
 body{
-  font-family:'Tajawal',system-ui,sans-serif;
-  background:var(--cream);
-  color:var(--text);
-  line-height:1.85;
-  -webkit-font-smoothing:antialiased;
+  font-family:'Tajawal',system-ui,sans-serif;background:var(--cream);color:var(--text);
+  font-size:16.5px;line-height:2;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
 
-/* ============ GATE ============ */
-#gate{
-  position:fixed;inset:0;z-index:9999;background:var(--crimson-deep);
-  display:flex;align-items:center;justify-content:center;padding:24px;
-}
+/* GATE */
+#gate{position:fixed;inset:0;z-index:9999;background:var(--crimson-deep);display:flex;align-items:center;justify-content:center;padding:24px;}
 .gate-box{width:100%;max-width:380px;text-align:center;}
-.gate-mark{
-  font-family:'Amiri',serif;font-size:56px;font-weight:700;color:#fff;
-  line-height:1;margin-bottom:6px;
-}
-.gate-sub{font-size:13px;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:1px;margin-bottom:32px;}
-.gate-label{display:block;font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:10px;text-align:right;}
-#gatePin{
-  width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);
-  border-radius:14px;padding:14px 16px;font-family:'Tajawal',sans-serif;font-size:20px;
-  font-weight:800;color:#fff;text-align:center;letter-spacing:8px;outline:none;
-}
+.gate-mark{font-family:'Amiri',serif;font-size:56px;font-weight:700;color:#fff;line-height:1;margin-bottom:6px;}
+.gate-sub{font-size:14px;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:1px;margin-bottom:32px;}
+.gate-label{display:block;font-size:14px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:10px;text-align:right;}
+#gatePin{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);border-radius:14px;padding:14px 16px;font-family:'Tajawal',sans-serif;font-size:20px;font-weight:800;color:#fff;text-align:center;letter-spacing:8px;outline:none;}
 #gatePin:focus{border-color:rgba(255,255,255,.5);}
-.gate-btn{
-  width:100%;margin-top:14px;background:#fff;color:var(--crimson);border:none;
-  border-radius:100px;padding:13px;font-family:'Tajawal',sans-serif;font-size:15px;
-  font-weight:900;cursor:pointer;transition:transform .15s;
-}
-.gate-btn:hover{transform:translateY(-1px);}
-.gate-err{font-size:13px;font-weight:700;color:#FFB4B4;margin-top:14px;min-height:20px;}
+.gate-btn{width:100%;margin-top:14px;background:#fff;color:var(--crimson);border:none;border-radius:100px;padding:13px;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:900;cursor:pointer;}
+.gate-err{font-size:14px;font-weight:700;color:#FFB4B4;margin-top:14px;min-height:20px;}
 
-/* ============ TOP BAR ============ */
-.topbar{
-  position:sticky;top:0;z-index:100;background:rgba(250,247,242,.94);
-  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
-}
-.topbar-inner{
-  max-width:1240px;margin:0 auto;padding:12px 24px;
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
-}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.topbar-inner{max-width:1260px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
 .tb-mark{display:flex;align-items:center;gap:10px;margin-inline-end:auto;}
-.tb-badge{
-  width:34px;height:34px;min-width:34px;background:var(--crimson);border-radius:10px;
-  display:flex;align-items:center;justify-content:center;color:#fff;
-  font-family:'Amiri',serif;font-size:19px;font-weight:700;
-}
-.tb-title{font-size:15px;font-weight:900;line-height:1.3;}
-.tb-title span{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;}
-.searchwrap{position:relative;flex:1;min-width:200px;max-width:340px;}
-#q{
-  width:100%;background:#fff;border:1.5px solid var(--line);border-radius:100px;
-  padding:9px 40px 9px 16px;font-family:'Tajawal',sans-serif;font-size:13.5px;
-  color:var(--text);outline:none;transition:border-color .2s;
-}
+.tb-badge{width:34px;height:34px;min-width:34px;background:var(--crimson);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Amiri',serif;font-size:19px;font-weight:700;}
+.tb-title{font-size:16px;font-weight:900;line-height:1.3;}
+.tb-title span{display:block;font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.5px;}
+.searchwrap{position:relative;flex:1;min-width:190px;max-width:320px;}
+#q{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:100px;padding:10px 40px 10px 16px;font-family:'Tajawal',sans-serif;font-size:15px;color:var(--text);outline:none;}
 #q:focus{border-color:var(--crimson);}
 .searchwrap svg{position:absolute;top:50%;right:14px;transform:translateY(-50%);pointer-events:none;}
-.tb-btn{
-  background:var(--crimson);color:#fff;border:none;border-radius:100px;
-  padding:9px 18px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;
-  cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;
-}
+.tb-btn{background:var(--crimson);color:#fff;border:none;border-radius:100px;padding:9px 18px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;}
 .tb-btn:hover{background:var(--crimson-2);}
 
-/* ============ LAYOUT ============ */
-.shell{max-width:1240px;margin:0 auto;padding:0 24px 80px;display:flex;gap:48px;align-items:flex-start;}
-nav.rail{
-  position:sticky;top:78px;width:230px;min-width:230px;
-  max-height:calc(100vh - 100px);overflow-y:auto;padding:28px 0;
-}
+/* LAYOUT */
+.shell{max-width:1260px;margin:0 auto;padding:0 24px 80px;display:flex;gap:48px;align-items:flex-start;}
+nav.rail{position:sticky;top:78px;width:250px;min-width:250px;max-height:calc(100vh - 100px);overflow-y:auto;padding:28px 0;}
 nav.rail::-webkit-scrollbar{width:3px;}
 nav.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
-.rail-head{
-  font-size:10.5px;font-weight:900;letter-spacing:2.5px;color:var(--crimson);
-  margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line);
-}
+.rail-head{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--crimson);margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line);}
 .rail-head:not(:first-child){margin-top:26px;}
-nav.rail a{
-  display:flex;gap:9px;align-items:baseline;
-  font-size:13.5px;font-weight:600;color:var(--muted);text-decoration:none;
-  padding:5px 0;line-height:1.5;transition:color .15s;
-}
-nav.rail a b{
-  font-family:'Amiri',serif;font-size:13px;font-weight:700;
-  color:rgba(122,96,96,.5);min-width:16px;
-}
+nav.rail a{display:flex;gap:9px;align-items:baseline;font-size:15px;font-weight:600;color:var(--muted);text-decoration:none;padding:6px 0;line-height:1.55;}
+nav.rail a b{font-family:'Amiri',serif;font-size:14px;font-weight:700;color:rgba(99,73,73,.5);min-width:18px;}
 nav.rail a:hover,nav.rail a.on{color:var(--crimson);}
 nav.rail a.on{font-weight:800;}
 nav.rail a.on b{color:var(--crimson);}
-
 main{flex:1;min-width:0;padding-top:28px;}
 
-/* ============ HERO ============ */
-.hero{padding:24px 0 44px;border-bottom:2px solid var(--crimson);margin-bottom:52px;}
-.hero-eyebrow{
-  font-size:11px;font-weight:900;letter-spacing:3px;color:var(--crimson);
-  text-transform:uppercase;margin-bottom:14px;
-}
-.hero h1{
-  font-family:'Amiri',serif;font-size:clamp(30px,5.4vw,50px);font-weight:700;
-  line-height:1.25;margin-bottom:16px;
-}
-.hero p{font-size:16px;color:var(--muted);max-width:640px;line-height:1.9;}
-.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
-.chip{
-  background:#fff;border:1px solid var(--line);border-radius:100px;
-  padding:6px 15px;font-size:12.5px;font-weight:700;color:var(--crimson);
-}
+/* HERO */
+.hero{padding:24px 0 40px;border-bottom:2px solid var(--crimson);margin-bottom:36px;}
+.hero-eyebrow{font-size:12px;font-weight:900;letter-spacing:3px;color:var(--crimson);margin-bottom:14px;}
+.hero h1{font-family:'Amiri',serif;font-size:clamp(30px,5.4vw,50px);font-weight:700;line-height:1.25;margin-bottom:16px;}
+.hero p{font-size:18px;color:var(--muted);max-width:660px;line-height:2;}
 
-/* ============ SECTIONS ============ */
+/* ROLE PICKER */
+.roles{margin-bottom:46px;}
+.roles-t{font-size:14px;font-weight:900;letter-spacing:1.5px;color:var(--crimson);margin-bottom:14px;}
+.role-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;}
+.role-btn{
+  background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;
+  text-align:right;cursor:pointer;font-family:'Tajawal',sans-serif;transition:border-color .18s,transform .18s;
+}
+.role-btn:hover{border-color:var(--crimson);transform:translateY(-2px);}
+.role-btn.act{background:var(--crimson);border-color:var(--crimson);}
+.role-btn.act .rb-n,.role-btn.act .rb-d{color:#fff;}
+.role-btn.act .rb-d{opacity:.8;}
+.rb-n{font-size:18px;font-weight:900;color:var(--text);line-height:1.4;}
+.rb-d{font-size:14.5px;font-weight:500;color:var(--muted);line-height:1.6;margin-top:3px;}
+.role-reset{background:none;border:none;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:800;color:var(--crimson);cursor:pointer;margin-top:14px;text-decoration:underline;display:none;}
+body[data-role] .role-reset{display:inline-block;}
+
+.brief{display:none;background:var(--crimson);color:#fff;border-radius:18px;padding:26px 28px;margin-bottom:44px;}
+body[data-role="pr"] #brief-pr,body[data-role="ops"] #brief-ops,body[data-role="cs"] #brief-cs{display:block;}
+.brief h3{font-family:'Amiri',serif;font-size:26px;font-weight:700;color:#fff;margin:0 0 6px;display:block;}
+.brief h3::before{display:none;}
+.brief-sub{font-size:16px;color:rgba(255,255,255,.78);margin-bottom:20px;line-height:1.8;}
+.brief-h{font-size:13px;font-weight:900;letter-spacing:1.5px;color:rgba(255,255,255,.6);margin:20px 0 10px;}
+.brief ol{padding-inline-start:20px;margin:0;}
+.brief li{font-size:16px;color:rgba(255,255,255,.92);margin-bottom:8px;line-height:1.85;}
+.brief li::marker{color:rgba(255,255,255,.5);font-weight:700;}
+.brief .rule{background:rgba(0,0,0,.22);border-radius:12px;padding:14px 18px;margin-top:20px;font-size:15.5px;line-height:1.8;}
+.brief .rule b{color:#fff;}
+
+/* SECTIONS */
 section{margin-bottom:62px;scroll-margin-top:96px;}
-.s-num{
-  font-family:'Amiri',serif;font-size:15px;font-weight:700;color:var(--crimson);
-  opacity:.55;margin-bottom:2px;
-}
-h2{
-  font-family:'Amiri',serif;font-size:clamp(23px,3.6vw,32px);font-weight:700;
-  line-height:1.35;margin-bottom:8px;
-}
-.s-lede{font-size:15px;color:var(--muted);margin-bottom:26px;max-width:620px;}
-h3{
-  font-size:16.5px;font-weight:900;margin:30px 0 12px;
-  display:flex;align-items:center;gap:9px;
-}
-h3::before{content:'';width:4px;height:17px;background:var(--crimson);border-radius:2px;}
-h4{font-size:14.5px;font-weight:900;margin:20px 0 8px;color:var(--crimson);}
-p{font-size:15px;margin-bottom:14px;}
+.s-num{font-family:'Amiri',serif;font-size:16px;font-weight:700;color:var(--crimson);opacity:.55;margin-bottom:2px;}
+h2{font-family:'Amiri',serif;font-size:clamp(23px,3.6vw,32px);font-weight:700;line-height:1.35;margin-bottom:8px;}
+.s-lede{font-size:17px;color:var(--muted);margin-bottom:28px;max-width:640px;font-weight:500;line-height:1.9;}
+h3{font-size:19px;font-weight:900;margin:32px 0 13px;display:flex;align-items:center;gap:9px;}
+h3::before{content:'';width:4px;height:19px;background:var(--crimson);border-radius:2px;}
+h4{font-size:16px;font-weight:900;margin:20px 0 9px;color:var(--crimson);}
+p{font-size:16.5px;margin-bottom:16px;}
 ul,ol{margin:0 0 16px;padding-inline-start:22px;}
-li{font-size:15px;margin-bottom:7px;}
+li{font-size:16.5px;margin-bottom:9px;line-height:1.95;}
 strong{font-weight:800;}
 .hl{background:rgba(92,15,15,.09);padding:1px 6px;border-radius:5px;font-weight:800;white-space:nowrap;}
 
-/* ============ CARDS ============ */
-.card{
-  background:#fff;border:1px solid var(--line);border-radius:18px;
-  padding:24px;box-shadow:var(--shadow);margin-bottom:16px;
-}
+/* CARDS */
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow);margin-bottom:16px;}
 .card-dark{background:var(--crimson);border-color:var(--crimson);color:#fff;}
 .card-dark h4,.card-dark strong{color:#fff;}
-.card-dark p,.card-dark li{color:rgba(255,255,255,.82);}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;margin-bottom:16px;}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:16px;}
-
+.card-dark p,.card-dark li{color:rgba(255,255,255,.85);}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:16px;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:16px;}
 .arm{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);}
 .arm-top{background:var(--crimson);color:#fff;padding:18px 22px;}
 .arm-top.alt{background:var(--crimson-deep);}
-.arm-name{font-family:'Amiri',serif;font-size:22px;font-weight:700;line-height:1.3;}
-.arm-role{font-size:12px;font-weight:600;color:rgba(255,255,255,.7);margin-top:2px;}
+.arm-name{font-family:'Amiri',serif;font-size:23px;font-weight:700;line-height:1.3;}
+.arm-role{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78);margin-top:3px;}
 .arm-body{padding:20px 22px;}
-.arm-body dl{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px;}
+.arm-body dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:15.5px;line-height:1.85;}
 .arm-body dt{font-weight:800;color:var(--crimson);white-space:nowrap;}
-.arm-body dd{color:var(--text);}
-
 .stat{background:var(--wash);border:1px solid var(--line-2);border-radius:14px;padding:16px 18px;}
 .stat-n{font-family:'Amiri',serif;font-size:30px;font-weight:700;color:var(--crimson);line-height:1;}
-.stat-l{font-size:12.5px;font-weight:700;color:var(--muted);margin-top:5px;}
+.stat-l{font-size:14px;font-weight:700;color:var(--muted);margin-top:6px;}
 
-/* ============ TABLES ============ */
+/* TABLES */
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:18px;box-shadow:var(--shadow);}
 table{width:100%;border-collapse:collapse;min-width:520px;}
-th{
-  background:var(--cream-2);font-size:12.5px;font-weight:900;color:var(--crimson);
-  text-align:right;padding:12px 15px;border-bottom:1px solid var(--line);white-space:nowrap;
-}
-td{font-size:14px;padding:12px 15px;border-bottom:1px solid var(--line-2);vertical-align:top;}
+th{background:var(--cream-2);font-size:14px;font-weight:900;color:var(--crimson);text-align:right;padding:13px 16px;border-bottom:1px solid var(--line);white-space:nowrap;}
+td{font-size:15.5px;line-height:1.85;padding:14px 16px;border-bottom:1px solid var(--line-2);vertical-align:top;}
 tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:var(--wash);}
-td.num{font-family:'Amiri',serif;font-weight:700;font-size:15px;color:var(--crimson);white-space:nowrap;}
+td.num{font-family:'Amiri',serif;font-weight:700;font-size:17px;color:var(--crimson);white-space:nowrap;}
 .yes{color:var(--green);font-weight:900;}
-.no{color:rgba(122,96,96,.45);font-weight:900;}
+.no{color:rgba(99,73,73,.4);font-weight:900;}
 
-/* ============ FLOW RAIL ============ */
+/* FLOW */
 .flow{position:relative;padding-inline-start:34px;margin:20px 0 24px;}
-.flow::before{
-  content:'';position:absolute;inset-inline-start:11px;top:8px;bottom:8px;
-  width:2px;background:linear-gradient(var(--crimson),rgba(92,15,15,.15));
-}
-.step{position:relative;margin-bottom:20px;}
+.flow::before{content:'';position:absolute;inset-inline-start:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--crimson),rgba(92,15,15,.15));}
+.step{position:relative;margin-bottom:22px;}
 .step:last-child{margin-bottom:0;}
-.step::before{
-  content:attr(data-n);position:absolute;inset-inline-start:-34px;top:1px;
-  width:24px;height:24px;background:var(--crimson);color:#fff;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Amiri',serif;font-size:13px;font-weight:700;
-  border:3px solid var(--cream);box-sizing:content-box;margin-inline-start:-1px;
-}
-.step-t{font-size:15px;font-weight:900;margin-bottom:3px;}
-.step-d{font-size:14px;color:var(--muted);line-height:1.75;}
-.step-who{
-  display:inline-block;background:var(--cream-2);border-radius:6px;
-  padding:1px 8px;font-size:11.5px;font-weight:800;color:var(--crimson);margin-inline-start:7px;
-}
+.step::before{content:attr(data-n);position:absolute;inset-inline-start:-34px;top:2px;width:24px;height:24px;background:var(--crimson);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:13px;font-weight:700;border:3px solid var(--cream);box-sizing:content-box;margin-inline-start:-1px;}
+.step-t{font-size:16.5px;font-weight:900;margin-bottom:4px;}
+.step-d{font-size:16px;color:var(--muted);line-height:1.9;}
+.step-who{display:inline-block;background:var(--cream-2);border-radius:6px;padding:2px 9px;font-size:13px;font-weight:800;color:var(--crimson);margin-inline-start:8px;}
 
-/* ============ CALLOUTS ============ */
-.note{
-  border-inline-start:4px solid var(--crimson);background:var(--wash);
-  border-radius:0 14px 14px 0;padding:16px 20px;margin-bottom:18px;
-}
+/* NOTES */
+.note{border-inline-start:4px solid var(--crimson);background:var(--wash);border-radius:0 14px 14px 0;padding:16px 20px;margin-bottom:18px;}
 .note.warn{border-inline-start-color:var(--amber);background:var(--amber-bg);}
 .note.ok{border-inline-start-color:var(--green);background:var(--green-bg);}
-.note-t{font-size:13px;font-weight:900;margin-bottom:5px;color:var(--crimson);}
+.note-t{font-size:14.5px;font-weight:900;margin-bottom:6px;color:var(--crimson);}
 .note.warn .note-t{color:var(--amber);}
 .note.ok .note-t{color:var(--green);}
 .note p:last-child,.note ul:last-child,.note li:last-child{margin-bottom:0;}
 
-/* ============ SCRIPTS (Q&A) ============ */
+/* QA */
 .qa{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px;overflow:hidden;}
-.qa summary{
-  padding:14px 18px;font-size:14.5px;font-weight:800;cursor:pointer;
-  list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
+.qa summary{padding:15px 19px;font-size:16px;font-weight:800;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .qa summary::-webkit-details-marker{display:none;}
 .qa summary::after{content:'+';font-family:'Amiri',serif;font-size:20px;color:var(--crimson);font-weight:700;}
 .qa[open] summary::after{content:'−';}
 .qa[open] summary{border-bottom:1px solid var(--line-2);}
-.qa-body{padding:14px 18px 18px;font-size:14.5px;color:var(--text);line-height:1.9;}
-.qa-body em{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:8px;}
+.qa-body{padding:15px 19px 19px;font-size:16px;color:var(--text);line-height:2;}
+.qa-body em{display:block;font-style:normal;font-size:14.5px;color:var(--muted);margin-top:10px;font-weight:500;}
 
-/* ============ GLOSSARY ============ */
-.gloss{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-size:14.5px;
-  background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);}
+.gloss{display:grid;grid-template-columns:auto 1fr;gap:11px 18px;font-size:16px;line-height:1.9;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);}
 .gloss dt{font-weight:900;color:var(--crimson);white-space:nowrap;}
 .gloss dd{color:var(--muted);}
-
-footer{
-  border-top:1px solid var(--line);margin-top:20px;padding:26px 0 0;
-  font-size:12.5px;color:var(--muted);text-align:center;
-}
-
-.nores{display:none;text-align:center;padding:60px 20px;color:var(--muted);font-size:15px;font-weight:700;}
+footer{border-top:1px solid var(--line);margin-top:20px;padding:26px 0 0;font-size:14px;color:var(--muted);text-align:center;}
+.nores{display:none;text-align:center;padding:60px 20px;color:var(--muted);font-size:16px;font-weight:700;}
 .hidden{display:none !important;}
 
-/* ============ RESPONSIVE ============ */
+/* ROLE FILTERING */
+body[data-role="pr"] section:not([data-r~="pr"]),
+body[data-role="ops"] section:not([data-r~="ops"]),
+body[data-role="cs"] section:not([data-r~="cs"]){display:none;}
+body[data-role="pr"] nav.rail a:not([data-r~="pr"]),
+body[data-role="ops"] nav.rail a:not([data-r~="ops"]),
+body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
+
 @media(max-width:960px){
   .shell{flex-direction:column;gap:0;padding-inline:18px;}
-  nav.rail{position:static;width:100%;min-width:0;max-height:none;padding:20px 0 4px;
-    border-bottom:1px solid var(--line);margin-bottom:8px;}
+  nav.rail{position:static;width:100%;min-width:0;max-height:none;padding:20px 0 4px;border-bottom:1px solid var(--line);margin-bottom:8px;}
   .rail-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;}
   main{padding-top:20px;}
 }
@@ -277,13 +200,12 @@ footer{
   .arm-body dl{grid-template-columns:1fr;gap:2px;}
   .arm-body dd{margin-bottom:8px;}
 }
-
-/* ============ PRINT ============ */
 @media print{
-  #gate,.topbar,nav.rail,.tb-btn{display:none !important;}
-  body{background:#fff;font-size:11.5pt;}
+  #gate,.topbar,nav.rail,.tb-btn,.roles{display:none !important;}
+  body{background:#fff;font-size:12.5pt;line-height:1.75;}
+  body[data-role] section{display:block !important;}
   .shell{display:block;padding:0;max-width:none;}
-  .card,.tw,.arm,.gloss{box-shadow:none;break-inside:avoid;}
+  .card,.tw,.arm,.gloss,.brief{box-shadow:none;break-inside:avoid;}
   section{break-inside:avoid-page;margin-bottom:28px;}
   .qa{border:none;}
   .qa-body{display:block !important;}
@@ -293,7 +215,6 @@ footer{
 </head>
 <body>
 
-<!-- ══════════ GATE ══════════ -->
 <div id="gate">
   <div class="gate-box">
     <div class="gate-mark">تمكين</div>
@@ -305,7 +226,6 @@ footer{
   </div>
 </div>
 
-<!-- ══════════ TOP BAR ══════════ -->
 <div class="topbar">
   <div class="topbar-inner">
     <div class="tb-mark">
@@ -314,7 +234,7 @@ footer{
     </div>
     <div class="searchwrap">
       <input id="q" type="search" placeholder="ابحث في الدليل…" oninput="filterDoc(this.value)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7A6060" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#634949" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </div>
     <button class="tb-btn" onclick="window.print()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -325,82 +245,144 @@ footer{
 
 <div class="shell">
 
-<!-- ══════════ NAV ══════════ -->
 <nav class="rail">
   <div class="rail-cols">
     <div>
       <div class="rail-head">الأساس</div>
-      <a href="#s1"><b>١</b>من نحن</a>
-      <a href="#s2"><b>٢</b>الاعتمادات</a>
-      <a href="#s3"><b>٣</b>الذراعان</a>
+      <a href="#s1" data-r="pr ops cs"><b>١</b>من نحن</a>
+      <a href="#s2" data-r="pr ops cs"><b>٢</b>الاعتمادات</a>
+      <a href="#s3" data-r="pr ops cs"><b>٣</b>الذراعان</a>
+      <a href="#s4" data-r="pr ops cs"><b>٤</b>خريطة خدماتنا</a>
+    </div>
+    <div>
+      <div class="rail-head">الجهات</div>
+      <a href="#s5" data-r="pr ops"><b>٥</b>التدريب للجهات</a>
+      <a href="#s6" data-r="pr ops"><b>٦</b>تحليل الاحتياج</a>
+      <a href="#s7" data-r="pr ops"><b>٧</b>دورة عرض السعر</a>
     </div>
     <div>
       <div class="rail-head">تمكين</div>
-      <a href="#s4"><b>٤</b>العضوية والأسعار</a>
-      <a href="#s5"><b>٥</b>المزايا الـ١٤</a>
-      <a href="#s6"><b>٦</b>رحلة العضو</a>
-      <a href="#s7"><b>٧</b>حجز الدورات</a>
-      <a href="#s8"><b>٨</b>الشهادات</a>
-      <a href="#s9"><b>٩</b>الترشيحات الحكومية</a>
-      <a href="#s10"><b>١٠</b>الاستشارات</a>
-      <a href="#s11"><b>١١</b>دورة مدرب معتمد</a>
+      <a href="#s8" data-r="pr ops cs"><b>٨</b>العضوية والأسعار</a>
+      <a href="#s9" data-r="pr ops cs"><b>٩</b>المزايا الـ١٤</a>
+      <a href="#s10" data-r="ops cs"><b>١٠</b>رحلة العضو</a>
+      <a href="#s11" data-r="ops"><b>١١</b>حجز الدورات</a>
+      <a href="#s12" data-r="ops cs"><b>١٢</b>الشهادات</a>
+      <a href="#s13" data-r="pr ops"><b>١٣</b>الترشيحات الحكومية</a>
+      <a href="#s14" data-r="ops cs"><b>١٤</b>الاستشارات</a>
+      <a href="#s15" data-r="pr ops cs"><b>١٥</b>دورة مدرب معتمد</a>
     </div>
     <div>
       <div class="rail-head">مسار</div>
-      <a href="#s12"><b>١٢</b>الدورة المجانية</a>
-      <a href="#s13"><b>١٣</b>الاشتراكات</a>
-      <a href="#s14"><b>١٤</b>الباقات الاحترافية</a>
-      <a href="#s15"><b>١٥</b>شهادات مسار</a>
+      <a href="#s16" data-r="ops cs"><b>١٦</b>الدورة المجانية</a>
+      <a href="#s17" data-r="cs"><b>١٧</b>الاشتراكات</a>
+      <a href="#s18" data-r="cs"><b>١٨</b>الباقات</a>
+      <a href="#s19" data-r="ops cs"><b>١٩</b>شهادات مسار</a>
     </div>
     <div>
       <div class="rail-head">التشغيل</div>
-      <a href="#s16"><b>١٦</b>لوحات العمل</a>
-      <a href="#s17"><b>١٧</b>الحضور</a>
-      <a href="#s18"><b>١٨</b>المتابعة والمبيعات</a>
-      <a href="#s19"><b>١٩</b>روتين الموظف</a>
-      <a href="#s20"><b>٢٠</b>ردود جاهزة</a>
-      <a href="#s21"><b>٢١</b>مصطلحات</a>
+      <a href="#s20" data-r="pr ops cs"><b>٢٠</b>لوحات العمل</a>
+      <a href="#s21" data-r="ops cs"><b>٢١</b>الحضور والقاعة</a>
+      <a href="#s22" data-r="pr cs"><b>٢٢</b>المتابعة والمبيعات</a>
+      <a href="#s23" data-r="pr ops cs"><b>٢٣</b>روتين كل دور</a>
+      <a href="#s24" data-r="pr cs"><b>٢٤</b>ردود جاهزة</a>
+      <a href="#s25" data-r="pr ops cs"><b>٢٥</b>مصطلحات</a>
     </div>
   </div>
 </nav>
 
-<!-- ══════════ CONTENT ══════════ -->
 <main id="doc">
 
 <div class="hero">
   <div class="hero-eyebrow">مستند داخلي</div>
   <h1>كل شي تحتاج تعرفه عن تمكين ومسار</h1>
-  <p>هذا الدليل يشرح لك شنو نسوي بالضبط، منو عميلنا، شنو نبيع، وشلون تمشي كل عملية من أول تواصل حتى إصدار الشهادة. اقرأه كامل مرة، وبعدها ارجع له كمرجع سريع أول ما يجيك سؤال ما تعرف جوابه.</p>
-  <div class="hero-meta">
-    <span class="chip">كيان واحد · ذراعان</span>
-    <span class="chip">٥ جهات اعتماد رسمية</span>
-    <span class="chip">tamkeenkuw.com</span>
+  <p>اقرأه كامل مرة وحدة، وبعدها ارجع له كمرجع سريع أول ما يجيك سؤال ما تعرف جوابه. اختر دورك تحت وبيختصر لك الدليل على اللي يخصك بالضبط.</p>
+</div>
+
+<div class="roles">
+  <div class="roles-t">اختر دورك</div>
+  <div class="role-grid">
+    <button class="role-btn" data-role="pr" onclick="setRole('pr')">
+      <div class="rb-n">العلاقات العامة</div>
+      <div class="rb-d">الجهات · المخاطبات · الترشيحات · عروض الأسعار</div>
+    </button>
+    <button class="role-btn" data-role="ops" onclick="setRole('ops')">
+      <div class="rb-n">منسق العمليات</div>
+      <div class="rb-d">المدربون · الجداول · الأعضاء الجدد · القاعة</div>
+    </button>
+    <button class="role-btn" data-role="cs" onclick="setRole('cs')">
+      <div class="rb-n">خدمة العملاء والمبيعات</div>
+      <div class="rb-d">الاستفسارات · التسجيل · الدفع · التجديد</div>
+    </button>
   </div>
+  <button class="role-reset" onclick="setRole('')">عرض الدليل كامل ↺</button>
+</div>
+
+<!-- BRIEFS -->
+<div class="brief" id="brief-pr">
+  <h3>مسار العلاقات العامة</h3>
+  <div class="brief-sub">مهمتك تفتح أبواب الجهات وتحوّلها لتعاقدات. أنت واجهة تمكين أمام الوزارات والمؤسسات، وكل كلمة تكتبها تمثّل المعهد.</div>
+  <div class="brief-h">شغلك اليومي</div>
+  <ol>
+    <li>تحديد الجهات المستهدفة ومن هو المسؤول عن التدريب فيها</li>
+    <li>المخاطبة الأولى: تعريف بتمكين واعتماداته وخدماته للجهات</li>
+    <li>ترتيب اجتماع أو زيارة لجمع احتياج الجهة التدريبي</li>
+    <li>متابعة الترشيحات المرسلة والرد عليها</li>
+    <li>طلب إعداد عرض السعر من الإدارة بعد اكتمال الاحتياج</li>
+    <li>تسجيل كل تواصل: الجهة، الشخص، التاريخ، النتيجة، الخطوة القادمة</li>
+  </ol>
+  <div class="rule"><b>القاعدة اللي ما تنكسر:</b> ما تعطي الجهة رقماً ولا سعراً ولا وعداً بموعد تنفيذ. السعر يخرج من عرض سعر رسمي معتمد من الإدارة فقط — راجع القسم ٧.</div>
+</div>
+
+<div class="brief" id="brief-ops">
+  <h3>مسار منسق العمليات</h3>
+  <div class="brief-sub">أنت القلب اللي يخلي كل شي يمشي: المدربون، الجداول، القاعة، والأعضاء الجدد. أي تأخير عندك يوقف سلسلة كاملة وراك.</div>
+  <div class="brief-h">شغلك اليومي</div>
+  <ol>
+    <li>متابعة المدربين: طلبات الحجز، المواد المرفوعة، والمواعيد</li>
+    <li>بناء وتحديث الجدول التدريبي، وتجهيز بوسترات الجدول للنشر</li>
+    <li>استقبال الأعضاء الجدد: ترحيب، شرح المزايا، تفعيل، وتوقيع العقد</li>
+    <li>التواصل الدوري مع الأعضاء والتأكد إنهم يستفيدون من مزاياهم</li>
+    <li>تنظيم القاعة: الحجز، التجهيز، الضيافة، والتأكد من الجاهزية قبل الموعد</li>
+    <li>تسجيل الحضور بعد كل جلسة ثم فتح التقييم وإصدار الشهادات</li>
+  </ol>
+  <div class="rule"><b>القاعدة اللي ما تنكسر:</b> ما تعتمد دورة قبل مراجعة مادتها، وما تصدر شهادة قبل تسجيل الحضور. الاعتماد ينزل على محتوى — مو على عنوان.</div>
+</div>
+
+<div class="brief" id="brief-cs">
+  <h3>مسار خدمة العملاء والمبيعات</h3>
+  <div class="brief-sub">أنت أول صوت يسمعه العميل. سرعتك في الرد ودقتك في المعلومة هي اللي تحوّل المستفسر إلى مشترك.</div>
+  <div class="brief-h">شغلك اليومي</div>
+  <ol>
+    <li>الرد على استفسارات الواتساب والإنستقرام — لا تترك رسالة بلا رد يوم كامل</li>
+    <li>تسجيل كل مستفسر في المتابعة مع مصدره ونتيجة التواصل</li>
+    <li>متابعة حالات الدفع وتحديثها لحظة التأكد</li>
+    <li>متابعة «يفكر» و«تواصل لاحقاً» ورجوع لهم في موعدهم</li>
+    <li>تذكير المسجلين قبل الدورة والتأكد إن الروابط وصلتهم</li>
+    <li>الاشتراكات والعضويات اللي قربت تنتهي — قائمة التجديد اليومية</li>
+  </ol>
+  <div class="rule"><b>القاعدة اللي ما تنكسر:</b> راجع الصفحة المحدّثة قبل ما تعطي سعراً أو موعداً، ولا ترسل رابط زووم لغير مسجَّل.</div>
 </div>
 
 <!-- ═══ 1 ═══ -->
-<section id="s1">
+<section id="s1" data-r="pr ops cs">
   <div class="s-num">١</div>
   <h2>من نحن</h2>
   <p class="s-lede">شركة واحدة، وذراعان مختلفتان بجمهورين مختلفين. أول شي لازم تفهمه هو هذا الفرق.</p>
-
   <div class="card">
     <p><strong>الكيان القانوني:</strong> شركة إيديوكلاود لخدمات الاستشارات التعليمية — الكويت. هذا الاسم اللي يظهر في التراخيص والعقود والمخاطبات الرسمية.</p>
-    <p><strong>العلامة التجارية:</strong> <span class="hl">معهد تمكين</span> — وهو الاسم اللي يعرفه السوق، والجهة المانحة للاعتماد والشهادات.</p>
+    <p><strong>العلامة التجارية:</strong> <span class="hl">معهد تمكين</span> — الاسم اللي يعرفه السوق، والجهة المانحة للاعتماد والشهادات.</p>
     <p style="margin-bottom:0"><strong>الذراع الأكاديمية:</strong> <span class="hl">أكاديمية مسار</span> — تشتغل تحت مظلة تمكين، وشهاداتها صادرة من تمكين.</p>
   </div>
-
   <h3>الفكرة في سطرين</h3>
-  <p><strong>تمكين</strong> يخدم <em>المدرب</em>: يعطيه اعتماد رسمي، مظلة يشتغل تحتها، شهادات يصدرها لمتدربينه، وفرص وترشيحات. المنتج الأساسي هنا هو <strong>العضوية السنوية</strong>.</p>
-  <p style="margin-bottom:0"><strong>مسار</strong> تخدم <em>المتدرب النهائي</em> — بالأساس المعلمين في الكويت وموظفي القطاعين: دورات مجانية أسبوعية، اشتراكات شهرية وسنوية، وباقات احترافية مدفوعة بشهادات معتمدة.</p>
+  <p><strong>تمكين</strong> يخدم <em>المدرب</em> و<em>الجهة</em>: اعتماد رسمي ومظلة يشتغل تحتها المدرب، وبرامج تدريبية وخطط سنوية للجهات والمؤسسات.</p>
+  <p style="margin-bottom:0"><strong>مسار</strong> تخدم <em>المتدرب النهائي</em> — بالأساس المعلمين وموظفي القطاعين: دورات مجانية، اشتراكات، وباقات احترافية بشهادات معتمدة.</p>
 </section>
 
 <!-- ═══ 2 ═══ -->
-<section id="s2">
+<section id="s2" data-r="pr ops cs">
   <div class="s-num">٢</div>
   <h2>الاعتمادات الرسمية</h2>
-  <p class="s-lede">هذي أقوى ورقة عندنا في السوق. لازم تحفظها وتقولها للعميل بثقة وبدون مبالغة.</p>
-
+  <p class="s-lede">أقوى ورقة عندنا في السوق. احفظها وقلها للعميل بثقة وبدون مبالغة.</p>
   <div class="tw">
     <table>
       <thead><tr><th>الجهة</th><th>معنى الاعتماد عملياً</th></tr></thead>
@@ -413,204 +395,340 @@ footer{
       </tbody>
     </table>
   </div>
-
   <div class="note warn">
     <div class="note-t">لا تتجاوز هذا الحد</div>
-    <p>قول «معتمد ومسجل لدى…» — ولا تقول «مُعترف به دولياً» أو «معادلة جامعية» أو أي شي غير مكتوب فوق. أي وعد زايد يرجع علينا مشكلة، والعميل يكتشفه.</p>
+    <p>قول «معتمد ومسجل لدى…» — ولا تقول «معترف به دولياً» أو «معادلة جامعية» أو أي شي غير مكتوب فوق. أي وعد زايد يرجع علينا مشكلة، والجهة تكتشفه بسهولة.</p>
   </div>
 </section>
 
 <!-- ═══ 3 ═══ -->
-<section id="s3">
+<section id="s3" data-r="pr ops cs">
   <div class="s-num">٣</div>
   <h2>الذراعان — الفرق بينهم</h2>
-  <p class="s-lede">أكثر خطأ يصير من الموظف الجديد: يعرض منتج مسار على مدرب، أو يعرض عضوية تمكين على معلم يبي دورة. راجع هذا الجدول قبل أي عرض.</p>
-
+  <p class="s-lede">أكثر خطأ يصير من الموظف الجديد: يعرض منتج مسار على مدرب، أو يعرض عضوية تمكين على معلم يبي دورة.</p>
   <div class="grid2">
     <div class="arm">
-      <div class="arm-top"><div class="arm-name">معهد تمكين</div><div class="arm-role">للمدربين وأصحاب المهنة</div></div>
-      <div class="arm-body">
-        <dl>
-          <dt>العميل</dt><dd>مدرب، مستشار، صاحب دورة</dd>
-          <dt>المنتج</dt><dd>عضوية سنوية + خدمات مصاحبة</dd>
-          <dt>وجعه</dt><dd>ما عنده اعتماد، ما يقدر يصدر شهادات، ما يوصل لجهات</dd>
-          <dt>القرار</dt><dd>يحتاج إقناع ومكالمة — سعره أعلى</dd>
-        </dl>
-      </div>
+      <div class="arm-top"><div class="arm-name">معهد تمكين</div><div class="arm-role">للمدربين والجهات</div></div>
+      <div class="arm-body"><dl>
+        <dt>العميل</dt><dd>مدرب، مستشار، وزارة، مؤسسة</dd>
+        <dt>المنتج</dt><dd>عضوية سنوية · برامج للجهات · خطط تدريبية</dd>
+        <dt>وجعه</dt><dd>ما عنده اعتماد، أو ما عنده خطة تدريب لموظفيه</dd>
+        <dt>القرار</dt><dd>يحتاج اجتماع وعرض سعر — دورة بيع أطول</dd>
+      </dl></div>
     </div>
     <div class="arm">
       <div class="arm-top alt"><div class="arm-name">أكاديمية مسار</div><div class="arm-role">للمعلمين والموظفين</div></div>
-      <div class="arm-body">
-        <dl>
-          <dt>العميل</dt><dd>معلم، موظف، أي شخص يبي يتطور</dd>
-          <dt>المنتج</dt><dd>دورات مجانية · اشتراكات · باقات · شهادات</dd>
-          <dt>وجعه</dt><dd>يبي شهادة تنفعه بالترقية وتطوير مهاراته</dd>
-          <dt>القرار</dt><dd>سريع وسهل — الدخول مجاني والقيمة تبيّن بسرعة</dd>
-        </dl>
-      </div>
+      <div class="arm-body"><dl>
+        <dt>العميل</dt><dd>معلم، موظف، أي شخص يبي يتطور</dd>
+        <dt>المنتج</dt><dd>دورات مجانية · اشتراكات · باقات · شهادات</dd>
+        <dt>وجعه</dt><dd>يبي شهادة تنفعه بالترقية وتطوّر مهاراته</dd>
+        <dt>القرار</dt><dd>سريع وسهل — الدخول مجاني والقيمة تبيّن بسرعة</dd>
+      </dl></div>
     </div>
   </div>
-
   <div class="note ok">
     <div class="note-t">قاعدة التحويل</div>
-    <p>مسار هي <strong>باب الدخول</strong>. كل معلم في دورة مجانية هو عميل محتمل لاشتراك أو باقة. وكل مشترك يطلع مدرب أو يبي يدرّب — يتحول لعضوية تمكين. الاثنين يغذّون بعض، فلا تشتغل على واحد وتنسى الثاني.</p>
+    <p>مسار هي <strong>باب الدخول</strong>. كل معلم في دورة مجانية هو عميل محتمل لاشتراك أو باقة، وكل مشترك يبي يدرّب يتحول لعضوية تمكين. وكل موظف في جهة تعاقدنا معها هو باب لعقد أكبر السنة الجاية.</p>
   </div>
 </section>
 
 <!-- ═══ 4 ═══ -->
-<section id="s4">
+<section id="s4" data-r="pr ops cs">
   <div class="s-num">٤</div>
-  <h2>عضوية تمكين والأسعار</h2>
-  <p class="s-lede">المنتج الرئيسي لتمكين. باقتان، ومدة الاثنتين سنة كاملة.</p>
+  <h2>خريطة خدماتنا — شنو نبيع بالضبط</h2>
+  <p class="s-lede">هذي أهم صفحة في الدليل. لو ما تعرف شنو نقدّم، بترفض فرصة أو توعد بشي ما نسويه.</p>
 
+  <h3>أولاً: خدمات الجهات والمؤسسات</h3>
   <div class="tw">
     <table>
-      <thead><tr><th>الباقة</th><th>السعر</th><th>المدة</th><th>عدد المزايا</th><th>لمن</th></tr></thead>
+      <thead><tr><th>الخدمة</th><th>وش تعني</th><th>التسعير</th></tr></thead>
       <tbody>
-        <tr><td><strong>عضوية المبتدئين</strong></td><td class="num">٦٥ د.ك</td><td>١٢ شهر</td><td>٨ مزايا</td><td>مدرب يبي الاعتماد بس ويبدأ صح</td></tr>
-        <tr><td><strong>عضوية الممارسين</strong></td><td class="num">١٣٠ د.ك</td><td>١٢ شهر</td><td>١٤ ميزة</td><td>مدرب جاد يبني مسيرته ويبي قاعات وترشيحات</td></tr>
+        <tr><td><strong>تنفيذ برامج تدريبية للجهة</strong></td><td>دورات وبرامج تُنفَّذ لموظفي الجهة بمدربين معتمدين، مع شهادات معتمدة للمشاركين</td><td>عرض سعر</td></tr>
+        <tr><td><strong>تحليل الاحتياج التدريبي وبناء الخطة السنوية</strong></td><td>نقيس فجوة المهارات في الجهة ونبني لها خطة تدريب سنوية كاملة</td><td>عرض سعر</td></tr>
       </tbody>
     </table>
   </div>
-
-  <h3>رسوم منفصلة عن العضوية</h3>
-  <ul>
-    <li><strong>إصدار شهادة للمتدرب:</strong> <span class="hl">١٠ د.ك للشهادة</span> — تُدفع عند الطلب، مو داخلة في سعر العضوية.</li>
-    <li><strong>القاعة التدريبية</strong> (لعضوية الممارسين): مرة كاملة كل شهر، بشرط عدد المشتركين <strong>لا يقل عن ١٠</strong>. أقل من ١٠ = ما تنطبق الميزة.</li>
-    <li><strong>التصوير الاحترافي</strong> (لعضوية الممارسين): <strong>لدورة واحدة</strong> — مو مفتوح.</li>
-  </ul>
-
-  <h3>نظام الإحالة</h3>
-  <div class="card card-dark">
-    <p style="margin-bottom:0">العضو عنده رابط دعوة خاص. كل شخص جديد يشترك عن طريق رابطه ويدفع فعلياً = <strong>٢٠ د.ك مكافأة</strong> للعضو الداعي. المكافأة تُستحق <strong>بعد تأكيد الدفع فقط</strong> — لا تحسب المسجل غير المدفوع.</p>
+  <div class="note warn">
+    <div class="note-t">التسعير للجهات</div>
+    <p>ما عندنا سعر معلن ولا قائمة أسعار للجهات. <strong>كل جهة لها عرض سعر خاص يُبنى بعد تحديد احتياجها</strong> — عدد المتدربين، عدد الأيام، مكان التنفيذ، ونوع البرنامج. لا تعطي رقماً تقريبياً ولو ألح عليك، وقول: «أرتّب لك عرض سعر رسمي بعد ما نحدد احتياجكم».</p>
   </div>
 
-  <h3>التجديد</h3>
-  <p style="margin-bottom:0">العضوية سنة، وينتهي تاريخها في سجل الأعضاء. قبل انتهاء العضوية بشهر تتواصل مع العضو للتجديد — التجديد له رابط خاص يفتح بياناته جاهزة، ما يعيد التسجيل من الصفر.</p>
+  <h3>ثانياً: خدمات الأفراد</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>الخدمة</th><th>لمن</th><th>السعر</th></tr></thead>
+      <tbody>
+        <tr><td>عضوية تمكين — مبتدئين</td><td>مدرب يبي اعتماد</td><td class="num">٦٥ د.ك / سنة</td></tr>
+        <tr><td>عضوية تمكين — ممارسين</td><td>مدرب جاد يبني مسيرته</td><td class="num">١٣٠ د.ك / سنة</td></tr>
+        <tr><td>إصدار شهادة لمتدربي العضو</td><td>أعضاء تمكين</td><td class="num">١٠ د.ك / شهادة</td></tr>
+        <tr><td>دورة مدرب معتمد</td><td>من يبي يصير مدرباً</td><td>حسب الباقة</td></tr>
+        <tr><td>دورات مسار المجانية</td><td>المعلمون والجمهور</td><td class="num">مجاناً</td></tr>
+        <tr><td>شهادة الدورة المجانية</td><td>من حضر وطلبها</td><td class="num">١٥ د.ك</td></tr>
+        <tr><td>اشتراك مسار — شهري</td><td>يبي يجرب</td><td class="num">١٥ د.ك</td></tr>
+        <tr><td>اشتراك مسار — ٦ أشهر</td><td>الأكثر توازناً</td><td class="num">٤٠ د.ك</td></tr>
+        <tr><td>اشتراك مسار — سنوي</td><td>المعلم الجاد</td><td class="num">٧٠ د.ك</td></tr>
+        <tr><td>باقة الذكاء الاصطناعي</td><td>المعلمون</td><td class="num">٤٥ د.ك</td></tr>
+        <tr><td>باقة فن الإدارة وتمكين القيادي</td><td>للجميع</td><td class="num">٤٥ د.ك</td></tr>
+        <tr><td>الاستشارات</td><td>أعضاء تمكين وجمهور المدربين</td><td>حسب الحالة</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <div class="note-t">قبل ما تعطي رقماً</div>
+    <p>أسعار الأفراد فوق ثابتة ومعلنة على الموقع. أما <strong>دورة مدرب معتمد</strong> فأسعار باقاتها ومواعيد دفعاتها تتغيّر — ارجع لصفحة الدورة المحدّثة قبل ما تقول رقماً أو تاريخاً.</p>
+  </div>
 </section>
 
 <!-- ═══ 5 ═══ -->
-<section id="s5">
+<section id="s5" data-r="pr ops">
   <div class="s-num">٥</div>
-  <h2>المزايا الـ١٤ — منو ياخذ شنو</h2>
-  <p class="s-lede">احفظ هذا الجدول. أكثر سؤال بيجيك من المدرب: «شنو الفرق بين الباقتين؟» — الجواب هو الست مزايا الأخيرة.</p>
+  <h2>التدريب للجهات</h2>
+  <p class="s-lede">أكبر عقودنا تجي من هنا. الفرق بين موظف علاقات عامة ناجح وغيره هو كم جهة حوّلها من «شكراً سنتواصل» إلى تعاقد.</p>
 
-  <div class="tw">
-    <table>
-      <thead><tr><th>#</th><th>الميزة</th><th>الشرح للعميل</th><th>مبتدئين</th><th>ممارسين</th></tr></thead>
-      <tbody>
-        <tr><td class="num">١</td><td>اعتماد تدريبي رسمي</td><td>دوراته تصير معتمدة تحت مظلة تمكين من اليوم الأول</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٢</td><td>إصدار شهادات باسمه</td><td>يصدر شهادات لمتدربينه باسمه وتحت مظلة تمكين — ١٠ د.ك للشهادة</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٣</td><td>جلسات تطوير مستمرة</td><td>جلسات دورية ترفع كفاءته وتواكب أحدث أساليب التدريب</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٤</td><td>مجتمع مدربي تمكين</td><td>ينضم لنخبة من المدربين الكويتيين — تعاون وفرص ودعم متبادل</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٥</td><td>طباعة احترافية مخفضة</td><td>طباعة المذكرات والنماذج بأسعار مخفضة للأعضاء</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٦</td><td>اسمه في قائمة مدربي تمكين</td><td>اعتماد رسمي ضمن قائمة المدربين المعتمدين</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٧</td><td>شعار تمكين على دوراته</td><td>مصداقية فورية عند جمهوره</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٨</td><td>دعم شخصي مستمر</td><td>فريق تمكين يدعمه في كل خطوة</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td class="num">٩</td><td>قاعة تدريبية مجهزة</td><td>مرة كاملة كل شهر — بشرط ١٠ مشتركين أو أكثر</td><td class="no">—</td><td class="yes">✓</td></tr>
-        <tr><td class="num">١٠</td><td>خطة تدريبية متكاملة</td><td>خطة مخصصة حسب تخصصه وأهدافه</td><td class="no">—</td><td class="yes">✓</td></tr>
-        <tr><td class="num">١١</td><td>خطة تسويقية شخصية</td><td>نساعده يبني علامته التدريبية ويوصل لجمهوره</td><td class="no">—</td><td class="yes">✓</td></tr>
-        <tr><td class="num">١٢</td><td>تصوير احترافي</td><td>تصوير دورته ومحتواه التسويقي — لدورة واحدة</td><td class="no">—</td><td class="yes">✓</td></tr>
-        <tr><td class="num">١٣</td><td>ترشيح للجهات والمؤسسات</td><td>نرشحه للجهات اللي تبحث عن مدربين</td><td class="no">—</td><td class="yes">✓</td></tr>
-        <tr><td class="num">١٤</td><td>إعداد وتطوير الحقيبة التدريبية</td><td>نساعده يجهّز حقيبة احترافية جاهزة للتقديم</td><td class="no">—</td><td class="yes">✓</td></tr>
-      </tbody>
-    </table>
+  <h3>شنو نقدّم للجهة بالضبط</h3>
+  <ul>
+    <li><strong>برامج تدريبية داخل الجهة أو في قاعاتنا</strong> — تُنفَّذ بمدربين معتمدين من قائمة مدربي تمكين، ونختار المدرب حسب تخصص البرنامج.</li>
+    <li><strong>محتوى مبني على احتياج الجهة</strong> — مو دورة جاهزة من الرف. المحاور تُصاغ بعد فهم وضعهم.</li>
+    <li><strong>شهادات معتمدة</strong> لكل مشارك — بمظلة تمكين واعتماداته الرسمية.</li>
+    <li><strong>تقرير ختامي</strong> عن التنفيذ ونتائج التقييم يُسلَّم للجهة.</li>
+  </ul>
+
+  <h3>الأسئلة اللي تسألها الجهة أول اجتماع</h3>
+  <div class="card">
+    <ol style="margin-bottom:0">
+      <li>كم عدد الموظفين المستهدفين؟ وشنو مستوياتهم الوظيفية؟</li>
+      <li>وش المشكلة أو الفجوة اللي تبون التدريب يحلّها؟</li>
+      <li>عندكم خطة تدريب سنوية معتمدة؟ ولا كل دورة على حدة؟</li>
+      <li>التنفيذ عندكم في مقركم ولا عندنا؟ حضوري ولا أونلاين؟</li>
+      <li>الفترة المناسبة للتنفيذ، والمدة اللي تتحملونها لكل برنامج؟</li>
+      <li>الميزانية معتمدة ولا تحتاج موافقة؟ ومنو صاحب القرار النهائي؟</li>
+      <li>التعاقد عن طريق أمر شراء مباشر ولا مناقصة؟</li>
+    </ol>
+  </div>
+  <div class="note ok">
+    <div class="note-t">ليش هذي الأسئلة مهمة</div>
+    <p>إجاباتها هي <strong>مدخلات عرض السعر</strong>. بدونها الإدارة ما تقدر تسعّر، ورجوعك للجهة مرة ثانية تسأل يضعف موقفك. اجمعها كلها من أول اجتماع واكتبها.</p>
   </div>
 </section>
 
 <!-- ═══ 6 ═══ -->
-<section id="s6">
+<section id="s6" data-r="pr ops">
   <div class="s-num">٦</div>
-  <h2>رحلة العضو — من أول تواصل للتجديد</h2>
-  <p class="s-lede">هذي أهم عملية في تمكين. لازم تعرف مكانك في كل خطوة، ومنو المسؤول.</p>
+  <h2>تحليل الاحتياج والخطة السنوية</h2>
+  <p class="s-lede">هذي خدمتنا الأذكى — ولها ميزة كبيرة: الجهة اللي نبني لها خطة سنوية تصير عميل لسنة كاملة مو لدورة وحدة.</p>
 
+  <h3>شنو تعني الخدمة</h3>
+  <p>نقيس الفجوة بين <strong>الأداء الحالي</strong> لموظفي الجهة و<strong>الأداء المطلوب</strong> منهم، ونحوّل هذي الفجوة إلى خطة تدريب سنوية مرتّبة بالأولوية وموزّعة على شهور السنة.</p>
+
+  <h3>شلون نسويها</h3>
   <div class="flow">
     <div class="step" data-n="١">
-      <div class="step-t">تواصل أو تسجيل<span class="step-who">الموظف</span></div>
-      <div class="step-d">يجي من الموقع، إنستقرام، أو واتساب. لو جاك بالواتساب، أضفه في متابعة العملاء فوراً حتى لو ما اشترك — لا تعتمد على ذاكرتك.</div>
+      <div class="step-t">اجتماع مع الإدارة</div>
+      <div class="step-d">نفهم أهداف الجهة، مشاكلها المتكررة، وتوجهها للسنة القادمة.</div>
     </div>
     <div class="step" data-n="٢">
-      <div class="step-t">اختيار الباقة والدفع<span class="step-who">العضو</span></div>
-      <div class="step-d">يعبّي الفورم على الموقع ويختار مبتدئين أو ممارسين، والدفع إلكتروني مباشر عبر بوابة الدفع. لا تستلم كاش ولا تحويل شخصي بدون علم الإدارة.</div>
+      <div class="step-t">جمع البيانات</div>
+      <div class="step-d">استبيان للموظفين، مراجعة التوصيف الوظيفي، ونتائج تقييم الأداء إن وُجدت.</div>
     </div>
     <div class="step" data-n="٣">
-      <div class="step-t">صدور رقم العضوية<span class="step-who">النظام</span></div>
-      <div class="step-d">بعد نجاح الدفع يُسجَّل العضو ويصدر له رقم عضوية وتاريخ بداية وانتهاء. رقم العضوية هو مفتاحه في كل الأنظمة بعدها — الحجز، الشهادات، الترشيحات، الاستشارات.</div>
+      <div class="step-t">تحليل الفجوة</div>
+      <div class="step-d">نحدد المهارات الناقصة فعلاً، ونفرز: شنو يُحل بالتدريب وشنو مشكلة إدارية مو تدريبية.</div>
     </div>
     <div class="step" data-n="٤">
-      <div class="step-t">توقيع العقد<span class="step-who">العضو + الإدارة</span></div>
-      <div class="step-d">العضو يوقّع عقد العضوية إلكترونياً. عضوية بلا عقد موقّع = ملف ناقص، وتنبّه عليه قبل تسليم أي خدمة.</div>
+      <div class="step-t">ترتيب الأولويات</div>
+      <div class="step-d">مو كل فجوة تتعالج هالسنة. نرتّب حسب الأثر على العمل وحسب ميزانية الجهة.</div>
     </div>
     <div class="step" data-n="٥">
-      <div class="step-t">التفعيل والترحيب<span class="step-who">الموظف</span></div>
-      <div class="step-d">رسالة ترحيب فيها: رقم عضويته، رابط حجز الدورات، شرح رسوم الشهادة، ورابط الدعوة الخاص به لمكافأة الإحالة.</div>
+      <div class="step-t">بناء الخطة السنوية</div>
+      <div class="step-d">برامج موزّعة على الشهور، لكل برنامج: الفئة المستهدفة، الأهداف، المدة، والمخرجات المتوقعة.</div>
     </div>
     <div class="step" data-n="٦">
-      <div class="step-t">استخدام المزايا<span class="step-who">العضو</span></div>
-      <div class="step-d">يحجز دورات، يطلب شهادات، يقدّم على الترشيحات الحكومية، يحضر جلسات التطوير، ويطلب استشارة.</div>
+      <div class="step-t">التسليم والعرض</div>
+      <div class="step-d">تقرير مكتوب + عرض تقديمي للإدارة، ومعه عرض سعر لتنفيذ برامج الخطة.</div>
     </div>
-    <div class="step" data-n="٧">
-      <div class="step-t">المتابعة الدورية<span class="step-who">الموظف</span></div>
-      <div class="step-d">العضو الصامت هو عضو ما بيجدد. تابعه كل فترة: عنده دورة قادمة؟ يحتاج شي؟ استفاد من مزاياه؟</div>
-    </div>
-    <div class="step" data-n="٨">
-      <div class="step-t">التجديد<span class="step-who">الموظف</span></div>
-      <div class="step-d">قبل الانتهاء بشهر، تواصل معه برابط التجديد الخاص. اذكر له وشنو استفاد فعلياً هذي السنة — هذا أقوى من أي عرض سعر.</div>
-    </div>
+  </div>
+
+  <h3>مخرجات نسلّمها للجهة</h3>
+  <ul>
+    <li>تقرير تحليل الاحتياج التدريبي</li>
+    <li>الخطة التدريبية السنوية موزّعة على الشهور</li>
+    <li>وصف مختصر لكل برنامج وفئته المستهدفة</li>
+    <li>مؤشرات قياس أثر التدريب</li>
+  </ul>
+
+  <div class="note">
+    <div class="note-t">جملة تفتح لك الباب</div>
+    <p>«كثير جهات تشتري دورات متفرقة كل سنة بدون ما تقيس إذا كانت تحل مشكلة فعلاً. إحنا نبدأ من تحليل الاحتياج، عشان كل دينار يُصرف على تدريب يكون له أثر تقدرون تقيسونه.»</p>
   </div>
 </section>
 
 <!-- ═══ 7 ═══ -->
-<section id="s7">
+<section id="s7" data-r="pr ops">
   <div class="s-num">٧</div>
-  <h2>حجز الدورات واعتمادها</h2>
-  <p class="s-lede">أي دورة يبي المدرب يقدّمها تحت مظلة تمكين لازم تمر بمسار الاعتماد. ما نعتمد دورة قبل مراجعة مادتها.</p>
+  <h2>دورة عرض السعر — من الطلب للتعاقد</h2>
+  <p class="s-lede">هذا العمود الفقري لتعاملنا مع الجهات. احفظ ترتيب الخطوات، ولا تقفز خطوة.</p>
 
   <div class="flow">
     <div class="step" data-n="١">
-      <div class="step-t">المدرب يقدّم طلب حجز</div>
-      <div class="step-d">يعبّي: رقم العضوية، عنوان الدورة، نوعها، نظامها (حضوري/أونلاين)، التوقيت، تاريخ البداية والنهاية، ومحاور الدورة.</div>
+      <div class="step-t">التواصل الأول<span class="step-who">علاقات عامة</span></div>
+      <div class="step-d">مخاطبة تعريفية أو اتصال. الهدف هنا واحد بس: <strong>تحصل اجتماع</strong> — مو تبيع ولا تسعّر.</div>
     </div>
     <div class="step" data-n="٢">
-      <div class="step-t">رفع المادة التدريبية</div>
-      <div class="step-d">المدرب يرفع الحقيبة أو المذكرة. بدون مادة = ما يُعتمد الطلب، لأن اعتمادنا ينزل على محتوى مو على عنوان.</div>
+      <div class="step-t">اجتماع تحديد الاحتياج<span class="step-who">علاقات عامة</span></div>
+      <div class="step-d">تسأل الأسئلة السبعة في القسم ٥ وتكتب الإجابات. اطلب منهم أي مستند يوضح الفئات والأعداد.</div>
     </div>
     <div class="step" data-n="٣">
-      <div class="step-t">مراجعة الإدارة</div>
-      <div class="step-d">تُراجع من لوحة العمليات: هل المحاور واضحة؟ الأهداف مكتوبة صح؟ المادة تليق باسم تمكين؟ النتيجة: <strong>معتمد</strong> أو <strong>تنبيه</strong> (يحتاج تعديل).</div>
+      <div class="step-t">تحليل الاحتياج وصياغة المقترح<span class="step-who">الإدارة</span></div>
+      <div class="step-d">تُحدَّد البرامج المناسبة، مدة كل برنامج، والمدرب المرشح لتنفيذه.</div>
     </div>
     <div class="step" data-n="٤">
-      <div class="step-t">إشعار تلقائي للمدرب</div>
-      <div class="step-d">أول ما تتغير حالة الطلب في النظام، يوصل المدرب إيميل تلقائي بالنتيجة. فلا تُغيّر الحالة قبل ما تكون متأكد — الرسالة تنطلق فوراً.</div>
+      <div class="step-t">إعداد عرض السعر<span class="step-who">الإدارة</span></div>
+      <div class="step-d">يُولَّد من لوحة العمليات بترويسة تمكين الرسمية: البرامج، المدة، عدد المتدربين، الشهادات، والقيمة الإجمالية ومدة سريان العرض.</div>
     </div>
     <div class="step" data-n="٥">
-      <div class="step-t">التنفيذ والجدول</div>
-      <div class="step-d">الدورة المعتمدة تدخل جدول التدريب، ومنها يتولّد بوستر الجدول والتصاميم للنشر.</div>
+      <div class="step-t">اعتماد الإدارة قبل الإرسال<span class="step-who">الإدارة</span></div>
+      <div class="step-d">ما يخرج عرض من المعهد بدون اعتماد. لا ترسل مسودة ولا سعر مبدئي بالواتساب.</div>
     </div>
     <div class="step" data-n="٦">
-      <div class="step-t">الحضور ثم التقييم ثم الشهادات</div>
-      <div class="step-d">تُسجّل الحضور، يُفتح التقييم للمتدربين، وبعدها تُصدر الشهادات لمن حضر.</div>
+      <div class="step-t">الإرسال والمتابعة<span class="step-who">علاقات عامة</span></div>
+      <div class="step-d">أرسله بخطاب رسمي، وسجّل تاريخ الإرسال. تابع بعد أسبوع، وبعدها كل أسبوع بأسلوب مهذب.</div>
+    </div>
+    <div class="step" data-n="٧">
+      <div class="step-t">التفاوض والتعديل<span class="step-who">علاقات عامة + الإدارة</span></div>
+      <div class="step-d">أي طلب تعديل — في السعر أو المدة أو المحتوى — يرجع للإدارة. <strong>ما تفاوض من عندك.</strong></div>
+    </div>
+    <div class="step" data-n="٨">
+      <div class="step-t">التعاقد وأمر الشراء<span class="step-who">الإدارة</span></div>
+      <div class="step-d">عقد أو أمر شراء موقّع. ما نبدأ تنفيذ بناءً على موافقة شفهية أو رسالة.</div>
+    </div>
+    <div class="step" data-n="٩">
+      <div class="step-t">الجدولة والتنفيذ<span class="step-who">منسق العمليات</span></div>
+      <div class="step-d">هنا ينتقل الملف لمنسق العمليات: تثبيت المواعيد، تكليف المدرب، تجهيز القاعة والمواد.</div>
+    </div>
+    <div class="step" data-n="١٠">
+      <div class="step-t">التنفيذ والتقرير الختامي<span class="step-who">منسق العمليات</span></div>
+      <div class="step-d">حضور، تقييم، شهادات، ثم تقرير ختامي للجهة. هذا التقرير هو اللي يجيب عقد السنة الجاية.</div>
     </div>
   </div>
 
   <div class="note warn">
-    <div class="note-t">حالتان لا يجوز الخلط بينهما</div>
-    <p><strong>معتمد</strong> = المدرب يمشي ويعلن الدورة بشعار تمكين. <strong>تنبيه</strong> = فيه ملاحظة لازم يعدّلها ويرجع يقدّم. لا تقول «معتمد مبدئياً» — ما فيه شي اسمه كذا عندنا.</p>
+    <div class="note-t">ثلاثة أخطاء تكلّفنا عقوداً</div>
+    <ul style="margin-bottom:0">
+      <li>إعطاء سعر تقريبي في الاجتماع — الجهة تتمسك فيه بعدين ولو كان غلط</li>
+      <li>إرسال عرض بدون اعتماد الإدارة</li>
+      <li>البدء بالتنفيذ قبل التعاقد الرسمي</li>
+    </ul>
+  </div>
+
+  <div class="note ok">
+    <div class="note-t">سجّل كل شي</div>
+    <p>لكل جهة: اسم الجهة، اسم مسؤول التدريب ورقمه، تاريخ كل تواصل، حالة الملف (اجتماع / احتياج / عرض مرسل / تفاوض / تعاقد / مرفوض)، والخطوة القادمة بتاريخها. الجهة اللي ما تتابعها ينساها الجميع.</p>
   </div>
 </section>
 
 <!-- ═══ 8 ═══ -->
-<section id="s8">
+<section id="s8" data-r="pr ops cs">
   <div class="s-num">٨</div>
-  <h2>شهادات تمكين للمدربين</h2>
-  <p class="s-lede">هذي ميزة يبيعها المدرب لمتدربينه، فأي خطأ فيها يضرب سمعته وسمعتنا.</p>
+  <h2>عضوية تمكين والأسعار</h2>
+  <p class="s-lede">المنتج الرئيسي لتمكين مع الأفراد. باقتان، ومدة الاثنتين سنة كاملة.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>الباقة</th><th>السعر</th><th>المدة</th><th>المزايا</th><th>لمن</th></tr></thead>
+      <tbody>
+        <tr><td><strong>عضوية المبتدئين</strong></td><td class="num">٦٥ د.ك</td><td>١٢ شهر</td><td>٨ مزايا</td><td>مدرب يبي الاعتماد ويبدأ صح</td></tr>
+        <tr><td><strong>عضوية الممارسين</strong></td><td class="num">١٣٠ د.ك</td><td>١٢ شهر</td><td>١٤ ميزة</td><td>مدرب جاد يبي قاعات وترشيحات</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>رسوم منفصلة عن العضوية</h3>
+  <ul>
+    <li><strong>إصدار شهادة للمتدرب:</strong> <span class="hl">١٠ د.ك للشهادة</span> — تُدفع عند الطلب.</li>
+    <li><strong>القاعة التدريبية</strong> (للممارسين): مرة كاملة كل شهر، بشرط <strong>١٠ مشتركين أو أكثر</strong>.</li>
+    <li><strong>التصوير الاحترافي</strong> (للممارسين): <strong>لدورة واحدة</strong> — مو مفتوح.</li>
+  </ul>
+  <h3>نظام الإحالة</h3>
+  <div class="card card-dark">
+    <p style="margin-bottom:0">العضو عنده رابط دعوة خاص. كل شخص جديد يشترك عن طريق رابطه ويدفع فعلياً = <strong>٢٠ د.ك مكافأة</strong> للعضو الداعي. المكافأة تُستحق <strong>بعد تأكيد الدفع فقط</strong>.</p>
+  </div>
+  <h3>التجديد</h3>
+  <p style="margin-bottom:0">قبل انتهاء العضوية بشهر تواصل مع العضو. التجديد له رابط خاص يفتح بياناته جاهزة بدون تسجيل من الصفر.</p>
+</section>
 
+<!-- ═══ 9 ═══ -->
+<section id="s9" data-r="pr ops cs">
+  <div class="s-num">٩</div>
+  <h2>المزايا الـ١٤ — منو ياخذ شنو</h2>
+  <p class="s-lede">أكثر سؤال بيجيك من المدرب: «شنو الفرق بين الباقتين؟» — الجواب هو الست مزايا الأخيرة.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>#</th><th>الميزة</th><th>الشرح للعميل</th><th>مبتدئين</th><th>ممارسين</th></tr></thead>
+      <tbody>
+        <tr><td class="num">١</td><td>اعتماد تدريبي رسمي</td><td>دوراته معتمدة تحت مظلة تمكين من اليوم الأول</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٢</td><td>إصدار شهادات باسمه</td><td>يصدر شهادات لمتدربينه — ١٠ د.ك للشهادة</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٣</td><td>جلسات تطوير مستمرة</td><td>جلسات دورية ترفع كفاءته وتواكب أحدث الأساليب</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٤</td><td>مجتمع مدربي تمكين</td><td>ينضم لنخبة من المدربين — تعاون وفرص ودعم</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٥</td><td>طباعة احترافية مخفضة</td><td>طباعة المذكرات والنماذج بأسعار مخفضة</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٦</td><td>اسمه في قائمة مدربي تمكين</td><td>اعتماد رسمي ضمن قائمة المدربين المعتمدين</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٧</td><td>شعار تمكين على دوراته</td><td>مصداقية فورية عند جمهوره</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٨</td><td>دعم شخصي مستمر</td><td>فريق تمكين يدعمه في كل خطوة</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="num">٩</td><td>قاعة تدريبية مجهزة</td><td>مرة كاملة كل شهر — بشرط ١٠ مشتركين فأكثر</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td class="num">١٠</td><td>خطة تدريبية متكاملة</td><td>خطة مخصصة حسب تخصصه وأهدافه</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td class="num">١١</td><td>خطة تسويقية شخصية</td><td>يبني علامته التدريبية ويوصل لجمهوره</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td class="num">١٢</td><td>تصوير احترافي</td><td>تصوير دورته ومحتواه — لدورة واحدة</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td class="num">١٣</td><td>ترشيح للجهات والمؤسسات</td><td>نرشحه للجهات اللي تبحث عن مدربين</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><td class="num">١٤</td><td>إعداد الحقيبة التدريبية</td><td>نساعده يجهّز حقيبة احترافية جاهزة</td><td class="no">—</td><td class="yes">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 10 ═══ -->
+<section id="s10" data-r="ops cs">
+  <div class="s-num">١٠</div>
+  <h2>رحلة العضو — من أول تواصل للتجديد</h2>
+  <p class="s-lede">أهم عملية في تمكين. لازم تعرف مكانك في كل خطوة، ومنو المسؤول.</p>
+  <div class="flow">
+    <div class="step" data-n="١"><div class="step-t">تواصل أو تسجيل<span class="step-who">خدمة العملاء</span></div><div class="step-d">يجي من الموقع أو إنستقرام أو واتساب. أضفه في المتابعة فوراً حتى لو ما اشترك.</div></div>
+    <div class="step" data-n="٢"><div class="step-t">اختيار الباقة والدفع<span class="step-who">العضو</span></div><div class="step-d">يعبّي الفورم ويختار الباقة، والدفع إلكتروني مباشر. لا تستلم كاش ولا تحويل شخصي بدون علم الإدارة.</div></div>
+    <div class="step" data-n="٣"><div class="step-t">صدور رقم العضوية<span class="step-who">النظام</span></div><div class="step-d">بعد نجاح الدفع يصدر رقم عضوية وتاريخ بداية وانتهاء. الرقم هو مفتاحه في كل الأنظمة بعدها.</div></div>
+    <div class="step" data-n="٤"><div class="step-t">توقيع العقد<span class="step-who">العضو + الإدارة</span></div><div class="step-d">عضوية بلا عقد موقّع = ملف ناقص، ونبّه عليه قبل تسليم أي خدمة.</div></div>
+    <div class="step" data-n="٥"><div class="step-t">الاستقبال والترحيب<span class="step-who">منسق العمليات</span></div><div class="step-d">اتصال أو رسالة ترحيب فيها: رقم عضويته، رابط حجز الدورات، رسوم الشهادة، ورابط الدعوة الخاص فيه.</div></div>
+    <div class="step" data-n="٦"><div class="step-t">استخدام المزايا<span class="step-who">العضو</span></div><div class="step-d">يحجز دورات، يطلب شهادات، يقدّم على الترشيحات، يحضر جلسات التطوير، يطلب استشارة.</div></div>
+    <div class="step" data-n="٧"><div class="step-t">المتابعة الدورية<span class="step-who">منسق العمليات</span></div><div class="step-d">العضو الصامت هو عضو ما بيجدد. تابعه: عنده دورة قادمة؟ استفاد من مزاياه؟</div></div>
+    <div class="step" data-n="٨"><div class="step-t">التجديد<span class="step-who">خدمة العملاء</span></div><div class="step-d">قبل الانتهاء بشهر. اذكر له وش استفاد فعلياً هالسنة — أقوى من أي عرض سعر.</div></div>
+  </div>
+</section>
+
+<!-- ═══ 11 ═══ -->
+<section id="s11" data-r="ops">
+  <div class="s-num">١١</div>
+  <h2>حجز الدورات واعتمادها</h2>
+  <p class="s-lede">أي دورة يبي المدرب يقدّمها تحت مظلة تمكين لازم تمر بمسار الاعتماد. ما نعتمد دورة قبل مراجعة مادتها.</p>
+  <div class="flow">
+    <div class="step" data-n="١"><div class="step-t">المدرب يقدّم طلب حجز</div><div class="step-d">رقم العضوية، عنوان الدورة، نوعها، نظامها، التوقيت، التواريخ، والمحاور.</div></div>
+    <div class="step" data-n="٢"><div class="step-t">رفع المادة التدريبية</div><div class="step-d">الحقيبة أو المذكرة. بدون مادة = ما يُعتمد الطلب، لأن اعتمادنا ينزل على محتوى مو على عنوان.</div></div>
+    <div class="step" data-n="٣"><div class="step-t">مراجعة الإدارة</div><div class="step-d">هل المحاور واضحة؟ الأهداف مكتوبة صح؟ المادة تليق باسم تمكين؟ النتيجة: <strong>معتمد</strong> أو <strong>تنبيه</strong>.</div></div>
+    <div class="step" data-n="٤"><div class="step-t">إشعار تلقائي للمدرب</div><div class="step-d">أول ما تتغير الحالة يوصله إيميل تلقائي. لا تُغيّر الحالة قبل ما تتأكد — الرسالة تنطلق فوراً.</div></div>
+    <div class="step" data-n="٥"><div class="step-t">دخول الجدول التدريبي</div><div class="step-d">الدورة المعتمدة تدخل الجدول، ومنها يتولّد بوستر الجدول والتصاميم للنشر.</div></div>
+    <div class="step" data-n="٦"><div class="step-t">التنفيذ ثم الحضور ثم التقييم ثم الشهادات</div><div class="step-d">بهذا الترتيب بالضبط، ولا تقفز خطوة.</div></div>
+  </div>
+  <div class="note warn">
+    <div class="note-t">حالتان لا يجوز الخلط بينهما</div>
+    <p><strong>معتمد</strong> = المدرب يمشي ويعلن الدورة بشعار تمكين. <strong>تنبيه</strong> = فيه ملاحظة يعدّلها ويرجع يقدّم. ما فيه شي اسمه «معتمد مبدئياً».</p>
+  </div>
+</section>
+
+<!-- ═══ 12 ═══ -->
+<section id="s12" data-r="ops cs">
+  <div class="s-num">١٢</div>
+  <h2>شهادات تمكين للمدربين</h2>
+  <p class="s-lede">ميزة يبيعها المدرب لمتدربينه، فأي خطأ فيها يضرب سمعته وسمعتنا.</p>
   <div class="grid2">
     <div class="card">
       <h4>شنو يعطينا المدرب</h4>
       <ul style="margin-bottom:0">
         <li>اسم الدورة كما اعتُمدت</li>
-        <li>أسماء المتدربين — <strong>كما يبي يطلعون بالشهادة بالحرف</strong></li>
+        <li>أسماء المتدربين <strong>كما يبي يطلعون بالحرف</strong></li>
         <li>تاريخ التنفيذ</li>
         <li>اسمه كمدرب</li>
       </ul>
@@ -625,302 +743,294 @@ footer{
       </ul>
     </div>
   </div>
-
   <div class="note">
     <div class="note-t">قاعدة الأسماء</div>
-    <p>لا تصلّح اسم من عندك ولا تخمّن. اسم غلط في شهادة = إعادة إصدار ومشكلة مع العميل. لو الاسم مو واضح، ارجع للمدرب واسأله مكتوب.</p>
+    <p>لا تصلّح اسماً من عندك ولا تخمّن. اسم غلط = إعادة إصدار ومشكلة. لو الاسم مو واضح، ارجع للمدرب واطلبه مكتوباً.</p>
   </div>
 </section>
 
-<!-- ═══ 9 ═══ -->
-<section id="s9">
-  <div class="s-num">٩</div>
+<!-- ═══ 13 ═══ -->
+<section id="s13" data-r="pr ops">
+  <div class="s-num">١٣</div>
   <h2>الترشيحات الحكومية</h2>
-  <p class="s-lede">ميزة عضوية الممارسين. نرشح المدرب لجهات حكومية ومؤسسات تبحث عن مدربين معتمدين.</p>
-
+  <p class="s-lede">ميزة عضوية الممارسين، وهي في نفس الوقت أداة بيد العلاقات العامة: مدرب جاهز نقدّمه للجهة.</p>
   <div class="flow">
-    <div class="step" data-n="١">
-      <div class="step-t">المدرب يقدّم ترشيحه</div>
-      <div class="step-d">يدخل برقم عضويته ويعبّي: البرنامج المقترح، الهدف العام، محاور كل يوم، المدة، نظام التنفيذ، أساليب التدريب، ومعايير التقييم.</div>
-    </div>
-    <div class="step" data-n="٢">
-      <div class="step-t">مراجعة الإدارة</div>
-      <div class="step-d">تُراجع الطلبات من لوحة الترشيحات. الصياغة لازم تكون بمستوى مخاطبة رسمية — إذا ضعيفة، تُرجع للمدرب.</div>
-    </div>
-    <div class="step" data-n="٣">
-      <div class="step-t">توليد المستند الرسمي</div>
-      <div class="step-d">النظام يطلّع مستند بترويسة تمكين، فيه بيانات البرنامج والمحاور وخانات توقيع المدرب واعتماد الإدارة. يُطبع أو يُصدَّر PDF.</div>
-    </div>
-    <div class="step" data-n="٤">
-      <div class="step-t">المخاطبة والمتابعة</div>
-      <div class="step-d">يُرسل للجهة مع خطاب رسمي أو عرض مالي. سجّل الإرسال والردود — الترشيح بلا متابعة ما ينتج شي.</div>
-    </div>
+    <div class="step" data-n="١"><div class="step-t">المدرب يقدّم ترشيحه</div><div class="step-d">برقم عضويته: البرنامج المقترح، الهدف العام، محاور كل يوم، المدة، نظام التنفيذ، أساليب التدريب، ومعايير التقييم.</div></div>
+    <div class="step" data-n="٢"><div class="step-t">مراجعة الإدارة</div><div class="step-d">الصياغة لازم تكون بمستوى مخاطبة رسمية. إذا ضعيفة تُرجع للمدرب للتعديل.</div></div>
+    <div class="step" data-n="٣"><div class="step-t">توليد المستند الرسمي</div><div class="step-d">مستند بترويسة تمكين فيه بيانات البرنامج والمحاور وخانات التوقيع والاعتماد. يُطبع أو يُصدَّر PDF.</div></div>
+    <div class="step" data-n="٤"><div class="step-t">المخاطبة والمتابعة<span class="step-who">علاقات عامة</span></div><div class="step-d">يُرسل للجهة مع خطاب رسمي أو مرفقاً بعرض سعر. سجّل الإرسال والردود — الترشيح بلا متابعة ما ينتج شي.</div></div>
   </div>
 </section>
 
-<!-- ═══ 10 ═══ -->
-<section id="s10">
-  <div class="s-num">١٠</div>
+<!-- ═══ 14 ═══ -->
+<section id="s14" data-r="ops cs">
+  <div class="s-num">١٤</div>
   <h2>الاستشارات</h2>
-  <p class="s-lede">عندنا نظامان للاستشارة، ومختلفين تماماً. لا تخلطهم.</p>
-
+  <p class="s-lede">نظامان مختلفان تماماً — لا تخلطهم.</p>
   <div class="grid2">
     <div class="card">
       <h4>استشارة داخلية — للأعضاء</h4>
-      <p>عضو تمكين يحجز جلسة مع الإدارة أو مع مستشار من فريقنا: تطوير حقيبته، خطته التدريبية، تسويق دوراته، مسيرته المهنية.</p>
+      <p>عضو تمكين يحجز جلسة مع الإدارة أو مستشار من فريقنا: حقيبته، خطته التدريبية، تسويق دوراته، مسيرته المهنية.</p>
       <p style="margin-bottom:0"><strong>دورك:</strong> تستلم الطلب، تجدول الموعد، وتسجّل نتيجة الجلسة والمتابعة المطلوبة.</p>
     </div>
     <div class="card">
       <h4>استشارة خارجية — يقدمها المدرب</h4>
-      <p>المدرب العضو يفتح خدمة استشارات <strong>لجمهوره</strong> تحت مظلة تمكين: يضبط تخصصه ومواعيده المتاحة، والعميل الخارجي يحجز عنده.</p>
+      <p>المدرب العضو يفتح خدمة استشارات <strong>لجمهوره</strong> تحت مظلة تمكين: يضبط تخصصه ومواعيده، والعميل الخارجي يحجز عنده.</p>
       <p style="margin-bottom:0"><strong>دورك:</strong> تساعده يضبط إعداداته ومواعيده، وتتابع أن الحجوزات توصله.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══ 11 ═══ -->
-<section id="s11">
-  <div class="s-num">١١</div>
+<!-- ═══ 15 ═══ -->
+<section id="s15" data-r="pr ops cs">
+  <div class="s-num">١٥</div>
   <h2>دورة مدرب معتمد</h2>
-  <p class="s-lede">أقوى منتج تدريبي لتمكين وأشهرها — وهي غالباً أول باب يدخل منه المدرب قبل العضوية.</p>
-
+  <p class="s-lede">أشهر منتجاتنا التدريبية، وغالباً أول باب يدخل منه المدرب قبل العضوية.</p>
   <div class="card">
-    <p><strong>الفكرة:</strong> برنامج إعداد مدربين متكامل، يُقدَّم بدفعات متتابعة — تتناوب بين <strong>حضوري</strong> و<strong>أونلاين</strong>، ولها أرقام دفعات متسلسلة (تجاوزنا الدفعة ١١٠).</p>
-    <p style="margin-bottom:0"><strong>الباقات:</strong> عندنا أكثر من مستوى تسجيل (أساسية / دولية / ممارس) وتختلف في الشهادات والمزايا المصاحبة.</p>
+    <p><strong>الفكرة:</strong> برنامج إعداد مدربين متكامل يُقدَّم بدفعات متتابعة — تتناوب بين <strong>حضوري</strong> و<strong>أونلاين</strong>، وأرقام الدفعات متسلسلة (تجاوزنا الدفعة ١١٠).</p>
+    <p style="margin-bottom:0"><strong>الباقات:</strong> أكثر من مستوى تسجيل، وتختلف في الشهادات والمزايا المصاحبة.</p>
   </div>
-
   <div class="note warn">
-    <div class="note-t">قبل ما تعطي سعر أو تاريخ</div>
-    <p>مواعيد الدفعات وأسعار الباقات تتغير بين فترة وفترة. <strong>ارجع دايماً لصفحة الدورة على الموقع أو لجدول الدفعات المحدّث</strong> قبل ما تقول رقم أو تاريخ للعميل. لا تعتمد على ذاكرتك ولا على رسالة قديمة.</p>
+    <div class="note-t">قبل ما تعطي سعراً أو تاريخاً</div>
+    <p>مواعيد الدفعات وأسعار الباقات تتغير. ارجع لصفحة الدورة المحدّثة، ولا تعتمد على ذاكرتك ولا على رسالة قديمة.</p>
   </div>
-
-  <h3>ليش هذي الدورة مهمة لك كموظف</h3>
-  <p style="margin-bottom:0">كل متدرب يتخرج من هذي الدورة هو <strong>عميل عضوية</strong> جاهز — تخرّج مدرباً، والخطوة الطبيعية بعدها إنه يبي اعتماد يشتغل تحته. اربط الاثنين في كل مكالمة متابعة بعد التخرج.</p>
+  <h3>ليش هذي الدورة مهمة لك</h3>
+  <p style="margin-bottom:0">كل متدرب يتخرج منها هو <strong>عميل عضوية</strong> جاهز — تخرّج مدرباً، والخطوة الطبيعية بعدها اعتماد يشتغل تحته. اربط الاثنين في كل متابعة بعد التخرج.</p>
 </section>
 
-<!-- ═══ 12 ═══ -->
-<section id="s12">
-  <div class="s-num">١٢</div>
+<!-- ═══ 16 ═══ -->
+<section id="s16" data-r="ops cs">
+  <div class="s-num">١٦</div>
   <h2>مسار — الدورة المجانية</h2>
-  <p class="s-lede">هذي ماكينة العملاء عندنا. افهمها صح لأن ٩٠٪ من عملاء مسار يدخلون من هنا.</p>
-
+  <p class="s-lede">ماكينة العملاء عندنا. أغلب عملاء مسار يدخلون من هنا.</p>
   <div class="grid3">
     <div class="stat"><div class="stat-n">مجاني</div><div class="stat-l">الحضور بلا رسوم</div></div>
-    <div class="stat"><div class="stat-n">ساعتان</div><div class="stat-l">مدة الدورة مع مدرب معتمد</div></div>
-    <div class="stat"><div class="stat-n">١٥ د.ك</div><div class="stat-l">الشهادة اختيارية عند الطلب</div></div>
+    <div class="stat"><div class="stat-n">ساعتان</div><div class="stat-l">مع مدرب معتمد</div></div>
+    <div class="stat"><div class="stat-n">١٥ د.ك</div><div class="stat-l">الشهادة اختيارية</div></div>
   </div>
-
-  <h3>شلون تمشي</h3>
   <div class="flow">
-    <div class="step" data-n="١">
-      <div class="step-t">يختار دورة من الجدول</div>
-      <div class="step-d">الجدول الشهري معروض على صفحة مسار، وفيه الدورات المنشورة فقط.</div>
-    </div>
-    <div class="step" data-n="٢">
-      <div class="step-t">يسجّل مجاناً</div>
-      <div class="step-d">اسم، رقم واتساب، إيميل، ويحدد: <strong>يبي شهادة أو لا</strong>. يوصله رابط زووم على إيميله.</div>
-    </div>
-    <div class="step" data-n="٣">
-      <div class="step-t">تذكير قبل الموعد</div>
-      <div class="step-d">النظام يرسل تذكيرات تلقائية. أنت تتأكد إن التذكير وصل فعلاً للمجموعة قبل الدورة.</div>
-    </div>
-    <div class="step" data-n="٤">
-      <div class="step-t">يحضر ويأكد حضوره</div>
-      <div class="step-d">بعد الدورة يدخل صفحة تأكيد الحضور برقمه ويختار الدورة — وتُسجّل حضوره في النظام. لا شهادة بدون حضور مسجّل.</div>
-    </div>
-    <div class="step" data-n="٥">
-      <div class="step-t">قرار الشهادة</div>
-      <div class="step-d">طالب شهادة وما دفع؟ يظهر له خيار الدفع. قال ما يبي شهادة؟ تُعرض له قيمة الاعتماد آخر مرة. النتيجة تُسجّل في ملاحظاته.</div>
-    </div>
-    <div class="step" data-n="٦">
-      <div class="step-t">العرض التالي</div>
-      <div class="step-d">هنا دورك الحقيقي: حضر ومستانس؟ اعرض عليه <strong>الاشتراك</strong> أو <strong>الباقة</strong>. هذي أفضل لحظة للبيع في كل الرحلة.</div>
-    </div>
+    <div class="step" data-n="١"><div class="step-t">يختار دورة من الجدول</div><div class="step-d">الجدول الشهري معروض على صفحة مسار، وفيه الدورات المنشورة فقط.</div></div>
+    <div class="step" data-n="٢"><div class="step-t">يسجّل مجاناً</div><div class="step-d">اسم، واتساب، إيميل، ويحدد: <strong>يبي شهادة أو لا</strong>. يوصله رابط زووم على إيميله.</div></div>
+    <div class="step" data-n="٣"><div class="step-t">تذكير قبل الموعد</div><div class="step-d">تأكد إن التذكير وصل فعلاً للمجموعة قبل الدورة.</div></div>
+    <div class="step" data-n="٤"><div class="step-t">يحضر ويأكد حضوره</div><div class="step-d">بعد الدورة يدخل صفحة التأكيد برقمه ويختار الدورة. لا شهادة بدون حضور مسجّل.</div></div>
+    <div class="step" data-n="٥"><div class="step-t">قرار الشهادة</div><div class="step-d">طالب شهادة وما دفع؟ يظهر له الدفع. قال ما يبي؟ تُعرض عليه قيمة الاعتماد آخر مرة، والنتيجة تُسجّل.</div></div>
+    <div class="step" data-n="٦"><div class="step-t">العرض التالي</div><div class="step-d">هنا دورك الحقيقي: حضر ومستانس؟ اعرض عليه <strong>الاشتراك</strong> أو <strong>الباقة</strong>. أفضل لحظة للبيع في كل الرحلة.</div></div>
   </div>
 </section>
 
-<!-- ═══ 13 ═══ -->
-<section id="s13">
-  <div class="s-num">١٣</div>
+<!-- ═══ 17 ═══ -->
+<section id="s17" data-r="cs">
+  <div class="s-num">١٧</div>
   <h2>مسار — الاشتراكات</h2>
   <p class="s-lede">المشترك يحضر كل الدورات في مدة اشتراكه بدون ما يدفع لكل دورة على حدة.</p>
-
   <div class="tw">
     <table>
       <thead><tr><th>الاشتراك</th><th>السعر</th><th>لمن نعرضه</th></tr></thead>
       <tbody>
         <tr><td><strong>شهري</strong></td><td class="num">١٥ د.ك</td><td>اللي يبي يجرب قبل ما يلتزم</td></tr>
-        <tr><td><strong>٦ أشهر</strong></td><td class="num">٤٠ د.ك</td><td>الأكثر توازناً — الأفضل تبدأ منه في العرض</td></tr>
+        <tr><td><strong>٦ أشهر</strong></td><td class="num">٤٠ د.ك</td><td>الأكثر توازناً — ابدأ منه في العرض</td></tr>
         <tr><td><strong>١٢ شهر</strong></td><td class="num">٧٠ د.ك</td><td>المعلم الجاد اللي يبني ملفه الإنجازي</td></tr>
       </tbody>
     </table>
   </div>
-
   <h3>قواعد تشغيلية</h3>
   <ul>
-    <li>الاشتراك يبدأ <strong>معتمداً على تأكيد الدفع</strong>، ويتسجّل له تاريخ بداية وتاريخ نهاية.</li>
-    <li>حالة الدفع لها ثلاث قيم: <span class="hl">لم يدفع</span> · <span class="hl">قيد الدفع</span> · <span class="hl">تم الدفع</span>. حدّثها لحظة ما تتأكد — الأنظمة كلها تعتمد عليها.</li>
-    <li>الاشتراكات المنتهية تتحدث حالتها تلقائياً. المنتهي قبل أسبوع = أول أسماء قائمة التجديد عندك.</li>
-    <li>لا تعطي رابط زووم لغير مشترك أو مسجَّل. الروابط تنتشر بسرعة وتضيع علينا تسجيلات.</li>
+    <li>الاشتراك يبدأ <strong>بتأكيد الدفع</strong>، ويُسجَّل له تاريخ بداية ونهاية.</li>
+    <li>حالة الدفع لها ثلاث قيم: <span class="hl">لم يدفع</span> · <span class="hl">قيد الدفع</span> · <span class="hl">تم الدفع</span>. حدّثها لحظة ما تتأكد.</li>
+    <li>المنتهي قبل أسبوع = أول أسماء قائمة التجديد عندك.</li>
+    <li>لا تعطي رابط زووم لغير مشترك أو مسجَّل.</li>
   </ul>
 </section>
 
-<!-- ═══ 14 ═══ -->
-<section id="s14">
-  <div class="s-num">١٤</div>
+<!-- ═══ 18 ═══ -->
+<section id="s18" data-r="cs">
+  <div class="s-num">١٨</div>
   <h2>مسار — الباقات الاحترافية</h2>
   <p class="s-lede">باقات مدفوعة مكثفة، كل باقة ٣ دورات متخصصة وشهادات معتمدة.</p>
-
   <div class="grid2">
     <div class="card">
       <h4>باقة الذكاء الاصطناعي</h4>
-      <p><strong>٣ دورات</strong> متخصصة في توظيف الذكاء الاصطناعي في التعليم — تصميم المحتوى، تقييم المتعلمين، واستراتيجيات التوظيف داخل الصف.</p>
-      <p style="margin-bottom:0"><strong>الشهادات:</strong> ٤ شهادات (شهادة لكل دورة + شهادة المستوى الكامل). <strong>السعر:</strong> <span class="hl">٤٥ د.ك</span> · <strong>الجمهور:</strong> المعلمون.</p>
+      <p><strong>٣ دورات</strong> في توظيف الذكاء الاصطناعي في التعليم: تصميم المحتوى، تقييم المتعلمين، واستراتيجيات التوظيف داخل الصف.</p>
+      <p style="margin-bottom:0"><strong>الشهادات:</strong> ٤ شهادات. <strong>السعر:</strong> <span class="hl">٤٥ د.ك</span> · <strong>الجمهور:</strong> المعلمون.</p>
     </div>
     <div class="card">
       <h4>باقة فن الإدارة وتمكين القيادي</h4>
       <p><strong>٣ دورات</strong>: التخطيط الإداري وقيادة الفريق، فن التفويض وتوزيع المهام، وإعداد الملف الإنجازي.</p>
-      <p style="margin-bottom:0"><strong>الشهادات:</strong> ٣ شهادات معتمدة. <strong>السعر:</strong> <span class="hl">٤٥ د.ك</span> · <strong>الجمهور:</strong> للجميع — مو للمعلمين بس.</p>
+      <p style="margin-bottom:0"><strong>الشهادات:</strong> ٣ شهادات. <strong>السعر:</strong> <span class="hl">٤٥ د.ك</span> · <strong>الجمهور:</strong> للجميع.</p>
     </div>
   </div>
-
   <div class="note">
     <div class="note-t">التقسيط</div>
-    <p>باقة الإدارة تقبل الدفع دفعة واحدة أو <strong>تقسيط على ٤ دفعات</strong>. طلب التقسيط يجيك عن طريق واتساب وتتابعه يدوياً — سجّله في المتابعة وثبّت مواعيد الدفعات، ولا تتركه بلا تسجيل.</p>
-  </div>
-
-  <div class="note warn">
-    <div class="note-t">قبل ما تعلن مواعيد</div>
-    <p>مدربو كل باقة ومواعيد دفعاتها تتغير من دفعة لدفعة. راجع صفحة الباقة أو ورقة الدورات المحدّثة قبل ما تعطي العميل تاريخ أو اسم مدرب.</p>
+    <p>باقة الإدارة تقبل الدفع دفعة واحدة أو <strong>تقسيط على ٤ دفعات</strong>. طلب التقسيط يجي بالواتساب وتتابعه يدوياً — سجّله وثبّت مواعيد الدفعات.</p>
   </div>
 </section>
 
-<!-- ═══ 15 ═══ -->
-<section id="s15">
-  <div class="s-num">١٥</div>
+<!-- ═══ 19 ═══ -->
+<section id="s19" data-r="ops cs">
+  <div class="s-num">١٩</div>
   <h2>شهادات مسار</h2>
   <p class="s-lede">الشهادة هي المنتج الحقيقي عند المعلم. طريقة تعاملك معها تحدد رضاه.</p>
-
-  <h3>شروط استحقاق الشهادة</h3>
+  <h3>شروط الاستحقاق</h3>
   <ol>
     <li>الحضور <strong>مسجّل</strong> في النظام — مو «حضرت» بالكلام.</li>
     <li>رسوم الشهادة مدفوعة إذا كانت الدورة مجانية والشهادة اختيارية (<strong>١٥ د.ك</strong>).</li>
-    <li>الاسم مكتوب صح، ومطابق لما يبي يطلع بالشهادة.</li>
+    <li>الاسم مكتوب صح ومطابق لما يبي يطلع بالشهادة.</li>
   </ol>
-
   <h3>شنو فيها</h3>
   <ul>
-    <li>اسم المتدرب، اسم الدورة، تاريخها، واسم المدرب.</li>
-    <li><strong>رقم اعتماد المادة</strong> — مرتبط بالدورة نفسها في سجل الدورات.</li>
-    <li><strong>رقم تسلسل الشهادة</strong> — رقم فريد لكل شهادة، ما يتكرر ولا يُعاد استخدامه.</li>
+    <li>اسم المتدرب، اسم الدورة، تاريخها، واسم المدرب</li>
+    <li><strong>رقم اعتماد المادة</strong> — مرتبط بالدورة في سجل الدورات</li>
+    <li><strong>رقم تسلسل الشهادة</strong> — رقم فريد ما يتكرر ولا يُعاد استخدامه</li>
   </ul>
-
   <div class="note ok">
     <div class="note-t">لما العميل يقول «ضاعت شهادتي»</div>
-    <p>ما تحتاج تصدرها من جديد. شهاداته محفوظة في سجل الإصدار والأرشيف، ويقدر يفتح <strong>صفحة ملف المتدرب</strong> برقم واتسابه ويشوف كل شهاداته ويحمّلها. علّمه على الصفحة مرة واحدة، ووفّر على نفسك عشر مكالمات.</p>
+    <p>ما تحتاج تصدرها من جديد. يفتح <strong>صفحة ملف المتدرب</strong> برقم واتسابه ويشوف كل شهاداته ويحمّلها. علّمه على الصفحة مرة وحدة ووفّر على نفسك عشر مكالمات.</p>
   </div>
-
   <div class="note warn">
     <div class="note-t">لا تسوي هذا</div>
     <p>لا تُصدر شهادة لشخص ما حضر، ولو ألح أو دفع. الشهادة الوهمية تضرب اعتمادنا لدى الجهات الرسمية، وهذا أغلى من أي مبلغ.</p>
   </div>
 </section>
 
-<!-- ═══ 16 ═══ -->
-<section id="s16">
-  <div class="s-num">١٦</div>
+<!-- ═══ 20 ═══ -->
+<section id="s20" data-r="pr ops cs">
+  <div class="s-num">٢٠</div>
   <h2>لوحات العمل — منو يستخدم شنو</h2>
   <p class="s-lede">كل لوحة لها صاحبها ووظيفتها. لا تشتغل من اللوحة الغلط.</p>
-
   <div class="tw">
     <table>
       <thead><tr><th>اللوحة</th><th>لمن</th><th>تسوي فيها</th></tr></thead>
       <tbody>
-        <tr><td><strong>لوحة العمليات</strong></td><td>الإدارة</td><td>اعتماد الحجوزات والمواد، جدول التدريب، الترشيحات، الخطابات والعروض المالية، التصاميم والبوسترات، سير المدربين، الاستشارات</td></tr>
-        <tr><td><strong>لوحة مسار</strong></td><td>موظف مسار</td><td>مسجلو الدورات، تسجيلات الباقات، إصدار الشهادات، متابعة العملاء</td></tr>
-        <tr><td><strong>لوحة المبيعات</strong></td><td>موظف المبيعات</td><td>العملاء المحتملين، المتابعات، توليد روابط الدفع، نسبة كل موظف</td></tr>
-        <tr><td><strong>لوحة المدرب</strong></td><td>العضو</td><td>حجز دوراته، متابعة حالتها، شهاداته، ترشيحاته، خطته السنوية</td></tr>
+        <tr><td><strong>لوحة العمليات</strong></td><td>الإدارة ومنسق العمليات</td><td>اعتماد الحجوزات والمواد، جدول التدريب، الترشيحات، الخطابات الرسمية والعروض المالية، التصاميم والبوسترات، سير المدربين، الاستشارات</td></tr>
+        <tr><td><strong>لوحة مسار</strong></td><td>خدمة العملاء</td><td>مسجلو الدورات، تسجيلات الباقات، إصدار الشهادات، متابعة العملاء</td></tr>
+        <tr><td><strong>لوحة المبيعات</strong></td><td>المبيعات</td><td>العملاء المحتملون، المتابعات، روابط الدفع، نسبة كل موظف</td></tr>
+        <tr><td><strong>لوحة المدرب</strong></td><td>العضو نفسه</td><td>حجز دوراته، حالتها، شهاداته، ترشيحاته، خطته السنوية</td></tr>
       </tbody>
     </table>
   </div>
-
   <div class="note">
     <div class="note-t">قاعدة الصلاحيات</div>
-    <p>لوحة العمليات فيها قرارات اعتماد ومستندات رسمية — <strong>لا تدخلها ولا تعتمد شي منها إلا بتكليف صريح</strong>. شغل الموظف اليومي مكانه لوحة مسار ولوحة المبيعات.</p>
+    <p>لوحة العمليات فيها قرارات اعتماد ومستندات رسمية وعروض أسعار — <strong>لا تعتمد ولا ترسل منها شي إلا بتكليف صريح</strong>.</p>
   </div>
 </section>
 
-<!-- ═══ 17 ═══ -->
-<section id="s17">
-  <div class="s-num">١٧</div>
-  <h2>الحضور — نظامان مختلفان</h2>
-
+<!-- ═══ 21 ═══ -->
+<section id="s21" data-r="ops cs">
+  <div class="s-num">٢١</div>
+  <h2>الحضور والقاعة</h2>
   <div class="grid2">
     <div class="card">
       <h4>حضور المتدربين</h4>
-      <p>يُسجَّل لكل جلسة تدريبية. المتدرب يأكد حضوره بنفسه من صفحة التأكيد، أو تُسجّله الإدارة من اللوحة.</p>
-      <p style="margin-bottom:0"><strong>ليش مهم:</strong> لأنه شرط الشهادة، وهو المؤشر الحقيقي لجودة الدورة والإقبال عليها.</p>
+      <p>يُسجَّل لكل جلسة. المتدرب يأكد بنفسه من صفحة التأكيد، أو تُسجّله الإدارة من اللوحة.</p>
+      <p style="margin-bottom:0"><strong>ليش مهم:</strong> شرط الشهادة، والمؤشر الحقيقي لجودة الدورة.</p>
     </div>
     <div class="card">
       <h4>حضور الموظفين</h4>
-      <p>تسجيل دخول وخروج للفريق. تسجّل بنفسك أول ما تبدأ وأول ما تنتهي — ما فيه تسجيل بأثر رجعي إلا بموافقة الإدارة.</p>
-      <p style="margin-bottom:0"><strong>ليش مهم:</strong> لأنه مرجع الدوام والتقييم، ولا يُعدّل من بعد.</p>
+      <p>تسجيل دخول وخروج للفريق. سجّل بنفسك أول ما تبدأ وأول ما تنتهي — ما فيه تسجيل بأثر رجعي إلا بموافقة الإدارة.</p>
+      <p style="margin-bottom:0"><strong>ليش مهم:</strong> مرجع الدوام والتقييم، ولا يُعدّل بعدين.</p>
     </div>
+  </div>
+  <h3>تنظيم القاعة — مسؤولية منسق العمليات</h3>
+  <div class="card">
+    <p><strong>قبل يوم من الدورة:</strong></p>
+    <ul>
+      <li>تأكيد الموعد مع المدرب وتأكيد حضوره</li>
+      <li>حجز القاعة وتثبيتها في الجدول</li>
+      <li>تجهيز المذكرات والمطبوعات بعدد المسجلين + نسخ احتياطية</li>
+      <li>فحص جهاز العرض والصوت والإنترنت</li>
+      <li>ترتيب الجلوس حسب نوع النشاط، والضيافة</li>
+      <li>كشف الحضور جاهز، وشاشة أو لوحة استقبال باسم الدورة</li>
+    </ul>
+    <p style="margin-bottom:0"><strong>يوم الدورة:</strong> افتح القاعة قبل الموعد بوقت كافٍ، استقبل المتدربين، وتأكد إن المدرب ما ينقصه شي. بعد الانتهاء: تسجيل الحضور، فتح التقييم، وترتيب القاعة للجلسة الجاية.</p>
   </div>
 </section>
 
-<!-- ═══ 18 ═══ -->
-<section id="s18">
-  <div class="s-num">١٨</div>
+<!-- ═══ 22 ═══ -->
+<section id="s22" data-r="pr cs">
+  <div class="s-num">٢٢</div>
   <h2>المتابعة والمبيعات</h2>
   <p class="s-lede">كل اسم يدخل عندنا لازم يكون له سجل ونتيجة تواصل. العميل اللي ما تسجّله، تخسره.</p>
-
   <h3>مصادر العميل</h3>
-  <p>الواتساب · التسجيلات من الموقع · تسجيلات الباقات · صفحة ملف المتدرب · الحملات على إنستقرام. سجّل المصدر دايماً، لأنه يعرفنا شنو ينجح فعلاً.</p>
-
+  <p>الواتساب · التسجيلات من الموقع · تسجيلات الباقات · ملف المتدرب · حملات إنستقرام · المخاطبات مع الجهات. سجّل المصدر دايماً — يعرفنا شنو ينجح فعلاً.</p>
   <h3>نتائج التواصل — استخدم هذي القيم فقط</h3>
   <div class="tw">
     <table>
       <thead><tr><th>النتيجة</th><th>شنو تعني</th><th>خطوتك التالية</th></tr></thead>
       <tbody>
-        <tr><td><strong>لم يرد</strong></td><td>ما جاوب على المكالمة أو الرسالة</td><td>حاول مرة ثانية في وقت مختلف — ثلاث محاولات كحد أقصى</td></tr>
-        <tr><td><strong>يفكر</strong></td><td>مهتم لكن ما حسم</td><td>ثبّت موعد رجوع محدد، وأرسل له قيمة إضافية مو تكرار</td></tr>
+        <tr><td><strong>لم يرد</strong></td><td>ما جاوب</td><td>حاول في وقت مختلف — ثلاث محاولات كحد أقصى</td></tr>
+        <tr><td><strong>يفكر</strong></td><td>مهتم لكن ما حسم</td><td>ثبّت موعد رجوع محدد، وأرسل قيمة إضافية مو تكرار</td></tr>
         <tr><td><strong>طلب معلومات</strong></td><td>يبي تفاصيل أكثر</td><td>أرسل المعلومة كاملة نفس اليوم، وتابع بعد يومين</td></tr>
         <tr><td><strong>سجّل</strong></td><td>أتم التسجيل</td><td>تأكد من الدفع، أرسل تأكيداً، وحوّله للخطوة التالية</td></tr>
         <tr><td><strong>مو مهتم</strong></td><td>رفض واضح</td><td>أغلق باحترام واتركه في القائمة العامة للحملات</td></tr>
-        <tr><td><strong>تواصل لاحقاً</strong></td><td>الوقت مو مناسب حالياً</td><td>حدد تاريخاً فعلياً للرجوع — بدون تاريخ ما ينفع</td></tr>
+        <tr><td><strong>تواصل لاحقاً</strong></td><td>الوقت مو مناسب</td><td>حدد تاريخاً فعلياً للرجوع — بدون تاريخ ما ينفع</td></tr>
       </tbody>
     </table>
   </div>
-
-  <h3>قوالب الواتساب الجاهزة</h3>
-  <p style="margin-bottom:0">استخدم القالب الموجود في اللوحة (تذكير · شهادة · اشتراك · متابعة · ترحيب) وعدّل عليه بما يناسب الشخص. القالب يوفر وقتك، لكن رسالة بلا اسم العميل ولا سياق حالته تُقرأ كإعلان وتُهمل.</p>
+  <h3>قوالب الواتساب</h3>
+  <p style="margin-bottom:0">استخدم القالب الموجود في اللوحة (تذكير · شهادة · اشتراك · متابعة · ترحيب) وعدّل عليه. القالب يوفر وقتك، لكن رسالة بلا اسم العميل ولا سياق حالته تُقرأ كإعلان وتُهمل.</p>
 </section>
 
-<!-- ═══ 19 ═══ -->
-<section id="s19">
-  <div class="s-num">١٩</div>
-  <h2>روتين الموظف</h2>
+<!-- ═══ 23 ═══ -->
+<section id="s23" data-r="pr ops cs">
+  <div class="s-num">٢٣</div>
+  <h2>روتين كل دور</h2>
+  <p class="s-lede">شغلك اليومي والأسبوعي مختصر. علّقه قدامك.</p>
 
   <div class="grid2">
     <div class="card">
-      <h4>كل يوم</h4>
+      <h4>العلاقات العامة — يومي</h4>
       <ul style="margin-bottom:0">
-        <li>سجّل حضورك أول ما تبدأ</li>
-        <li>راجع التسجيلات الجديدة وأضفها للمتابعة</li>
-        <li>حدّث حالات الدفع اللي تأكدت منها</li>
-        <li>تواصل مع قائمة «لم يُتواصل معهم»</li>
-        <li>جاوب على رسائل الواتساب — لا تترك رسالة بلا رد يوم كامل</li>
+        <li>مراجعة الردود على المخاطبات المرسلة</li>
+        <li>تواصل مع جهتين جديدتين على الأقل</li>
+        <li>متابعة العروض المرسلة اللي مرّ عليها أسبوع</li>
+        <li>تحديث سجل الجهات بكل تواصل ونتيجته</li>
       </ul>
     </div>
     <div class="card">
-      <h4>كل أسبوع</h4>
+      <h4>العلاقات العامة — أسبوعي</h4>
       <ul style="margin-bottom:0">
-        <li>أرسل تذكير الدورات القادمة</li>
-        <li>أصدر شهادات من حضر وأتم الشروط</li>
-        <li>راجع «يفكر» و«تواصل لاحقاً» ورجّع لهم</li>
-        <li>تابع الاشتراكات اللي قربت تنتهي</li>
-        <li>تابع الحجوزات المعلّقة والمواد المنتظرة مراجعة</li>
+        <li>مراجعة قائمة الجهات المستهدفة وتحديث الأولويات</li>
+        <li>تقرير للإدارة: عروض مرسلة، اجتماعات، تعاقدات</li>
+        <li>متابعة الترشيحات المعلّقة</li>
+        <li>تجهيز احتياجات الأسبوع الجاي من الإدارة (عروض، خطابات)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>منسق العمليات — يومي</h4>
+      <ul style="margin-bottom:0">
+        <li>مراجعة طلبات الحجز الجديدة والمواد المرفوعة</li>
+        <li>تأكيد دورات اليوم وبكرة مع المدربين</li>
+        <li>تجهيز القاعة للدورة القادمة</li>
+        <li>تسجيل الحضور بعد كل جلسة</li>
+        <li>الترحيب بالأعضاء الجدد اللي سجلوا أمس</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>منسق العمليات — أسبوعي</h4>
+      <ul style="margin-bottom:0">
+        <li>تحديث الجدول التدريبي وتجهيز بوستر النشر</li>
+        <li>إصدار شهادات من حضر وأتم الشروط</li>
+        <li>جولة على الأعضاء الصامتين — منو ما استفاد من مزاياه</li>
+        <li>مراجعة حجوزات القاعة للأسبوع الجاي</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>خدمة العملاء — يومي</h4>
+      <ul style="margin-bottom:0">
+        <li>سجّل حضورك أول ما تبدأ</li>
+        <li>الرد على كل رسائل الواتساب والإنستقرام</li>
+        <li>إضافة المستفسرين الجدد للمتابعة</li>
+        <li>تحديث حالات الدفع اللي تأكدت منها</li>
+        <li>التواصل مع قائمة «لم يُتواصل معهم»</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>خدمة العملاء — أسبوعي</h4>
+      <ul style="margin-bottom:0">
+        <li>تذكير المسجلين بالدورات القادمة</li>
+        <li>مراجعة «يفكر» و«تواصل لاحقاً» والرجوع لهم</li>
+        <li>قائمة الاشتراكات والعضويات المنتهية قريباً</li>
+        <li>متابعة أقساط باقة الإدارة المستحقة</li>
       </ul>
     </div>
   </div>
@@ -928,9 +1038,10 @@ footer{
   <div class="note warn">
     <div class="note-t">أخطاء تتكرر — انتبه لها</div>
     <ul style="margin-bottom:0">
-      <li>وعد بسعر أو موعد بدون ما يراجع الصفحة المحدّثة</li>
-      <li>إصدار شهادة قبل تسجيل الحضور أو قبل تأكيد الدفع</li>
-      <li>عدم تحديث حالة الدفع بعد التأكد — يخرّب كل التقارير بعدها</li>
+      <li>إعطاء الجهة سعراً تقريبياً بدل عرض سعر رسمي</li>
+      <li>وعد بموعد تنفيذ قبل التعاقد</li>
+      <li>إصدار شهادة قبل تسجيل الحضور أو تأكيد الدفع</li>
+      <li>عدم تحديث حالة الدفع بعد التأكد — يخرّب كل التقارير</li>
       <li>إرسال رابط زووم لغير مسجَّل</li>
       <li>عرض منتج مسار على مدرب يبي اعتماد، أو العكس</li>
       <li>الوعد باعتماد «دولي» أو «معادلة» — ممنوع تماماً</li>
@@ -938,19 +1049,25 @@ footer{
   </div>
 </section>
 
-<!-- ═══ 20 ═══ -->
-<section id="s20">
-  <div class="s-num">٢٠</div>
-  <h2>ردود جاهزة للأسئلة المتكررة</h2>
+<!-- ═══ 24 ═══ -->
+<section id="s24" data-r="pr cs">
+  <div class="s-num">٢٤</div>
+  <h2>ردود جاهزة</h2>
   <p class="s-lede">افتح السؤال وشوف الجواب. عدّل بأسلوبك، لكن لا تغيّر المعلومة.</p>
 
   <details class="qa"><summary>شهادتكم معتمدة؟ معتمدة من منو؟</summary>
     <div class="qa-body">نعم. شهاداتنا صادرة من معهد تمكين إيديوكلاود، ومعتمدة ومسجلة لدى الهيئة العامة للتعليم التطبيقي والتدريب وديوان الخدمة المدنية، والمعهد مرخّص من وزارة التجارة وعضو في غرفة تجارة وصناعة الكويت.
       <em>لا تضيف أي جهة غير هذي، ولا تستخدم كلمة «دولية».</em></div></details>
 
-  <details class="qa"><summary>الشهادة تنفعني في الترقية أو ملفي الوظيفي؟</summary>
-    <div class="qa-body">الشهادة معتمدة ومسجلة لدى ديوان الخدمة المدنية وتُضاف لملفك المهني. أما احتساب الترقية نفسها فهو قرار جهة عملك وحسب لوائحها.
-      <em>لا تعد الموظف بترقية ولا بعدد نقاط — هذا مو قرارنا.</em></div></details>
+  <details class="qa"><summary>كم تكلفة تدريب موظفينا؟</summary>
+    <div class="qa-body">ما عندنا سعر ثابت، لأن كل جهة احتياجها مختلف. نرتّب اجتماع قصير نفهم فيه عدد الموظفين والفئات والهدف من التدريب، وبعدها يوصلكم عرض سعر رسمي مفصّل.
+      <em>لا تعطي رقماً تقريبياً ولو ألح. هذا أهم سطر في الدليل لموظف العلاقات العامة.</em></div></details>
+
+  <details class="qa"><summary>عندنا دورات جاهزة نبيها — تقدرون تنفذونها؟</summary>
+    <div class="qa-body">أكيد. نقدر ننفذ برامجكم بمدربين معتمدين ونصدر شهادات معتمدة للمشاركين. وإذا حبيتم، نقدر نراجع البرامج معكم قبل التنفيذ ونتأكد إنها تخدم الهدف اللي تبونه.</div></details>
+
+  <details class="qa"><summary>شنو الفرق بينكم وبين مراكز التدريب الثانية؟</summary>
+    <div class="qa-body">إحنا ما نبيع دورات جاهزة من الرف. نبدأ من تحليل احتياجكم الفعلي، ونبني البرنامج على أساسه، ونسلّمكم تقريراً ختامياً بنتائج التقييم. وشهاداتنا معتمدة ومسجلة لدى الجهات الرسمية في الكويت.</div></details>
 
   <details class="qa"><summary>الدورة مجانية فعلاً؟ وين المصيدة؟</summary>
     <div class="qa-body">الحضور مجاني بالكامل — ساعتان مع مدرب معتمد. الشي الاختياري الوحيد هو الشهادة الرسمية برسوم ١٥ د.ك إذا حبيت تطلبها. تقدر تحضر بدون شهادة وما عليك أي شي.</div></details>
@@ -959,14 +1076,14 @@ footer{
     <div class="qa-body">الدورات المجانية محدودة بجدولها. المشترك يحضر كل الدورات في مدة اشتراكه، ويوصله الجدول والتذكيرات أولاً. لو تحضر أكثر من دورة بالشهر، الاشتراك يوفر عليك أكثر من الدفع لكل شهادة على حدة.</div></details>
 
   <details class="qa"><summary>شنو الفرق بين عضوية المبتدئين والممارسين؟</summary>
-    <div class="qa-body">المبتدئين (٦٥ د.ك) تعطيك الاعتماد وإصدار الشهادات والمجتمع والدعم — ٨ مزايا أساسية. الممارسين (١٣٠ د.ك) تضيف ٦ مزايا: قاعة تدريبية شهرياً، خطة تدريبية، خطة تسويقية، تصوير احترافي لدورة، ترشيحك للجهات، وإعداد حقيبتك التدريبية.
-      <em>لو المدرب عنده جمهور جاهز ويبي ينفّذ دورات فعلياً — الممارسين أنسب له.</em></div></details>
+    <div class="qa-body">المبتدئين (٦٥ د.ك) تعطيك الاعتماد وإصدار الشهادات والمجتمع والدعم — ٨ مزايا. الممارسين (١٣٠ د.ك) تضيف ٦ مزايا: قاعة تدريبية شهرياً، خطة تدريبية، خطة تسويقية، تصوير احترافي لدورة، ترشيحك للجهات، وإعداد حقيبتك التدريبية.
+      <em>لو المدرب عنده جمهور جاهز ويبي ينفّذ دورات فعلياً — الممارسين أنسب.</em></div></details>
 
   <details class="qa"><summary>أنا مدرب — أقدر أصدر شهادات باسمي؟</summary>
-    <div class="qa-body">نعم، هذي من مزايا العضوية. تصدر شهادات لمتدربينك باسمك وتحت مظلة تمكين المعتمدة، برسوم ١٠ د.ك للشهادة. الشرط إن الدورة تكون معتمدة عندنا قبل التنفيذ.</div></details>
+    <div class="qa-body">نعم، من مزايا العضوية. تصدر شهادات لمتدربينك باسمك وتحت مظلة تمكين المعتمدة، برسوم ١٠ د.ك للشهادة. الشرط إن الدورة تكون معتمدة عندنا قبل التنفيذ.</div></details>
 
   <details class="qa"><summary>ليش لازم أرفع المادة عشان تعتمدون دورتي؟</summary>
-    <div class="qa-body">لأن الاعتماد ينزل على المحتوى مو على العنوان. مراجعة المادة تحمي المتدرب، وتحمي اعتمادنا لدى الجهات الرسمية، وتحمي سمعتك أنت كمدرب معتمد. المراجعة تعطيك كذلك ملاحظات تطوّر بها دورتك.</div></details>
+    <div class="qa-body">لأن الاعتماد ينزل على المحتوى مو على العنوان. المراجعة تحمي المتدرب، وتحمي اعتمادنا لدى الجهات الرسمية، وتحمي سمعتك كمدرب معتمد — وتعطيك ملاحظات تطوّر بها دورتك.</div></details>
 
   <details class="qa"><summary>ضاعت شهادتي / ما وصلتني</summary>
     <div class="qa-body">شهاداتك محفوظة عندنا كلها. افتح صفحة ملف المتدرب على الموقع وأدخل رقم واتسابك — بتطلع لك كل شهاداتك وتقدر تحمّلها في أي وقت.</div></details>
@@ -976,26 +1093,29 @@ footer{
       <em>لا تلتزم بتقسيط على منتج ثاني بدون موافقة الإدارة.</em></div></details>
 
   <details class="qa"><summary>عضويتي انتهت — تروح مزاياي؟</summary>
-    <div class="qa-body">بانتهاء العضوية توقف المزايا الجارية: الاعتماد الجديد للدورات، إصدار الشهادات، والترشيحات. الشهادات اللي صدرت وأنت عضو ساري تبقى صحيحة وما تُلغى. التجديد يرجّع كل شي ومن نفس ملفك بدون تسجيل جديد.</div></details>
+    <div class="qa-body">بانتهاء العضوية توقف المزايا الجارية: اعتماد الدورات الجديدة، إصدار الشهادات، والترشيحات. الشهادات اللي صدرت وأنت عضو ساري تبقى صحيحة وما تُلغى. التجديد يرجّع كل شي من نفس ملفك.</div></details>
 </section>
 
-<!-- ═══ 21 ═══ -->
-<section id="s21">
-  <div class="s-num">٢١</div>
+<!-- ═══ 25 ═══ -->
+<section id="s25" data-r="pr ops cs">
+  <div class="s-num">٢٥</div>
   <h2>مصطلحات لازم تعرفها</h2>
   <dl class="gloss">
     <dt>العضو</dt><dd>مدرب مشترك في عضوية تمكين — له رقم عضوية وتاريخ انتهاء</dd>
     <dt>رقم العضوية</dt><dd>مفتاح العضو في كل الأنظمة: الحجز، الشهادات، الترشيحات، الاستشارات</dd>
-    <dt>المشترك</dt><dd>متدرب عنده اشتراك ساري في مسار (شهري / ٦ أشهر / سنوي)</dd>
+    <dt>المشترك</dt><dd>متدرب عنده اشتراك ساري في مسار</dd>
     <dt>المسجَّل</dt><dd>شخص سجّل في دورة محددة — مو بالضرورة مشترك ولا حضر</dd>
-    <dt>حالة الطلب</dt><dd>نتيجة مراجعة حجز الدورة: معتمد أو تنبيه (يحتاج تعديل)</dd>
+    <dt>الجهة</dt><dd>وزارة أو مؤسسة أو شركة نتعاقد معها لتدريب موظفيها</dd>
+    <dt>تحليل الاحتياج</dt><dd>قياس فجوة المهارات في الجهة وتحويلها لخطة تدريب</dd>
+    <dt>عرض السعر</dt><dd>مستند رسمي بترويسة تمكين فيه البرامج والقيمة ومدة السريان — يخرج باعتماد الإدارة فقط</dd>
+    <dt>حالة الطلب</dt><dd>نتيجة مراجعة حجز الدورة: معتمد أو تنبيه</dd>
     <dt>المادة</dt><dd>الحقيبة أو المذكرة اللي يرفعها المدرب لتُراجع قبل الاعتماد</dd>
     <dt>رقم اعتماد المادة</dt><dd>الرقم المرتبط بالدورة المعتمدة ويظهر في الشهادة</dd>
     <dt>تسلسل الشهادة</dt><dd>رقم فريد لكل شهادة صادرة — ما يتكرر أبداً</dd>
-    <dt>الترشيح</dt><dd>تقديم مدرب عضو لجهة حكومية أو مؤسسة بمستند رسمي بترويسة تمكين</dd>
+    <dt>الترشيح</dt><dd>تقديم مدرب عضو لجهة بمستند رسمي بترويسة تمكين</dd>
     <dt>الباقة</dt><dd>منتج مسار المدفوع: ٣ دورات وشهادات معتمدة بسعر واحد</dd>
-    <dt>الإحالة</dt><dd>عضو يدعو عضواً جديداً برابطه الخاص — ٢٠ د.ك عند دفع المدعو</dd>
-    <dt>متابعة العميل</dt><dd>سجل كل عميل محتمل: مصدره، حالة دفعه، نتيجة تواصله، وآخر متابعة</dd>
+    <dt>الإحالة</dt><dd>عضو يدعو عضواً جديداً برابطه — ٢٠ د.ك عند دفع المدعو</dd>
+    <dt>متابعة العميل</dt><dd>سجل كل عميل: مصدره، حالة دفعه، نتيجة تواصله، وآخر متابعة</dd>
   </dl>
 </section>
 
@@ -1010,7 +1130,6 @@ footer{
 </div>
 
 <script>
-/* ===== الدخول ===== */
 var GUIDE_PIN = '1990';
 function unlock(){
   var v = document.getElementById('gatePin').value.trim();
@@ -1027,14 +1146,25 @@ document.getElementById('gatePin').addEventListener('keydown', function(e){
   if(e.key === 'Enter') unlock();
 });
 try{
-  if(sessionStorage.getItem('tmkGuide') === '1'){
-    document.getElementById('gate').style.display = 'none';
-  } else {
-    document.getElementById('gatePin').focus();
-  }
+  if(sessionStorage.getItem('tmkGuide') === '1'){ document.getElementById('gate').style.display = 'none'; }
+  else { document.getElementById('gatePin').focus(); }
 }catch(e){}
 
-/* ===== البحث ===== */
+function setRole(r){
+  var btns = document.querySelectorAll('.role-btn');
+  if(r){ document.body.setAttribute('data-role', r); }
+  else { document.body.removeAttribute('data-role'); }
+  for(var i=0;i<btns.length;i++){
+    btns[i].classList.toggle('act', btns[i].getAttribute('data-role') === r);
+  }
+  try{ r ? localStorage.setItem('tmkRole', r) : localStorage.removeItem('tmkRole'); }catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+try{
+  var saved = localStorage.getItem('tmkRole');
+  if(saved) setRole(saved);
+}catch(e){}
+
 var SECTIONS = Array.prototype.slice.call(document.querySelectorAll('#doc section'));
 function filterDoc(term){
   var t = (term || '').trim().toLowerCase();
@@ -1046,13 +1176,11 @@ function filterDoc(term){
     else { sec.classList.add('hidden'); }
   });
   document.querySelector('.hero').classList.toggle('hidden', !!t);
+  document.querySelector('.roles').classList.toggle('hidden', !!t);
   document.getElementById('nores').style.display = found ? 'none' : 'block';
-  if(t){
-    document.querySelectorAll('.qa').forEach(function(d){ d.open = true; });
-  }
+  if(t){ document.querySelectorAll('.qa').forEach(function(d){ d.open = true; }); }
 }
 
-/* ===== تظليل القسم الحالي في الفهرس ===== */
 var LINKS = Array.prototype.slice.call(document.querySelectorAll('nav.rail a'));
 if('IntersectionObserver' in window){
   var obs = new IntersectionObserver(function(entries){
