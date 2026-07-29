@@ -187,6 +187,38 @@ body[data-role="pr"] nav.rail a:not([data-r~="pr"]),
 body[data-role="ops"] nav.rail a:not([data-r~="ops"]),
 body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
 
+
+/* ===== المخططات ===== */
+.figlg{display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.figlg span{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--muted);}
+.figlg i{width:13px;height:13px;border-radius:5px;display:block;}
+.figlg .f1{background:#fff;border:2px solid var(--crimson);}
+.figlg .f2{background:var(--cream-2);border:2px solid rgba(92,15,15,.3);}
+.figlg .f3{background:var(--crimson);}
+.figbox{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 14px;box-shadow:var(--shadow);margin-bottom:18px;}
+.figbox svg{display:block;margin:0 auto;height:auto;min-width:660px;max-width:100%;}
+.figbox.wide svg{min-width:940px;}
+.figbox .bx{fill:#fff;stroke:#5C0F0F;stroke-width:1.8;}
+.figbox .bxc{fill:#F2EDE5;stroke:rgba(92,15,15,.32);stroke-width:1.8;}
+.figbox .pill{fill:#5C0F0F;}
+.figbox .pill2{fill:#fff;stroke:#5C0F0F;stroke-width:2.6;}
+.figbox .dash{fill:none;stroke:rgba(92,15,15,.35);stroke-width:1.6;stroke-dasharray:7 6;}
+.figbox .ln{stroke:#5C0F0F;stroke-width:1.8;fill:none;}
+.figbox .t{font-family:'Tajawal',sans-serif;font-size:17px;font-weight:800;fill:#1A0808;}
+.figbox .t2{font-family:'Tajawal',sans-serif;font-size:15px;font-weight:500;fill:#634949;}
+.figbox .own{font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;fill:#5C0F0F;}
+.figbox .pt{font-family:'Tajawal',sans-serif;font-size:18px;font-weight:900;fill:#fff;}
+.figbox .pt2{font-family:'Tajawal',sans-serif;font-size:18px;font-weight:900;fill:#5C0F0F;}
+.figbox .n{font-family:'Amiri',serif;font-size:15px;font-weight:700;fill:#fff;}
+.figbox .lbl{font-family:'Tajawal',sans-serif;font-size:13.5px;font-weight:900;fill:#5C0F0F;}
+.figbox .fnote{font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;fill:#634949;}
+.xref{font-size:15.5px;font-weight:800;color:var(--crimson);background:var(--wash);border-radius:12px;padding:11px 16px;display:inline-block;}
+.xref a{color:var(--crimson);}
+/* إخفاء مجموعات الفهرس الفارغة حسب الدور */
+body[data-role="pr"] .rail-grp:not([data-r~="pr"]),
+body[data-role="ops"] .rail-grp:not([data-r~="ops"]),
+body[data-role="cs"] .rail-grp:not([data-r~="cs"]){display:none;}
+
 @media(max-width:960px){
   .shell{flex-direction:column;gap:0;padding-inline:18px;}
   nav.rail{position:static;width:100%;min-width:0;max-height:none;padding:20px 0 4px;border-bottom:1px solid var(--line);margin-bottom:8px;}
@@ -205,7 +237,9 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
   body{background:#fff;font-size:12.5pt;line-height:1.75;}
   body[data-role] section{display:block !important;}
   .shell{display:block;padding:0;max-width:none;}
-  .card,.tw,.arm,.gloss,.brief{box-shadow:none;break-inside:avoid;}
+  .card,.tw,.arm,.gloss,.brief,.figbox{box-shadow:none;break-inside:avoid;}
+  .figbox{border:none;padding:0;overflow:visible;}
+  .figbox svg{min-width:0 !important;width:100%;}
   section{break-inside:avoid-page;margin-bottom:28px;}
   .qa{border:none;}
   .qa-body{display:block !important;}
@@ -247,20 +281,20 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
 
 <nav class="rail">
   <div class="rail-cols">
-    <div>
+    <div class="rail-grp" data-r="pr ops cs">
       <div class="rail-head">الأساس</div>
       <a href="#s1" data-r="pr ops cs"><b>١</b>من نحن</a>
       <a href="#s2" data-r="pr ops cs"><b>٢</b>الاعتمادات</a>
       <a href="#s3" data-r="pr ops cs"><b>٣</b>الذراعان</a>
       <a href="#s4" data-r="pr ops cs"><b>٤</b>خريطة خدماتنا</a>
     </div>
-    <div>
+    <div class="rail-grp" data-r="pr ops">
       <div class="rail-head">الجهات</div>
       <a href="#s5" data-r="pr ops"><b>٥</b>التدريب للجهات</a>
       <a href="#s6" data-r="pr ops"><b>٦</b>تحليل الاحتياج</a>
       <a href="#s7" data-r="pr ops"><b>٧</b>دورة عرض السعر</a>
     </div>
-    <div>
+    <div class="rail-grp" data-r="pr ops cs">
       <div class="rail-head">تمكين</div>
       <a href="#s8" data-r="pr ops cs"><b>٨</b>العضوية والأسعار</a>
       <a href="#s9" data-r="pr ops cs"><b>٩</b>المزايا الـ١٤</a>
@@ -271,14 +305,14 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
       <a href="#s14" data-r="ops cs"><b>١٤</b>الاستشارات</a>
       <a href="#s15" data-r="pr ops cs"><b>١٥</b>دورة مدرب معتمد</a>
     </div>
-    <div>
+    <div class="rail-grp" data-r="ops cs">
       <div class="rail-head">مسار</div>
       <a href="#s16" data-r="ops cs"><b>١٦</b>الدورة المجانية</a>
       <a href="#s17" data-r="cs"><b>١٧</b>الاشتراكات</a>
       <a href="#s18" data-r="cs"><b>١٨</b>الباقات</a>
       <a href="#s19" data-r="ops cs"><b>١٩</b>شهادات مسار</a>
     </div>
-    <div>
+    <div class="rail-grp" data-r="pr ops cs">
       <div class="rail-head">التشغيل</div>
       <a href="#s20" data-r="pr ops cs"><b>٢٠</b>لوحات العمل</a>
       <a href="#s21" data-r="ops cs"><b>٢١</b>الحضور والقاعة</a>
@@ -286,6 +320,11 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
       <a href="#s23" data-r="pr ops cs"><b>٢٣</b>روتين كل دور</a>
       <a href="#s24" data-r="pr cs"><b>٢٤</b>ردود جاهزة</a>
       <a href="#s25" data-r="pr ops cs"><b>٢٥</b>مصطلحات</a>
+    </div>
+    <div class="rail-grp" data-r="ops cs">
+      <div class="rail-head">المخططات</div>
+      <a href="#s26" data-r="ops cs"><b>٢٦</b>مخطط آلية العضوية</a>
+      <a href="#s27" data-r="ops cs"><b>٢٧</b>مخطط رحلة المسجل</a>
     </div>
   </div>
 </nav>
@@ -697,6 +736,7 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
     <div class="step" data-n="٧"><div class="step-t">المتابعة الدورية<span class="step-who">منسق العمليات</span></div><div class="step-d">العضو الصامت هو عضو ما بيجدد. تابعه: عنده دورة قادمة؟ استفاد من مزاياه؟</div></div>
     <div class="step" data-n="٨"><div class="step-t">التجديد<span class="step-who">خدمة العملاء</span></div><div class="step-d">قبل الانتهاء بشهر. اذكر له وش استفاد فعلياً هالسنة — أقوى من أي عرض سعر.</div></div>
   </div>
+  <p class="xref">المخطط السهمي الكامل لهذي الآلية في <a href="#s26">القسم ٢٦</a></p>
 </section>
 
 <!-- ═══ 11 ═══ -->
@@ -816,6 +856,7 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
     <div class="step" data-n="٥"><div class="step-t">قرار الشهادة</div><div class="step-d">طالب شهادة وما دفع؟ يظهر له الدفع. قال ما يبي؟ تُعرض عليه قيمة الاعتماد آخر مرة، والنتيجة تُسجّل.</div></div>
     <div class="step" data-n="٦"><div class="step-t">العرض التالي</div><div class="step-d">هنا دورك الحقيقي: حضر ومستانس؟ اعرض عليه <strong>الاشتراك</strong> أو <strong>الباقة</strong>. أفضل لحظة للبيع في كل الرحلة.</div></div>
   </div>
+  <p class="xref">مخطط رحلة المسجل كاملة — من الجدول للشهادة — في <a href="#s27">القسم ٢٧</a></p>
 </section>
 
 <!-- ═══ 17 ═══ -->
@@ -1117,6 +1158,265 @@ body[data-role="cs"] nav.rail a:not([data-r~="cs"]){display:none;}
     <dt>الإحالة</dt><dd>عضو يدعو عضواً جديداً برابطه — ٢٠ د.ك عند دفع المدعو</dd>
     <dt>متابعة العميل</dt><dd>سجل كل عميل: مصدره، حالة دفعه، نتيجة تواصله، وآخر متابعة</dd>
   </dl>
+</section>
+
+<!-- ═══ 26 ═══ -->
+<section id="s26" data-r="ops cs">
+  <div class="s-num">٢٦</div>
+  <h2>مخطط آلية العضوية</h2>
+  <p class="s-lede">من اهتمام العميل حتى توقيع العقدين. مساران للدخول يلتقيان عند الخطوة ٤، وجميع الخطوات التشغيلية يقوم بها مدير العمليات.</p>
+  <div class="figlg">
+    <span><i class="f1"></i> خطوة يقوم بها الفريق</span>
+    <span><i class="f2"></i> حالة العميل</span>
+    <span><i class="f3"></i> قائمة / نهاية</span>
+  </div>
+  <div class="figbox">
+  <svg viewBox="0 0 880 1300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="مخطط آلية العضوية">
+    <defs>
+      <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#5C0F0F"/>
+      </marker>
+    </defs>
+    <!-- البداية -->
+    <rect class="pill" x="290" y="30" width="300" height="52" rx="26"/>
+    <text class="pt" x="440" y="62" text-anchor="middle">عميل مهتم بعضوية تمكين</text>
+    <!-- تفرّع -->
+    <path class="ln" d="M440 82 L440 106 L620 106 L620 128" marker-end="url(#arA)"/>
+    <path class="ln" d="M440 106 L260 106 L260 128" marker-end="url(#arA)"/>
+    <text class="tag" x="700" y="100" text-anchor="middle">المسار الأول</text>
+    <text class="tag" x="180" y="100" text-anchor="middle">المسار الثاني</text>
+    <!-- ١ يمين -->
+    <rect class="bxc" x="470" y="130" width="300" height="78" rx="16"/>
+    <circle cx="750" cy="130" r="15" fill="#5C0F0F"/><text class="n" x="750" y="135" text-anchor="middle">١</text>
+    <text class="t" x="620" y="164" text-anchor="middle">يقدّم طلب انتساب للعضوية</text>
+    <text class="own" x="620" y="188" text-anchor="middle">العميل</text>
+    <!-- ١ يسار -->
+    <rect class="bxc" x="110" y="130" width="300" height="78" rx="16"/>
+    <circle cx="390" cy="130" r="15" fill="#5C0F0F"/><text class="n" x="390" y="135" text-anchor="middle">١</text>
+    <text class="t" x="260" y="164" text-anchor="middle">مشترك في دورة إعداد مدرب معتمد</text>
+    <text class="own" x="260" y="188" text-anchor="middle">العميل</text>
+    <path class="ln" d="M620 208 L620 244" marker-end="url(#arA)"/>
+    <path class="ln" d="M260 208 L260 244" marker-end="url(#arA)"/>
+    <!-- ٢ يمين -->
+    <rect class="bx" x="470" y="246" width="300" height="92" rx="16"/>
+    <circle cx="750" cy="246" r="15" fill="#5C0F0F"/><text class="n" x="750" y="251" text-anchor="middle">٢</text>
+    <text class="t" x="620" y="278" text-anchor="middle">التواصل معه هاتفياً</text>
+    <text class="t2" x="620" y="301" text-anchor="middle">عرض المزايا والفرق بين</text>
+    <text class="t2" x="620" y="322" text-anchor="middle">المبتدئ والممارس</text>
+    <!-- ٢ يسار -->
+    <rect class="bx" x="110" y="246" width="300" height="92" rx="16"/>
+    <circle cx="390" cy="246" r="15" fill="#5C0F0F"/><text class="n" x="390" y="251" text-anchor="middle">٢</text>
+    <text class="t" x="260" y="278" text-anchor="middle">بعد انتهاء الدورة</text>
+    <text class="t2" x="260" y="301" text-anchor="middle">التواصل معه</text>
+    <text class="t2" x="260" y="322" text-anchor="middle">وفق الاحتياج</text>
+    <path class="ln" d="M620 338 L620 374" marker-end="url(#arA)"/>
+    <path class="ln" d="M260 338 L260 374" marker-end="url(#arA)"/>
+    <!-- ٣ يمين -->
+    <rect class="bxc" x="470" y="376" width="300" height="64" rx="16"/>
+    <circle cx="750" cy="376" r="15" fill="#5C0F0F"/><text class="n" x="750" y="381" text-anchor="middle">٣</text>
+    <text class="t" x="620" y="415" text-anchor="middle">الدفع</text>
+    <!-- ٣ يسار -->
+    <rect class="bxc" x="110" y="376" width="300" height="64" rx="16"/>
+    <circle cx="390" cy="376" r="15" fill="#5C0F0F"/><text class="n" x="390" y="381" text-anchor="middle">٣</text>
+    <text class="t" x="260" y="415" text-anchor="middle">الانتهاء من دورة مدرب معتمد</text>
+    <!-- الالتقاء -->
+    <path class="ln" d="M620 440 L620 464 L440 464"/>
+    <path class="ln" d="M260 440 L260 464 L440 464"/>
+    <path class="ln" d="M440 464 L440 480" marker-end="url(#arA)"/>
+    <!-- ٤ -->
+    <rect class="bx" x="210" y="482" width="460" height="64" rx="16"/>
+    <circle cx="650" cy="482" r="15" fill="#5C0F0F"/><text class="n" x="650" y="487" text-anchor="middle">٤</text>
+    <text class="t" x="440" y="514" text-anchor="middle">إرسال رابط تسجيل البيانات</text>
+    <text class="own" x="440" y="534" text-anchor="middle">مدير العمليات</text>
+    <path class="ln" d="M440 546 L440 582" marker-end="url(#arA)"/>
+    <!-- ٥ -->
+    <rect class="bxc" x="210" y="584" width="460" height="64" rx="16"/>
+    <circle cx="650" cy="584" r="15" fill="#5C0F0F"/><text class="n" x="650" y="589" text-anchor="middle">٥</text>
+    <text class="t" x="440" y="616" text-anchor="middle">العضو يسجّل بياناته</text>
+    <text class="own" x="440" y="636" text-anchor="middle">العميل</text>
+    <path class="ln" d="M440 648 L440 684" marker-end="url(#arA)"/>
+    <!-- ٦ -->
+    <rect class="bx" x="210" y="686" width="460" height="96" rx="16"/>
+    <circle cx="650" cy="686" r="15" fill="#5C0F0F"/><text class="n" x="650" y="691" text-anchor="middle">٦</text>
+    <text class="t" x="440" y="718" text-anchor="middle">إعداد عضوية المدرب</text>
+    <text class="t2" x="440" y="741" text-anchor="middle">استخراج رقم العضوية من بيانات الأعضاء،</text>
+    <text class="t2" x="440" y="762" text-anchor="middle">وتحديد تاريخ بدء العضوية وانتهائها</text>
+    <path class="ln" d="M440 782 L440 818" marker-end="url(#arA)"/>
+    <!-- ٧ -->
+    <rect class="bx" x="210" y="820" width="460" height="96" rx="16"/>
+    <circle cx="650" cy="820" r="15" fill="#5C0F0F"/><text class="n" x="650" y="825" text-anchor="middle">٧</text>
+    <text class="t" x="440" y="852" text-anchor="middle">إرسال رقم العضوية</text>
+    <text class="t2" x="440" y="875" text-anchor="middle">مع رابط لوحة التحكم</text>
+    <text class="t2" x="440" y="896" text-anchor="middle">ورابط قناة الواتساب</text>
+    <path class="ln" d="M440 916 L440 952" marker-end="url(#arA)"/>
+    <!-- ٨ -->
+    <rect class="bx" x="210" y="954" width="460" height="82" rx="16"/>
+    <circle cx="650" cy="954" r="15" fill="#5C0F0F"/><text class="n" x="650" y="959" text-anchor="middle">٨</text>
+    <text class="t" x="440" y="986" text-anchor="middle">الاتصال بالمدرب</text>
+    <text class="t2" x="440" y="1009" text-anchor="middle">وشرح آلية استخدام لوحة التحكم</text>
+    <path class="ln" d="M440 1036 L440 1072" marker-end="url(#arA)"/>
+    <!-- ٩ -->
+    <rect class="bx" x="210" y="1074" width="460" height="82" rx="16"/>
+    <circle cx="650" cy="1074" r="15" fill="#5C0F0F"/><text class="n" x="650" y="1079" text-anchor="middle">٩</text>
+    <text class="t" x="440" y="1106" text-anchor="middle">طلب حضور العضو للتوقيع</text>
+    <text class="t2" x="440" y="1129" text-anchor="middle">عقد تمكين وعقد مسار التدريبي</text>
+    <path class="ln" d="M440 1156 L440 1192" marker-end="url(#arA)"/>
+    <!-- النهاية -->
+    <rect class="pill" x="290" y="1194" width="300" height="56" rx="28"/>
+    <text class="pt" x="440" y="1229" text-anchor="middle">عضو مفعّل</text>
+  </svg>
+  </div>
+  <div class="note">
+    <div class="note-t">قراءة المخطط</div>
+    <p>المسار الأول يبدأ من طلب الانتساب وينتهي بالدفع، والمسار الثاني يبدأ من الاشتراك في دورة إعداد مدرب معتمد وينتهي بإتمام الدورة. المساران يلتقيان عند إرسال رابط تسجيل البيانات، ويكملان بنفس الخطوات حتى توقيع عقد تمكين وعقد مسار التدريبي.</p>
+  </div>
+</section>
+
+<!-- ═══ 27 ═══ -->
+<section id="s27" data-r="ops cs">
+  <div class="s-num">٢٧</div>
+  <h2>مخطط رحلة المسجل في الدورات</h2>
+  <p class="s-lede">من تنسيق الجدول التدريبي حتى إصدار الشهادة، مروراً بتصنيف المسجلين إلى ثلاث قوائم ودورة التواصل معهم.</p>
+  <div class="figlg">
+    <span><i class="f1"></i> خطوة يقوم بها الفريق</span>
+    <span><i class="f2"></i> حالة العميل</span>
+    <span><i class="f3"></i> قائمة / نهاية</span>
+  </div>
+  <div class="figbox wide">
+  <svg viewBox="0 0 1200 1500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="مخطط رحلة المسجل في الدورات التدريبية">
+    <defs>
+      <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#5C0F0F"/>
+      </marker>
+    </defs>
+    <!-- ١ تنسيق الجدول -->
+    <rect class="bx" x="380" y="40" width="440" height="76" rx="16"/>
+    <circle cx="800" cy="40" r="15" fill="#5C0F0F"/><text class="n" x="800" y="45" text-anchor="middle">١</text>
+    <text class="t" x="600" y="74" text-anchor="middle">تنسيق الجدول التدريبي</text>
+    <text class="own" x="600" y="98" text-anchor="middle">منسق العمليات</text>
+    <path class="ln" d="M600 116 L600 142 L840 142 L840 166" marker-end="url(#arB)"/>
+    <path class="ln" d="M600 142 L360 142 L360 166" marker-end="url(#arB)"/>
+    <!-- ٢ النشر -->
+    <rect class="bx" x="620" y="168" width="440" height="104" rx="16"/>
+    <circle cx="1040" cy="168" r="15" fill="#5C0F0F"/><text class="n" x="1040" y="173" text-anchor="middle">٢</text>
+    <text class="t" x="840" y="198" text-anchor="middle">نشر الجدول التدريبي</text>
+    <text class="t2" x="840" y="221" text-anchor="middle">على برامج التواصل الاجتماعي، والإعلان</text>
+    <text class="t2" x="840" y="242" text-anchor="middle">في السبونسر أو الحسابات المعلنة</text>
+    <text class="own" x="840" y="263" text-anchor="middle">فريق التسويق</text>
+    <!-- ٣ التواصل مع العملاء السابقين -->
+    <rect class="bx" x="140" y="168" width="440" height="104" rx="16"/>
+    <circle cx="560" cy="168" r="15" fill="#5C0F0F"/><text class="n" x="560" y="173" text-anchor="middle">٣</text>
+    <text class="t" x="360" y="198" text-anchor="middle">التواصل مع العملاء السابقين</text>
+    <text class="t2" x="360" y="221" text-anchor="middle">وعرض الجدول التدريبي عليهم</text>
+    <text class="t2" x="360" y="242" text-anchor="middle">من خلال قوائم اتصال مخصصة</text>
+    <text class="own" x="360" y="263" text-anchor="middle">فريق البيع والاتصال</text>
+    <path class="ln" d="M840 272 L840 298 L600 298"/>
+    <path class="ln" d="M360 272 L360 298 L600 298"/>
+    <path class="ln" d="M600 298 L600 322" marker-end="url(#arB)"/>
+    <!-- ٤ التسجيل -->
+    <rect class="bxc" x="400" y="324" width="400" height="64" rx="16"/>
+    <circle cx="780" cy="324" r="15" fill="#5C0F0F"/><text class="n" x="780" y="329" text-anchor="middle">٤</text>
+    <text class="t" x="600" y="363" text-anchor="middle">العميل يسجّل بياناته</text>
+    <path class="ln" d="M600 388 L600 420 L976 420 L976 446" marker-end="url(#arB)"/>
+    <path class="ln" d="M600 420 L600 446" marker-end="url(#arB)"/>
+    <path class="ln" d="M600 420 L224 420 L224 446" marker-end="url(#arB)"/>
+    <!-- التصنيف الثلاثي -->
+    <rect class="bxc" x="816" y="448" width="320" height="64" rx="16"/>
+    <text class="t" x="976" y="480" text-anchor="middle">سجّل ودفع</text>
+    <text class="t" x="976" y="501" text-anchor="middle">رسوم الشهادة</text>
+    <rect class="bxc" x="440" y="448" width="320" height="64" rx="16"/>
+    <text class="t" x="600" y="480" text-anchor="middle">سجّل</text>
+    <text class="t" x="600" y="501" text-anchor="middle">وقيد الدفع</text>
+    <rect class="bxc" x="64" y="448" width="320" height="64" rx="16"/>
+    <text class="t" x="224" y="480" text-anchor="middle">سجّل</text>
+    <text class="t" x="224" y="501" text-anchor="middle">ولم يهتم بالدفع</text>
+    <!-- إجراء القسم الثاني -->
+    <path class="ln" d="M600 512 L600 546" marker-end="url(#arB)"/>
+    <rect class="bx" x="440" y="548" width="320" height="88" rx="16"/>
+    <text class="t" x="600" y="582" text-anchor="middle">متابعة الدفع</text>
+    <text class="own" x="600" y="612" text-anchor="middle">فريق المتابعة وخدمة العملاء</text>
+    <!-- إجراء القسم الثالث -->
+    <path class="ln" d="M224 512 L224 546" marker-end="url(#arB)"/>
+    <rect class="bx" x="64" y="548" width="320" height="88" rx="16"/>
+    <text class="t" x="224" y="582" text-anchor="middle">عرض الشهادة وميزتها</text>
+    <text class="own" x="224" y="612" text-anchor="middle">فريق المتابعة وخدمة العملاء</text>
+    <!-- القسم الأول مباشرة للقائمة الأولى -->
+    <path class="ln" d="M976 512 L976 694" marker-end="url(#arB)"/>
+    <!-- مخرجات القسم الثاني -->
+    <path class="ln" d="M600 636 L600 694" marker-end="url(#arB)"/>
+    <path class="ln" d="M600 656 L880 656 L880 694" marker-end="url(#arB)"/>
+    <text class="lbl" x="748" y="648" text-anchor="middle">دفع</text>
+    <text class="lbl" x="548" y="678" text-anchor="middle">لم يدفع</text>
+    <!-- مخرجات القسم الثالث -->
+    <path class="ln" d="M224 636 L224 694" marker-end="url(#arB)"/>
+    <text class="lbl" x="176" y="678" text-anchor="middle">لم يهتم</text>
+    <path class="ln" d="M224 666 L520 666 L520 694" marker-end="url(#arB)"/>
+    <text class="lbl" x="370" y="658" text-anchor="middle">يفكر أو اهتم</text>
+    <path class="ln" d="M384 592 L412 592 L412 780 L788 780 A8 8 0 0 1 804 780 L1100 780 L1100 758" marker-end="url(#arB)"/>
+    <text class="lbl" x="470" y="772" text-anchor="middle">دفع</text>
+    <!-- القوائم الثلاث -->
+    <rect class="pill" x="816" y="696" width="320" height="60" rx="30"/>
+    <text class="pt" x="976" y="733" text-anchor="middle">القائمة الأولى</text>
+    <rect class="pill2" x="440" y="696" width="320" height="60" rx="30"/>
+    <text class="pt2" x="600" y="733" text-anchor="middle">قائمة المتابعة</text>
+    <rect class="bxc" x="64" y="696" width="320" height="60" rx="30"/>
+    <text class="pt2" x="224" y="733" text-anchor="middle">القائمة الباردة</text>
+    <!-- إجراءات القائمة الأولى -->
+    <path class="ln" d="M976 756 L976 804" marker-end="url(#arB)"/>
+    <rect class="bx" x="816" y="806" width="320" height="88" rx="16"/>
+    <text class="t" x="976" y="840" text-anchor="middle">تذكير العميل قبل الدورة</text>
+    <text class="own" x="976" y="870" text-anchor="middle">فريق خدمة العملاء والمتابعة</text>
+    <path class="ln" d="M976 894 L976 932" marker-end="url(#arB)"/>
+    <rect class="bx" x="816" y="934" width="320" height="88" rx="16"/>
+    <text class="t" x="976" y="968" text-anchor="middle">طباعة وإصدار الشهادات</text>
+    <text class="own" x="976" y="998" text-anchor="middle">منسق العمليات</text>
+    <!-- دورة التواصل -->
+    <path class="ln" d="M600 756 L600 804" marker-end="url(#arB)"/>
+    <rect class="bx" x="420" y="806" width="360" height="112" rx="16"/>
+    <circle cx="760" cy="806" r="15" fill="#5C0F0F"/><text class="n" x="760" y="811" text-anchor="middle">٥</text>
+    <text class="t" x="600" y="836" text-anchor="middle">التواصل الثاني — بعد ٣ أيام</text>
+    <text class="t2" x="600" y="859" text-anchor="middle">رسالة واتساب عن أهمية الشهادة</text>
+    <text class="t2" x="600" y="880" text-anchor="middle">وكيف تضيف له ميزة</text>
+    <text class="own" x="600" y="903" text-anchor="middle">فريق المتابعة وخدمة العملاء</text>
+    <path class="ln" d="M600 918 L600 966" marker-end="url(#arB)"/>
+    <text class="lbl" x="524" y="946" text-anchor="middle">لم يتجاوب</text>
+    <rect class="bx" x="420" y="968" width="360" height="112" rx="16"/>
+    <circle cx="760" cy="968" r="15" fill="#5C0F0F"/><text class="n" x="760" y="973" text-anchor="middle">٦</text>
+    <text class="t" x="600" y="998" text-anchor="middle">التواصل الأخير قبل الدورة</text>
+    <text class="t2" x="600" y="1021" text-anchor="middle">تذكير بموعد الدورة، وأن الفرصة</text>
+    <text class="t2" x="600" y="1042" text-anchor="middle">ما زالت قائمة لاستخراج الشهادة</text>
+    <text class="own" x="600" y="1065" text-anchor="middle">فريق المتابعة وخدمة العملاء</text>
+    <path class="ln" d="M600 1080 L600 1128" marker-end="url(#arB)"/>
+    <text class="lbl" x="536" y="1108" text-anchor="middle">لم يدفع</text>
+    <rect class="bx" x="420" y="1130" width="360" height="112" rx="16"/>
+    <circle cx="760" cy="1130" r="15" fill="#5C0F0F"/><text class="n" x="760" y="1135" text-anchor="middle">٧</text>
+    <text class="t" x="600" y="1160" text-anchor="middle">التواصل بعد الدورة — الأخير</text>
+    <text class="t2" x="600" y="1183" text-anchor="middle">رأيه في الدورة التدريبية، وهل ما زال</text>
+    <text class="t2" x="600" y="1204" text-anchor="middle">مهتماً بالشهادة أو لا</text>
+    <text class="own" x="600" y="1227" text-anchor="middle">فريق المتابعة وخدمة العملاء</text>
+    <!-- عودة اهتم ودفع إلى القائمة الأولى -->
+    <path class="ln" d="M780 862 L796 862"/>
+    <path class="ln" d="M780 1024 L796 1024"/>
+    <path class="ln" d="M796 1024 L796 726 L814 726" marker-end="url(#arB)"/>
+    <text class="lbl" x="782" y="946" text-anchor="middle" transform="rotate(-90 782 946)">اهتم ودفع</text>
+    <!-- مخرجات التواصل الأخير -->
+    <path class="ln" d="M600 1242 L600 1290" marker-end="url(#arB)"/>
+    <text class="lbl" x="548" y="1270" text-anchor="middle">اهتم</text>
+    <rect class="pill" x="440" y="1292" width="320" height="56" rx="28"/>
+    <text class="pt" x="600" y="1327" text-anchor="middle">قائمة المشتركين</text>
+    <path class="ln" d="M420 1186 L40 1186 L40 726 L62 726" marker-end="url(#arB)"/>
+    <text class="lbl" x="54" y="960" text-anchor="middle" transform="rotate(-90 54 960)">لم يدفع</text>
+    <!-- التكرار -->
+    <rect class="dash" x="64" y="1400" width="1072" height="64" rx="16"/>
+    <text class="fnote" x="600" y="1428" text-anchor="middle">تتكرر العملية حسب الجدول التدريبي وحسب الدورات،</text>
+    <text class="fnote" x="600" y="1450" text-anchor="middle">وتُحدَّد الأولوية حسب قرب موعد الدورة</text>
+  </svg>
+  </div>
+  <div class="note">
+    <div class="note-t">قراءة المخطط</div>
+    <p>بعد تسجيل البيانات ينقسم المسجلون إلى ثلاثة أقسام، ومخرجات كل قسم تصبّ في واحدة من ثلاث قوائم: القائمة الأولى، قائمة المتابعة، والقائمة الباردة.</p>
+    <p style="margin-bottom:0">دورة التواصل تخصّ قائمة المتابعة وحدها: ثلاث محطات، وفي كل محطة من يهتم ويدفع ينتقل إلى القائمة الأولى، ومن لا يتجاوب يبقى في المتابعة حتى المحطة الأخيرة بعد الدورة.</p>
+  </div>
 </section>
 
 <div class="nores" id="nores">ما لقينا شي بهذا البحث — جرّب كلمة ثانية.</div>
