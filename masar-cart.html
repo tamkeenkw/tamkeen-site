@@ -80,6 +80,37 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .warn-t{font-size:14px;font-weight:900;color:var(--red);margin-bottom:5px;}
 .warn-s{font-size:12.5px;color:var(--red);line-height:1.75;}
 
+/* إضافة دورة من داخل السلة */
+.addbtn{width:100%;background:#fff;border:2px dashed rgba(92,15,15,.22);border-radius:16px;padding:15px;
+  font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;color:var(--crimson);cursor:pointer;
+  transition:.2s;margin-bottom:12px;}
+.addbtn:hover{border-color:var(--crimson);background:var(--cream);}
+.addbtn.on{border-style:solid;background:var(--crimson);color:#fff;}
+.picker{background:#fff;border-radius:18px;border:1.5px solid rgba(92,15,15,.1);padding:16px;margin-bottom:14px;}
+.ptabs{display:flex;gap:7px;margin-bottom:12px;}
+.ptab{flex:1;background:var(--cream);border:none;border-radius:10px;padding:9px;font-family:'Tajawal',sans-serif;
+  font-size:13px;font-weight:900;color:var(--muted);cursor:pointer;transition:.2s;}
+.ptab.on{background:var(--crimson);color:#fff;}
+.psearch{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:11px;
+  padding:10px 13px;font-family:'Tajawal',sans-serif;font-size:13.5px;outline:none;margin-bottom:11px;}
+.psearch:focus{border-color:var(--crimson);background:#fff;}
+.plist{max-height:330px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;}
+.prow{display:flex;align-items:center;gap:11px;background:var(--cream);border-radius:12px;padding:10px 12px;
+  border:1.5px solid transparent;transition:.2s;}
+.prow:hover{border-color:rgba(92,15,15,.16);background:#fff;}
+.prow img{width:46px;height:46px;border-radius:9px;object-fit:cover;flex-shrink:0;background:var(--cream-2);}
+.prow-ph{width:46px;height:46px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--crimson),var(--crimson-3));
+  display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:17px;font-weight:900;}
+.prow-b{flex:1;min-width:0;}
+.prow-n{font-size:13.5px;font-weight:900;line-height:1.4;}
+.prow-m{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px;}
+.prow-p{font-size:13px;font-weight:900;color:var(--crimson);white-space:nowrap;}
+.prow-p.free{color:var(--green);}
+.padd{background:var(--crimson);color:#fff;border:none;border-radius:100px;width:32px;height:32px;
+  font-size:17px;font-weight:900;cursor:pointer;flex-shrink:0;line-height:1;transition:.2s;}
+.padd:hover{background:var(--crimson-2);transform:scale(1.08);}
+.pempty{text-align:center;padding:26px 12px;color:var(--muted);font-size:13px;font-weight:700;}
+
 .side{background:#fff;border-radius:20px;padding:22px;border:1.5px solid rgba(92,15,15,.06);position:sticky;top:18px;}
 .side-h{font-size:16px;font-weight:900;margin-bottom:14px;}
 .row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;color:var(--muted);padding:6px 0;}
@@ -141,6 +172,7 @@ const KEY  = 'masar_cart';
 const DISC = 0.10;
 
 let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], CERTP = 15, MEM = null, TMR = null;
+let PICK_OPEN = false, PICK_TAB = 'course', PICK_Q = '';
 
 function readCart(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
 function writeCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){} }
@@ -305,7 +337,9 @@ function render(){
     '<div class="h1">سلة التسجيل</div>' +
     '<div class="sub">راجع اختياراتك قبل إتمام الدفع</div>' +
     '<div id="memBox"></div>' +
-    '<div class="grid"><div id="itemsBox"></div>' +
+    '<div class="grid"><div><div id="itemsBox"></div>' +
+      '<button class="addbtn" id="addBtn" onclick="togglePicker()">+ أضف دورة إضافية</button>' +
+      '<div id="pickerBox"></div></div>' +
     '<div class="side">' +
       '<div class="side-h">ملخص الطلب</div>' +
       '<div id="sumBox"></div>' +
@@ -330,6 +364,7 @@ function paint(){
   paintMember(c);
   paintItems(c);
   paintSummary(c);
+  paintPicker();
 }
 
 function paintMember(c){
@@ -471,6 +506,108 @@ function addSub(id){
   writeCart(CART);
   render();
   window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ===== لوحة إضافة دورة من داخل السلة ===== */
+function togglePicker(){
+  PICK_OPEN = !PICK_OPEN;
+  paintPicker();
+  if(PICK_OPEN){
+    setTimeout(function(){
+      const el = document.getElementById('pickerBox');
+      if(el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 60);
+  }
+}
+
+function setPickTab(t){ PICK_TAB = t; paintPicker(); }
+
+function onPickSearch(v){
+  PICK_Q = String(v || '').trim();
+  paintList();
+}
+
+function paintPicker(){
+  const btn = document.getElementById('addBtn');
+  const box = document.getElementById('pickerBox');
+  if(!btn || !box) return;
+
+  btn.textContent = PICK_OPEN ? '✕ إغلاق' : '+ أضف دورة إضافية';
+  btn.className   = PICK_OPEN ? 'addbtn on' : 'addbtn';
+
+  if(!PICK_OPEN){ box.innerHTML = ''; return; }
+
+  box.innerHTML =
+    '<div class="picker">' +
+      '<div class="ptabs">' +
+        '<button class="ptab' + (PICK_TAB === 'course' ? ' on' : '') + '" onclick="setPickTab(\'course\')">الدورات</button>' +
+        '<button class="ptab' + (PICK_TAB === 'package' ? ' on' : '') + '" onclick="setPickTab(\'package\')">الباقات</button>' +
+      '</div>' +
+      '<input class="psearch" type="text" placeholder="ابحث باسم الدورة أو المدرب..." ' +
+        'value="' + esc(PICK_Q) + '" oninput="onPickSearch(this.value)">' +
+      '<div class="plist" id="plist"></div>' +
+    '</div>';
+
+  paintList();
+}
+
+function paintList(){
+  const el = document.getElementById('plist');
+  if(!el) return;
+
+  const src  = (PICK_TAB === 'package') ? DATA.packages : DATA.courses;
+  const disc = (MEM && MEM.active) || CART.some(function(x){ return x.kind === 'subscription'; }) ? DISC : 0;
+
+  const rows = src.filter(function(o){
+    if(CART.some(function(x){ return x.kind === PICK_TAB && x.id === o.id; })) return false;
+    if(o.seats > 0 && o.remaining !== null && o.remaining <= 0) return false;
+    if(!PICK_Q) return true;
+    return (o.name + ' ' + (o.trainer || '')).indexOf(PICK_Q) > -1;
+  });
+
+  if(rows.length === 0){
+    el.innerHTML = '<div class="pempty">' +
+      (PICK_Q ? 'ما لقينا نتيجة لبحثك' :
+        (PICK_TAB === 'package' ? 'كل الباقات المتاحة في سلتك' : 'كل الدورات المتاحة في سلتك')) +
+      '</div>';
+    return;
+  }
+
+  el.innerHTML = rows.map(function(o){
+    const img = o.image
+      ? '<img src="' + esc(o.image) + '" alt="">'
+      : '<div class="prow-ph">' + (PICK_TAB === 'package' ? '📦' : esc(initial(o.trainer))) + '</div>';
+
+    let meta, price;
+
+    if(PICK_TAB === 'package'){
+      meta  = '📚 ' + ar(o.count) + ' دورات';
+      price = '<span class="prow-p">' + ar(r3(o.price * (1 - disc))) + ' د.ك</span>';
+    }else{
+      meta = (o.trainer ? esc(o.trainer) : '') + (o.date ? ' · ' + esc(dateAr(o.date)) : '');
+      price = o.isFree
+        ? '<span class="prow-p free">مجاني</span>'
+        : '<span class="prow-p">' + ar(r3(o.price * (1 - disc))) + ' د.ك</span>';
+    }
+
+    return '<div class="prow">' + img +
+      '<div class="prow-b"><div class="prow-n">' + esc(o.name) + '</div>' +
+      '<div class="prow-m">' + meta + '</div></div>' + price +
+      '<button class="padd" onclick="quickAdd(\'' + PICK_TAB + '\',\'' + o.id + '\')" title="أضف للسلة">+</button>' +
+      '</div>';
+  }).join('');
+}
+
+function quickAdd(kind, id){
+  if(CART.some(function(x){ return x.kind === kind && x.id === id; })) return;
+
+  const o = find(kind, id);
+  const cert = o ? (kind === 'package' ? !!o.hasCertFee : (o.isFree ? false : true)) : false;
+
+  CART.push({ kind:kind, id:id, cert:cert });
+  writeCart(CART);
+  render();
+  paintPicker();
 }
 
 /* ===== الدفع ===== */
