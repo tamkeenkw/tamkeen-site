@@ -74,6 +74,30 @@ tr.paid td{background:var(--green-bg)}
 .toast.ok{background:var(--green)}
 .toast.bad{background:var(--red)}
 
+/* تبويبات رئيسية */
+.mtabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.mtab{background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:11px 22px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;color:var(--muted);cursor:pointer}
+.mtab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.view{display:none}
+.view.on{display:block}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.fsel{background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 15px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--crimson);outline:none;cursor:pointer}
+.fsel:focus{border-color:var(--gold)}
+.fsearch{flex:1;min-width:160px;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 16px;font-family:'Cairo',sans-serif;font-size:13.5px;font-weight:700;outline:none}
+.fsearch:focus{border-color:var(--gold)}
+
+.tag{display:inline-block;padding:4px 11px;border-radius:100px;font-size:11.5px;font-weight:900;white-space:nowrap}
+.t-issued{background:var(--green-bg);color:var(--green)}
+.t-unissued{background:#E3F2FD;color:#1565C0}
+.t-pending{background:var(--amber-bg);color:var(--amber)}
+.t-want{background:#F3E5F5;color:#7B1FA2}
+.t-none{background:var(--cream2);color:var(--muted)}
+.s-adm{background:#EDE7F6;color:#5E35B1}
+.s-edu{background:#E0F2F1;color:#00695C}
+.s-tech{background:#FFF3E0;color:#E65100}
+.mini-n{font-size:11.5px;color:var(--muted);font-weight:700}
+
 /* شاشة الدخول */
 #gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;padding:24px;z-index:200}
 .gate-box{background:#fff;border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -133,6 +157,13 @@ tr.paid td{background:var(--green-bg)}
 
   <div class="err" id="errBox"></div>
 
+  <div class="mtabs">
+    <button class="mtab on" data-v="courses" onclick="goTab('courses')">حسب الدورة</button>
+    <button class="mtab" data-v="all" onclick="goTab('all')">كل العملاء</button>
+  </div>
+
+  <div class="view on" id="view-courses">
+
   <div class="wip">
     <b>طريقة العمل:</b> اختر الشهر ← الدورة ← تطلع لك قائمة المسجّلين. غيّر <b>«يبي شهادة»</b> أو <b>«الدفع»</b> من القائمة المنسدلة — ينحفظ في الشيت مباشرة. اللي يصير <b>تم الدفع</b> يصير صفّه أخضر.
   </div>
@@ -173,6 +204,36 @@ tr.paid td{background:var(--green-bg)}
     </div>
     <div class="empty" id="stEmpty" style="display:none">لا يوجد مسجّلون في هذه الدورة</div>
   </div>
+
+  </div><!-- /view-courses -->
+
+  <div class="view" id="view-all">
+    <div class="wip">
+      <b>كل العملاء:</b> كل عميل يظهر مرة وحدة مهما سجّل في دورات. <b>القطاع</b> يُستنتج تلقائياً من الدورات اللي سجّل فيها.
+    </div>
+
+    <div class="filters">
+      <select class="fsel" id="fSector" onchange="renderAll()">
+        <option value="">كل القطاعات</option>
+        <option>إدارة</option>
+        <option>تعليم</option>
+        <option>تقنية تعليم</option>
+      </select>
+      <select class="fsel" id="fCert" onchange="renderAll()">
+        <option value="">كل حالات الشهادة</option>
+        <option>صدرت</option>
+        <option>مدفوعة — لم تصدر</option>
+        <option>قيد الدفع</option>
+        <option>يبي — لم يدفع</option>
+        <option>ما يبي شهادة</option>
+      </select>
+      <input class="fsearch" id="fQ" placeholder="بحث باسم أو رقم…" oninput="renderAll()">
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div id="allBox"><div class="loading">جاري التحميل…</div></div>
+    </div>
+  </div><!-- /view-all -->
 
 </div>
 
@@ -364,6 +425,77 @@ async function save(row, field, el){
   el.disabled=false; el.classList.remove('saving');
 }
 
+/* ══ تبويب: كل العملاء ══ */
+let ALL = [];
+let ALL_LOADED = false;
+
+function goTab(v){
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  if(v==='all' && !ALL_LOADED) loadAllClients();
+}
+
+async function loadAllClients(){
+  const box=document.getElementById('allBox');
+  box.innerHTML='<div class="loading">جاري تجميع العملاء…</div>';
+  try{
+    const r=await api({ type:'salesAll' });
+    if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر التحميل');
+    ALL=r.list||[]; ALL_LOADED=true;
+    renderAll();
+  }catch(e){
+    box.innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>';
+  }
+}
+
+function certTag(st){
+  const m={'صدرت':'t-issued','مدفوعة — لم تصدر':'t-unissued','قيد الدفع':'t-pending','يبي — لم يدفع':'t-want','ما يبي شهادة':'t-none'};
+  return '<span class="tag '+(m[st]||'t-none')+'">'+esc(st)+'</span>';
+}
+function secTag(s){
+  const m={'إدارة':'s-adm','تعليم':'s-edu','تقنية تعليم':'s-tech'};
+  return '<span class="tag '+(m[s]||'s-edu')+'">'+esc(s)+'</span>';
+}
+
+function renderAll(){
+  const box=document.getElementById('allBox');
+  const fs=document.getElementById('fSector').value;
+  const fc=document.getElementById('fCert').value;
+  const q=document.getElementById('fQ').value.trim();
+  const qd=digits(q);
+
+  let list=ALL;
+  if(fs) list=list.filter(c=>c.sector===fs);
+  if(fc) list=list.filter(c=>c.certStatus===fc);
+  if(q)  list=list.filter(c=>String(c.name||'').indexOf(q)!==-1 || (qd && digits(c.phone).indexOf(qd)!==-1));
+
+  if(!list.length){ box.innerHTML='<div class="empty">ما فيه عملاء بهذي الفلاتر</div>'; return; }
+
+  let h='<div style="padding:14px 16px;font-size:13px;font-weight:800;color:var(--muted);border-bottom:1px solid var(--border)">'
+      + toA(list.length)+' عميل'+(list.length!==ALL.length?' من '+toA(ALL.length):'')+'</div>'
+      + '<div class="table-wrap" style="border:none;border-radius:0">'
+      + '<table><thead><tr><th style="width:40px">#</th><th>اسم العميل</th><th>آخر تسجيل</th>'
+      + '<th>اسم الدورة</th><th>حالة الشهادة</th><th>القطاع</th><th></th></tr></thead><tbody>';
+
+  list.forEach((c,i)=>{
+    h+='<tr>'
+      + '<td class="row-num">'+toA(i+1)+'</td>'
+      + '<td><div class="nm">'+esc(c.name||'—')+'</div>'
+      +   '<div class="ph" style="text-align:right">'+esc(c.phone||'—')+'</div>'
+      +   (c.courses>1?'<div class="mini-n">'+toA(c.courses)+' دورات'+(c.issued?' · '+toA(c.issued)+' شهادة':'')+'</div>':'')
+      + '</td>'
+      + '<td class="ph" style="text-align:right">'+esc(c.lastDate||'—')+'</td>'
+      + '<td style="font-weight:700;min-width:180px">'+esc(c.lastCourse||'—')+'</td>'
+      + '<td>'+certTag(c.certStatus)+'</td>'
+      + '<td>'+secTag(c.sector)+'</td>'
+      + '<td><a class="wa" target="_blank" rel="noopener" href="https://wa.me/'+waNum(c.phone)+'">واتساب</a></td>'
+      + '</tr>';
+  });
+
+  box.innerHTML = h+'</tbody></table></div>';
+}
+
 /* ══ الدخول ══ */
 document.getElementById('gName').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('gPass').focus(); });
 document.getElementById('gPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
@@ -405,6 +537,8 @@ function openPage(){
 
 function logout(){
   CUR={name:'',pass:'',role:''};
+  ALL=[]; ALL_LOADED=false;
+  goTab('courses');
   try{ sessionStorage.removeItem('masar_clients'); }catch(e){}
   document.getElementById('gPass').value='';
   document.getElementById('page').style.display='none';
