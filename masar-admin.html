@@ -14,6 +14,7 @@
   --yellow:#F57F17; --yellow-bg:#FFF9C4;
   --red:#C62828; --red-bg:#FFEBEE;
   --blue:#1565C0; --blue-bg:#E3F2FD;
+  --gold:#8B6914; --gold-bg:#FFF8E1;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
@@ -38,7 +39,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 
 /* ===== MAIN ===== */
 .main{max-width:1000px;margin:0 auto;padding:28px 18px 60px;}
-
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
 @media(max-width:640px){.stats-row{grid-template-columns:repeat(2,1fr);}}
 .stat-card{background:#fff;border-radius:16px;padding:16px 14px;text-align:center;box-shadow:0 2px 12px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);}
@@ -51,7 +51,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .btn-add{background:var(--crimson);color:#fff;border:none;border-radius:12px;padding:12px 22px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;transition:.2s;white-space:nowrap;}
 .btn-add:hover{background:var(--crimson-2);}
 
-/* ===== COURSE CARD ===== */
+/* ===== CARD ===== */
 .list{display:flex;flex-direction:column;gap:12px;}
 .ccard{background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 2px 14px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);transition:.2s;}
 .ccard.off{opacity:.62;border-style:dashed;}
@@ -61,6 +61,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .chip{background:var(--cream);color:var(--muted);border-radius:100px;padding:4px 11px;font-size:12px;font-weight:700;}
 .chip.price{background:var(--green-bg);color:var(--green);font-weight:900;}
 .chip.free{background:var(--blue-bg);color:var(--blue);font-weight:900;}
+.chip.cert{background:var(--gold-bg);color:var(--gold);font-weight:900;}
 .chip.reg{background:var(--yellow-bg);color:var(--yellow);font-weight:900;}
 .chip.full{background:var(--red-bg);color:var(--red);font-weight:900;}
 .pub-badge{font-size:11px;font-weight:900;padding:5px 12px;border-radius:100px;white-space:nowrap;}
@@ -94,9 +95,22 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--crimson);background:#fff;}
 .f textarea{resize:vertical;min-height:76px;line-height:1.7;}
 .f.bad input,.f.bad select{border-color:var(--red);background:#FFF5F5;}
-.switch-row{display:flex;align-items:center;justify-content:space-between;background:var(--cream);border-radius:12px;padding:12px 16px;margin-bottom:16px;}
+
+/* بلوك التسعير */
+.sec{background:var(--cream);border-radius:16px;padding:16px;margin-bottom:14px;border:1.5px solid rgba(92,15,15,.06);}
+.sec-h{font-size:13px;font-weight:900;color:var(--crimson);margin-bottom:12px;}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.seg button{background:#fff;border:2px solid rgba(92,15,15,.1);border-radius:12px;padding:12px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;color:var(--muted);cursor:pointer;transition:.2s;}
+.seg button.on{border-color:var(--crimson);background:var(--crimson);color:#fff;}
+.sec .f:last-child{margin-bottom:0;}
+.sec .f input{background:#fff;}
+.hint{font-size:11px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.6;}
+
+.switch-row{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);}
 .switch-row label{font-size:14px;font-weight:800;cursor:pointer;}
 .switch-row input{width:20px;height:20px;accent-color:var(--crimson);cursor:pointer;}
+.switch-row.plain{background:var(--cream);border:none;}
+
 .modal-submit{width:100%;background:var(--crimson);color:#fff;border:none;border-radius:14px;padding:14px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;}
 .modal-submit:hover{background:var(--crimson-2);}
 .modal-submit:disabled{opacity:.6;cursor:not-allowed;}
@@ -105,7 +119,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 @keyframes sp{to{transform:rotate(360deg);}}
 .loading{text-align:center;padding:50px;color:var(--muted);font-weight:700;}
 
-/* ===== TOAST ===== */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:13px 26px;border-radius:100px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;pointer-events:none;}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--red);}
@@ -142,12 +155,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   </div>
 
   <div class="main">
-
     <div class="stats-row">
       <div class="stat-card"><div class="stat-n" id="sTotal">٠</div><div class="stat-l">إجمالي الدورات</div></div>
       <div class="stat-card"><div class="stat-n" id="sPub" style="color:var(--green);">٠</div><div class="stat-l">منشورة</div></div>
       <div class="stat-card"><div class="stat-n" id="sReg" style="color:var(--yellow);">٠</div><div class="stat-l">إجمالي المسجلين</div></div>
-      <div class="stat-card"><div class="stat-n" id="sPaid" style="color:var(--blue);">٠</div><div class="stat-l">دورات مدفوعة</div></div>
+      <div class="stat-card"><div class="stat-n" id="sFree" style="color:var(--blue);">٠</div><div class="stat-l">دورات مجانية</div></div>
     </div>
 
     <div class="toolbar">
@@ -157,7 +169,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 
     <div class="loading" id="loadingState">جاري تحميل الدورات...</div>
     <div class="list" id="list"></div>
-
   </div>
 </div>
 
@@ -197,35 +208,63 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
-    <div class="grid2">
-      <div class="f">
-        <label>النظام</label>
-        <select id="fSystem" onchange="onSystemChange()">
-          <option value="مجاني">مجاني</option>
-          <option value="مدفوع">مدفوع</option>
-          <option value="خاصة">دورة خاصة</option>
-        </select>
+    <!-- ===== التسعير ===== -->
+    <div class="sec">
+      <div class="sec-h">💰 التسعير</div>
+
+      <div class="seg">
+        <button type="button" id="segFree" onclick="setKind('free')">مجانية</button>
+        <button type="button" id="segPaid" onclick="setKind('paid')">مدفوعة</button>
       </div>
-      <div class="f">
-        <label>السعر (د.ك)</label>
-        <input type="number" id="fPrice" min="0" step="1" value="0" placeholder="0">
+
+      <div class="f" id="wPrice" style="display:none;">
+        <label>سعر الدورة (د.ك)</label>
+        <input type="number" id="fPrice" min="0" step="1" value="0">
+      </div>
+
+      <div class="hint" id="kindHint">الحضور مجاني — والشهادة تُستخرج برسوم حسب الإعداد تحت</div>
+    </div>
+
+    <!-- ===== الشهادة ===== -->
+    <div class="sec">
+      <div class="sec-h">🎓 الشهادة</div>
+
+      <div class="switch-row plain">
+        <label for="fHasCert">تصدر شهادة معتمدة لهذه الدورة</label>
+        <input type="checkbox" id="fHasCert" checked onchange="onCertToggle()">
+      </div>
+
+      <div class="f" id="wCertFee">
+        <label>رسوم استخراج الشهادة (د.ك)</label>
+        <input type="number" id="fCertFee" min="0" step="1" value="15">
+        <div class="hint">اكتب <b>٠</b> لو الشهادة مشمولة بسعر الدورة بدون رسوم إضافية</div>
       </div>
     </div>
 
     <div class="grid2">
+      <div class="f">
+        <label>النظام (يحدد أي صفحة تظهر فيها)</label>
+        <select id="fSystem">
+          <option value="مجاني">مجاني — تظهر في masar-free و masar</option>
+          <option value="مدفوع">مدفوع — تظهر في masar فقط</option>
+          <option value="خاصة">خاصة — دورات مؤسسات</option>
+        </select>
+      </div>
       <div class="f">
         <label>عدد المقاعد</label>
         <input type="number" id="fSeats" min="0" step="1" value="0" placeholder="0 = غير محدود">
       </div>
+    </div>
+
+    <div class="grid2">
       <div class="f">
         <label>رقم اعتماد المادة</label>
         <input type="text" id="fAccred" placeholder="اختياري">
       </div>
-    </div>
-
-    <div class="f">
-      <label>رابط زووم أو المكان</label>
-      <input type="text" id="fLink" placeholder="https://zoom.us/... أو: برج أولى — الكويت">
+      <div class="f">
+        <label>رابط زووم أو المكان</label>
+        <input type="text" id="fLink" placeholder="https://zoom.us/... أو: برج أولى">
+      </div>
     </div>
 
     <div class="f">
@@ -251,6 +290,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366
 
 let PASS = '';
 let COURSES = [];
+let KIND = 'free';
 
 /* ============ AUTH ============ */
 window.addEventListener('load', function(){
@@ -310,11 +350,11 @@ async function loadCourses(){
 function stats(){
   const pub  = COURSES.filter(c => c.published).length;
   const reg  = COURSES.reduce((s,c) => s + (c.registered || 0), 0);
-  const paid = COURSES.filter(c => !c.isFree).length;
+  const free = COURSES.filter(c => c.isFree).length;
   document.getElementById('sTotal').textContent = ar(COURSES.length);
   document.getElementById('sPub').textContent   = ar(pub);
   document.getElementById('sReg').textContent   = ar(reg);
-  document.getElementById('sPaid').textContent  = ar(paid);
+  document.getElementById('sFree').textContent  = ar(free);
 }
 
 /* ============ RENDER ============ */
@@ -334,8 +374,13 @@ function render(){
 
   list.innerHTML = rows.map(function(c){
     const priceChip = c.isFree
-      ? '<span class="chip free">مجاني</span>'
+      ? '<span class="chip free">حضور مجاني</span>'
       : '<span class="chip price">' + ar(c.price) + ' د.ك</span>';
+
+    let certChip = '';
+    if(c.hasCert) certChip = '<span class="chip cert">🎓 شهادة ' + ar(c.certFee) + ' د.ك</span>';
+    else if(!c.isFree) certChip = '<span class="chip cert">🎓 شهادة مشمولة</span>';
+    else certChip = '<span class="chip">بدون شهادة</span>';
 
     let seatChip = '';
     if(c.seats > 0){
@@ -352,8 +397,7 @@ function render(){
             (c.trainer ? '<span class="chip">👤 ' + esc(c.trainer) + '</span>' : '') +
             (c.date    ? '<span class="chip">📅 ' + esc(c.date) + '</span>' : '') +
             (c.time    ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
-            (c.duration? '<span class="chip">⏱ ' + esc(c.duration) + '</span>' : '') +
-            priceChip +
+            priceChip + certChip +
             '<span class="chip reg">' + ar(c.registered || 0) + ' مسجل</span>' +
             seatChip +
           '</div>' +
@@ -373,6 +417,36 @@ function render(){
 }
 
 /* ============ FORM ============ */
+function setKind(k){
+  KIND = k;
+  document.getElementById('segFree').className = (k === 'free') ? 'on' : '';
+  document.getElementById('segPaid').className = (k === 'paid') ? 'on' : '';
+  document.getElementById('wPrice').style.display = (k === 'paid') ? 'block' : 'none';
+
+  if(k === 'free'){
+    document.getElementById('fPrice').value = 0;
+    document.getElementById('fSystem').value = 'مجاني';
+    document.getElementById('kindHint').innerHTML =
+      'الحضور مجاني — والشهادة تُستخرج برسوم حسب الإعداد تحت';
+  }else{
+    if(Number(document.getElementById('fPrice').value) === 0){
+      document.getElementById('fPrice').value = 45;
+    }
+    document.getElementById('fSystem').value = 'مدفوع';
+    document.getElementById('kindHint').innerHTML =
+      'المتدرب يدفع سعر الدورة للتسجيل';
+  }
+}
+
+function onCertToggle(){
+  const on = document.getElementById('fHasCert').checked;
+  document.getElementById('wCertFee').style.display = on ? 'block' : 'none';
+  if(!on) document.getElementById('fCertFee').value = 0;
+  else if(Number(document.getElementById('fCertFee').value) === 0){
+    document.getElementById('fCertFee').value = 15;
+  }
+}
+
 function openForm(id){
   const c = id ? COURSES.find(function(x){ return x.id === id; }) : null;
   document.getElementById('formTitle').textContent = c ? 'تعديل الدورة' : 'إضافة دورة جديدة';
@@ -383,24 +457,24 @@ function openForm(id){
   document.getElementById('fDate').value     = c ? toISO(c.date) : '';
   document.getElementById('fTime').value     = c ? c.time : '٥:٠٠ م';
   document.getElementById('fDuration').value = c ? c.duration : '';
-  document.getElementById('fSystem').value   = c ? (c.system || 'مجاني') : 'مجاني';
   document.getElementById('fPrice').value    = c ? c.price : 0;
+  document.getElementById('fCertFee').value  = c ? c.certFee : 15;
+  document.getElementById('fHasCert').checked= c ? c.hasCert : true;
   document.getElementById('fSeats').value    = c ? c.seats : 0;
   document.getElementById('fAccred').value   = c ? c.accred : '';
   document.getElementById('fLink').value     = c ? c.link : '';
   document.getElementById('fDesc').value     = c ? c.desc : '';
   document.getElementById('fPub').checked    = c ? c.published : true;
+
+  setKind(c ? (c.isFree ? 'free' : 'paid') : 'free');
+  if(c && c.system) document.getElementById('fSystem').value = c.system;
+  onCertToggle();
+
   clearBad();
   document.getElementById('formOverlay').classList.add('on');
 }
 
 function closeForm(){ document.getElementById('formOverlay').classList.remove('on'); }
-
-function onSystemChange(){
-  if(document.getElementById('fSystem').value === 'مجاني'){
-    document.getElementById('fPrice').value = 0;
-  }
-}
 
 async function saveCourse(){
   clearBad();
@@ -425,7 +499,9 @@ async function saveCourse(){
     time: document.getElementById('fTime').value.trim(),
     duration: document.getElementById('fDuration').value.trim(),
     system: document.getElementById('fSystem').value,
-    price: Number(document.getElementById('fPrice').value) || 0,
+    price: (KIND === 'free') ? 0 : (Number(document.getElementById('fPrice').value) || 0),
+    certFee: document.getElementById('fHasCert').checked
+             ? (Number(document.getElementById('fCertFee').value) || 0) : 0,
     seats: Number(document.getElementById('fSeats').value) || 0,
     accred: document.getElementById('fAccred').value.trim(),
     link: document.getElementById('fLink').value.trim(),
