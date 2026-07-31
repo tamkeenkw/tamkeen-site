@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الدورات — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515;
+  --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --yellow:#F57F17; --yellow-bg:#FFF9C4;
+  --red:#C62828; --red-bg:#FFEBEE;
+  --blue:#1565C0; --blue-bg:#E3F2FD;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* ===== LOGIN ===== */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-card{background:#fff;border-radius:24px;padding:40px 32px;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(92,15,15,.1);border:1.5px solid rgba(92,15,15,.06);text-align:center;}
+.login-logo{width:64px;height:64px;background:var(--crimson);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px;}
+.login-title{font-size:22px;font-weight:900;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:26px;}
+.login-input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.12);border-radius:14px;padding:14px 16px;font-family:'Tajawal',sans-serif;font-size:16px;text-align:center;letter-spacing:2px;outline:none;margin-bottom:14px;}
+.login-input:focus{border-color:var(--crimson);background:#fff;}
+.login-err{background:var(--red-bg);color:var(--red);border-radius:10px;padding:10px;font-size:13px;font-weight:700;margin-bottom:14px;display:none;}
+
+/* ===== HEADER ===== */
+.header{background:var(--crimson);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.header-logo-text{font-size:19px;font-weight:900;color:#fff;}
+.header-logo-sub{font-size:10px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:2px;}
+.header-actions{display:flex;gap:8px;align-items:center;}
+.hbtn{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);padding:8px 16px;border-radius:100px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:.2s;}
+.hbtn:hover{background:rgba(255,255,255,.22);}
+
+/* ===== MAIN ===== */
+.main{max-width:1000px;margin:0 auto;padding:28px 18px 60px;}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+@media(max-width:640px){.stats-row{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:#fff;border-radius:16px;padding:16px 14px;text-align:center;box-shadow:0 2px 12px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);}
+.stat-n{font-size:26px;font-weight:900;color:var(--crimson);}
+.stat-l{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;}
+
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.toolbar input{flex:1;min-width:180px;background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;}
+.toolbar input:focus{border-color:var(--crimson);}
+.btn-add{background:var(--crimson);color:#fff;border:none;border-radius:12px;padding:12px 22px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;transition:.2s;white-space:nowrap;}
+.btn-add:hover{background:var(--crimson-2);}
+
+/* ===== COURSE CARD ===== */
+.list{display:flex;flex-direction:column;gap:12px;}
+.ccard{background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 2px 14px rgba(92,15,15,.05);border:1.5px solid rgba(92,15,15,.06);transition:.2s;}
+.ccard.off{opacity:.62;border-style:dashed;}
+.ccard-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;}
+.ccard-name{font-size:17px;font-weight:900;line-height:1.4;margin-bottom:6px;}
+.ccard-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px;}
+.chip{background:var(--cream);color:var(--muted);border-radius:100px;padding:4px 11px;font-size:12px;font-weight:700;}
+.chip.price{background:var(--green-bg);color:var(--green);font-weight:900;}
+.chip.free{background:var(--blue-bg);color:var(--blue);font-weight:900;}
+.chip.reg{background:var(--yellow-bg);color:var(--yellow);font-weight:900;}
+.chip.full{background:var(--red-bg);color:var(--red);font-weight:900;}
+.pub-badge{font-size:11px;font-weight:900;padding:5px 12px;border-radius:100px;white-space:nowrap;}
+.pub-on{background:var(--green-bg);color:var(--green);}
+.pub-off{background:var(--cream-2);color:var(--muted);}
+.ccard-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-top:10px;}
+.ccard-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(92,15,15,.06);flex-wrap:wrap;}
+.abtn{border:1.5px solid rgba(92,15,15,.12);background:#fff;color:var(--text);border-radius:10px;padding:8px 16px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:.2s;}
+.abtn:hover{background:var(--cream);}
+.abtn.danger{color:var(--red);border-color:rgba(198,40,40,.25);}
+.abtn.danger:hover{background:var(--red-bg);}
+.abtn.pub{color:var(--green);border-color:rgba(46,125,50,.25);}
+.abtn.pub:hover{background:var(--green-bg);}
+
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:44px;margin-bottom:12px;}
+.empty-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:6px;}
+
+/* ===== MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(26,8,8,.55);display:none;align-items:flex-start;justify-content:center;padding:20px;z-index:100;overflow-y:auto;}
+.overlay.on{display:flex;}
+.modal{background:#fff;border-radius:22px;padding:28px 26px;max-width:560px;width:100%;margin:auto;position:relative;}
+.modal-title{font-size:20px;font-weight:900;margin-bottom:20px;padding-left:34px;}
+.modal-close{position:absolute;top:20px;left:22px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;font-size:15px;cursor:pointer;color:var(--muted);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:520px){.grid2{grid-template-columns:1fr;}}
+.f{margin-bottom:12px;}
+.f label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px;}
+.f label .req{color:var(--crimson);}
+.f input,.f select,.f textarea{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-size:14px;color:var(--text);outline:none;transition:.2s;}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--crimson);background:#fff;}
+.f textarea{resize:vertical;min-height:76px;line-height:1.7;}
+.f.bad input,.f.bad select{border-color:var(--red);background:#FFF5F5;}
+.switch-row{display:flex;align-items:center;justify-content:space-between;background:var(--cream);border-radius:12px;padding:12px 16px;margin-bottom:16px;}
+.switch-row label{font-size:14px;font-weight:800;cursor:pointer;}
+.switch-row input{width:20px;height:20px;accent-color:var(--crimson);cursor:pointer;}
+.modal-submit{width:100%;background:var(--crimson);color:#fff;border:none;border-radius:14px;padding:14px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;}
+.modal-submit:hover{background:var(--crimson-2);}
+.modal-submit:disabled{opacity:.6;cursor:not-allowed;}
+
+.spin{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.loading{text-align:center;padding:50px;color:var(--muted);font-weight:700;}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:13px 26px;border-radius:100px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;pointer-events:none;}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <div class="login-title">إدارة الدورات</div>
+    <div class="login-sub">أكاديمية مسار — دخول الموظفين</div>
+    <div class="login-err" id="loginErr">كلمة المرور غير صحيحة</div>
+    <input type="password" class="login-input" id="passInput" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="modal-submit" id="loginBtn" onclick="doLogin()">
+      <span id="loginTxt">دخول</span><div class="spin" id="loginSpin"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" style="display:none;">
+
+  <div class="header">
+    <div>
+      <div class="header-logo-text">إدارة الدورات</div>
+      <div class="header-logo-sub">أكاديمية مسار</div>
+    </div>
+    <div class="header-actions">
+      <button class="hbtn" onclick="loadCourses()">تحديث</button>
+      <button class="hbtn" onclick="logout()">خروج</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-n" id="sTotal">٠</div><div class="stat-l">إجمالي الدورات</div></div>
+      <div class="stat-card"><div class="stat-n" id="sPub" style="color:var(--green);">٠</div><div class="stat-l">منشورة</div></div>
+      <div class="stat-card"><div class="stat-n" id="sReg" style="color:var(--yellow);">٠</div><div class="stat-l">إجمالي المسجلين</div></div>
+      <div class="stat-card"><div class="stat-n" id="sPaid" style="color:var(--blue);">٠</div><div class="stat-l">دورات مدفوعة</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="searchBox" placeholder="ابحث باسم الدورة أو المدرب..." oninput="render()">
+      <button class="btn-add" onclick="openForm()">+ إضافة دورة</button>
+    </div>
+
+    <div class="loading" id="loadingState">جاري تحميل الدورات...</div>
+    <div class="list" id="list"></div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="overlay" id="formOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeForm()">✕</button>
+    <div class="modal-title" id="formTitle">إضافة دورة جديدة</div>
+
+    <input type="hidden" id="fId">
+    <input type="hidden" id="fRow">
+
+    <div class="f" id="w-name">
+      <label><span class="req">*</span> اسم الدورة</label>
+      <input type="text" id="fName" placeholder="مثال: التخطيط الإداري وقيادة الفريق">
+    </div>
+
+    <div class="grid2">
+      <div class="f" id="w-trainer">
+        <label><span class="req">*</span> المدرب</label>
+        <input type="text" id="fTrainer" placeholder="أ. خالد الهلالي">
+      </div>
+      <div class="f" id="w-date">
+        <label><span class="req">*</span> التاريخ</label>
+        <input type="date" id="fDate">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="f">
+        <label>الوقت</label>
+        <input type="text" id="fTime" placeholder="٥:٠٠ م">
+      </div>
+      <div class="f">
+        <label>المدة</label>
+        <input type="text" id="fDuration" placeholder="ساعتان">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="f">
+        <label>النظام</label>
+        <select id="fSystem" onchange="onSystemChange()">
+          <option value="مجاني">مجاني</option>
+          <option value="مدفوع">مدفوع</option>
+          <option value="خاصة">دورة خاصة</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>السعر (د.ك)</label>
+        <input type="number" id="fPrice" min="0" step="1" value="0" placeholder="0">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="f">
+        <label>عدد المقاعد</label>
+        <input type="number" id="fSeats" min="0" step="1" value="0" placeholder="0 = غير محدود">
+      </div>
+      <div class="f">
+        <label>رقم اعتماد المادة</label>
+        <input type="text" id="fAccred" placeholder="اختياري">
+      </div>
+    </div>
+
+    <div class="f">
+      <label>رابط زووم أو المكان</label>
+      <input type="text" id="fLink" placeholder="https://zoom.us/... أو: برج أولى — الكويت">
+    </div>
+
+    <div class="f">
+      <label>وصف الدورة</label>
+      <textarea id="fDesc" placeholder="نبذة قصيرة تظهر للجمهور في صفحة مسار"></textarea>
+    </div>
+
+    <div class="switch-row">
+      <label for="fPub">نشر الدورة في صفحة مسار</label>
+      <input type="checkbox" id="fPub" checked>
+    </div>
+
+    <button class="modal-submit" id="saveBtn" onclick="saveCourse()">
+      <span id="saveTxt">حفظ الدورة</span><div class="spin" id="saveSpin"></div>
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
+
+let PASS = '';
+let COURSES = [];
+
+/* ============ AUTH ============ */
+window.addEventListener('load', function(){
+  const saved = sessionStorage.getItem('masar_admin_pass');
+  if(saved){ PASS = saved; showApp(); }
+});
+
+async function doLogin(){
+  const p = document.getElementById('passInput').value.trim();
+  if(!p) return;
+  toggleBtn('login', true);
+  document.getElementById('loginErr').style.display = 'none';
+  try{
+    const r = await post({ type:'login', pass:p });
+    if(r.ok){
+      PASS = p;
+      sessionStorage.setItem('masar_admin_pass', p);
+      showApp();
+    }else{
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }catch(e){
+    document.getElementById('loginErr').textContent = 'تعذّر الاتصال بالسيرفر';
+    document.getElementById('loginErr').style.display = 'block';
+  }
+  toggleBtn('login', false);
+}
+
+function showApp(){
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadCourses();
+}
+
+function logout(){
+  sessionStorage.removeItem('masar_admin_pass');
+  location.reload();
+}
+
+/* ============ LOAD ============ */
+async function loadCourses(){
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('list').innerHTML = '';
+  try{
+    const res  = await fetch(SCRIPT_URL + '?action=getAll&pass=' + encodeURIComponent(PASS));
+    const data = await res.json();
+    if(!data.ok){ toast(data.error || 'خطأ في التحميل', true); COURSES = []; }
+    else COURSES = data.courses || [];
+    stats();
+    render();
+  }catch(e){
+    toast('تعذّر الاتصال بالسيرفر', true);
+  }
+  document.getElementById('loadingState').style.display = 'none';
+}
+
+function stats(){
+  const pub  = COURSES.filter(c => c.published).length;
+  const reg  = COURSES.reduce((s,c) => s + (c.registered || 0), 0);
+  const paid = COURSES.filter(c => !c.isFree).length;
+  document.getElementById('sTotal').textContent = ar(COURSES.length);
+  document.getElementById('sPub').textContent   = ar(pub);
+  document.getElementById('sReg').textContent   = ar(reg);
+  document.getElementById('sPaid').textContent  = ar(paid);
+}
+
+/* ============ RENDER ============ */
+function render(){
+  const q    = document.getElementById('searchBox').value.trim();
+  const list = document.getElementById('list');
+  const rows = q
+    ? COURSES.filter(c => (c.name + ' ' + c.trainer).indexOf(q) > -1)
+    : COURSES;
+
+  if(rows.length === 0){
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📚</div>' +
+      '<div class="empty-title">لا توجد دورات</div>' +
+      '<div>اضغط "إضافة دورة" لإنشاء أول دورة</div></div>';
+    return;
+  }
+
+  list.innerHTML = rows.map(function(c){
+    const priceChip = c.isFree
+      ? '<span class="chip free">مجاني</span>'
+      : '<span class="chip price">' + ar(c.price) + ' د.ك</span>';
+
+    let seatChip = '';
+    if(c.seats > 0){
+      const full = c.remaining !== null && c.remaining <= 0;
+      seatChip = '<span class="chip ' + (full ? 'full' : '') + '">' +
+        (full ? 'مكتمل' : 'باقي ' + ar(c.remaining) + ' مقعد') + '</span>';
+    }
+
+    return '<div class="ccard ' + (c.published ? '' : 'off') + '">' +
+      '<div class="ccard-top">' +
+        '<div style="flex:1;min-width:200px;">' +
+          '<div class="ccard-name">' + esc(c.name) + '</div>' +
+          '<div class="ccard-meta">' +
+            (c.trainer ? '<span class="chip">👤 ' + esc(c.trainer) + '</span>' : '') +
+            (c.date    ? '<span class="chip">📅 ' + esc(c.date) + '</span>' : '') +
+            (c.time    ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
+            (c.duration? '<span class="chip">⏱ ' + esc(c.duration) + '</span>' : '') +
+            priceChip +
+            '<span class="chip reg">' + ar(c.registered || 0) + ' مسجل</span>' +
+            seatChip +
+          '</div>' +
+        '</div>' +
+        '<span class="pub-badge ' + (c.published ? 'pub-on' : 'pub-off') + '">' +
+          (c.published ? '● منشورة' : '○ غير منشورة') + '</span>' +
+      '</div>' +
+      (c.desc ? '<div class="ccard-desc">' + esc(c.desc) + '</div>' : '') +
+      '<div class="ccard-actions">' +
+        '<button class="abtn" onclick="openForm(\'' + c.id + '\')">تعديل</button>' +
+        '<button class="abtn pub" onclick="togglePub(\'' + c.id + '\')">' +
+          (c.published ? 'إيقاف النشر' : 'نشر') + '</button>' +
+        '<button class="abtn danger" onclick="delCourse(\'' + c.id + '\')">حذف</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============ FORM ============ */
+function openForm(id){
+  const c = id ? COURSES.find(function(x){ return x.id === id; }) : null;
+  document.getElementById('formTitle').textContent = c ? 'تعديل الدورة' : 'إضافة دورة جديدة';
+  document.getElementById('fId').value       = c ? c.id : '';
+  document.getElementById('fRow').value      = c ? c.row : '';
+  document.getElementById('fName').value     = c ? c.name : '';
+  document.getElementById('fTrainer').value  = c ? c.trainer : '';
+  document.getElementById('fDate').value     = c ? toISO(c.date) : '';
+  document.getElementById('fTime').value     = c ? c.time : '٥:٠٠ م';
+  document.getElementById('fDuration').value = c ? c.duration : '';
+  document.getElementById('fSystem').value   = c ? (c.system || 'مجاني') : 'مجاني';
+  document.getElementById('fPrice').value    = c ? c.price : 0;
+  document.getElementById('fSeats').value    = c ? c.seats : 0;
+  document.getElementById('fAccred').value   = c ? c.accred : '';
+  document.getElementById('fLink').value     = c ? c.link : '';
+  document.getElementById('fDesc').value     = c ? c.desc : '';
+  document.getElementById('fPub').checked    = c ? c.published : true;
+  clearBad();
+  document.getElementById('formOverlay').classList.add('on');
+}
+
+function closeForm(){ document.getElementById('formOverlay').classList.remove('on'); }
+
+function onSystemChange(){
+  if(document.getElementById('fSystem').value === 'مجاني'){
+    document.getElementById('fPrice').value = 0;
+  }
+}
+
+async function saveCourse(){
+  clearBad();
+  const name = document.getElementById('fName').value.trim();
+  const trn  = document.getElementById('fTrainer').value.trim();
+  const dt   = document.getElementById('fDate').value;
+  let bad = false;
+  if(!name){ mark('w-name'); bad = true; }
+  if(!trn){  mark('w-trainer'); bad = true; }
+  if(!dt){   mark('w-date'); bad = true; }
+  if(bad){ toast('عبّي الحقول المطلوبة', true); return; }
+
+  const id = document.getElementById('fId').value;
+  const body = {
+    type: id ? 'updateCourse' : 'addCourse',
+    pass: PASS,
+    id: id,
+    row: document.getElementById('fRow').value,
+    name: name,
+    trainer: trn,
+    date: dt,
+    time: document.getElementById('fTime').value.trim(),
+    duration: document.getElementById('fDuration').value.trim(),
+    system: document.getElementById('fSystem').value,
+    price: Number(document.getElementById('fPrice').value) || 0,
+    seats: Number(document.getElementById('fSeats').value) || 0,
+    accred: document.getElementById('fAccred').value.trim(),
+    link: document.getElementById('fLink').value.trim(),
+    desc: document.getElementById('fDesc').value.trim(),
+    published: document.getElementById('fPub').checked
+  };
+
+  toggleBtn('save', true);
+  try{
+    const r = await post(body);
+    if(r.ok){ closeForm(); toast(r.message || 'تم الحفظ'); loadCourses(); }
+    else toast(r.error || 'فشل الحفظ', true);
+  }catch(e){ toast('تعذّر الاتصال', true); }
+  toggleBtn('save', false);
+}
+
+async function togglePub(id){
+  const c = COURSES.find(function(x){ return x.id === id; });
+  if(!c) return;
+  try{
+    const r = await post({ type:'togglePublish', pass:PASS, id:id, row:c.row });
+    if(r.ok){ toast(r.published ? 'تم النشر' : 'تم إيقاف النشر'); loadCourses(); }
+    else toast(r.error || 'فشل', true);
+  }catch(e){ toast('تعذّر الاتصال', true); }
+}
+
+async function delCourse(id){
+  const c = COURSES.find(function(x){ return x.id === id; });
+  if(!c) return;
+  if(!confirm('متأكد تبي تحذف "' + c.name + '"؟\nالحذف نهائي ولا يمكن التراجع.')) return;
+  try{
+    const r = await post({ type:'deleteCourse', pass:PASS, id:id, row:c.row });
+    if(r.ok){ toast('تم الحذف'); loadCourses(); }
+    else toast(r.error || 'فشل الحذف', true);
+  }catch(e){ toast('تعذّر الاتصال', true); }
+}
+
+/* ============ HELPERS ============ */
+async function post(body){
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify(body)
+  });
+  return await res.json();
+}
+
+function toISO(d){
+  if(!d) return '';
+  const p = String(d).split('-');
+  if(p.length < 3) return '';
+  const day = ('0' + Number(p[0])).slice(-2);
+  const mon = ('0' + Number(p[1])).slice(-2);
+  return p[2] + '-' + mon + '-' + day;
+}
+
+function ar(n){
+  return String(n).replace(/[0-9]/g, function(d){ return '٠١٢٣٤٥٦٧٨٩'[d]; });
+}
+
+function esc(s){
+  return String(s || '').replace(/[&<>"]/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+  });
+}
+
+function mark(id){ document.getElementById(id).classList.add('bad'); }
+function clearBad(){
+  document.querySelectorAll('.f.bad').forEach(function(el){ el.classList.remove('bad'); });
+}
+
+function toggleBtn(key, on){
+  document.getElementById(key + 'Btn').disabled = on;
+  document.getElementById(key + 'Txt').style.display = on ? 'none' : 'inline';
+  document.getElementById(key + 'Spin').style.display = on ? 'block' : 'none';
+}
+
+let toastTimer;
+function toast(msg, isErr){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast on' + (isErr ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.className = 'toast' + (isErr ? ' err' : ''); }, 2800);
+}
+
+document.getElementById('formOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeForm();
+});
+</script>
+</body>
+</html>
