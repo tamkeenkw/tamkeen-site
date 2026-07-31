@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سلة التسجيل — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515; --crimson-3:#3A0808;
+  --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --gold:#8B6914; --gold-bg:#FFF8E1;
+  --blue:#1565C0; --blue-bg:#E3F2FD;
+  --red:#C62828; --red-bg:#FFEBEE;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);}
+
+.nav{background:var(--crimson);padding:16px 24px;}
+.nav-in{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.nav-t{font-size:18px;font-weight:900;color:#fff;}
+.nav-s{font-size:10px;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:1.5px;}
+.nav a{color:rgba(255,255,255,.9);font-size:13px;font-weight:800;text-decoration:none;background:rgba(255,255,255,.12);padding:8px 16px;border-radius:100px;}
+
+.wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px;}
+.h1{font-size:clamp(22px,4vw,30px);font-weight:900;margin-bottom:6px;}
+.sub{font-size:14px;color:var(--muted);margin-bottom:26px;}
+
+.grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+@media(max-width:820px){.grid{grid-template-columns:1fr;}}
+
+.item{background:#fff;border-radius:18px;padding:16px;border:1.5px solid rgba(92,15,15,.06);display:flex;gap:14px;margin-bottom:12px;}
+.item img{width:82px;height:82px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--cream-2);}
+.item-ph{width:82px;height:82px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,var(--crimson),var(--crimson-3));display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:26px;font-weight:900;}
+.item-b{flex:1;min-width:0;}
+.item-k{display:inline-block;border-radius:100px;padding:3px 10px;font-size:10px;font-weight:900;margin-bottom:6px;}
+.k-c{background:var(--blue-bg);color:var(--blue);}
+.k-p{background:var(--gold-bg);color:var(--gold);}
+.item-n{font-size:15px;font-weight:900;line-height:1.45;margin-bottom:5px;}
+.item-m{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:9px;}
+.item-f{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.item-p{font-size:16px;font-weight:900;color:var(--crimson);}
+.item-p.free{color:var(--green);}
+.rm{background:transparent;border:none;color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border-radius:8px;}
+.rm:hover{color:var(--red);background:var(--red-bg);}
+
+.certbox{background:var(--gold-bg);border-radius:11px;padding:10px 13px;margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
+.certbox-t{font-size:12.5px;font-weight:800;color:var(--gold);line-height:1.5;}
+.certbox input{width:19px;height:19px;accent-color:var(--crimson);cursor:pointer;flex-shrink:0;}
+
+.inc{background:var(--cream);border-radius:10px;padding:9px 12px;margin-top:9px;}
+.inc div{font-size:12px;font-weight:700;color:var(--muted);padding:3px 0;}
+
+.side{background:#fff;border-radius:20px;padding:22px;border:1.5px solid rgba(92,15,15,.06);position:sticky;top:20px;}
+.side-h{font-size:16px;font-weight:900;margin-bottom:16px;}
+.row{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;color:var(--muted);padding:7px 0;}
+.tot{display:flex;justify-content:space-between;align-items:center;border-top:1.5px solid rgba(92,15,15,.08);margin-top:10px;padding-top:14px;}
+.tot-l{font-size:15px;font-weight:900;}
+.tot-v{font-size:24px;font-weight:900;color:var(--crimson);}
+
+.f{margin-bottom:12px;}
+.f label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px;}
+.f input{width:100%;background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;transition:.2s;}
+.f input:focus{border-color:var(--crimson);background:#fff;}
+.f.bad input{border-color:var(--red);background:#FFF5F5;}
+.f .er{display:none;font-size:11px;color:var(--red);font-weight:700;margin-top:5px;}
+.f.bad .er{display:block;}
+
+.pay{width:100%;background:var(--crimson);color:#fff;border:none;border-radius:14px;padding:15px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:8px;}
+.pay:hover{background:var(--crimson-2);}
+.pay:disabled{opacity:.6;cursor:not-allowed;}
+.sp{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:s .7s linear infinite;display:none;}
+@keyframes s{to{transform:rotate(360deg);}}
+.note{font-size:11px;color:var(--muted);font-weight:700;text-align:center;margin-top:11px;line-height:1.7;}
+
+.empty{text-align:center;padding:70px 20px;background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.06);}
+.empty-i{font-size:46px;margin-bottom:14px;}
+.empty-t{font-size:19px;font-weight:900;margin-bottom:8px;}
+.empty-s{font-size:14px;color:var(--muted);margin-bottom:22px;}
+.empty a{display:inline-block;background:var(--crimson);color:#fff;border-radius:100px;padding:13px 30px;text-decoration:none;font-size:14px;font-weight:900;}
+
+.res{background:#fff;border-radius:22px;padding:44px 28px;text-align:center;border:1.5px solid rgba(92,15,15,.06);max-width:520px;margin:0 auto;}
+.res-i{font-size:54px;margin-bottom:16px;}
+.res-t{font-size:23px;font-weight:900;margin-bottom:10px;}
+.res-s{font-size:14.5px;color:var(--muted);line-height:1.9;margin-bottom:8px;}
+.res-o{display:inline-block;background:var(--cream);border-radius:10px;padding:8px 16px;font-size:12.5px;font-weight:800;color:var(--muted);margin:12px 0 20px;letter-spacing:1px;}
+.res-btn{display:inline-block;background:var(--crimson);color:#fff;border-radius:100px;padding:13px 30px;text-decoration:none;font-size:14px;font-weight:900;margin:5px;}
+.res-btn.alt{background:transparent;color:var(--crimson);border:1.5px solid rgba(92,15,15,.2);}
+.res-btn.wa{background:var(--green);}
+.load{text-align:center;padding:70px 20px;color:var(--muted);font-weight:800;}
+.dots span{display:inline-block;width:8px;height:8px;background:var(--crimson);border-radius:50%;margin:0 3px;animation:b 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:.2s} .dots span:nth-child(3){animation-delay:.4s}
+@keyframes b{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-8px);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-in">
+    <div>
+      <div class="nav-t">سلة التسجيل</div>
+      <div class="nav-s">أكاديمية مسار</div>
+    </div>
+    <a href="/masar">← رجوع للدورات</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="load" id="loading"><div class="dots"><span></span><span></span><span></span></div><div style="margin-top:12px;">جاري التحميل...</div></div>
+  <div id="cartView" style="display:none;"></div>
+  <div id="resView" style="display:none;"></div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
+const KEY = 'masar_cart';
+
+let CART = [], DATA = { courses:[], packages:[] };
+
+/* ===== تخزين السلة ===== */
+function readCart(){
+  try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; }
+}
+function writeCart(c){
+  try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){}
+}
+
+/* ===== بداية ===== */
+(async function init(){
+  const q = new URLSearchParams(location.search);
+  const order = q.get('order');
+  const tapId = q.get('tap_id');
+
+  if(order){ await verify(order, tapId); return; }
+
+  CART = readCart();
+  try{
+    const r = await fetch(API + '?action=getPublic');
+    const d = await r.json();
+    DATA.courses  = d.courses  || [];
+    DATA.packages = d.packages || [];
+  }catch(e){}
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('cartView').style.display = 'block';
+  renderCart();
+})();
+
+/* ===== التحقق من الدفع ===== */
+async function verify(order, tapId){
+  document.getElementById('loading').innerHTML =
+    '<div class="dots"><span></span><span></span><span></span></div>' +
+    '<div style="margin-top:14px;">جاري التحقق من عملية الدفع...</div>' +
+    '<div style="font-size:12px;margin-top:6px;opacity:.7;">لا تغلق الصفحة</div>';
+
+  let d = null;
+  try{
+    const url = API + '?action=verifyOrder&order=' + encodeURIComponent(order) +
+                (tapId ? '&tap_id=' + encodeURIComponent(tapId) : '');
+    const r = await fetch(url);
+    d = await r.json();
+  }catch(e){}
+
+  document.getElementById('loading').style.display = 'none';
+  const v = document.getElementById('resView');
+  v.style.display = 'block';
+
+  if(d && d.ok && d.paid){
+    writeCart([]);
+    v.innerHTML =
+      '<div class="res"><div class="res-i">✅</div>' +
+      '<div class="res-t">تم الدفع بنجاح</div>' +
+      '<div class="res-s">سجّلناك في دوراتك — بيوصلك إيميل بالتفاصيل ورابط الحضور قبل موعد كل دورة.</div>' +
+      '<div class="res-o">رقم الطلب: ' + esc(order) + '</div><div>' +
+      '<a class="res-btn" href="/masar">تصفح دورات ثانية</a>' +
+      '<a class="res-btn alt" href="/masar-profile">ملفي التدريبي</a></div></div>';
+    return;
+  }
+
+  const st = (d && d.status) ? d.status : 'غير مكتمل';
+  v.innerHTML =
+    '<div class="res"><div class="res-i">⏳</div>' +
+    '<div class="res-t">لم يكتمل الدفع</div>' +
+    '<div class="res-s">حالة الطلب: <b>' + esc(st) + '</b><br>' +
+    'ما تم خصم أي مبلغ. طلبك محفوظ عندنا وتقدر تكمل الدفع أو تتواصل معنا.</div>' +
+    '<div class="res-o">رقم الطلب: ' + esc(order) + '</div><div>' +
+    '<a class="res-btn" href="/masar-cart">رجوع للسلة</a>' +
+    '<a class="res-btn wa" target="_blank" href="https://wa.me/96597999768?text=' +
+      encodeURIComponent('السلام عليكم، عندي مشكلة بالدفع — رقم الطلب ' + order) + '">تواصل واتساب</a>' +
+    '</div></div>';
+}
+
+/* ===== عرض السلة ===== */
+function find(kind, id){
+  const arr = (kind === 'package') ? DATA.packages : DATA.courses;
+  return arr.find(function(x){ return x.id === id; });
+}
+
+function lineAmount(it, o){
+  if(it.kind === 'package') return o.price + (it.cert && o.hasCertFee ? o.certFee : 0);
+  return o.isFree ? (it.cert && o.hasCert ? o.certFee : 0) : o.price;
+}
+
+function renderCart(){
+  const v = document.getElementById('cartView');
+
+  const valid = CART.filter(function(it){ return !!find(it.kind, it.id); });
+  if(valid.length !== CART.length){ CART = valid; writeCart(CART); }
+
+  if(CART.length === 0){
+    v.innerHTML = '<div class="empty"><div class="empty-i">🛒</div>' +
+      '<div class="empty-t">السلة فارغة</div>' +
+      '<div class="empty-s">اختر دوراتك أو باقتك وارجع هنا لإتمام التسجيل</div>' +
+      '<a href="/masar">تصفح الدورات ←</a></div>';
+    return;
+  }
+
+  let total = 0, items = '';
+
+  CART.forEach(function(it, i){
+    const o = find(it.kind, it.id);
+    const amt = lineAmount(it, o);
+    total += amt;
+
+    const img = o.image
+      ? '<img src="' + esc(o.image) + '" alt="">'
+      : '<div class="item-ph">' + (it.kind === 'package' ? '📦' : esc(initial(o.trainer))) + '</div>';
+
+    let meta = '', cert = '', inc = '';
+
+    if(it.kind === 'package'){
+      meta = '📚 ' + ar(o.count) + ' دورات';
+      if(o.courses && o.courses.length){
+        inc = '<div class="inc">' + o.courses.map(function(c){
+          return '<div>• ' + esc(c.name) + (c.date ? ' — ' + esc(c.date) : '') + '</div>';
+        }).join('') + '</div>';
+      }
+      if(o.hasCertFee){
+        cert = certBox(i, it.cert, 'أضف الشهادات المعتمدة', o.certFee);
+      }
+    }else{
+      meta = (o.trainer ? '👤 ' + esc(o.trainer) : '') +
+             (o.date ? ' · 📅 ' + esc(dateAr(o.date)) : '') +
+             (o.time ? ' · 🕔 ' + esc(o.time) : '');
+      if(o.isFree && o.hasCert){
+        cert = certBox(i, it.cert, 'أضف الشهادة المعتمدة', o.certFee);
+      }
+    }
+
+    items +=
+      '<div class="item">' + img + '<div class="item-b">' +
+        '<span class="item-k ' + (it.kind === 'package' ? 'k-p' : 'k-c') + '">' +
+          (it.kind === 'package' ? 'باقة' : 'دورة') + '</span>' +
+        '<div class="item-n">' + esc(o.name) + '</div>' +
+        '<div class="item-m">' + meta + '</div>' +
+        '<div class="item-f">' +
+          '<span class="item-p' + (amt === 0 ? ' free' : '') + '">' +
+            (amt === 0 ? 'مجاني' : ar(amt) + ' د.ك') + '</span>' +
+          '<button class="rm" onclick="remove(' + i + ')">✕ إزالة</button>' +
+        '</div>' + inc + cert +
+      '</div></div>';
+  });
+
+  v.innerHTML =
+    '<div class="h1">سلة التسجيل</div>' +
+    '<div class="sub">راجع اختياراتك قبل إتمام الدفع</div>' +
+    '<div class="grid"><div>' + items + '</div>' +
+    '<div class="side">' +
+      '<div class="side-h">ملخص الطلب</div>' +
+      '<div class="row"><span>عدد العناصر</span><span>' + ar(CART.length) + '</span></div>' +
+      '<div class="tot"><span class="tot-l">المجموع</span>' +
+        '<span class="tot-v">' + (total === 0 ? 'مجاني' : ar(total) + ' د.ك') + '</span></div>' +
+
+      '<div style="height:16px;"></div>' +
+      '<div class="f" id="w-n"><label>الاسم الكامل *</label>' +
+        '<input type="text" id="iName" placeholder="الاسم الكامل"><div class="er">أدخل اسمك الكامل</div></div>' +
+      '<div class="f" id="w-p"><label>رقم الواتساب *</label>' +
+        '<input type="tel" id="iPhone" placeholder="XXXXXXXX"><div class="er">أدخل رقم واتساب صحيح</div></div>' +
+      '<div class="f" id="w-e"><label>البريد الإلكتروني *</label>' +
+        '<input type="email" id="iEmail" placeholder="example@email.com"><div class="er">أدخل بريد إلكتروني صحيح</div></div>' +
+
+      '<button class="pay" id="payBtn" onclick="checkout()">' +
+        '<span id="payTxt">' + (total === 0 ? 'أكمل التسجيل مجاناً' : 'ادفع ' + ar(total) + ' د.ك') + '</span>' +
+        '<div class="sp" id="paySp"></div></button>' +
+      '<div class="note">الدفع عبر بوابة تاب الآمنة<br>ما ينحسب الطلب إلا بعد تأكيد الدفع</div>' +
+    '</div></div>';
+}
+
+function certBox(i, on, label, fee){
+  return '<label class="certbox" onclick="toggleCert(' + i + ')">' +
+    '<span class="certbox-t">🎓 ' + label + ' — ' + ar(fee) + ' د.ك</span>' +
+    '<input type="checkbox" ' + (on ? 'checked' : '') + ' onclick="event.stopPropagation();toggleCert(' + i + ')">' +
+    '</label>';
+}
+
+function toggleCert(i){
+  CART[i].cert = !CART[i].cert;
+  writeCart(CART);
+  renderCart();
+}
+
+function remove(i){
+  CART.splice(i, 1);
+  writeCart(CART);
+  renderCart();
+}
+
+/* ===== الدفع ===== */
+async function checkout(){
+  ['w-n','w-p','w-e'].forEach(function(id){ document.getElementById(id).classList.remove('bad'); });
+
+  const name  = document.getElementById('iName').value.trim();
+  const phone = document.getElementById('iPhone').value.trim().replace(/\D/g,'');
+  const email = document.getElementById('iEmail').value.trim();
+
+  let bad = false;
+  if(name.length < 3){ document.getElementById('w-n').classList.add('bad'); bad = true; }
+  if(phone.length < 8){ document.getElementById('w-p').classList.add('bad'); bad = true; }
+  if(email.indexOf('@') < 1){ document.getElementById('w-e').classList.add('bad'); bad = true; }
+  if(bad) return;
+
+  document.getElementById('payBtn').disabled = true;
+  document.getElementById('payTxt').style.display = 'none';
+  document.getElementById('paySp').style.display = 'block';
+
+  let d = null;
+  try{
+    const r = await fetch(API, {
+      method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        type:'createOrder',
+        name:name, phone:phone, email:email,
+        items: CART.map(function(it){
+          return { kind:it.kind, id:it.id, cert:(it.cert === true) };
+        })
+      })
+    });
+    d = await r.json();
+  }catch(e){}
+
+  if(d && d.ok && d.url){ window.location.href = d.url; return; }
+
+  if(d && d.ok && d.free){
+    writeCart([]);
+    location.href = '/masar-cart?order=' + encodeURIComponent(d.order);
+    return;
+  }
+
+  document.getElementById('payBtn').disabled = false;
+  document.getElementById('payTxt').style.display = 'inline';
+  document.getElementById('paySp').style.display = 'none';
+
+  if(d && d.pending && d.order){
+    document.getElementById('cartView').innerHTML =
+      '<div class="res"><div class="res-i">⏳</div>' +
+      '<div class="res-t">تم حفظ طلبك</div>' +
+      '<div class="res-s">تعذّر فتح بوابة الدفع الآن — طلبك محفوظ وبيتواصل معك الفريق لإتمام الدفع.</div>' +
+      '<div class="res-o">رقم الطلب: ' + esc(d.order) + '</div>' +
+      '<a class="res-btn wa" target="_blank" href="https://wa.me/96597999768?text=' +
+        encodeURIComponent('السلام عليكم، أبي أكمل دفع الطلب ' + d.order) + '">تواصل واتساب</a></div>';
+    return;
+  }
+
+  alert((d && d.error) ? d.error : 'تعذّر إتمام الطلب — حاول مرة ثانية');
+}
+
+/* ===== أدوات ===== */
+function initial(t){ return String(t || '').replace(/أ\.|د\.|\s/g,'').charAt(0) || 'م'; }
+
+function dateAr(d){
+  const mo = ['','يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const p = String(d || '').split('-');
+  if(p.length < 3) return d || '';
+  return ar(Number(p[0])) + ' ' + mo[Number(p[1])] + ' ' + ar(p[2]);
+}
+
+function ar(n){ return String(n).replace(/[0-9]/g, function(d){ return '٠١٢٣٤٥٦٧٨٩'[d]; }); }
+
+function esc(s){
+  return String(s || '').replace(/[&<>"]/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c];
+  });
+}
+</script>
+</body>
+</html>
