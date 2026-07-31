@@ -74,6 +74,25 @@ tr.paid td{background:var(--green-bg)}
 .toast.ok{background:var(--green)}
 .toast.bad{background:var(--red)}
 
+/* شاشة الدخول */
+#gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;padding:24px;z-index:200}
+.gate-box{background:#fff;border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.gate-badge{display:inline-block;background:var(--cream2);color:var(--crimson);font-size:11px;font-weight:900;letter-spacing:2px;padding:6px 18px;border-radius:100px;margin-bottom:16px}
+.gate-box h1{font-size:21px;font-weight:900;margin-bottom:6px}
+.gate-box p{font-size:13px;color:var(--muted);margin-bottom:22px;font-weight:600}
+.gate-box input{width:100%;padding:14px;border:1.5px solid var(--border);border-radius:14px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;outline:none;margin-bottom:12px;background:var(--cream);text-align:center}
+.gate-box input:focus{border-color:var(--crimson);background:#fff}
+.gate-box input.pw{letter-spacing:6px;font-size:18px}
+.gate-box input.bad{border-color:var(--red);background:var(--red-bg)}
+.gate-box button{width:100%;padding:14px;background:var(--crimson);color:#fff;border:none;border-radius:14px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-top:4px}
+.gate-box button:disabled{opacity:.6}
+.gate-err{color:var(--red);font-size:13px;font-weight:800;min-height:20px;margin-top:10px}
+#page{display:none}
+.who{display:flex;align-items:center;gap:10px}
+.who-name{font-size:13px;font-weight:900}
+.who-role{font-size:10.5px;font-weight:700;opacity:.6;margin-top:1px}
+.out{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-family:'Cairo',sans-serif;font-size:12px;font-weight:800;padding:7px 14px;border-radius:100px;cursor:pointer}
+
 @media(max-width:600px){
   .course-grid{grid-template-columns:1fr}
   .main{padding:14px 10px 40px}
@@ -82,12 +101,32 @@ tr.paid td{background:var(--green-bg)}
 </head>
 <body>
 
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-badge">أكاديمية مسار</div>
+    <h1>بيانات العملاء</h1>
+    <p>سجّل دخولك بنفس بيانات لوحة الحضور</p>
+    <input id="gName" placeholder="اسمك الكامل" autocomplete="off">
+    <input id="gPass" class="pw" type="password" placeholder="الرقم السري" autocomplete="off">
+    <button id="gBtn" onclick="doLogin()">دخول</button>
+    <div class="gate-err" id="gErr"></div>
+  </div>
+</div>
+
+<div id="page">
+
 <div class="header">
   <div>
     <div class="header-logo-text">أكاديمية مسار</div>
     <div class="header-logo-sub">TAMKEEN EDUCLOUD</div>
   </div>
-  <div class="header-badge">بيانات العملاء</div>
+  <div class="who">
+    <div style="text-align:left">
+      <div class="who-name" id="hName">—</div>
+      <div class="who-role" id="hRole"></div>
+    </div>
+    <button class="out" onclick="logout()">خروج</button>
+  </div>
 </div>
 
 <div class="main">
@@ -137,10 +176,18 @@ tr.paid td{background:var(--green-bg)}
 
 </div>
 
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbwp5BC32F1A403mbzMk4wlaaPQeSauxk8_cUKl7ikmBSMkivkkIhariNBNxyn3X8n9d/exec';
+
+/* نفس خادم لوحة حضور الموظفين — للتحقق من الاسم والرقم السري */
+const ATT_URL = 'https://script.google.com/macros/s/AKfycbxo8IAaZ5dkS-PPmrHqHBVymJRFQKDyuvANhmbeI0wfYcrD4nV6bXA6oUctt2qPauTV/exec';
+const TOKEN   = 'tmk-sales-2026';
+
+let CUR = { name:'', pass:'', role:'' };
 
 const WA_MSG = {
   cert: 'السلام عليكم، كيف كانت الدورة؟ لو حبيت شهادة معتمدة، 15 د.ك بس — تبي؟',
@@ -160,6 +207,7 @@ function toast(m,k){ const t=document.getElementById('toast'); t.textContent=m; 
 function showErr(m){ const b=document.getElementById('errBox'); b.textContent=m; b.className='err on'; }
 
 async function api(p){
+  p.token = TOKEN; p.by = CUR.name;
   const r = await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)});
   if(!r.ok) throw new Error('الخادم رجّع خطأ '+r.status);
   const t = await r.text();
@@ -316,7 +364,60 @@ async function save(row, field, el){
   el.disabled=false; el.classList.remove('saving');
 }
 
-loadCourses();
+/* ══ الدخول ══ */
+document.getElementById('gName').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('gPass').focus(); });
+document.getElementById('gPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+async function doLogin(){
+  const nm=document.getElementById('gName').value.trim();
+  const pw=document.getElementById('gPass').value.trim();
+  const err=document.getElementById('gErr'), btn=document.getElementById('gBtn');
+  const iN=document.getElementById('gName'), iP=document.getElementById('gPass');
+  err.textContent=''; iN.classList.remove('bad'); iP.classList.remove('bad');
+
+  if(!nm){ iN.classList.add('bad'); err.textContent='اكتب اسمك'; return; }
+  if(!pw){ iP.classList.add('bad'); err.textContent='اكتب الرقم السري'; return; }
+
+  btn.disabled=true; btn.textContent='جاري التحقق…';
+  try{
+    const res=await fetch(ATT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'login', name:nm, pass:pw})});
+    const j=await res.json();
+    if(j && j.ok){
+      CUR={ name:j.name||nm, pass:pw, role:j.role||'' };
+      try{ sessionStorage.setItem('masar_clients', JSON.stringify(CUR)); }catch(e){}
+      openPage();
+    }else{
+      iN.classList.add('bad'); iP.classList.add('bad');
+      err.textContent=(j && j.message) ? j.message : 'الاسم أو الرقم السري غير صحيح';
+    }
+  }catch(e){ err.textContent='تعذّر الاتصال بالخادم، حاول مجدداً'; }
+  btn.disabled=false; btn.textContent='دخول';
+}
+
+function openPage(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('page').style.display='block';
+  document.getElementById('hName').textContent=CUR.name;
+  document.getElementById('hRole').textContent=CUR.role||'';
+  loadCourses();
+}
+
+function logout(){
+  CUR={name:'',pass:'',role:''};
+  try{ sessionStorage.removeItem('masar_clients'); }catch(e){}
+  document.getElementById('gPass').value='';
+  document.getElementById('page').style.display='none';
+  document.getElementById('gate').style.display='flex';
+}
+
+/* استعادة الجلسة عند تحديث الصفحة */
+(function(){
+  try{
+    const s=JSON.parse(sessionStorage.getItem('masar_clients')||'null');
+    if(s && s.name && s.pass){ CUR=s; openPage(); }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
