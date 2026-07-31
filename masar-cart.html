@@ -71,6 +71,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .plan-p small{font-size:11px;font-weight:700;color:var(--muted);}
 .plan-c{font-size:12px;font-weight:800;margin-top:4px;}
 .plan-b{font-size:10px;font-weight:900;color:#fff;background:var(--crimson);border-radius:100px;padding:2px 9px;display:inline-block;margin-bottom:6px;}
+.plan-v{font-size:11px;font-weight:900;color:var(--green);background:var(--green-bg);border-radius:8px;padding:4px 6px;margin-top:7px;line-height:1.4;}
+.plan-v.hot{color:#fff;background:var(--crimson);}
 .plan-add{margin-top:9px;background:var(--cream);border:none;border-radius:100px;padding:7px;width:100%;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:900;color:var(--crimson);cursor:pointer;}
 .plan-add:hover{background:var(--crimson);color:#fff;}
 
@@ -138,7 +140,7 @@ const API  = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRD
 const KEY  = 'masar_cart';
 const DISC = 0.10;
 
-let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], MEM = null, TMR = null;
+let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], CERTP = 15, MEM = null, TMR = null;
 
 function readCart(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
 function writeCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){} }
@@ -159,6 +161,7 @@ function writeCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch
     const r2 = await fetch(API + '?action=plans');
     const d2 = await r2.json();
     PLANS = d2.plans || [];
+    CERTP = d2.certPrice || 15;
   }catch(e){}
 
   document.getElementById('loading').style.display = 'none';
@@ -359,13 +362,21 @@ function paintMember(c){
     ? 'أول دورة مجانية لك مفتوحة بلا قيد — بعدها دورة واحدة بالشهر.'
     : 'لك دورة مجانية واحدة بالشهر. الاشتراك يفتح لك كل الدورات طول السنة.';
 
-  b.innerHTML = '<div class="mem off"><div class="mem-t">💡 وفّر أكثر بالاشتراك السنوي</div>' +
-    '<div class="mem-s">' + note + ' وكل الاشتراكات فيها <b>خصم ١٠٪ على كل شي</b>.</div>' +
+  b.innerHTML = '<div class="mem off">' +
+    '<div class="mem-t">💡 اشترك سنة كاملة واحضر بلا حدود</div>' +
+    '<div class="mem-s">' + note +
+      '<br>كل الاشتراكات: <b>حضور غير محدود لكل الدورات</b> · خصم ١٠٪ على الدورات المدفوعة · خصم ١٠٪ على أي شهادة إضافية</div>' +
     '<div class="plans">' + PLANS.map(function(p, i){
-      return '<div class="plan' + (i === PLANS.length - 1 ? ' best' : '') + '">' +
-        (i === PLANS.length - 1 ? '<div class="plan-b">الأوفر</div>' : '') +
+      const certVal  = p.certs * CERTP;
+      const yearCost = Math.max(0, p.price - certVal);
+      const best     = (i === PLANS.length - 1);
+      const val = (yearCost <= 0)
+        ? '<div class="plan-v hot">السنة كاملة مجاناً</div>'
+        : '<div class="plan-v">السنة بـ ' + ar(yearCost) + ' د.ك فقط</div>';
+      return '<div class="plan' + (best ? ' best' : '') + '">' +
+        (best ? '<div class="plan-b">الأوفر</div>' : '') +
         '<div class="plan-p">' + ar(p.price) + ' <small>د.ك</small></div>' +
-        '<div class="plan-c">' + ar(p.certs) + ' شهادة معتمدة</div>' +
+        '<div class="plan-c">' + ar(p.certs) + ' شهادة معتمدة</div>' + val +
         '<button class="plan-add" onclick="addSub(\'' + p.id + '\')">أضف للسلة</button>' +
       '</div>';
     }).join('') + '</div></div>';
@@ -384,7 +395,8 @@ function paintItems(c){
       return '<div class="item"><div class="item-ph">🎫</div><div class="item-b">' +
         '<span class="item-k k-s">اشتراك سنوي</span>' +
         '<div class="item-n">' + esc(o.name) + '</div>' +
-        '<div class="item-m">' + ar(o.certs) + ' شهادة معتمدة · حضور كل الدورات المجانية · خصم ١٠٪</div>' +
+        '<div class="item-m">حضور غير محدود سنة كاملة · ' + ar(o.certs) +
+          ' شهادة معتمدة · خصم ١٠٪ على الدورات المدفوعة والشهادات الإضافية</div>' +
         '<div class="item-f"><span class="item-p">' + ar(o.price) + ' د.ك</span>' +
         '<button class="rm" onclick="rm(' + i + ')">✕ إزالة</button></div>' +
         '</div></div>';
