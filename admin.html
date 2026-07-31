@@ -288,6 +288,12 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
   <div class="panel" id="p-reports">
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M9 2h6a2 2 0 0 1 2 2v1h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h2V4a2 2 0 0 1 2-2z"/></svg>التقارير اليومية</div><div class="sec-desc">تقارير مسؤول العمليات — محفوظة وغير قابلة للتعديل</div></div></div>
     <div class="toolbar">
+      <select class="sel" id="rp-type" onchange="rpRender()">
+        <option value="">كل التقارير</option>
+        <option value="operations">العمليات</option>
+        <option value="pr">العلاقات العامة</option>
+        <option value="sales">المبيعات</option>
+      </select>
       <select class="sel" id="rp-month" onchange="rpRender()"></select>
       <button class="btn btn-ghost" onclick="rpLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
     </div>
@@ -344,8 +350,14 @@ function ready(){ return ADMIN_URL && ADMIN_URL.indexOf('exec')>-1; }
 
 async function apiGet(params){
   const q = Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
-  const r = await fetch(ADMIN_URL+'?token='+encodeURIComponent(ADMIN_TOKEN)+'&'+q+'&_='+Date.now());
-  const j = await r.json();
+  const url = ADMIN_URL+'?token='+encodeURIComponent(ADMIN_TOKEN)+'&'+q+'&_='+Date.now();
+  let r;
+  try{ r = await fetch(url); }
+  catch(err){ throw new Error('الاتصال بالباك إند فشل — تأكد أن آخر نسخة منشورة (Manage deployments → New version) وأن الصلاحيات مقبولة'); }
+  const txt = await r.text();
+  let j;
+  try{ j = JSON.parse(txt); }
+  catch(err){ throw new Error('الباك إند رجّع صفحة خطأ بدل بيانات — افتح رابط ?action=diag لمعرفة السبب'); }
   if(!j.ok) throw new Error(j.error||'خطأ');
   return j.data;
 }
@@ -567,43 +579,72 @@ async function rpLoad(force){
     rpRender();
   }catch(e){ box.innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>'; }
 }
+/* تعريفات النماذج الثلاثة — يطابق staff-attendance */
+const RP_FORMS_ADMIN = {
+  operations: { label:'العمليات', sections:[
+    ['contacts','التواصل مع الأعضاء',['اسم العضو','سبب التواصل','الوصف النهائي'],['member','reason','result']],
+    ['bookings','طلبات حجز الدورات',['المدرب','الدورة','حالة العضوية','تاريخ الدورة','نظام الدورة','نوع الدورة'],['trainer','course','membership','date','mode','ctype']],
+    ['tomorrow','دورات الغد',['الدورة','المسجلين','مستخرجو الشهادة','التذكير','التأكيد','النظام'],['course','regs','certs','remind','confirm','mode']],
+    ['certs','الشهادات قيد الدفع',['العميل','الدورة','حالة التواصل'],['client','course','contact']],
+    ['inst','الدورات المؤسسية',['الدورة','مقدم الدورة','حالة العضوية','الجهة'],['course','provider','membership','org']]
+  ]},
+  pr: { label:'العلاقات العامة', sections:[
+    ['visits','زيارات ولقاءات الجهات',['الجهة','القسم','مع مَن','ما عُرض عليهم','ردة الفعل'],['entity','dept','withwho','offered','reaction']],
+    ['requests','طلبات الجهات',['الجهة','الطلب المحدد'],['entity','request']]
+  ]},
+  sales: { label:'المبيعات', sections:[
+    ['sales','بيانات البيع اليوم',['اسم العميل','رقم التلفون','الدورة المسجّل فيها','حالته قبل الاتصال'],['client','phone','course','before']],
+    ['followup','عملاء المتابعة',['اسم العميل','رقم التلفون','تاريخ التواصل القادم'],['client','phone','next']],
+    ['notinterested','عملاء لم يهتموا',['اسم العميل','رقم التلفون','اسم الخدمة','سبب الرفض'],['client','phone','service','reason']],
+    ['recommend','توصيات لتحسين البيع',null,null],
+    ['problems','أبرز مشكلات اليوم',['المشكلة','كيف تم الحل'],['problem','solution']]
+  ]}
+};
+const RP_TYPE_LABEL = { operations:'العمليات', pr:'العلاقات العامة', sales:'المبيعات' };
+function rpFormOf(r){ return RP_FORMS_ADMIN[r.type] || RP_FORMS_ADMIN.operations; }
+function isDateCol(k){ return k==='date'||k==='next'; }
+
 function rpRender(){
-  const box=document.getElementById('rpList'), mo=document.getElementById('rp-month').value;
+  const box=document.getElementById('rpList');
+  const mo=document.getElementById('rp-month').value;
+  const ty=document.getElementById('rp-type').value;
   let d=REPORTS.slice();
   if(mo) d=d.filter(r=>String(r.date||'').slice(0,7)===mo);
-  d.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  if(ty) d=d.filter(r=>String(r.type||'operations')===ty);
+  d.sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.time).localeCompare(String(a.time)));
   if(!d.length){ box.innerHTML='<div class="empty">لا توجد تقارير.</div>'; return; }
   box.innerHTML=d.map(r=>{
-    const s=r.sections||{}, c=(k)=>((s[k]||[]).length);
+    const f=rpFormOf(r), s=r.sections||{};
+    const chips=f.sections.filter(sec=>sec[2]).map(sec=>'<span class="chip">'+esc(sec[1])+': <b>'+toAr((s[sec[0]]||[]).length)+'</b></span>').join('');
+    const label=RP_TYPE_LABEL[r.type||'operations']||'العمليات';
     return '<div class="card"><div class="card-top">'
       + '<div><div class="card-title">'+esc(pretty(r.date))+'</div><div class="card-sub">أعدّه: '+esc(r.author||'—')+' · '+esc(r.time||'')+'</div></div>'
-      + '<span class="status st-done">محفوظ</span></div>'
-      + '<div class="card-meta">'
-      + '<span class="chip">التواصل: <b>'+toAr(c('contacts'))+'</b></span>'
-      + '<span class="chip">الحجوزات: <b>'+toAr(c('bookings'))+'</b></span>'
-      + '<span class="chip">دورات الغد: <b>'+toAr(c('tomorrow'))+'</b></span>'
-      + '<span class="chip">شهادات: <b>'+toAr(c('certs'))+'</b></span>'
-      + '<span class="chip">مؤسسية: <b>'+toAr(c('inst'))+'</b></span></div>'
+      + '<span class="status st-done">'+esc(label)+'</span></div>'
+      + '<div class="card-meta">'+chips+'</div>'
       + '<div class="card-actions"><button class="act act-link" onclick="rpOpen(\''+esc(r.id)+'\')">عرض التقرير</button></div></div>';
   }).join('');
 }
-const RP_SEC=[['contacts','التواصل مع الأعضاء',['اسم العضو','سبب التواصل','الوصف النهائي'],['member','reason','result']],
-              ['bookings','طلبات حجز الدورات',['المدرب','الدورة','حالة العضوية','تاريخ الدورة','نظام الدورة','نوع الدورة'],['trainer','course','membership','date','mode','ctype']],
-              ['tomorrow','دورات الغد',['الدورة','المسجلين','مستخرجو الشهادة','التذكير','التأكيد','النظام'],['course','regs','certs','remind','confirm','mode']],
-              ['certs','الشهادات قيد الدفع',['العميل','الدورة','حالة التواصل'],['client','course','contact']],
-              ['inst','الدورات المؤسسية',['الدورة','مقدم الدورة','حالة العضوية','الجهة'],['course','provider','membership','org']]];
+
 function rpOpen(id){
   const r=REPORTS.find(x=>String(x.id)===String(id)); if(!r) return;
+  const f=rpFormOf(r);
+  const label=RP_TYPE_LABEL[r.type||'operations']||'العمليات';
   let h='<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;">'
-    + '<div><div style="font-size:20px;font-weight:900;color:var(--crimson);">تقرير '+esc(pretty(r.date))+'</div>'
+    + '<div><div style="font-size:20px;font-weight:900;color:var(--crimson);">تقرير '+esc(label)+' — '+esc(pretty(r.date))+'</div>'
     + '<div class="card-sub">أعدّه: '+esc(r.author||'—')+' · '+esc(r.time||'')+'</div></div>'
     + '<button class="btn btn-primary" onclick="closeModal()">إغلاق</button></div>';
-  RP_SEC.forEach(sec=>{
+  f.sections.forEach(sec=>{
+    if(!sec[2]){ /* قسم نصي حر */
+      const txt=(r.sections||{})[sec[0]]||'';
+      h+='<div class="dr-tt">'+esc(sec[1])+'</div>'
+        + (txt?'<div class="note-box" style="margin-bottom:6px;">'+esc(txt)+'</div>':'<div class="card-sub" style="margin-bottom:6px;">لا يوجد.</div>');
+      return;
+    }
     const rows=(r.sections||{})[sec[0]]||[];
     h+='<div class="dr-tt">'+esc(sec[1])+' — '+toAr(rows.length)+'</div>';
     if(!rows.length){ h+='<div class="card-sub" style="margin-bottom:6px;">لا يوجد.</div>'; return; }
     h+='<div class="tb-wrap" style="margin-bottom:6px;"><table class="tb"><thead><tr>'+sec[2].map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr></thead><tbody>'
-      + rows.map(o=>'<tr>'+sec[3].map(k=>'<td>'+esc(o[k]||'—')+'</td>').join('')+'</tr>').join('')
+      + rows.map(o=>'<tr>'+sec[3].map(k=>{ let v=o[k]||''; if(isDateCol(k)&&v) v=pretty(v); return '<td>'+esc(v||'—')+'</td>'; }).join('')+'</tr>').join('')
       + '</tbody></table></div>';
   });
   h+='<div class="dr-tt">الملاحظات</div>'+(r.notes?'<div class="note-box">'+esc(r.notes)+'</div>':'<div class="card-sub">لا توجد ملاحظات.</div>');
@@ -727,8 +768,15 @@ async function chartLoad(){
   if(!ready()){ box.innerHTML='<div class="empty">رابط باك إند الإدارة غير مهيأ بعد.</div>'; return; }
   try{
     const d=await apiGet({action:'trend',n:12});
-    box.innerHTML=drawChart(d.months||[]);
-  }catch(e){ box.innerHTML='<div class="empty">تعذّر تجهيز الرسم: '+esc(e.message)+'</div>'; }
+    let warn='';
+    if(d.errors && d.errors.length){
+      warn='<div class="banner" style="margin:0 0 14px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>تعذّرت قراءة: '+esc(d.errors.join(' · '))+'</div></div>';
+    }
+    box.innerHTML=warn+drawChart(d.months||[]);
+  }catch(e){
+    box.innerHTML='<div class="empty" style="padding:28px 20px;">'+esc(e.message)
+      +'<div style="margin-top:14px;"><button class="btn btn-ghost" onclick="chartLoad()">إعادة المحاولة</button></div></div>';
+  }
 }
 
 function drawChart(rows){
@@ -776,7 +824,11 @@ function drawChart(rows){
 }
 
 /* ================= بدء ================= */
-function init(){ if(ready()){ loadStaff().catch(()=>{}); chartLoad(); } }
+async function init(){
+  if(!ready()) return;
+  try{ await loadStaff(); }catch(e){}
+  chartLoad();
+}
 if(sessionStorage.getItem('adm_ok')==='1') init();
 </script>
 </body>

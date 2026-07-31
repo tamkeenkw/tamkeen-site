@@ -807,6 +807,25 @@ var RP_FORMS = {
       { key:'requests', num:'٢', title:'طلبات الجهات', add:'إضافة طلب آخر', unit:'طلب',
         cols:[ {k:'entity',label:'الجهة'},{k:'request',label:'الطلب المحدد'} ] }
     ]
+  },
+  sales: {
+    label: 'تقرير المبيعات',
+    sections: [
+      { key:'sales', num:'١', title:'بيانات البيع اليوم', add:'إضافة عميل آخر', unit:'عميل',
+        cols:[ {k:'client',label:'اسم العميل'},{k:'phone',label:'رقم التلفون'},
+               {k:'course',label:'الدورة المسجّل فيها'},
+               {k:'before',label:'حالته قبل الاتصال',type:'select',opts:['عميل جديد','متابعة سابقة','مهتم سابقاً','استفسار قديم']} ] },
+      { key:'followup', num:'٢', title:'عملاء المتابعة', add:'إضافة عميل آخر', unit:'عميل',
+        cols:[ {k:'client',label:'اسم العميل'},{k:'phone',label:'رقم التلفون'},
+               {k:'next',label:'تاريخ التواصل القادم',type:'date'} ] },
+      { key:'notinterested', num:'٣', title:'عملاء لم يهتموا', add:'إضافة عميل آخر', unit:'عميل',
+        cols:[ {k:'client',label:'اسم العميل'},{k:'phone',label:'رقم التلفون'},
+               {k:'service',label:'اسم الخدمة'},{k:'reason',label:'سبب الرفض'} ] },
+      { key:'recommend', num:'٤', title:'توصيات لتحسين البيع', freeText:true,
+        placeholder:'اكتب توصياتك لتحسين عملية البيع...' },
+      { key:'problems', num:'٥', title:'أبرز مشكلات اليوم', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+        cols:[ {k:'problem',label:'المشكلة'},{k:'solution',label:'كيف تم الحل'} ] }
+    ]
   }
 };
 
@@ -814,6 +833,7 @@ var RP_FORMS = {
 function rpTypeFor(role){
   var r = String(role||'');
   if (r.indexOf('علاقات') > -1) return 'pr';
+  if (r.indexOf('مبيعات') > -1) return 'sales';
   return 'operations';   // الافتراضي: عمليات
 }
 
@@ -842,15 +862,22 @@ function rpInit(){
 function rpBuild(){
   var f = rpForm(), h='';
   f.sections.forEach(function(sec){
-    h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
-      +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
-      +     '<span class="rp-count" id="rpcnt-'+sec.key+'">٠ '+esc(sec.unit)+'</span></div>'
-      +   '<div class="rp-rows" id="rprows-'+sec.key+'"></div>'
-      +   '<button class="rp-add" onclick="rpAddRow(\''+sec.key+'\')">+ '+esc(sec.add)+'</button>'
-      + '</div>';
+    if(sec.freeText){
+      h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
+        +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div></div>'
+        +   '<textarea class="rp-notes" id="rpfree-'+sec.key+'" placeholder="'+esc(sec.placeholder||'')+'"></textarea>'
+        + '</div>';
+    } else {
+      h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
+        +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
+        +     '<span class="rp-count" id="rpcnt-'+sec.key+'">٠ '+esc(sec.unit)+'</span></div>'
+        +   '<div class="rp-rows" id="rprows-'+sec.key+'"></div>'
+        +   '<button class="rp-add" onclick="rpAddRow(\''+sec.key+'\')">+ '+esc(sec.add)+'</button>'
+        + '</div>';
+    }
   });
   document.getElementById('rpForm').innerHTML = h;
-  f.sections.forEach(function(sec){ rpAddRow(sec.key); });
+  f.sections.forEach(function(sec){ if(!sec.freeText) rpAddRow(sec.key); });
 }
 
 function rpRowHtml(sec, vals){
@@ -902,13 +929,21 @@ function rpCount(key){
 }
 function rpCollect(){
   var f=rpForm(), data={};
-  f.sections.forEach(function(sec){ data[sec.key]=rpReadSection(sec.key); });
+  f.sections.forEach(function(sec){
+    if(sec.freeText){
+      var el=document.getElementById('rpfree-'+sec.key);
+      data[sec.key]=el?String(el.value||'').trim():'';
+    } else {
+      data[sec.key]=rpReadSection(sec.key);
+    }
+  });
   return data;
 }
 function rpClearForm(silent){
   if(!silent && !confirm('تفريغ كل الحقول؟')) return;
   rpForm().sections.forEach(function(sec){
-    document.getElementById('rprows-'+sec.key).innerHTML=''; rpAddRow(sec.key);
+    if(sec.freeText){ var el=document.getElementById('rpfree-'+sec.key); if(el) el.value=''; }
+    else { document.getElementById('rprows-'+sec.key).innerHTML=''; rpAddRow(sec.key); }
   });
   document.getElementById('rpNotes').value='';
   if(!silent) toast('تم تفريغ النموذج');
@@ -932,8 +967,12 @@ function rpSave(){
   if(!CUR.name){ toast('سجّل دخولك أولاً', true); return; }
   var sections=rpCollect();
   var notes=document.getElementById('rpNotes').value.trim();
-  var total=0; rpForm().sections.forEach(function(s){ total += sections[s.key].length; });
-  if(total===0 && !notes){ toast('التقرير فارغ — عبّي قسم واحد على الأقل', true); return; }
+  var total=0, freeFilled=false;
+  rpForm().sections.forEach(function(s){
+    if(s.freeText){ if(sections[s.key]) freeFilled=true; }
+    else { total += (sections[s.key]||[]).length; }
+  });
+  if(total===0 && !notes && !freeFilled){ toast('التقرير فارغ — عبّي قسم واحد على الأقل', true); return; }
   if(!confirm('تأكيد الإرسال؟\n\nبعد الحفظ ما يمكن تعديل التقرير أو حذفه.')) return;
   var btn=document.getElementById('rpSaveBtn'), txt=document.getElementById('rpSaveTxt');
   btn.disabled=true; txt.textContent='جاري الحفظ...';
@@ -972,7 +1011,7 @@ function rpRenderList(){
   if(!d.length){ box.innerHTML='<div class="rp-empty">لا توجد تقارير سابقة.</div>'; return; }
   box.innerHTML=d.map(function(r){
     var f=RP_FORMS[r.type]||rpForm(), s=r.sections||{};
-    var chips=f.sections.map(function(sec){ return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr((s[sec.key]||[]).length)+'</b></span>'; }).join('');
+    var chips=f.sections.filter(function(sec){ return !sec.freeText; }).map(function(sec){ return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr((s[sec.key]||[]).length)+'</b></span>'; }).join('');
     return '<div class="rp-histcard"><div class="rp-hist-top">'
       + '<div><div class="rp-hist-date">'+esc(rpPretty(r.date))+'</div><div class="rp-hist-sub">أُرسل '+esc(r.time||'')+'</div></div>'
       + '<span class="rp-lock">🔒 محفوظ</span></div>'
@@ -988,6 +1027,12 @@ function rpOpen(id){
     + '<div class="rp-hist-sub">'+esc(f.label)+' · '+esc(r.time||'')+'</div></div>'
     + '<button class="rp-close" onclick="rpCloseView()">إغلاق</button></div>';
   f.sections.forEach(function(sec){
+    if(sec.freeText){
+      var txt=(r.sections||{})[sec.key]||'';
+      h += '<div class="rp-view-tt">'+esc(sec.title)+'</div>'
+        + (txt?'<div class="rp-notes-box">'+esc(txt)+'</div>':'<div class="rp-hist-sub" style="margin-bottom:8px;">لا يوجد.</div>');
+      return;
+    }
     var rows=(r.sections||{})[sec.key]||[];
     h += '<div class="rp-view-tt">'+esc(sec.title)+' — '+rpAr(rows.length)+'</div>';
     if(!rows.length){ h+='<div class="rp-hist-sub" style="margin-bottom:8px;">لا يوجد.</div>'; return; }
