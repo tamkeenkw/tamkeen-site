@@ -73,6 +73,16 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);pa
 .mb-done{background:var(--cream2);color:var(--muted)}
 .mini-btn:active{opacity:.75}
 
+.msel{background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:9px 16px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--maroon);outline:none;cursor:pointer}
+.msel:focus{border-color:var(--gold)}
+.mb-pay{background:#FFF3D6;color:#B26A00}
+.mb-paid{background:var(--green);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:4px}
+.chip{background:var(--cream2);color:var(--maroon);border-radius:100px;padding:7px 12px;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+.chip b{font-weight:900}
+.chip span{cursor:pointer;color:var(--red);font-weight:900;font-size:15px;line-height:1}
+.add-row{display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;align-items:end;margin-bottom:12px}
+
 /* ٣ — هدف الشهر */
 .goals{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .goal{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(92,15,15,.04)}
@@ -193,20 +203,32 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);pa
     </div>
   </div>
 
-  <!-- ٢ — الأولويات -->
+  <!-- ٢ — بيانات العملاء -->
   <div class="sec">
     <div class="sec-h">
       <div class="sec-n">٢</div>
-      <div class="sec-t">قائمة الأولويات</div>
-      <div class="sec-s">ابدأ يومك من هنا</div>
+      <div class="sec-t">بيانات العملاء</div>
+      <div class="sec-s">اللي دفع يختفي من القائمة</div>
     </div>
-    <div class="tabs">
-      <button class="tab on" data-k="pay" onclick="switchTab('pay')">قيد الدفع <span class="cnt" id="cPay">0</span></button>
+
+    <div class="tabs" style="align-items:center">
+      <select id="monthSel" class="msel" onchange="loadClients()"></select>
+      <button class="tab on" data-k="all" onclick="switchTab('all')">الكل <span class="cnt" id="cAll">0</span></button>
+      <button class="tab" data-k="pay" onclick="switchTab('pay')">قيد الدفع <span class="cnt" id="cPay">0</span></button>
       <button class="tab" data-k="cert" onclick="switchTab('cert')">يبي شهادة ولم يدفع <span class="cnt" id="cCert">0</span></button>
-      <button class="tab" data-k="sub" onclick="switchTab('sub')">عضوية تنتهي هذا الأسبوع <span class="cnt" id="cSub">0</span></button>
+      <button class="tab" data-k="no" onclick="switchTab('no')">ما يبي شهادة <span class="cnt" id="cNo">0</span></button>
+      <input id="qSearch" class="msel" style="flex:1;min-width:140px" placeholder="بحث باسم أو رقم…" oninput="renderClients()">
+    </div>
+
+    <div class="card" style="overflow:hidden">
+      <div id="prioBox"><div class="loading">جاري تحميل بيانات العملاء…</div></div>
+    </div>
+
+    <div class="sec-h" style="margin-top:18px">
+      <div class="sec-t" style="font-size:14px">عضويات تنتهي هذا الأسبوع <span class="cnt" id="cSub" style="background:var(--cream2);color:var(--maroon);padding:2px 9px;border-radius:100px;font-size:12px">0</span></div>
     </div>
     <div class="card" style="overflow:hidden">
-      <div id="prioBox"><div class="loading">جاري تحميل الأولويات…</div></div>
+      <div id="subBox"><div class="loading">جاري التحميل…</div></div>
     </div>
   </div>
 
@@ -292,6 +314,14 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text);pa
           <div class="fld"><label>العضويات المعروضة</label><input type="number" min="0" id="rSubs" value="0"></div>
           <div class="fld"><label>الشركات</label><input type="number" min="0" id="rComp" value="0"></div>
         </div>
+        <div style="font-size:13px;font-weight:900;margin:6px 0 10px">العملاء اللي سجّلتهم اليوم</div>
+        <div class="add-row">
+          <div class="fld"><label>اسم العميل</label><input id="clName" placeholder="الاسم"></div>
+          <div class="fld"><label>رقم الواتساب</label><input id="clPhone" inputmode="numeric" placeholder="9xxxxxxx"></div>
+          <button class="btn btn-m" onclick="addClient()" style="padding:12px 22px">إضافة</button>
+        </div>
+        <div class="chips" id="clChips"></div>
+
         <button class="btn btn-g" id="repBtn" onclick="sendReport()" style="width:100%">إرسال تقرير اليوم</button>
       </div>
     </div>
@@ -326,9 +356,10 @@ const SCRIPTS = [
   { t:'شركة', x:'السلام عليكم، معهد تمكين ايديو كلاود يقدم برامج تدريبية معتمدة لموظفيكم في الإدارة والذكاء الاصطناعي والقيادة — تبي أرسل لك التفاصيل؟' }
 ];
 
-let DATA = { pay:[], cert:[], sub:[], calls:[] };
-let TAB = 'pay';
+let DATA = { clients:[], sub:[], calls:[] };
+let TAB = 'all';
 let MODAL_I = 0;
+let REPORT_CLIENTS = [];
 
 /* ═══ أدوات ═══ */
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -365,6 +396,14 @@ const AR_DAYS=['الأحد','الإثنين','الثلاثاء','الأربعا�
   const d=new Date();
   document.getElementById('hDate').textContent = AR_DAYS[d.getDay()]+' '+d.getDate()+' '+AR_MONTHS[d.getMonth()];
   document.getElementById('monthLbl').textContent = 'شهر '+AR_MONTHS[d.getMonth()]+' '+d.getFullYear();
+  // قائمة آخر ١٢ شهر
+  const sel=document.getElementById('monthSel'); let h='';
+  for(let i=0;i<12;i++){
+    const m=new Date(d.getFullYear(), d.getMonth()-i, 1);
+    const v=m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0');
+    h+='<option value="'+v+'">'+AR_MONTHS[m.getMonth()]+' '+m.getFullYear()+'</option>';
+  }
+  sel.innerHTML=h;
 })();
 
 /* ═══ تحميل كل شيء ═══ */
@@ -375,28 +414,38 @@ async function loadAll(manual){
     const r = await api({ type:'salesDay' });
     if(!r || !r.ok) throw new Error((r&&r.error)?r.error:'تعذّر جلب البيانات');
 
-    DATA.pay  = r.priorities.pay  || [];
-    DATA.cert = r.priorities.cert || [];
-    DATA.sub  = r.priorities.sub  || [];
-    DATA.calls= r.calls || [];
-
-    document.getElementById('cPay').textContent  = DATA.pay.length;
-    document.getElementById('cCert').textContent = DATA.cert.length;
-    document.getElementById('cSub').textContent  = DATA.sub.length;
+    DATA.sub   = (r.priorities && r.priorities.sub) || [];
+    DATA.calls = r.calls || [];
+    document.getElementById('cSub').textContent = DATA.sub.length;
 
     const t = r.today||{};
     set('nCalls',t.calls||0); set('nCerts',t.certs||0); set('nSubs',t.subs||0); set('nComp',t.comps||0);
     syncReport();
 
     renderGoals(r.goals||{});
-    renderPrio();
+    renderSubs();
     renderCalls();
+    await loadClients();
     if(manual) toast('تم التحديث','ok');
   }catch(e){
     showErr('تعذّر تحميل البيانات: '+e.message);
     document.getElementById('prioBox').innerHTML='<div class="empty">لا توجد بيانات — اضغط تحديث بعد التأكد من الاتصال</div>';
+    document.getElementById('subBox').innerHTML='<div class="empty">لا توجد بيانات</div>';
     document.getElementById('callsBox').innerHTML='<div class="empty">لا توجد بيانات</div>';
     if(manual) toast('فشل التحديث','bad');
+  }
+}
+
+async function loadClients(){
+  const box=document.getElementById('prioBox');
+  box.innerHTML='<div class="loading">جاري تحميل بيانات العملاء…</div>';
+  try{
+    const r=await api({ type:'salesClients', month: val('monthSel') });
+    if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر جلب العملاء');
+    DATA.clients = r.list||[];
+    renderClients();
+  }catch(e){
+    box.innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>';
   }
 }
 
@@ -427,44 +476,118 @@ function saveStats(){
 function switchTab(k){
   TAB=k;
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', b.dataset.k===k));
-  renderPrio();
+  renderClients();
 }
-function pillFor(k){
-  if(k==='pay')  return '<span class="pill p-pay">قيد الدفع</span>';
-  if(k==='cert') return '<span class="pill p-cert">يبي شهادة</span>';
-  return '<span class="pill p-sub">عضوية تنتهي</span>';
-}
-function renderPrio(){
-  const list = DATA[TAB]||[];
-  const box  = document.getElementById('prioBox');
-  if(!list.length){ box.innerHTML='<div class="empty">ما فيه سجلات في هذا القسم — عمل ممتاز</div>'; return; }
 
-  const third = TAB==='sub' ? 'تنتهي بتاريخ' : 'الدورة';
-  let h='<table class="tbl"><thead><tr><th>الاسم</th><th>الرقم</th><th>'+third+'</th><th>الحالة</th><th style="text-align:left">إجراء</th></tr></thead><tbody>';
-  list.forEach((c,i)=>{
-    const wa='https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(SCRIPTS[TAB==='pay'?0:(TAB==='cert'?1:2)].x.replace('[الدورة]', c.course||'الدورة'));
-    h+='<tr id="pr-'+TAB+'-'+i+'">'
+/* تصنيف العميل */
+function catOf(c){
+  const pay=String(c.payment||''), want=String(c.wantCert||'');
+  if(pay.indexOf('قيد الدفع')!==-1) return 'pay';
+  if(want.indexOf('نعم')!==-1) return 'cert';
+  return 'no';
+}
+function pillOf(k){
+  if(k==='pay')  return '<span class="pill p-pay">قيد الدفع</span>';
+  if(k==='cert') return '<span class="pill p-cert">يبي شهادة — لم يدفع</span>';
+  return '<span class="pill p-sub">ما يبي شهادة</span>';
+}
+
+function renderClients(){
+  const box=document.getElementById('prioBox');
+  const q=val('qSearch').trim();
+  const qd=digits(q);
+
+  let all=DATA.clients||[];
+  let nPay=0,nCert=0,nNo=0;
+  all.forEach(c=>{ const k=catOf(c); if(k==='pay')nPay++; else if(k==='cert')nCert++; else nNo++; });
+  document.getElementById('cAll').textContent=all.length;
+  document.getElementById('cPay').textContent=nPay;
+  document.getElementById('cCert').textContent=nCert;
+  document.getElementById('cNo').textContent=nNo;
+
+  let list=all.filter(c=>TAB==='all'||catOf(c)===TAB);
+  if(q) list=list.filter(c=>String(c.name||'').indexOf(q)!==-1 || (qd && digits(c.phone).indexOf(qd)!==-1));
+
+  if(!list.length){ box.innerHTML='<div class="empty">ما فيه عملاء في هذا التصنيف لهذا الشهر</div>'; return; }
+
+  let h='<table class="tbl"><thead><tr><th>الاسم</th><th>الرقم</th><th>الدورة</th><th>الحالة</th><th style="text-align:left">إجراء</th></tr></thead><tbody>';
+  list.forEach(c=>{
+    const k=catOf(c);
+    const sc=SCRIPTS[k==='pay'?0:1].x.replace('[الدورة]', c.course||'الدورة');
+    const wa='https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(sc);
+    h+='<tr id="cl-'+c.row+'">'
       + '<td class="nm">'+esc(c.name||'—')+'</td>'
       + '<td class="ph">'+esc(c.phone||'—')+'</td>'
       + '<td>'+esc(c.course||'—')+'</td>'
-      + '<td>'+pillFor(TAB)+'</td>'
+      + '<td>'+pillOf(k)+'</td>'
       + '<td><div class="row-actions">'
       +   '<a class="mini-btn mb-wa" href="'+wa+'" target="_blank" rel="noopener">واتساب</a>'
-      +   '<button class="mini-btn mb-ok" onclick="markContacted(\''+TAB+'\','+i+',this)">تم التواصل</button>'
+      +   (k==='pay'?'':'<button class="mini-btn mb-pay" onclick="setStatus('+c.row+',\'قيد الدفع\',this)">قيد الدفع</button>')
+      +   '<button class="mini-btn mb-paid" onclick="setStatus('+c.row+',\'تم الدفع\',this)">تم الدفع</button>'
       + '</div></td></tr>';
   });
-  box.innerHTML = h+'</tbody></table>';
+  box.innerHTML=h+'</tbody></table>';
 }
 
-async function markContacted(kind,i,btn){
-  const c = DATA[kind][i]; if(!c) return;
+async function setStatus(row,status,btn){
+  if(status==='تم الدفع' && !confirm('تأكيد: العميل دفع فعلياً؟ راح ينحسب في تحصيل هذا الشهر.')) return;
+  const box=btn.parentNode;
+  Array.prototype.forEach.call(box.querySelectorAll('button'),b=>b.disabled=true);
+  btn.textContent='…';
+  try{
+    const r=await api({ type:'salesSetPaid', row:row, status:status });
+    if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر التحديث');
+
+    const c=(DATA.clients||[]).filter(x=>x.row===row)[0];
+    if(status==='تم الدفع'){
+      DATA.clients=DATA.clients.filter(x=>x.row!==row);
+      const tr=document.getElementById('cl-'+row);
+      if(tr){ tr.style.transition='opacity .3s'; tr.style.opacity='0'; }
+      setTimeout(renderClients,320);
+      bump('nCerts',1);
+      if(c && !REPORT_CLIENTS.some(x=>x.phone===c.phone)){ REPORT_CLIENTS.push({name:c.name,phone:c.phone}); renderChips(); }
+      const g=document.getElementById('gCertN');
+      toast('تم التحصيل ✓ — انحسب لك','ok');
+      loadGoals();
+    }else{
+      if(c) c.payment='قيد الدفع';
+      renderClients();
+      toast('تم التغيير لـ قيد الدفع','ok');
+    }
+  }catch(e){
+    Array.prototype.forEach.call(box.querySelectorAll('button'),b=>b.disabled=false);
+    btn.textContent=status;
+    toast('تعذّر التحديث: '+e.message,'bad');
+  }
+}
+
+async function loadGoals(){
+  try{ const r=await api({type:'salesGoals'}); if(r&&r.ok) renderGoals(r.goals||{}); }catch(e){}
+}
+
+/* عضويات تنتهي */
+function renderSubs(){
+  const box=document.getElementById('subBox');
+  if(!DATA.sub.length){ box.innerHTML='<div class="empty">ما فيه عضويات تنتهي هذا الأسبوع</div>'; return; }
+  let h='<table class="tbl"><thead><tr><th>الاسم</th><th>الرقم</th><th>تنتهي بتاريخ</th><th style="text-align:left">إجراء</th></tr></thead><tbody>';
+  DATA.sub.forEach((c,i)=>{
+    const wa='https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(SCRIPTS[2].x);
+    h+='<tr id="sb-'+i+'"><td class="nm">'+esc(c.name||'—')+'</td><td class="ph">'+esc(c.phone||'—')+'</td>'
+     + '<td><span class="pill p-sub">'+esc(c.course||'—')+'</span></td>'
+     + '<td><div class="row-actions"><a class="mini-btn mb-wa" href="'+wa+'" target="_blank" rel="noopener">واتساب</a>'
+     + '<button class="mini-btn mb-ok" onclick="markContacted('+i+',this)">تم التواصل</button></div></td></tr>';
+  });
+  box.innerHTML=h+'</tbody></table>';
+}
+
+async function markContacted(i,btn){
+  const c=DATA.sub[i]; if(!c) return;
   btn.disabled=true; btn.textContent='…';
   try{
-    const r=await api({ type:'salesContacted', kind:kind, sheet:c.sheet, row:c.row, name:c.name });
+    const r=await api({ type:'salesContacted', sheet:c.sheet, row:c.row, name:c.name });
     if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر التحديث');
     btn.className='mini-btn mb-done'; btn.textContent='تم ✓';
-    const tr=document.getElementById('pr-'+kind+'-'+i);
-    if(tr) setTimeout(()=>{ tr.style.opacity='.45'; },200);
+    const tr=document.getElementById('sb-'+i); if(tr) tr.style.opacity='.45';
     toast('تم تسجيل التواصل في الشيت','ok');
   }catch(e){
     btn.disabled=false; btn.textContent='تم التواصل';
@@ -543,11 +666,30 @@ function fallbackCopy(txt){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ═══ ٦ — تقرير اليوم ═══ */
+function addClient(){
+  const n=val('clName').trim(), p=digits(val('clPhone'));
+  if(!n){ toast('اكتب اسم العميل','bad'); return; }
+  if(p.length<8){ toast('الرقم غير صحيح','bad'); return; }
+  if(REPORT_CLIENTS.some(x=>digits(x.phone)===p)){ toast('العميل مضاف مسبقاً','bad'); return; }
+  REPORT_CLIENTS.push({name:n,phone:p});
+  set('clName',''); set('clPhone','');
+  renderChips();
+  document.getElementById('clName').focus();
+}
+function removeClient(i){ REPORT_CLIENTS.splice(i,1); renderChips(); }
+function renderChips(){
+  const box=document.getElementById('clChips');
+  if(!REPORT_CLIENTS.length){ box.innerHTML='<div style="font-size:12.5px;font-weight:700;color:var(--muted)">ما أضفت عملاء بعد — يتضافون تلقائياً عند الضغط على «تم الدفع»</div>'; return; }
+  box.innerHTML=REPORT_CLIENTS.map((c,i)=>'<div class="chip"><b>'+esc(c.name)+'</b> — '+esc(c.phone)+' <span onclick="removeClient('+i+')">×</span></div>').join('');
+}
+renderChips();
+
 async function sendReport(){
   const btn=document.getElementById('repBtn');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span> جاري الإرسال';
   try{
-    const r=await api({ type:'salesReport', calls:num('rCalls'), certs:num('rCerts'), subs:num('rSubs'), comps:num('rComp'), draft:false });
+    const clients=REPORT_CLIENTS.map(c=>c.name+' - '+c.phone).join(' | ');
+    const r=await api({ type:'salesReport', calls:num('rCalls'), certs:num('rCerts'), subs:num('rSubs'), comps:num('rComp'), clients:clients, draft:false });
     if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر إرسال التقرير');
     set('nCalls',num('rCalls')); set('nCerts',num('rCerts'));
     set('nSubs',num('rSubs'));   set('nComp',num('rComp'));
