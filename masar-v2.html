@@ -60,6 +60,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .s-count span{font-size:10px;font-weight:800;letter-spacing:1px;color:rgba(255,255,255,.7);}
 .s-count.urgent{background:rgba(198,40,40,.35);border-color:rgba(255,180,180,.4);}
 
+.slide-poster{position:absolute;left:clamp(26px,5vw,54px);top:50%;transform:translateY(-50%);height:80%;aspect-ratio:650/1200;object-fit:cover;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);display:none;z-index:3;}
+@media(min-width:900px){.slide-poster{display:block;} .slide-body{max-width:calc(100% - 300px);} .s-count{left:auto;right:clamp(26px,5vw,54px);}}
+.slide-bg{filter:blur(2px);}
 .bnav{position:absolute;bottom:20px;left:clamp(22px,4vw,44px);display:flex;gap:8px;z-index:5;}
 .bdot{width:9px;height:9px;border-radius:100px;background:rgba(255,255,255,.32);border:none;cursor:pointer;transition:.3s;padding:0;}
 .bdot.on{width:30px;background:#fff;}
@@ -88,13 +91,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .fbtn.on{background:var(--crimson);border-color:var(--crimson);color:#fff;}
 
 /* ===== CARDS ===== */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
 .card{background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 3px 16px rgba(92,15,15,.05);display:flex;flex-direction:column;overflow:hidden;transition:.28s;opacity:0;transform:translateY(18px);}
 .card.in{opacity:1;transform:none;}
 .card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(92,15,15,.13);}
 .card-imgwrap{position:relative;}
-.card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--cream-2);}
-.card-noimg{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,var(--crimson) 0%,var(--crimson-3) 100%);display:flex;align-items:center;justify-content:center;}
+.card-img{width:100%;aspect-ratio:650/1200;object-fit:cover;display:block;background:var(--cream-2);}
+.card-noimg{width:100%;aspect-ratio:650/1200;background:linear-gradient(135deg,var(--crimson) 0%,var(--crimson-3) 100%);display:flex;align-items:center;justify-content:center;}
 .card-noimg span{font-size:44px;font-weight:900;color:rgba(255,255,255,.22);}
 .card-badge{position:absolute;top:12px;right:12px;border-radius:100px;padding:5px 14px;font-size:12px;font-weight:900;}
 .b-free{background:var(--blue-bg);color:var(--blue);}
@@ -238,7 +241,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="box">
     <button class="x" onclick="closeM()">✕</button>
     <div id="regView">
-      <img id="mImg" src="" alt="" style="display:none;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:16px;background:var(--cream-2);">
+      <img id="mImg" src="" alt="" style="display:none;width:100%;max-height:340px;aspect-ratio:650/1200;object-fit:contain;border-radius:14px;margin-bottom:16px;background:var(--cream-2);">
       <div class="m-tag" id="mTag">دورة</div>
       <div class="m-title" id="mTitle"></div>
       <div class="m-info" id="mInfo"></div>
@@ -337,8 +340,12 @@ function buildBanner(){
       ? (c.hasCert ? 'الحضور مجاني — والشهادة المعتمدة برسوم ' + ar(c.certFee) + ' <small>د.ك</small>' : 'حضور مجاني بالكامل')
       : 'شامل الحضور والشهادة المعتمدة';
 
+    const poster = c.image
+      ? '<img class="slide-poster" src="' + esc(c.image) + '" alt="" loading="lazy">'
+      : '';
+
     h += '<div class="slide' + (i === 0 ? ' on' : '') + '">' + bg +
-      '<div class="slide-veil"></div>' + cnt +
+      '<div class="slide-veil"></div>' + poster + cnt +
       '<div class="slide-body">' +
         '<div class="s-row">' + price +
           (c.days !== null && c.days >= 0 && c.days <= 3 ? '<span class="s-pill soon">التسجيل يقفل قريباً</span>' : '') +
