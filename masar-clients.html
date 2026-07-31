@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بيانات العملاء — أكاديمية مسار</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson2:#3a0808; --gold:#C8A951;
+  --cream:#FAF7F2; --cream2:#F2EDE5; --border:#E8E0D5;
+  --text:#1a0505; --muted:#7A6060;
+  --green:#2E7D32; --green-bg:#E8F5E9;
+  --amber:#B26A00; --amber-bg:#FFF3D6;
+  --red:#C62828; --red-bg:#FDECEC;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text)}
+
+.header{background:var(--crimson);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.header-logo-text{font-size:18px;font-weight:900}
+.header-logo-sub{font-size:10px;font-weight:700;opacity:.6;letter-spacing:2px;margin-top:2px}
+.header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:7px 15px;border-radius:100px;font-size:13px;font-weight:800}
+
+.main{max-width:1000px;margin:0 auto;padding:20px 14px 50px}
+
+.wip{background:#FFF8E8;border:1.5px solid #F0DFB8;border-radius:14px;padding:14px 16px;font-size:13px;font-weight:600;line-height:1.9;margin-bottom:18px;color:#6B4A00}
+.wip b{font-weight:900}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(92,15,15,.04)}
+.card-title{font-size:15px;font-weight:900;color:var(--crimson);margin-bottom:14px}
+
+.msel{width:100%;background:var(--cream);border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;color:var(--text);outline:none;cursor:pointer}
+.msel:focus{border-color:var(--gold);background:#fff}
+
+.course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.course-card{background:var(--cream);border:1.5px solid var(--border);border-right:5px solid var(--gold);border-radius:14px;padding:15px;cursor:pointer;transition:.15s}
+.course-card:hover{background:#fff;box-shadow:0 4px 14px rgba(92,15,15,.08)}
+.course-card.active{background:#fff;border-color:var(--crimson);border-right-color:var(--crimson);box-shadow:0 4px 14px rgba(92,15,15,.12)}
+.cc-name{font-size:14.5px;font-weight:900;line-height:1.6;margin-bottom:8px}
+.cc-line{font-size:12px;font-weight:700;color:var(--muted);margin-top:3px}
+.cc-tag{display:inline-block;margin-top:9px;background:var(--red-bg);color:var(--red);padding:4px 11px;border-radius:100px;font-size:11.5px;font-weight:900}
+.cc-tag.zero{background:var(--green-bg);color:var(--green)}
+
+.results-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.results-title{font-size:16px;font-weight:900}
+.results-count{font-size:13px;font-weight:700;color:var(--muted);margin-top:3px}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+th{background:var(--cream2);color:var(--crimson);font-size:12.5px;font-weight:900;padding:12px 13px;text-align:right;white-space:nowrap}
+td{padding:11px 13px;border-top:1px solid var(--border);vertical-align:middle}
+tr.paid td{background:var(--green-bg)}
+.row-num{color:var(--muted);font-weight:800;font-size:13px}
+.nm{font-weight:800}
+.ph{font-family:monospace;font-size:13.5px;letter-spacing:1px;direction:ltr;text-align:right;font-weight:700}
+
+.cell-sel{background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:8px 11px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:800;color:var(--text);outline:none;cursor:pointer;min-width:110px}
+.cell-sel:focus{border-color:var(--gold);background:#fff}
+.cell-sel.yes{background:var(--green-bg);border-color:rgba(46,125,50,.3);color:var(--green)}
+.cell-sel.mid{background:var(--amber-bg);border-color:rgba(178,106,0,.3);color:var(--amber)}
+.cell-sel.no{background:var(--red-bg);border-color:rgba(198,40,40,.25);color:var(--red)}
+.cell-sel.saving{opacity:.5}
+
+.wa{background:var(--crimson);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-size:12.5px;font-weight:800;display:inline-block;white-space:nowrap}
+.wa:active{opacity:.8}
+
+.loading,.empty{text-align:center;padding:40px 18px;color:var(--muted);font-size:14px;font-weight:700}
+.err{background:var(--red-bg);border:1.5px solid rgba(198,40,40,.25);color:var(--red);border-radius:14px;padding:14px 16px;font-size:13.5px;font-weight:800;margin-bottom:16px;display:none;line-height:1.8}
+.err.on{display:block}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 24px;border-radius:100px;font-size:13.5px;font-weight:800;z-index:90;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
+.toast.ok{background:var(--green)}
+.toast.bad{background:var(--red)}
+
+@media(max-width:600px){
+  .course-grid{grid-template-columns:1fr}
+  .main{padding:14px 10px 40px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo-text">أكاديمية مسار</div>
+    <div class="header-logo-sub">TAMKEEN EDUCLOUD</div>
+  </div>
+  <div class="header-badge">بيانات العملاء</div>
+</div>
+
+<div class="main">
+
+  <div class="err" id="errBox"></div>
+
+  <div class="wip">
+    <b>طريقة العمل:</b> اختر الشهر ← الدورة ← تطلع لك قائمة المسجّلين. غيّر <b>«يبي شهادة»</b> أو <b>«الدفع»</b> من القائمة المنسدلة — ينحفظ في الشيت مباشرة. اللي يصير <b>تم الدفع</b> يصير صفّه أخضر.
+  </div>
+
+  <div class="card">
+    <div class="card-title">اختر الشهر</div>
+    <select class="msel" id="monthSelect" onchange="renderCourses()">
+      <option value="">جاري التحميل…</option>
+    </select>
+  </div>
+
+  <div class="card" id="coursesCard" style="display:none">
+    <div class="card-title">الدورات</div>
+    <div class="course-grid" id="courseGrid"></div>
+    <div class="empty" id="coursesEmpty" style="display:none">لا توجد دورات في هذا الشهر</div>
+  </div>
+
+  <div class="card" id="studentsCard" style="display:none">
+    <div class="results-header">
+      <div>
+        <div class="results-title" id="stTitle">—</div>
+        <div class="results-count" id="stCount">—</div>
+      </div>
+    </div>
+    <div class="loading" id="stLoading" style="display:none">جاري التحميل…</div>
+    <div class="table-wrap" id="stTableWrap" style="display:none">
+      <table>
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th>الاسم</th>
+          <th>الواتساب</th>
+          <th>يبي شهادة</th>
+          <th>الدفع</th>
+          <th></th>
+        </tr></thead>
+        <tbody id="stBody"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="stEmpty" style="display:none">لا يوجد مسجّلون في هذه الدورة</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbwp5BC32F1A403mbzMk4wlaaPQeSauxk8_cUKl7ikmBSMkivkkIhariNBNxyn3X8n9d/exec';
+
+const WA_MSG = {
+  cert: 'السلام عليكم، كيف كانت الدورة؟ لو حبيت شهادة معتمدة، 15 د.ك بس — تبي؟',
+  pay:  'السلام عليكم، لاحظنا تسجيلك في [الدورة]، شهادتك جاهزة بـ 15 د.ك فقط — تبي أرسل لك الرابط؟'
+};
+
+let COURSES = [];
+let BY_MONTH = {};
+let CURRENT = null;
+
+/* ── أدوات ── */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function digits(s){ return String(s||'').replace(/\D/g,''); }
+function waNum(p){ let d=digits(p); if(d.length===8) d='965'+d; return d; }
+function toA(n){ return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+function toast(m,k){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast on'+(k?' '+k:''); clearTimeout(t._t); t._t=setTimeout(()=>{t.className='toast'+(k?' '+k:'');},2400); }
+function showErr(m){ const b=document.getElementById('errBox'); b.textContent=m; b.className='err on'; }
+
+async function api(p){
+  const r = await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)});
+  if(!r.ok) throw new Error('الخادم رجّع خطأ '+r.status);
+  const t = await r.text();
+  try{ return JSON.parse(t); }
+  catch(e){ throw new Error('رد غير مفهوم — تأكد من نشر السكربت بصلاحية «أي شخص»'); }
+}
+
+/* ── ١. تحميل الدورات ── */
+async function loadCourses(){
+  try{
+    const r = await api({ type:'salesCourses' });
+    if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب الدورات');
+    COURSES = r.courses||[];
+
+    BY_MONTH = {};
+    COURSES.forEach(c=>{ (BY_MONTH[c.month] = BY_MONTH[c.month] || []).push(c); });
+
+    const months = Object.keys(BY_MONTH);
+    const sel = document.getElementById('monthSelect');
+    if(!months.length){ sel.innerHTML='<option value="">لا توجد تسجيلات</option>'; return; }
+
+    sel.innerHTML = months.map(m=>{
+      const un = BY_MONTH[m].reduce((s,c)=>s+c.unpaid,0);
+      return '<option value="'+esc(m)+'">'+esc(BY_MONTH[m][0].monthLabel)+' — '+toA(un)+' ما دفعوا</option>';
+    }).join('');
+    sel.value = months[0];
+    renderCourses();
+  }catch(e){
+    showErr('تعذّر التحميل: '+e.message);
+    document.getElementById('monthSelect').innerHTML='<option value="">خطأ في التحميل</option>';
+  }
+}
+
+/* ── ٢. عرض الدورات ── */
+function renderCourses(){
+  const m = document.getElementById('monthSelect').value;
+  if(!m) return;
+  const list = BY_MONTH[m] || [];
+
+  document.getElementById('coursesCard').style.display='block';
+  document.getElementById('studentsCard').style.display='none';
+  CURRENT = null;
+
+  const grid=document.getElementById('courseGrid'), empty=document.getElementById('coursesEmpty');
+  if(!list.length){ grid.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  grid.innerHTML = list.map((c,i)=>
+    '<div class="course-card" onclick="openCourse(\''+esc(m)+'\','+i+',this)">'
+    + '<div class="cc-name">'+esc(c.name||'—')+'</div>'
+    + (c.date?'<div class="cc-line">'+esc(c.date)+'</div>':'')
+    + '<div class="cc-line">'+toA(c.total)+' مسجّل</div>'
+    + '<span class="cc-tag'+(c.unpaid===0?' zero':'')+'">'+(c.unpaid===0?'الكل دفع':toA(c.unpaid)+' ما دفعوا')+'</span>'
+    + '</div>'
+  ).join('');
+}
+
+/* ── ٣. فتح دورة ── */
+async function openCourse(month,i,el){
+  const c = BY_MONTH[month][i];
+  CURRENT = c;
+
+  document.querySelectorAll('.course-card').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  document.getElementById('studentsCard').style.display='block';
+  document.getElementById('stTitle').textContent = c.name;
+  document.getElementById('stCount').textContent = 'جاري التحميل…';
+  document.getElementById('stTableWrap').style.display='none';
+  document.getElementById('stEmpty').style.display='none';
+  document.getElementById('stLoading').style.display='block';
+  document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  try{
+    const r = await api({ type:'salesStudents', course:c.name, month:month });
+    document.getElementById('stLoading').style.display='none';
+    if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب المسجّلين');
+
+    const list = r.list||[];
+    if(!list.length){
+      document.getElementById('stCount').textContent='لا يوجد مسجّلون';
+      document.getElementById('stEmpty').style.display='block';
+      return;
+    }
+    renderStudents(list);
+  }catch(e){
+    document.getElementById('stLoading').style.display='none';
+    document.getElementById('stCount').textContent='خطأ في التحميل';
+    document.getElementById('stEmpty').style.display='block';
+    toast(e.message,'bad');
+  }
+}
+
+/* ── ٤. جدول المسجّلين ── */
+function certCls(v){ return v.indexOf('نعم')!==-1 ? 'yes' : 'no'; }
+function payCls(v){
+  if(v.indexOf('تم الدفع')!==-1) return 'yes';
+  if(v.indexOf('قيد الدفع')!==-1) return 'mid';
+  return 'no';
+}
+
+function renderStudents(list){
+  const paid = list.filter(s=>String(s.payment).indexOf('تم الدفع')!==-1).length;
+  document.getElementById('stCount').textContent = toA(list.length)+' مسجّل — '+toA(paid)+' دفعوا، '+toA(list.length-paid)+' باقين';
+
+  document.getElementById('stBody').innerHTML = list.map((s,i)=>{
+    const cert = String(s.wantCert||'لا');
+    const pay  = String(s.payment||'لم يدفع');
+    const isPaid = pay.indexOf('تم الدفع')!==-1;
+    const msg = (pay.indexOf('قيد الدفع')!==-1 ? WA_MSG.pay.replace('[الدورة]', s.course||'الدورة') : WA_MSG.cert);
+
+    return '<tr id="r-'+s.row+'" class="'+(isPaid?'paid':'')+'">'
+      + '<td class="row-num">'+toA(i+1)+'</td>'
+      + '<td class="nm">'+esc(s.name||'—')+'</td>'
+      + '<td class="ph">'+esc(s.phone||'—')+'</td>'
+      + '<td><select class="cell-sel '+certCls(cert)+'" onchange="save('+s.row+',\'cert\',this)">'
+      +   opt(['نعم','لا'], cert.indexOf('نعم')!==-1?'نعم':'لا')
+      + '</select></td>'
+      + '<td><select class="cell-sel '+payCls(pay)+'" onchange="save('+s.row+',\'pay\',this)">'
+      +   opt(['لم يدفع','قيد الدفع','تم الدفع'], pay)
+      + '</select></td>'
+      + '<td>'+(isPaid?'':'<a class="wa" target="_blank" rel="noopener" href="https://wa.me/'+waNum(s.phone)+'?text='+encodeURIComponent(msg)+'">واتساب</a>')+'</td>'
+      + '</tr>';
+  }).join('');
+
+  document.getElementById('stTableWrap').style.display='block';
+}
+
+function opt(arr,cur){
+  return arr.map(v=>'<option value="'+esc(v)+'"'+(String(cur).indexOf(v)!==-1?' selected':'')+'>'+esc(v)+'</option>').join('');
+}
+
+/* ── ٥. الحفظ الفوري ── */
+async function save(row, field, el){
+  const v = el.value;
+  el.disabled=true; el.classList.add('saving');
+  try{
+    const r = await api({ type:'salesUpdate', row:row, field:field, value:v });
+    if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر الحفظ');
+
+    el.className = 'cell-sel ' + (field==='cert' ? certCls(v) : payCls(v));
+    const tr = document.getElementById('r-'+row);
+    if(field==='pay' && tr){
+      const done = v==='تم الدفع';
+      tr.className = done ? 'paid' : '';
+      const cell = tr.cells[5];
+      if(done) cell.innerHTML='';
+    }
+    toast('تم الحفظ','ok');
+  }catch(e){
+    toast('تعذّر الحفظ: '+e.message,'bad');
+  }
+  el.disabled=false; el.classList.remove('saving');
+}
+
+loadCourses();
+</script>
+</body>
+</html>
