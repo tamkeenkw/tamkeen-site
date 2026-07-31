@@ -106,6 +106,17 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .sec .f input{background:#fff;}
 .hint{font-size:11px;color:var(--muted);font-weight:600;margin-top:6px;line-height:1.6;}
 
+/* رافع الصور */
+.drop{border:2px dashed rgba(92,15,15,.2);border-radius:14px;padding:22px;text-align:center;cursor:pointer;background:var(--cream);transition:.2s;}
+.drop:hover{border-color:var(--crimson);background:#fff;}
+.drop-i{font-size:28px;margin-bottom:8px;}
+.drop-t{font-size:13px;font-weight:800;color:var(--text);}
+.drop-s{font-size:11px;color:var(--muted);margin-top:4px;}
+.prev{position:relative;border-radius:14px;overflow:hidden;border:1.5px solid rgba(92,15,15,.1);}
+.prev img{width:100%;display:block;max-height:190px;object-fit:cover;background:var(--cream-2);}
+.prev-x{position:absolute;top:8px;left:8px;background:rgba(26,8,8,.75);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;}
+.upbar{background:var(--cream);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800;color:var(--muted);text-align:center;}
+
 .switch-row{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);}
 .switch-row label{font-size:14px;font-weight:800;cursor:pointer;}
 .switch-row input{width:20px;height:20px;accent-color:var(--crimson);cursor:pointer;}
@@ -267,6 +278,26 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
+    <div class="sec">
+      <div class="sec-h">🖼 صورة الدورة</div>
+      <input type="hidden" id="fImage">
+      <input type="file" id="fFile" accept="image/*" style="display:none;" onchange="onPickFile(this)">
+
+      <div id="dropZone" class="drop" onclick="document.getElementById('fFile').click()">
+        <div class="drop-i">📷</div>
+        <div class="drop-t">اضغط لاختيار صورة</div>
+        <div class="drop-s">تنضغط تلقائياً وترفع على درايف</div>
+      </div>
+
+      <div id="prevZone" class="prev" style="display:none;">
+        <button type="button" class="prev-x" onclick="removeImg()">✕</button>
+        <img id="prevImg" src="" alt="">
+      </div>
+
+      <div id="upBar" class="upbar" style="display:none;margin-top:10px;">جاري رفع الصورة...</div>
+      <div class="hint">اختيارية — المقاس المفضل عرضي (١٢٠٠ × ٦٧٥)</div>
+    </div>
+
     <div class="f">
       <label>وصف الدورة</label>
       <textarea id="fDesc" placeholder="نبذة قصيرة تظهر للجمهور في صفحة مسار"></textarea>
@@ -389,8 +420,13 @@ function render(){
         (full ? 'مكتمل' : 'باقي ' + ar(c.remaining) + ' مقعد') + '</span>';
     }
 
+    const thumb = c.image
+      ? '<img src="' + esc(c.image) + '" alt="" style="width:74px;height:74px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid rgba(92,15,15,.08);">'
+      : '';
+
     return '<div class="ccard ' + (c.published ? '' : 'off') + '">' +
       '<div class="ccard-top">' +
+        thumb +
         '<div style="flex:1;min-width:200px;">' +
           '<div class="ccard-name">' + esc(c.name) + '</div>' +
           '<div class="ccard-meta">' +
@@ -466,6 +502,8 @@ function openForm(id){
   document.getElementById('fDesc').value     = c ? c.desc : '';
   document.getElementById('fPub').checked    = c ? c.published : true;
 
+  setImg(c ? (c.image || '') : '');
+
   setKind(c ? (c.isFree ? 'free' : 'paid') : 'free');
   if(c && c.system) document.getElementById('fSystem').value = c.system;
   onCertToggle();
@@ -475,6 +513,59 @@ function openForm(id){
 }
 
 function closeForm(){ document.getElementById('formOverlay').classList.remove('on'); }
+
+/* ============ IMAGE ============ */
+function setImg(url){
+  document.getElementById('fImage').value = url || '';
+  const has = !!url;
+  document.getElementById('prevZone').style.display = has ? 'block' : 'none';
+  document.getElementById('dropZone').style.display = has ? 'none' : 'block';
+  if(has) document.getElementById('prevImg').src = url;
+}
+
+function removeImg(){
+  setImg('');
+  document.getElementById('fFile').value = '';
+}
+
+function onPickFile(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(file.size > 12 * 1024 * 1024){ toast('الصورة كبيرة — أقل من ١٢ ميجا', true); return; }
+
+  document.getElementById('upBar').style.display = 'block';
+  document.getElementById('upBar').textContent = 'جاري ضغط الصورة...';
+
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    const img = new Image();
+    img.onload = function(){
+      const maxW = 1200;
+      const scale = Math.min(1, maxW / img.width);
+      const cv = document.createElement('canvas');
+      cv.width  = Math.round(img.width * scale);
+      cv.height = Math.round(img.height * scale);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      uploadImg(cv.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = function(){
+      document.getElementById('upBar').style.display = 'none';
+      toast('تعذّر قراءة الصورة', true);
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadImg(dataUrl){
+  document.getElementById('upBar').textContent = 'جاري رفع الصورة على درايف...';
+  try{
+    const r = await post({ type:'uploadImage', pass:PASS, data:dataUrl, mime:'image/jpeg' });
+    if(r.ok && r.url){ setImg(r.url); toast('تم رفع الصورة'); }
+    else toast(r.error || 'فشل رفع الصورة', true);
+  }catch(e){ toast('تعذّر الاتصال أثناء الرفع', true); }
+  document.getElementById('upBar').style.display = 'none';
+}
 
 async function saveCourse(){
   clearBad();
@@ -506,6 +597,7 @@ async function saveCourse(){
     accred: document.getElementById('fAccred').value.trim(),
     link: document.getElementById('fLink').value.trim(),
     desc: document.getElementById('fDesc').value.trim(),
+    image: document.getElementById('fImage').value.trim(),
     published: document.getElementById('fPub').checked
   };
 
