@@ -251,7 +251,8 @@ tr.paid td{background:var(--green-bg)}
 
   <div class="view" id="view-sort">
     <div class="wip">
-      <b>فرز العملاء:</b> اختر الشهر والدورة، والنظام يرتّب لك العملاء حسب احتمال اهتمامهم — الأعلى فوق. اللي مسجّل بالدورة أصلاً يُستبعد.
+      <b>فرز العملاء:</b> اختر الشهر والدورة، والنظام يرتّب لك العملاء حسب احتمال اهتمامهم — الأعلى فوق. اللي مسجّل بالدورة أصلاً يُستبعد.<br>
+      الدورات مرتّبة من <b>الأقل تسجيلاً للأكثر</b>، والدورة اللي عليها <b>★</b> ما فيها ولا مسجّل — هذي أولى دورة تسوّق لها.
     </div>
 
     <div class="card">
@@ -287,7 +288,8 @@ const WA_MSG = {
 };
 
 let COURSES = [];
-let BY_MONTH = {};
+let BY_MONTH = {};      // دورات فيها تسجيلات — تبويب "حسب الدورة"
+let BY_MONTH_ALL = {};  // كل الدورات حتى الفاضية — تبويب "فرز العملاء"
 let CURRENT = null;
 
 /* ── أدوات ── */
@@ -314,8 +316,13 @@ async function loadCourses(){
     if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب الدورات');
     COURSES = r.courses||[];
 
-    BY_MONTH = {};
-    COURSES.forEach(c=>{ (BY_MONTH[c.month] = BY_MONTH[c.month] || []).push(c); });
+    BY_MONTH = {}; BY_MONTH_ALL = {};
+    COURSES.forEach(c=>{
+      (BY_MONTH_ALL[c.month] = BY_MONTH_ALL[c.month] || []).push(c);
+      if(c.total > 0) (BY_MONTH[c.month] = BY_MONTH[c.month] || []).push(c);
+    });
+
+    fillSortMonths();
 
     const months = Object.keys(BY_MONTH);
     const sel = document.getElementById('monthSelect');
@@ -327,7 +334,6 @@ async function loadCourses(){
     }).join('');
     sel.value = months[0];
     renderCourses();
-    fillSortMonths();
   }catch(e){
     showErr('تعذّر التحميل: '+e.message);
     document.getElementById('monthSelect').innerHTML='<option value="">خطأ في التحميل</option>';
@@ -534,17 +540,24 @@ let SORT_COURSE = '';
 
 function fillSortMonths(){
   const sel=document.getElementById('sMonth');
-  const months=Object.keys(BY_MONTH);
+  const months=Object.keys(BY_MONTH_ALL);
   if(!months.length){ sel.innerHTML='<option value="">لا توجد دورات</option>'; return; }
-  sel.innerHTML=months.map(m=>'<option value="'+esc(m)+'">'+esc(BY_MONTH[m][0].monthLabel)+'</option>').join('');
+  sel.innerHTML=months.map(m=>{
+    const arr=BY_MONTH_ALL[m];
+    const empty=arr.filter(c=>c.total===0).length;
+    return '<option value="'+esc(m)+'">'+esc(arr[0].monthLabel)+' — '+toA(arr.length)+' دورة'
+         + (empty?' ('+toA(empty)+' بدون تسجيل)':'')+'</option>';
+  }).join('');
   fillSortCourses();
 }
 function fillSortCourses(){
   const m=document.getElementById('sMonth').value;
-  const list=BY_MONTH[m]||[];
+  const list=(BY_MONTH_ALL[m]||[]).slice().sort((a,b)=>a.total-b.total); // الفاضية أول
   const sel=document.getElementById('sCourse');
   sel.innerHTML = list.length
-    ? list.map(c=>'<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>').join('')
+    ? list.map(c=>'<option value="'+esc(c.name)+'">'
+        + (c.total===0?'★ ':'')+esc(c.name)+' — '+esc(c.dateLabel||'')
+        + ' ('+toA(c.total)+' مسجّل)</option>').join('')
     : '<option value="">لا توجد دورات في هذا الشهر</option>';
 }
 
