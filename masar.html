@@ -270,16 +270,16 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 <div class="wrap" id="subs" style="display:none;padding-bottom:0;">
   <div class="subsec">
     <div class="sub-tag">الاشتراك السنوي</div>
-    <h2 class="sub-h">احضر عدد غير محدود من الدورات<br>طول السنة</h2>
-    <p class="sub-p">اشتراك واحد يفتح لك كل الدورات التدريبية الموجودة في الموقع لمدة سنة كاملة — بلا سقف شهري ولا رسوم حضور</p>
+    <h2 class="sub-h">احضر عدد غير محدود من الدورات المجانية<br>طول السنة</h2>
+    <p class="sub-p">اشتراك واحد يفتح لك كل الدورات المجانية سنة كاملة بلا سقف شهري — مع شهادات معتمدة مشمولة وخصم ١٠٪ على الدورات المدفوعة والباقات</p>
     <div class="sub-ben">
-      <span>♾️ حضور غير محدود</span>
+      <span>♾️ دورات مجانية بلا حدود</span>
       <span>🎓 شهادات معتمدة مشمولة</span>
-      <span>💰 خصم ١٠٪ على الدورات المدفوعة</span>
+      <span>💰 خصم ١٠٪ على الدورات المدفوعة والباقات</span>
       <span>🎫 خصم ١٠٪ على أي شهادة إضافية</span>
     </div>
     <div class="sub-cards" id="subCards"></div>
-    <div class="sub-note">الاشتراك سنة كاملة من تاريخ الدفع · الشهادات تُستخرج وقت ما تبي خلال السنة</div>
+    <div class="sub-note">الاشتراك سنة كاملة من تاريخ الدفع · الشهادات تُستخرج وقت ما تبي خلال السنة · الدورات المدفوعة والباقات تُشترى بخصم ١٠٪</div>
   </div>
 </div>
 
@@ -606,9 +606,9 @@ function renderSubs(){
       '<div class="sub-price">' + ar(p.price) + ' <small>د.ك</small></div>' +
       '<div class="sub-val">' + val + '</div>' +
       '<ul class="sub-list">' +
-        '<li>حضور غير محدود لكل الدورات طول السنة</li>' +
+        '<li>حضور غير محدود للدورات المجانية طول السنة</li>' +
         '<li>' + ar(p.certs) + ' شهادة معتمدة من اختيارك</li>' +
-        '<li>خصم ١٠٪ على الدورات المدفوعة</li>' +
+        '<li>خصم ١٠٪ على الدورات المدفوعة والباقات</li>' +
         '<li>خصم ١٠٪ على أي شهادة إضافية</li>' +
       '</ul>' +
       '<button class="sub-btn" onclick="addCart(\'subscription\',\'' + p.id + '\',this)">اشترك الآن</button>' +

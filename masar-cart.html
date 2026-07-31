@@ -354,18 +354,18 @@ function paintMember(c){
 
   if(c.subPlan){
     b.innerHTML = '<div class="mem on"><div class="mem-t">🎫 اشتراكك مضاف للسلة</div>' +
-      '<div class="mem-s">خصم ١٠٪ و' + ar(c.subPlan.certs) + ' شهادة مطبّقين على هذا الطلب</div></div>';
+      '<div class="mem-s">خصم ١٠٪ و' + ar(c.subPlan.certs) + ' شهادة مطبّقين على هذا الطلب — والدورات المجانية مفتوحة لك بلا حدود</div></div>';
     return;
   }
 
   const note = MEM.firstTime
     ? 'أول دورة مجانية لك مفتوحة بلا قيد — بعدها دورة واحدة بالشهر.'
-    : 'لك دورة مجانية واحدة بالشهر. الاشتراك يفتح لك كل الدورات طول السنة.';
+    : 'لك دورة مجانية واحدة بالشهر. الاشتراك يفتح لك الدورات المجانية بلا حدود طول السنة.';
 
   b.innerHTML = '<div class="mem off">' +
     '<div class="mem-t">💡 اشترك سنة كاملة واحضر بلا حدود</div>' +
     '<div class="mem-s">' + note +
-      '<br>كل الاشتراكات: <b>حضور غير محدود لكل الدورات</b> · خصم ١٠٪ على الدورات المدفوعة · خصم ١٠٪ على أي شهادة إضافية</div>' +
+      '<br>كل الاشتراكات: <b>حضور غير محدود للدورات المجانية</b> · خصم ١٠٪ على الدورات المدفوعة والباقات · خصم ١٠٪ على أي شهادة إضافية</div>' +
     '<div class="plans">' + PLANS.map(function(p, i){
       const certVal  = p.certs * CERTP;
       const yearCost = Math.max(0, p.price - certVal);
@@ -395,8 +395,8 @@ function paintItems(c){
       return '<div class="item"><div class="item-ph">🎫</div><div class="item-b">' +
         '<span class="item-k k-s">اشتراك سنوي</span>' +
         '<div class="item-n">' + esc(o.name) + '</div>' +
-        '<div class="item-m">حضور غير محدود سنة كاملة · ' + ar(o.certs) +
-          ' شهادة معتمدة · خصم ١٠٪ على الدورات المدفوعة والشهادات الإضافية</div>' +
+        '<div class="item-m">دورات مجانية بلا حدود سنة كاملة · ' + ar(o.certs) +
+          ' شهادة معتمدة · خصم ١٠٪ على الدورات المدفوعة والباقات والشهادات الإضافية</div>' +
         '<div class="item-f"><span class="item-p">' + ar(o.price) + ' د.ك</span>' +
         '<button class="rm" onclick="rm(' + i + ')">✕ إزالة</button></div>' +
         '</div></div>';
@@ -517,7 +517,7 @@ async function checkout(){
     document.getElementById('memBox').innerHTML =
       '<div class="warn"><div class="warn-t">⚠ تجاوزت حد الدورات المجانية</div>' +
       '<div class="warn-s">الدورات التالية ما تقدر تسجّل فيها هذا الشهر:<br>' + names +
-      '<br><br>لك دورة مجانية واحدة بالشهر — أو <b>اشترك</b> واحضر كل الدورات طول السنة.</div></div>';
+      '<br><br>لك دورة مجانية واحدة بالشهر — أو <b>اشترك</b> واحضر الدورات المجانية بلا حدود طول السنة.<br>ملاحظة: الدورات المدفوعة ما عليها سقف — تقدر تشتريها الحين عادي.</div></div>';
     window.scrollTo({ top:0, behavior:'smooth' });
     return;
   }
