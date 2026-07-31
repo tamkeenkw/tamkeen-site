@@ -198,6 +198,76 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .pcard-btn:hover{background:var(--crimson-2);}
 .pcard-btn.added{background:var(--green);}
 
+/* نافذة تفاصيل الدورة */
+.dov{position:fixed;inset:0;background:rgba(26,8,8,.66);display:none;align-items:flex-start;justify-content:center;
+  padding:0;z-index:120;overflow-y:auto;backdrop-filter:blur(3px);}
+.dov.on{display:flex;}
+.dbox{background:var(--cream);width:100%;max-width:720px;margin:auto;border-radius:24px;overflow:hidden;position:relative;}
+@media(max-width:760px){.dov{padding:0;} .dbox{border-radius:0;min-height:100vh;}}
+.dclose{position:absolute;top:16px;left:16px;z-index:6;background:rgba(26,8,8,.55);color:#fff;border:none;
+  width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;backdrop-filter:blur(4px);}
+.dhero{position:relative;background:linear-gradient(135deg,var(--crimson) 0%,var(--crimson-3) 100%);
+  padding:clamp(30px,5vw,42px) clamp(20px,4vw,34px);color:#fff;}
+.dhero-img{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.22;}
+.dhero-in{position:relative;}
+.dpills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px;}
+.dpill{border-radius:100px;padding:5px 13px;font-size:11.5px;font-weight:900;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);}
+.dpill.free{background:#fff;color:var(--crimson);border-color:#fff;}
+.dpill.paid{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-bg);}
+.dpill.soon{background:rgba(198,40,40,.85);border-color:rgba(255,160,160,.35);}
+.dtitle{font-size:clamp(21px,3.4vw,29px);font-weight:900;line-height:1.4;margin-bottom:14px;letter-spacing:-.3px;}
+.dmeta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;font-weight:700;color:rgba(255,255,255,.8);}
+
+.dbody{padding:clamp(22px,4vw,32px);}
+.dsec{margin-bottom:26px;}
+.dsec:last-child{margin-bottom:0;}
+.dsec-h{font-size:15px;font-weight:900;color:var(--crimson);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;}
+.dsec-h:after{content:'';flex:1;height:1px;background:rgba(92,15,15,.12);}
+.dtext{font-size:14.5px;color:var(--text);line-height:1.95;}
+.dtopics{counter-reset:t;}
+.dtopic{counter-increment:t;background:#fff;border-radius:13px;padding:13px 15px 13px 15px;margin-bottom:8px;
+  display:flex;gap:13px;align-items:flex-start;border:1.5px solid rgba(92,15,15,.06);}
+.dtopic:before{content:counter(t);flex-shrink:0;width:26px;height:26px;border-radius:8px;background:var(--crimson);
+  color:#fff;font-size:12.5px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.dtopic span{font-size:14px;font-weight:700;line-height:1.65;padding-top:3px;}
+.dgoals{list-style:none;}
+.dgoals li{font-size:14px;font-weight:700;color:var(--text);padding:7px 26px 7px 0;position:relative;line-height:1.7;}
+.dgoals li:before{content:'✓';position:absolute;right:0;top:7px;color:var(--green);font-weight:900;font-size:15px;}
+.dcard{background:#fff;border-radius:14px;padding:15px 17px;border:1.5px solid rgba(92,15,15,.06);
+  font-size:14px;line-height:1.85;color:var(--muted);font-weight:700;}
+.dcard b{color:var(--text);}
+.dtrainer{display:flex;gap:13px;align-items:flex-start;background:#fff;border-radius:14px;padding:15px 17px;
+  border:1.5px solid rgba(92,15,15,.06);}
+.dtr-av{width:46px;height:46px;border-radius:50%;background:var(--crimson);color:#fff;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;}
+.dtr-n{font-size:14.5px;font-weight:900;}
+.dtr-b{font-size:13px;color:var(--muted);font-weight:700;line-height:1.75;margin-top:4px;}
+.dcert{background:var(--gold-bg);border-radius:14px;padding:15px 17px;font-size:13.5px;font-weight:800;
+  color:var(--gold);line-height:1.75;}
+
+.dbar{position:sticky;bottom:0;background:#fff;border-top:1.5px solid rgba(92,15,15,.08);
+  padding:15px clamp(20px,4vw,34px);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.dbar-p{font-size:21px;font-weight:900;color:var(--crimson);}
+.dbar-p small{font-size:12px;font-weight:700;color:var(--muted);}
+.dbar-s{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:2px;}
+.dbar-s.low{color:var(--red);}
+.dbar-btns{display:flex;gap:8px;align-items:center;}
+.dshare{background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:100px;width:42px;height:42px;
+  font-size:16px;cursor:pointer;transition:.2s;}
+.dshare:hover{background:var(--cream-2);}
+.dadd{background:var(--crimson);color:#fff;border:none;border-radius:100px;padding:13px 28px;
+  font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:900;cursor:pointer;transition:.2s;}
+.dadd:hover{background:var(--crimson-2);}
+.dadd.added{background:var(--green);}
+.dadd:disabled{background:var(--cream-2);color:var(--muted);cursor:not-allowed;}
+
+.card-imgwrap,.card-title{cursor:pointer;}
+.card-more{background:transparent;border:none;color:var(--crimson);font-size:12.5px;font-weight:900;
+  cursor:pointer;padding:0;margin-bottom:13px;text-align:right;}
+.card-more:hover{text-decoration:underline;}
+
 .state{text-align:center;padding:70px 20px;color:var(--muted);}
 .state-icon{font-size:42px;margin-bottom:14px;}
 .state-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;}
@@ -210,7 +280,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .footer-links{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
 .footer-links a{color:rgba(255,255,255,.85);font-size:13px;font-weight:700;text-decoration:none;}
 
-/* ===== MODAL ===== */
+/* ===== DETAIL ===== */
 .ov{position:fixed;inset:0;background:rgba(26,8,8,.6);display:none;align-items:flex-start;justify-content:center;padding:20px;z-index:100;overflow-y:auto;}
 .ov.on{display:flex;}
 .box{background:#fff;border-radius:24px;padding:30px 26px;max-width:460px;width:100%;margin:auto;position:relative;}
@@ -283,6 +353,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="stat"><div class="stat-n">٩٠+</div><div class="stat-l">مدرب معتمد</div></div>
   <div class="stat"><div class="stat-n">٣</div><div class="stat-l">جهات اعتماد رسمية</div></div>
 </div>
+
+<div class="dov" id="dov"><div class="dbox" id="dbox"></div></div>
 
 <a class="cartfab" id="cartFab" href="/masar-cart">🛒 السلة <b id="cartN">٠</b></a>
 
@@ -378,6 +450,9 @@ async function load(){
   renderPkgs();
   renderSubs();
   syncCart();
+
+  const cid = new URLSearchParams(location.search).get('course');
+  if(cid) setTimeout(function(){ openDetail(cid); }, 220);
 }
 
 /* ===== BANNER ===== */
@@ -428,7 +503,7 @@ function buildBanner(){
           (c.time ? '<span>🕔 ' + esc(c.time) + '</span>' : '') +
         '</div>' +
         '<div class="s-price">' + line + '</div>' +
-        '<button class="s-btn" onclick="addCart(\'course\',\'' + c.id + '\',this)">أضف للسلة ←</button>' +
+        '<button class="s-btn" onclick="openDetail(\'' + c.id + '\')">تفاصيل الدورة ←</button>' +
       '</div></div>';
   });
 
@@ -519,12 +594,12 @@ function render(){
     }
 
     return '<div class="card">' +
-      '<div class="card-imgwrap">' + head +
+      '<div class="card-imgwrap" onclick="openDetail(\'' + c.id + '\')">' + head +
         '<span class="card-badge ' + (c.isFree ? 'b-free' : 'b-paid') + '">' +
           (c.isFree ? 'حضور مجاني' : 'دورة مدفوعة') + '</span>' + days +
       '</div>' +
       '<div class="card-body">' +
-        '<div class="card-title">' + esc(c.name) + '</div>' +
+        '<div class="card-title" onclick="openDetail(\'' + c.id + '\')">' + esc(c.name) + '</div>' +
         '<div class="card-trainer"><div class="tr-av">' + esc(initial(c.trainer)) + '</div>' +
           '<div><div class="tr-name">' + esc(c.trainer) + '</div>' +
           '<div class="tr-role">مدرب معتمد</div></div></div>' +
@@ -534,7 +609,9 @@ function render(){
           (c.duration ? '<span class="m">⏱ ' + esc(c.duration) + '</span>' : '') +
           '<span class="m">' + (online ? '💻 أونلاين' : '🏛️ حضوري') + '</span>' +
         '</div>' +
-        (c.desc ? '<div class="card-desc">' + esc(c.desc) + '</div>' : '') + cert +
+        (c.desc ? '<div class="card-desc">' + esc(c.desc) + '</div>' : '') +
+        '<button class="card-more" onclick="openDetail(\'' + c.id + '\')">اقرأ التفاصيل والمحاور ←</button>' +
+        cert +
         '<div class="card-foot"><div>' +
           '<div class="price">' + (c.isFree ? 'مجاني' : ar(c.price) + ' <small>د.ك</small>') + '</div>' + seats +
         '</div>' +
@@ -596,13 +673,136 @@ function addCart(kind, id, btn){
   saveCart();
   syncCart();
 
-  if(btn){
+  if(btn && btn.textContent){
     const t = btn.textContent;
     btn.textContent = '✓ في السلة';
     btn.classList.add('added');
     setTimeout(function(){ btn.textContent = t; btn.classList.remove('added'); }, 1600);
   }
 }
+
+/* ===== DETAIL ===== */
+function openDetail(id){
+  const c = ALL.find(function(x){ return x.id === id; });
+  if(!c) return;
+
+  const full   = (c.seats > 0 && c.remaining !== null && c.remaining <= 0);
+  const online = c.link && c.link.indexOf('http') === 0;
+  const added  = inCart('course', c.id);
+
+  let pills = c.isFree
+    ? '<span class="dpill free">حضور مجاني</span>'
+    : '<span class="dpill paid">' + ar(c.price) + ' د.ك</span>';
+  if(c.days !== null && c.days >= 0){
+    if(c.days === 0)     pills += '<span class="dpill soon">تبدأ اليوم</span>';
+    else if(c.days <= 3) pills += '<span class="dpill soon">باقي ' + ar(c.days) + ' أيام</span>';
+    else                 pills += '<span class="dpill">باقي ' + ar(c.days) + ' يوم</span>';
+  }
+  if(c.accred) pills += '<span class="dpill">معتمدة رقم ' + esc(c.accred) + '</span>';
+
+  let body = '';
+
+  if(c.desc){
+    body += '<div class="dsec"><div class="dsec-h">نبذة عن الدورة</div>' +
+            '<div class="dtext">' + esc(c.desc) + '</div></div>';
+  }
+
+  if(c.goals && c.goals.length){
+    body += '<div class="dsec"><div class="dsec-h">أهداف الدورة</div><ul class="dgoals">' +
+            c.goals.map(function(g){ return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></div>';
+  }
+
+  if(c.topics && c.topics.length){
+    body += '<div class="dsec"><div class="dsec-h">محاور الدورة</div><div class="dtopics">' +
+            c.topics.map(function(t){ return '<div class="dtopic"><span>' + esc(t) + '</span></div>'; }).join('') +
+            '</div></div>';
+  }
+
+  if(c.audience){
+    body += '<div class="dsec"><div class="dsec-h">الفئة المستهدفة</div>' +
+            '<div class="dcard">' + esc(c.audience) + '</div></div>';
+  }
+
+  body += '<div class="dsec"><div class="dsec-h">المدرب</div>' +
+          '<div class="dtrainer"><div class="dtr-av">' + esc(initial(c.trainer)) + '</div>' +
+          '<div><div class="dtr-n">' + esc(c.trainer) + '</div>' +
+          '<div class="dtr-b">' + esc(c.bio || 'مدرب معتمد لدى معهد تمكين إيديوكلاود') + '</div>' +
+          '</div></div></div>';
+
+  const certTxt = c.isFree
+    ? (c.hasCert
+        ? '🎓 الحضور مجاني — والشهادة المعتمدة تُستخرج برسوم ' + ar(c.certFee) + ' د.ك عند الطلب'
+        : '🎓 حضور مجاني بالكامل — بدون شهادة لهذه الدورة')
+    : '🎓 الشهادة المعتمدة مشمولة بسعر الدورة';
+
+  body += '<div class="dsec"><div class="dcert">' + certTxt +
+          '<br><span style="font-weight:700;opacity:.85;">معتمدة من معهد تمكين إيديوكلاود والهيئة العامة للتعليم التطبيقي وديوان الخدمة المدنية</span></div></div>';
+
+  let seats = '';
+  if(c.seats > 0){
+    seats = full
+      ? '<div class="dbar-s low">المقاعد مكتملة</div>'
+      : '<div class="dbar-s' + (c.remaining <= 5 ? ' low' : '') + '">باقي ' + ar(c.remaining) + ' مقعد</div>';
+  }
+
+  document.getElementById('dbox').innerHTML =
+    '<button class="dclose" onclick="closeDetail()">✕</button>' +
+    '<div class="dhero">' +
+      (c.image ? '<div class="dhero-img" style="background-image:url(\'' + esc(c.image) + '\')"></div>' : '') +
+      '<div class="dhero-in">' +
+        '<div class="dpills">' + pills + '</div>' +
+        '<div class="dtitle">' + esc(c.name) + '</div>' +
+        '<div class="dmeta">' +
+          (c.date ? '<span>📅 ' + esc(dateAr(c.date)) + '</span>' : '') +
+          (c.time ? '<span>🕔 ' + esc(c.time) + '</span>' : '') +
+          (c.duration ? '<span>⏱ ' + esc(c.duration) + '</span>' : '') +
+          '<span>' + (online ? '💻 أونلاين عبر زوم' : '🏛️ حضوري') + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dbody">' + body + '</div>' +
+    '<div class="dbar">' +
+      '<div><div class="dbar-p">' + (c.isFree ? 'مجاني' : ar(c.price) + ' <small>د.ك</small>') + '</div>' + seats + '</div>' +
+      '<div class="dbar-btns">' +
+        '<button class="dshare" onclick="shareCourse(\'' + c.id + '\')" title="انسخ الرابط">🔗</button>' +
+        '<button class="dadd' + (added ? ' added' : '') + '" id="dAdd" ' +
+          (full ? 'disabled' : 'onclick="addFromDetail(\'' + c.id + '\')"') + '>' +
+          (full ? 'المقاعد مكتملة' : (added ? '✓ في السلة — اذهب للسلة' : 'أضف للسلة')) + '</button>' +
+      '</div>' +
+    '</div>';
+
+  document.getElementById('dov').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  history.replaceState({}, '', location.pathname + '?course=' + encodeURIComponent(c.id));
+}
+
+function closeDetail(){
+  document.getElementById('dov').classList.remove('on');
+  document.body.style.overflow = '';
+  history.replaceState({}, '', location.pathname);
+}
+
+function addFromDetail(id){
+  if(inCart('course', id)){ location.href = '/masar-cart'; return; }
+  const btn = document.getElementById('dAdd');
+  addCart('course', id, null);
+  if(btn){ btn.textContent = '✓ في السلة — اذهب للسلة'; btn.classList.add('added'); }
+}
+
+function shareCourse(id){
+  const url = location.origin + location.pathname + '?course=' + encodeURIComponent(id);
+  const btn = event && event.currentTarget;
+  const done = function(){ if(btn){ btn.textContent = '✓'; setTimeout(function(){ btn.textContent = '🔗'; }, 1600); } };
+  if(navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(done);
+  else done();
+}
+
+document.getElementById('dov').addEventListener('click', function(e){
+  if(e.target === this) closeDetail();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeDetail();
+});
 
 /* ===== SUBSCRIPTIONS ===== */
 function renderSubs(){
