@@ -210,7 +210,8 @@ function renderCourses(){
   grid.innerHTML = list.map((c,i)=>
     '<div class="course-card" onclick="openCourse(\''+esc(m)+'\','+i+',this)">'
     + '<div class="cc-name">'+esc(c.name||'—')+'</div>'
-    + (c.date?'<div class="cc-line">'+esc(c.date)+'</div>':'')
+    + (c.dateLabel?'<div class="cc-line">'+esc(c.dateLabel)+(c.fromSheet?'':' (تقديري)')+'</div>':'')
+    + (c.trainer?'<div class="cc-line">'+esc(c.trainer)+'</div>':'')
     + '<div class="cc-line">'+toA(c.total)+' مسجّل</div>'
     + '<span class="cc-tag'+(c.unpaid===0?' zero':'')+'">'+(c.unpaid===0?'الكل دفع':toA(c.unpaid)+' ما دفعوا')+'</span>'
     + '</div>'
@@ -226,7 +227,7 @@ async function openCourse(month,i,el){
   if(el) el.classList.add('active');
 
   document.getElementById('studentsCard').style.display='block';
-  document.getElementById('stTitle').textContent = c.name;
+  document.getElementById('stTitle').textContent = c.name + (c.dateLabel ? ' — ' + c.dateLabel : '');
   document.getElementById('stCount').textContent = 'جاري التحميل…';
   document.getElementById('stTableWrap').style.display='none';
   document.getElementById('stEmpty').style.display='none';
@@ -234,7 +235,7 @@ async function openCourse(month,i,el){
   document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
 
   try{
-    const r = await api({ type:'salesStudents', course:c.name, month:month });
+    const r = await api({ type:'salesStudents', course:c.name });
     document.getElementById('stLoading').style.display='none';
     if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب المسجّلين');
 
