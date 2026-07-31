@@ -98,6 +98,19 @@ tr.paid td{background:var(--green-bg)}
 .s-tech{background:#FFF3E0;color:#E65100}
 .mini-n{font-size:11.5px;color:var(--muted);font-weight:700}
 
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat-box{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center}
+.stat-box .n{font-size:24px;font-weight:900;color:var(--crimson)}
+.stat-box .l{font-size:11.5px;font-weight:800;color:var(--muted);margin-top:2px}
+.t-hi{background:#FDECEC;color:#C62828}
+.t-mid{background:var(--amber-bg);color:var(--amber)}
+.t-lo{background:var(--cream2);color:var(--muted)}
+.why{font-size:11.5px;font-weight:700;color:var(--muted);line-height:1.7}
+.gobtn{background:var(--crimson);color:#fff;border:none;border-radius:100px;padding:11px 26px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:900;cursor:pointer}
+.gobtn:disabled{opacity:.55}
+.csvbtn{background:var(--gold);color:var(--crimson2);border:none;border-radius:100px;padding:9px 20px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:900;cursor:pointer}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}}
+
 /* شاشة الدخول */
 #gate{position:fixed;inset:0;background:var(--crimson);display:flex;align-items:center;justify-content:center;padding:24px;z-index:200}
 .gate-box{background:#fff;border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -160,6 +173,7 @@ tr.paid td{background:var(--green-bg)}
   <div class="mtabs">
     <button class="mtab on" data-v="courses" onclick="goTab('courses')">حسب الدورة</button>
     <button class="mtab" data-v="all" onclick="goTab('all')">كل العملاء</button>
+    <button class="mtab" data-v="sort" onclick="goTab('sort')">فرز العملاء</button>
   </div>
 
   <div class="view on" id="view-courses">
@@ -235,6 +249,23 @@ tr.paid td{background:var(--green-bg)}
     </div>
   </div><!-- /view-all -->
 
+  <div class="view" id="view-sort">
+    <div class="wip">
+      <b>فرز العملاء:</b> اختر الشهر والدورة، والنظام يرتّب لك العملاء حسب احتمال اهتمامهم — الأعلى فوق. اللي مسجّل بالدورة أصلاً يُستبعد.
+    </div>
+
+    <div class="card">
+      <div class="card-title">اختر الدورة المستهدفة</div>
+      <div class="filters">
+        <select class="fsel" id="sMonth" style="flex:1;min-width:150px" onchange="fillSortCourses()"></select>
+        <select class="fsel" id="sCourse" style="flex:2;min-width:200px"></select>
+        <button class="gobtn" id="sBtn" onclick="runSort()">اعرض المرشّحين</button>
+      </div>
+    </div>
+
+    <div id="sortResult"></div>
+  </div><!-- /view-sort -->
+
 </div>
 
 </div>
@@ -296,6 +327,7 @@ async function loadCourses(){
     }).join('');
     sel.value = months[0];
     renderCourses();
+    fillSortMonths();
   }catch(e){
     showErr('تعذّر التحميل: '+e.message);
     document.getElementById('monthSelect').innerHTML='<option value="">خطأ في التحميل</option>';
@@ -496,6 +528,99 @@ function renderAll(){
   box.innerHTML = h+'</tbody></table></div>';
 }
 
+/* ══ تبويب: فرز العملاء ══ */
+let SORTED = [];
+let SORT_COURSE = '';
+
+function fillSortMonths(){
+  const sel=document.getElementById('sMonth');
+  const months=Object.keys(BY_MONTH);
+  if(!months.length){ sel.innerHTML='<option value="">لا توجد دورات</option>'; return; }
+  sel.innerHTML=months.map(m=>'<option value="'+esc(m)+'">'+esc(BY_MONTH[m][0].monthLabel)+'</option>').join('');
+  fillSortCourses();
+}
+function fillSortCourses(){
+  const m=document.getElementById('sMonth').value;
+  const list=BY_MONTH[m]||[];
+  const sel=document.getElementById('sCourse');
+  sel.innerHTML = list.length
+    ? list.map(c=>'<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>').join('')
+    : '<option value="">لا توجد دورات في هذا الشهر</option>';
+}
+
+async function runSort(){
+  const course=document.getElementById('sCourse').value;
+  if(!course){ toast('اختر دورة أولاً','bad'); return; }
+  const btn=document.getElementById('sBtn');
+  const box=document.getElementById('sortResult');
+  btn.disabled=true; btn.textContent='جاري الفرز…';
+  box.innerHTML='<div class="card"><div class="loading">جاري فرز العملاء…</div></div>';
+  try{
+    const r=await api({ type:'salesTargets', course:course });
+    if(!r||!r.ok) throw new Error((r&&r.error)||'تعذّر الفرز');
+    SORTED=r.list||[]; SORT_COURSE=course;
+    renderSort(r);
+  }catch(e){
+    box.innerHTML='<div class="card"><div class="empty">تعذّر الفرز: '+esc(e.message)+'</div></div>';
+  }
+  btn.disabled=false; btn.textContent='اعرض المرشّحين';
+}
+
+function tierTag(t){
+  const m={'عالية':'t-hi','متوسطة':'t-mid','منخفضة':'t-lo'};
+  return '<span class="tag '+(m[t]||'t-lo')+'">'+esc(t)+'</span>';
+}
+
+function renderSort(r){
+  const box=document.getElementById('sortResult');
+  if(!SORTED.length){
+    box.innerHTML='<div class="card"><div class="empty">ما فيه مرشّحين — يمكن الكل مسجّل بالدورة أصلاً ('+toA(r.already)+')</div></div>';
+    return;
+  }
+
+  let h='<div class="stats-row">'
+    + '<div class="stat-box"><div class="n">'+toA(r.total)+'</div><div class="l">مرشّح</div></div>'
+    + '<div class="stat-box"><div class="n" style="color:#C62828">'+toA(r.high)+'</div><div class="l">أولوية عالية</div></div>'
+    + '<div class="stat-box"><div class="n" style="color:var(--amber)">'+toA(r.mid)+'</div><div class="l">أولوية متوسطة</div></div>'
+    + '<div class="stat-box"><div class="n" style="color:var(--muted)">'+toA(r.already)+'</div><div class="l">مسجّل أصلاً</div></div>'
+    + '</div>';
+
+  h+='<div class="card" style="padding:0;overflow:hidden">'
+    + '<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--border)">'
+    + '<div style="font-size:13px;font-weight:800;color:var(--muted)">قطاع الدورة: '+secTag(r.sector)+'</div>'
+    + '<button class="csvbtn" onclick="downloadSortCSV()">تحميل CSV للأرقام</button></div>'
+    + '<div class="table-wrap" style="border:none;border-radius:0">'
+    + '<table><thead><tr><th style="width:40px">#</th><th>العميل</th><th>الأولوية</th>'
+    + '<th>سبب الترشيح</th><th>آخر دورة</th><th>حالة الشهادة</th><th></th></tr></thead><tbody>';
+
+  SORTED.forEach((c,i)=>{
+    const msg='السلام عليكم '+(String(c.name||'').split(' ')[0])+'، عندنا دورة «'+SORT_COURSE+'» — حاب أرسل لك التفاصيل؟';
+    h+='<tr>'
+      + '<td class="row-num">'+toA(i+1)+'</td>'
+      + '<td><div class="nm">'+esc(c.name||'—')+'</div><div class="ph" style="text-align:right">'+esc(c.phone||'—')+'</div></td>'
+      + '<td>'+tierTag(c.tier)+'</td>'
+      + '<td class="why" style="min-width:170px">'+esc(c.why||'—')+'</td>'
+      + '<td style="font-weight:700;min-width:160px">'+esc(c.lastCourse||'—')+'<div class="mini-n">'+esc(c.lastDate||'')+'</div></td>'
+      + '<td>'+certTag(c.certStatus)+'</td>'
+      + '<td><a class="wa" target="_blank" rel="noopener" href="https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent(msg)+'">واتساب</a></td>'
+      + '</tr>';
+  });
+
+  box.innerHTML = h+'</tbody></table></div></div>';
+}
+
+function downloadSortCSV(){
+  if(!SORTED.length) return;
+  const rows=[['الاسم','رقم الواتساب','الأولوية','سبب الترشيح','آخر دورة','حالة الشهادة']];
+  SORTED.forEach(c=>rows.push([c.name,'+965'+waNum(c.phone).slice(-8),c.tier,c.why,c.lastCourse,c.certStatus]));
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='مرشحين - '+SORT_COURSE+'.csv';
+  a.click();
+  toast('تم تحميل الملف','ok');
+}
+
 /* ══ الدخول ══ */
 document.getElementById('gName').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('gPass').focus(); });
 document.getElementById('gPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
@@ -537,7 +662,8 @@ function openPage(){
 
 function logout(){
   CUR={name:'',pass:'',role:''};
-  ALL=[]; ALL_LOADED=false;
+  ALL=[]; ALL_LOADED=false; SORTED=[];
+  document.getElementById('sortResult').innerHTML='';
   goTab('courses');
   try{ sessionStorage.removeItem('masar_clients'); }catch(e){}
   document.getElementById('gPass').value='';
