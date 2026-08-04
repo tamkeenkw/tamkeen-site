@@ -16,6 +16,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--txt);l
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 6px 24px rgba(92,15,15,.05)}
 h1{font-size:20px;color:var(--maroon);margin-bottom:4px}
 h2{font-size:16px;color:var(--maroon);margin:0 0 12px}
+h3{font-size:14px;color:var(--maroon);margin:18px 0 8px}
 .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
 label{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
 input,select,textarea{width:100%;font-family:inherit;font-size:15px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;outline:none}
@@ -56,6 +57,22 @@ input:focus,select:focus{border-color:var(--maroon)}
 .stat{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:16px 12px;text-align:center}
 .stat .num{font-size:28px;font-weight:800;color:var(--maroon);line-height:1.2}
 .stat .lbl{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* ══ التكرار الأسبوعي ══ */
+.wday{margin-bottom:10px;padding:12px 14px}
+.wday.on{border-color:var(--maroon);background:#fdf8f6}
+.sw{display:flex;align-items:center;gap:9px;margin:0;cursor:pointer;font-size:15px}
+.sw input{width:19px;height:19px;padding:0;accent-color:var(--maroon);cursor:pointer;flex:0 0 auto}
+.sw b{font-weight:700}
+.wcount{color:var(--muted);font-size:13px}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.inline input[type=date]{max-width:190px}
+.dchip{display:flex;align-items:center;gap:6px;background:#fdeeee;border:1px solid #f0d5d5;border-radius:10px;padding:6px 10px;font-size:13px;color:#9a2222}
+.dchip x{cursor:pointer;font-weight:700;font-size:15px;line-height:1}
+.chips-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.preview{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:14px;margin-top:14px}
+.preview b{color:var(--maroon)}
+.extras-toggle{color:var(--maroon);background:none;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;padding:6px 0}
 </style>
 </head>
 <body>
@@ -104,11 +121,37 @@ input:focus,select:focus{border-color:var(--maroon)}
       <button class="btn ghost sm" onclick="addService()">+ أضف نوع استشارة</button>
     </div>
 
+    <!-- ════ المواعيد الأسبوعية المتكررة ════ -->
     <div class="card">
-      <h2>المواعيد المتاحة</h2>
-      <p class="hint" style="margin-bottom:12px">أضف يوماً ثم اختر الأوقات المتاحة فيه (تُحفظ تلقائياً). المواعيد مشتركة بين كل الأنواع.</p>
-      <div id="daysWrap"></div>
-      <button class="btn ghost sm" onclick="addDay('')">+ أضف يوماً</button>
+      <h2>مواعيدك الأسبوعية</h2>
+      <p class="hint" style="margin-bottom:14px">اختر أيام الأسبوع التي تستقبل فيها استشارات وحدّد أوقات كل يوم — وتتكرر تلقائياً كل أسبوع دون الحاجة لإدخال تاريخ.</p>
+
+      <div id="weekWrap"></div>
+
+      <label>مدة التكرار</label>
+      <select id="horizon" onchange="preview()">
+        <option value="4">٤ أسابيع</option>
+        <option value="8" selected>٨ أسابيع</option>
+        <option value="12">١٢ أسبوعاً</option>
+      </select>
+      <p class="hint">تُولَّد المواعيد من تاريخ اليوم. كل مرة تفتح الصفحة وتضغط «حفظ» تتمدد المواعيد تلقائياً لنفس المدة من جديد.</p>
+
+      <h3>أيام إجازة (استثناءات)</h3>
+      <p class="hint" style="margin-bottom:10px">أي تاريخ تضيفه هنا لن تظهر فيه مواعيد حتى لو كان ضمن أيامك الأسبوعية.</p>
+      <div class="chips-row" id="exclWrap"></div>
+      <div class="inline">
+        <input type="date" id="exclDate">
+        <button class="btn tiny ghost" onclick="addExcl()">+ أضف إجازة</button>
+      </div>
+
+      <button class="extras-toggle" onclick="toggleExtras()" id="extrasBtn">▾ مواعيد إضافية بتاريخ محدد (اختياري)</button>
+      <div id="extrasBox" class="hide">
+        <p class="hint" style="margin-bottom:10px">لمواعيد خارج جدولك الأسبوعي — تُضاف مرة واحدة فقط ولا تتكرر.</p>
+        <div id="daysWrap"></div>
+        <button class="btn ghost sm" onclick="addDay('')">+ أضف يوماً</button>
+      </div>
+
+      <div class="preview" id="previewBox">اختر يوماً واحداً على الأقل وحدّد أوقاته.</div>
     </div>
 
     <div class="card">
@@ -125,11 +168,15 @@ input:focus,select:focus{border-color:var(--maroon)}
 </div>
 
 <script>
-const SCRIPT = 'https://script.google.com/macros/s/AKfycbx_jI3N48vxDq8h6EzuSHaqwiYULNYvqxzaLZPn5dK_6Be8aiMgPJvADFQ6vDhsZjmXOA/exec';
+const SCRIPT = 'https://script.google.com/macros/s/AKfycbxTfdfwu1GH_kilm-9fiVlo3vNVLKozQgUv5Enh1NMeQOKsWdC_URFKZE0hbuQYG2Ah/exec';
 const PUBLIC_PAGE = 'https://tamkeenkuw.com/consultation.html';
 
 const $ = id => document.getElementById(id);
 let MEMBER_NO = '';
+let BOOKINGS  = [];
+let EXCL      = [];
+
+const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 // ── أدوات ──
 function arDate(d){ try{ return new Date(d+'T00:00:00').toLocaleDateString('ar-KW',{weekday:'long',day:'numeric',month:'long'}); }catch(e){ return d; } }
@@ -137,6 +184,25 @@ function fmt12(t){ const [h,m]=t.split(':').map(Number); const ap=h<12?'ص':'م'
 function showMsg(id,kind,text){ const e=$(id); e.className='msg '+kind; e.textContent=text; }
 function loading(btnId,txtId,on,label){ $(btnId).disabled=on; $(txtId).innerHTML = on ? '<span class="spin"></span>' : label; }
 function copyTxt(id,btn){ navigator.clipboard.writeText($(id).textContent).then(()=>{ const o=btn.textContent; btn.textContent='✓ تم النسخ'; setTimeout(()=>btn.textContent=o,1500); }); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function iso(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function arNum(n){ return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+
+/* توحيد أي صيغة تاريخ قادمة من الشيت إلى yyyy-mm-dd */
+function toDay(v){
+  if(!v) return '';
+  var s = String(v).trim();
+  if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  var d = new Date(s);
+  return isNaN(d.getTime()) ? '' : iso(d);
+}
+/* توحيد الوقت إلى HH:MM */
+function toTime(v){
+  if(!v) return '';
+  var s = String(v).trim();
+  var m = s.match(/(\d{1,2}):(\d{2})/);
+  return m ? pad2(Number(m[1]))+':'+m[2] : '';
+}
 
 // ── أنواع الاستشارات ──
 function addService(preset){
@@ -163,14 +229,83 @@ function collectServices(){
   })).filter(s=>s.name && s.fee!=='' && !isNaN(Number(s.fee)) && Number(s.fee)>=0);
 }
 
-// ── المواعيد ──
+// ════════ أيام الأسبوع المتكررة ════════
+function buildWeek(){
+  $('weekWrap').innerHTML = DAY_NAMES.map((n,i)=>
+    '<div class="day wday" id="w'+i+'">'+
+      '<div class="dayhead" style="margin-bottom:0">'+
+        '<label class="sw"><input type="checkbox" class="wOn" onchange="toggleWDay('+i+')"><b>'+n+'</b></label>'+
+        '<span class="wcount" id="wc'+i+'"></span>'+
+      '</div>'+
+      '<div class="wbody hide" style="margin-top:12px">'+
+        '<div class="times"><div class="chips"></div>'+
+          '<input type="time" class="newTime" onchange="addWTime('+i+')" style="max-width:130px">'+
+          '<button class="btn tiny" onclick="addWTime('+i+')">+ وقت</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'
+  ).join('');
+}
+function toggleWDay(i){
+  const box=$('w'+i), on=box.querySelector('.wOn').checked;
+  box.classList.toggle('on',on);
+  box.querySelector('.wbody').classList.toggle('hide',!on);
+  updWCount(i); preview();
+}
+function addWTime(i){
+  const box=$('w'+i), inp=box.querySelector('.newTime'), v=inp.value;
+  if(!v) return;
+  const ex=[...box.querySelectorAll('.chips .tchip')].map(c=>c.dataset.t);
+  if(!ex.includes(v)) renderChip('w'+i,v);
+  inp.value='';
+  updWCount(i); preview();
+}
+function updWCount(i){
+  const box=$('w'+i);
+  const n=box.querySelectorAll('.chips .tchip').length;
+  const on=box.querySelector('.wOn').checked;
+  $('wc'+i).textContent = on ? (n? arNum(n)+' موعد' : 'لم تُحدَّد أوقات') : '';
+}
+function collectWeekly(){
+  const out={};
+  for(let i=0;i<7;i++){
+    const box=$('w'+i);
+    if(!box || !box.querySelector('.wOn').checked) continue;
+    const times=[...box.querySelectorAll('.chips .tchip')].map(c=>c.dataset.t).sort();
+    if(times.length) out[i]=times;
+  }
+  return out;
+}
+
+// ── الإجازات ──
+function addExcl(){
+  const v=$('exclDate').value;
+  if(!v) return;
+  if(!EXCL.includes(v)) EXCL.push(v);
+  EXCL.sort(); $('exclDate').value='';
+  renderExcl(); preview();
+}
+function removeExcl(d){ EXCL=EXCL.filter(x=>x!==d); renderExcl(); preview(); }
+function renderExcl(){
+  $('exclWrap').innerHTML = EXCL.length
+    ? EXCL.map(d=>'<span class="dchip">'+arDate(d)+'<x onclick="removeExcl(\''+d+'\')">✕</x></span>').join('')
+    : '<span class="hint">لا توجد إجازات مضافة.</span>';
+}
+
+// ── مواعيد إضافية بتاريخ محدد ──
+function toggleExtras(){
+  const box=$('extrasBox'), hidden=box.classList.contains('hide');
+  box.classList.toggle('hide');
+  $('extrasBtn').textContent = (hidden?'▴':'▾')+' مواعيد إضافية بتاريخ محدد (اختياري)';
+  if(hidden && !$('daysWrap').children.length) addDay('');
+}
 function addDay(p='', preset){
   const id='d'+Date.now()+Math.random().toString(36).slice(2,5);
   const div=document.createElement('div'); div.className='day'; div.id=id;
   div.innerHTML =
     '<div class="dayhead">'+
-      '<input type="date" class="dayDate" onchange="lbl(\''+id+'\')" style="max-width:200px">'+
-      '<button class="del" onclick="this.closest(\'.day\').remove()">حذف ✕</button>'+
+      '<input type="date" class="dayDate" onchange="lbl(\''+id+'\');preview()" style="max-width:200px">'+
+      '<button class="del" onclick="this.closest(\'.day\').remove();preview()">حذف ✕</button>'+
     '</div>'+
     '<div class="lbl hint"></div>'+
     '<div class="times" style="margin-top:8px"><div class="chips"></div>'+
@@ -188,22 +323,75 @@ function addTime(id){
   const inp=$(id).querySelector('.newTime'); const v=inp.value; if(!v) return;
   const ex=[...$(id).querySelectorAll('.chips .tchip')].map(c=>c.dataset.t);
   if(ex.includes(v)){ inp.value=''; return; }
-  renderChip(id,v); inp.value='';
+  renderChip(id,v); inp.value=''; preview();
 }
 function renderChip(id,v){
   const c=document.createElement('span'); c.className='tchip'; c.dataset.t=v;
-  c.innerHTML='<b>'+fmt12(v)+'</b><x onclick="this.closest(\'.tchip\').remove()">✕</x>';
+  c.innerHTML='<b>'+fmt12(v)+'</b><x onclick="removeChip(this)">✕</x>';
   $(id).querySelector('.chips').appendChild(c);
 }
-function collectSlots(){
+function removeChip(el){
+  const box=el.closest('.day'); el.closest('.tchip').remove();
+  if(box && box.classList.contains('wday')) updWCount(Number(box.id.slice(1)));
+  preview();
+}
+function collectExtras(){
   return [...$('daysWrap').querySelectorAll('.day')].map(d=>{
     const date=d.querySelector('.dayDate').value;
     const times=[...d.querySelectorAll('.chips .tchip')].map(c=>c.dataset.t);
     const pending=d.querySelector('.newTime').value;
     if(pending && !times.includes(pending)) times.push(pending);
     times.sort();
-    return (date && times.length) ? {date, label:arDate(date), times} : null;
+    return (date && times.length) ? {date, times} : null;
   }).filter(Boolean);
+}
+
+// ════════ توليد التواريخ الفعلية من النمط الأسبوعي ════════
+function collectSlots(){
+  const weekly = collectWeekly();
+  const weeks  = Number($('horizon').value||8);
+  const excl   = new Set(EXCL);
+  const booked = new Set(BOOKINGS.map(b=>toDay(b.date)+'|'+toTime(b.time)).filter(x=>x.indexOf('|')>0));
+  const now    = new Date();
+  const todayStr = iso(now);
+  const nowMin = now.getHours()*60 + now.getMinutes();
+  const base   = new Date(); base.setHours(0,0,0,0);
+  const map    = {};
+
+  const okTime = (ds,t)=>{
+    if(booked.has(ds+'|'+t)) return false;
+    if(ds===todayStr){ const [h,m]=t.split(':').map(Number); if(h*60+m <= nowMin+30) return false; }
+    return true;
+  };
+
+  for(let i=0;i<weeks*7;i++){
+    const d = new Date(base.getTime()+i*86400000);
+    const times = weekly[d.getDay()];
+    if(!times || !times.length) continue;
+    const ds = iso(d);
+    if(excl.has(ds)) continue;
+    const ts = times.filter(t=>okTime(ds,t));
+    if(ts.length) map[ds] = ts.slice();
+  }
+
+  collectExtras().forEach(x=>{
+    if(excl.has(x.date)) return;
+    const cur = map[x.date] || [];
+    x.times.forEach(t=>{ if(!cur.includes(t) && okTime(x.date,t)) cur.push(t); });
+    if(cur.length) map[x.date] = cur;
+  });
+
+  return Object.keys(map).sort().map(ds=>({ date:ds, label:arDate(ds), times:map[ds].sort() }));
+}
+
+function preview(){
+  const slots = collectSlots();
+  const box = $('previewBox');
+  if(!slots.length){ box.innerHTML='اختر يوماً واحداً على الأقل وحدّد أوقاته.'; return; }
+  const total = slots.reduce((s,x)=>s+x.times.length,0);
+  const last  = slots[slots.length-1].date;
+  box.innerHTML = 'سيتم توليد <b>'+arNum(total)+'</b> موعداً موزّعة على <b>'+arNum(slots.length)+
+                  '</b> يوماً — آخر موعد: <b>'+arDate(last)+'</b>';
 }
 
 // ── الدخول ──
@@ -223,20 +411,50 @@ async function enter(){
 function openPanel(d){
   $('gateView').classList.add('hide');
   $('panel').classList.remove('hide');
+  buildWeek(); renderExcl();
+
   const m=d.member, s=d.setup;
   $('hello').textContent='أهلاً '+(m.name||'');
   $('name').value  = (s&&s.name)  || m.name  || '';
   $('email').value = (s&&s.email) || m.email || '';
   $('phone').value = (s&&s.phone) || m.phone || '';
+
   if(s){
     $('title').value=s.title||'';
     (s.services&&s.services.length?s.services:[null]).forEach(x=>addService(x));
-    (s.slots&&s.slots.length?s.slots:[null]).forEach(x=>addDay('',x));
+    BOOKINGS = s.bookings||[];
+    applySavedSlots(s.slots||[]);
     if(s.slug){ $('publicLink').textContent=PUBLIC_PAGE+'?t='+s.slug; $('publicWrap').classList.remove('hide'); }
-    renderBookings(s.bookings||[]);
+    renderBookings(BOOKINGS);
   } else {
-    addService(); addDay('');
+    addService();
   }
+  preview();
+}
+
+/* تحويل المواعيد القديمة (تواريخ محددة) إلى نمط أسبوعي متكرر */
+function applySavedSlots(slots){
+  const today = iso(new Date());
+  const weekly = {};
+  (slots||[]).forEach(s=>{
+    const ds = toDay(s.date);
+    if(!ds || ds < today) return;
+    const dow = new Date(ds+'T00:00:00').getDay();
+    weekly[dow] = weekly[dow] || [];
+    (s.times||[]).forEach(t=>{
+      const tt = toTime(t);
+      if(tt && weekly[dow].indexOf(tt)===-1) weekly[dow].push(tt);
+    });
+  });
+  Object.keys(weekly).forEach(dow=>{
+    const i = Number(dow);
+    const box = $('w'+i);
+    if(!box) return;
+    box.querySelector('.wOn').checked = true;
+    toggleWDay(i);
+    weekly[dow].sort().forEach(t=>renderChip('w'+i,t));
+    updWCount(i);
+  });
 }
 
 // ── الحفظ ──
@@ -244,7 +462,7 @@ async function save(){
   const services=collectServices(), slots=collectSlots();
   if(!$('email').value.trim()){ showMsg('saveMsg','err','الإيميل مطلوب'); return; }
   if(!services.length){ showMsg('saveMsg','err','أضف نوع استشارة واحداً على الأقل برسومه'); return; }
-  if(!slots.length){ showMsg('saveMsg','err','أضف موعداً واحداً على الأقل مع أوقاته'); return; }
+  if(!slots.length){ showMsg('saveMsg','err','اختر يوماً واحداً على الأقل من أيام الأسبوع وحدّد أوقاته'); return; }
   loading('saveBtn','saveTxt',true);
   try{
     const r=await fetch(SCRIPT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
@@ -257,7 +475,7 @@ async function save(){
     if(d.ok){
       $('publicLink').textContent=PUBLIC_PAGE+'?t='+d.slug;
       $('publicWrap').classList.remove('hide');
-      showMsg('saveMsg','ok','تم الحفظ بنجاح ✅ — رابطك جاهز بالأعلى');
+      showMsg('saveMsg','ok','تم الحفظ بنجاح ✅ — تم توليد '+arNum(slots.reduce((s,x)=>s+x.times.length,0))+' موعداً حتى '+arDate(slots[slots.length-1].date));
       $('publicWrap').scrollIntoView({behavior:'smooth'});
     } else showMsg('saveMsg','err',d.message||'تعذّر الحفظ');
   }catch(e){ showMsg('saveMsg','err','خطأ في الاتصال — حاول مرة ثانية'); }
@@ -265,7 +483,6 @@ async function save(){
 }
 
 // ── الحجوزات ──
-function arNum(n){ return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
 function renderBookings(list){
   const total = list.reduce((s,b)=>s+(Number(b.fee)||0),0);
   const stats = $('statsRow');
@@ -282,7 +499,7 @@ function renderBookings(list){
     '<div class="book">'+
       '<div class="svc-tag">'+(b.service||'استشارة')+'</div>'+
       '<div class="top"><span class="nm">'+b.name+'</span>'+
-        '<span class="when">'+arDate(b.date)+' · '+fmt12(b.time)+'</span></div>'+
+        '<span class="when">'+arDate(toDay(b.date))+' · '+fmt12(toTime(b.time))+'</span></div>'+
       '<div class="meta">📞 '+b.phone+'  ·  ✉️ '+b.email+'  ·  '+b.fee+' د.ك</div>'+
       '<div style="margin-top:8px"><button class="btn tiny '+(b.reminded?'ghost':'')+'" onclick="sendRemind(\''+b.id+'\',this)">'+
         (b.reminded?'تم التذكير ✓ — إعادة الإرسال':'إرسال تذكير للعميل')+'</button></div>'+
@@ -298,6 +515,15 @@ async function sendRemind(bookingId,btn){
   }catch(e){ btn.innerHTML='خطأ في الاتصال'; }
   setTimeout(()=>{btn.disabled=false;btn.innerHTML=o;},2500);
 }
+
+/* ====== دخول تلقائي عبر ?m= (من لوحة المدرب) ====== */
+(function(){
+  var m = new URLSearchParams(location.search).get('m');
+  if(m){
+    var f = document.getElementById('memberNo');
+    if(f){ f.value = m; if(typeof enter === 'function') enter(); }
+  }
+})();
 </script>
 </body>
 </html>
