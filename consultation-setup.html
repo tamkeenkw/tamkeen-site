@@ -130,8 +130,9 @@ input:focus,select:focus{border-color:var(--maroon)}
 
       <label>مدة التكرار</label>
       <select id="horizon" onchange="preview()">
+        <option value="3" selected>٣ أسابيع</option>
         <option value="4">٤ أسابيع</option>
-        <option value="8" selected>٨ أسابيع</option>
+        <option value="8">٨ أسابيع</option>
         <option value="12">١٢ أسبوعاً</option>
       </select>
       <p class="hint">تُولَّد المواعيد من تاريخ اليوم. كل مرة تفتح الصفحة وتضغط «حفظ» تتمدد المواعيد تلقائياً لنفس المدة من جديد.</p>
@@ -349,7 +350,7 @@ function collectExtras(){
 // ════════ توليد التواريخ الفعلية من النمط الأسبوعي ════════
 function collectSlots(){
   const weekly = collectWeekly();
-  const weeks  = Number($('horizon').value||8);
+  const weeks  = Number($('horizon').value||3);
   const excl   = new Set(EXCL);
   const booked = new Set(BOOKINGS.map(b=>toDay(b.date)+'|'+toTime(b.time)).filter(x=>x.indexOf('|')>0));
   const now    = new Date();
