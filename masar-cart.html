@@ -171,6 +171,12 @@ const API  = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRD
 const KEY  = 'masar_cart';
 const DISC = 0.10;
 
+/* ===== عرض الاشتراك السنوي في السلة =====
+   'smart'  = يطلع فقط لو بالسلة دورة مجانية (المنطقي)
+   'off'    = ما يطلع أبداً
+   'always' = يطلع دائماً (السلوك القديم)                       */
+const UPSELL_MODE = 'smart';
+
 let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], CERTP = 15, MEM = null, TMR = null;
 let PICK_OPEN = false, PICK_TAB = 'course', PICK_Q = '';
 
@@ -391,6 +397,18 @@ function paintMember(c){
     b.innerHTML = '<div class="mem on"><div class="mem-t">🎫 اشتراكك مضاف للسلة</div>' +
       '<div class="mem-s">خصم ١٠٪ و' + ar(c.subPlan.certs) + ' شهادة مطبّقين على هذا الطلب — والدورات المجانية مفتوحة لك بلا حدود</div></div>';
     return;
+  }
+
+  /* ===== هل نعرض عرض الاشتراك؟ ===== */
+  if(UPSELL_MODE === 'off'){ b.innerHTML = ''; return; }
+
+  if(UPSELL_MODE === 'smart'){
+    const hasFree = CART.some(function(it){
+      if(it.kind !== 'course') return false;
+      const o = find('course', it.id);
+      return o && o.isFree;
+    });
+    if(!hasFree){ b.innerHTML = ''; return; }
   }
 
   const note = MEM.firstTime
