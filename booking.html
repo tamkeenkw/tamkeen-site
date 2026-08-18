@@ -173,6 +173,11 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .cal-day.range-end { border-radius:0 10px 10px 0; }
 .cal-day.range-start.range-end { border-radius:10px; }
 .cal-day.full-slot { background:#f5f5f5; color:#bbb; cursor:not-allowed; }
+.cal-day.blocked { background:repeating-linear-gradient(45deg,#f3e6e6,#f3e6e6 4px,#fff 4px,#fff 8px); color:#c99; cursor:not-allowed; border-color:#e8d5d5; }
+.blocked-badge { font-size:8px; font-weight:800; color:#9b2c2c; position:absolute; bottom:3px; }
+.leg-blocked { background:repeating-linear-gradient(45deg,#f3e6e6,#f3e6e6 3px,#fff 3px,#fff 6px); border:1.5px solid #e8d5d5; }
+.blocks-note { margin-top:14px; background:#fdf3f3; border:1.5px solid #f0dcdc; border-radius:12px; padding:12px 14px; font-size:12.5px; font-weight:700; color:#8a2b2b; line-height:1.8; }
+.blocks-note b { font-weight:900; }
 .cal-day.partial { background:rgba(92,15,15,.06); border-color:rgba(92,15,15,.15); }
 .full-badge { font-size:8px; font-weight:800; color:#dc2626; position:absolute; bottom:3px; }
 .partial-dot { width:5px; height:5px; background:var(--crimson); border-radius:50%; position:absolute; bottom:4px; }
@@ -364,7 +369,9 @@ footer a { color:rgba(255,255,255,.55); text-decoration:none; }
               <span><div class="leg-dot leg-range"></div> أيام الدورة</span>
               <span><div class="leg-dot leg-partial"></div> slot متاح</span>
               <span><div class="leg-dot leg-full"></div> محجوز</span>
+              <span><div class="leg-dot leg-blocked"></div> مغلق</span>
             </div>
+            <div class="blocks-note" id="blocksNote" style="display:none;"></div>
             <div class="selected-date-box" id="selectedDateBox">
               <span id="dateBoxContent"></span><br>
               <span class="reset-link" onclick="resetDates()">إعادة الاختيار</span>
@@ -415,7 +422,80 @@ const today = new Date();
 currentYear  = today.getFullYear();
 currentMonth = today.getMonth();
 
+/* ===== التواريخ المغلقة من لوحة العمليات ===== */
+const BLOCKS_TAB = 'إغلاق الحجوزات';
+const AR_DAYS    = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const AR_MONTHS  = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+let blockedMonths = {};   // '2026-08' → سبب
+let blockedDays   = {};   // 5 (رقم اليوم) → سبب
+let blocksList    = [];
+
+fetchBlocks();
 fetchBookings();
+
+function fetchBlocks() {
+  var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID +
+    '/values/' + encodeURIComponent(BLOCKS_TAB) + '!A:E?key=' + API_KEY;
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      blockedMonths = {}; blockedDays = {}; blocksList = [];
+      var rows = data.values || [];
+      for (var i = 1; i < rows.length; i++) {
+        var kind   = (rows[i][0] || '').trim();
+        var value  = (rows[i][1] || '').trim();
+        var reason = (rows[i][2] || '').trim();
+        var status = (rows[i][3] || 'مفعّل').trim();
+        if (status !== 'مفعّل' || !kind || !value) continue;
+
+        if (kind === 'شهر كامل') {
+          blockedMonths[value] = reason;
+          var p = value.split('-');
+          blocksList.push({ label: (AR_MONTHS[parseInt(p[1],10)-1] || value) + ' ' + p[0], reason: reason });
+        } else if (kind === 'يوم أسبوعي') {
+          var idx = AR_DAYS.indexOf(value);
+          if (idx > -1) {
+            blockedDays[idx] = reason;
+            blocksList.push({ label: 'كل يوم ' + value, reason: reason });
+          }
+        }
+      }
+      renderBlocksNote();
+      renderCalendar();
+    })
+    .catch(function() { /* التاب غير موجود بعد — تجاهل */ });
+}
+
+// يرجّع سبب الإغلاق إذا التاريخ مغلق، وإلا null
+function blockReason(dateStr) {
+  var ym = dateStr.slice(0, 7);
+  if (blockedMonths.hasOwnProperty(ym)) return blockedMonths[ym] || 'الحجز مغلق في هذا الشهر';
+  var dow = new Date(dateStr + 'T00:00:00').getDay();
+  if (blockedDays.hasOwnProperty(dow)) return blockedDays[dow] || 'الحجز مغلق في هذا اليوم';
+  return null;
+}
+
+// هل يوجد يوم مغلق داخل الفترة المختارة؟
+function rangeHasBlocked(a, b) {
+  var d = new Date(a + 'T00:00:00'), e = new Date(b + 'T00:00:00');
+  while (d <= e) {
+    if (blockReason(toStr(d))) return toStr(d);
+    d.setDate(d.getDate() + 1);
+  }
+  return null;
+}
+
+function renderBlocksNote() {
+  var el = document.getElementById('blocksNote');
+  if (!el) return;
+  if (!blocksList.length) { el.style.display = 'none'; return; }
+  el.innerHTML = '⛔ <b>مواعيد غير متاحة للحجز حالياً:</b><br>' +
+    blocksList.map(function(b) {
+      return '• ' + b.label + (b.reason ? ' — <span style="font-weight:600;">' + b.reason + '</span>' : '');
+    }).join('<br>');
+  el.style.display = 'block';
+}
 
 function fetchBookings() {
   var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID +
@@ -514,8 +594,11 @@ function renderCalendar() {
     var inRange = rangeStart && rangeEnd && ds > rangeStart && ds < rangeEnd;
     var isToday = ds === todayStr;
 
+    var blkReason = blockReason(ds);
+
     var cls = 'cal-day';
     if (isPast)                cls += ' past';
+    else if (blkReason)        cls += ' blocked';
     else if (isSlotBookedForMe) cls += ' full-slot';
     else if (isDayFull)        cls += ' full-slot';
     else if (isPartial)        cls += ' partial';
@@ -525,11 +608,13 @@ function renderCalendar() {
     if (isToday && !isStart && !isEnd) cls += ' today';
 
     var inner = '' + d;
-    if (!isPast && (isSlotBookedForMe || isDayFull)) inner += '<span class="full-badge">FULL</span>';
+    if (!isPast && blkReason) inner += '<span class="blocked-badge">مغلق</span>';
+    else if (!isPast && (isSlotBookedForMe || isDayFull)) inner += '<span class="full-badge">FULL</span>';
     else if (!isPast && isPartial && !isStart && !isEnd) inner += '<span class="partial-dot"></span>';
 
-    var clickable = !isPast && !isSlotBookedForMe && !isDayFull;
-    html += '<div class="' + cls + '" ' + (clickable ? 'onclick="selectDay(\'' + ds + '\')"' : '') + '>' + inner + '</div>';
+    var clickable = !isPast && !blkReason && !isSlotBookedForMe && !isDayFull;
+    var titleAttr = blkReason ? ' title="' + blkReason.replace(/"/g,'') + '"' : '';
+    html += '<div class="' + cls + '"' + titleAttr + ' ' + (clickable ? 'onclick="selectDay(\'' + ds + '\')"' : '') + '>' + inner + '</div>';
   }
 
   grid.innerHTML = html;
@@ -539,12 +624,19 @@ function renderCalendar() {
 }
 
 function selectDay(ds) {
+  if (blockReason(ds)) return;
+
   if (!rangeStart) {
     rangeStart = ds; rangeEnd = null;
   } else if (!rangeEnd) {
-    if (ds === rangeStart)      rangeEnd = ds;
-    else if (ds < rangeStart) { rangeEnd = rangeStart; rangeStart = ds; }
-    else                        rangeEnd = ds;
+    var a = ds < rangeStart ? ds : rangeStart;
+    var b = ds < rangeStart ? rangeStart : ds;
+    var bad = rangeHasBlocked(a, b);
+    if (bad) {
+      alert('لا يمكن اختيار هذه الفترة — تحتوي على تاريخ مغلق (' + fmtDate(bad) + ').\n' + blockReason(bad));
+      return;
+    }
+    rangeStart = a; rangeEnd = b;
   } else {
     rangeStart = ds; rangeEnd = null;
   }
@@ -765,6 +857,16 @@ document.getElementById('bookingForm').addEventListener('submit', async function
     document.getElementById('err-date').style.display = 'block'; ok = false;
   }
   if (!ok) return;
+
+  // تحقق أخير من التواريخ المغلقة
+  if (rangeStart) {
+    var badDay = rangeHasBlocked(rangeStart, rangeEnd || rangeStart);
+    if (badDay) {
+      alert('لا يمكن إرسال الطلب — التاريخ ' + fmtDate(badDay) + ' مغلق للحجز.\n' + blockReason(badDay));
+      document.getElementById('mf-date').classList.add('invalid');
+      return;
+    }
+  }
 
   var btn = document.getElementById('submitBtn');
   var txt = document.getElementById('btnTxt');
