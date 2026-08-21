@@ -105,7 +105,11 @@ a{color:inherit;}
 .card-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;padding-top:14px;border-top:1px dashed var(--line);}
 .act{padding:9px 16px;border-radius:10px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;}
 .act svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4;}
-.act-approve{background:var(--green-bg);color:var(--green);} .act-approve:hover{background:#c8e6c9;}
+.act-approve{background:var(--green-bg);color:var(--green);}
+.act-masar{background:#5C0F0F;color:#fff;margin-left:auto;}
+.act-masar:hover{background:#7A1515;}
+.act-masar.done{background:#EDE7F6;color:#4527A0;cursor:default;}
+.act-masar:disabled{opacity:.85;cursor:not-allowed;} .act-approve:hover{background:#c8e6c9;}
 .act-reject{background:var(--red-bg);color:var(--red);} .act-reject:hover{background:#f8d7d7;}
 .act-warn{background:#FFF3E0;color:#E65100;} .act-warn:hover{background:#ffe0b2;}
 .act-link{background:var(--blue-bg);color:var(--blue);} .act-link:hover{background:#bbdefb;}
@@ -1237,6 +1241,109 @@ async function deleteBlock(row){
   setTimeout(loadBlocks, 1800);
 }
 
+/* ============ ربط مسار — أضف للموقع ============ */
+const MASAR_API  = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
+const MASAR_PASS = 'masar2026';
+const MASAR_KEY  = 'masar_added_bookings';
+
+let BK_BY_ROW = {};
+
+function masarAddedList(){
+  try{ return JSON.parse(localStorage.getItem(MASAR_KEY) || '[]'); }catch(e){ return []; }
+}
+function masarAdded(ref){ return masarAddedList().indexOf(ref) > -1; }
+function masarMark(ref){
+  const a = masarAddedList();
+  if(a.indexOf(ref) === -1){ a.push(ref); }
+  try{ localStorage.setItem(MASAR_KEY, JSON.stringify(a)); }catch(e){}
+}
+
+/* تطبيع عربي — يطابق نفس قواعد سكريبت مسار */
+function normAr(v){
+  return String(v || '')
+    .replace(/[\u200E\u200F\u202A-\u202E\u061C]/g, '')
+    .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/[\u064B-\u0652]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim().toLowerCase();
+}
+
+function hashStr(str){
+  let h = 5381;
+  for(let i = 0; i < str.length; i++){ h = (((h << 5) + h) ^ str.charCodeAt(i)) >>> 0; }
+  return h.toString(36);
+}
+
+/**
+ * مرجع ثابت مبني على محتوى الطلب — لا يتأثر بحذف الصفوف أو ترتيبها
+ * العضوية + اسم الدورة + تاريخ البدء
+ */
+function bookingRef(r){
+  const key = normAr(r.member) + '|' + normAr(r.course) + '|' + isoDate(r.start || r.date);
+  return 'BK-' + hashStr(key);
+}
+
+/* نص مقروء يُحفظ بجانب المرجع في الشيت */
+function bookingLabel(r){
+  return [r.member || '—', (r.course || '').slice(0, 40), isoDate(r.start || r.date) || 'بلا تاريخ']
+         .join(' · ');
+}
+
+function isoDate(v){
+  const d = parseDate(v);
+  if(!d) return '';
+  return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+}
+
+async function addToMasar(row){
+  const r = BK_BY_ROW[row];
+  if(!r){ toast('تعذّر قراءة بيانات الطلب'); return; }
+
+  const ref = bookingRef(r);
+  const btn = document.getElementById('mb-' + row);
+
+  if(!confirm('تضيف «' + (r.course||'الدورة') + '» كمسودة في موقع مسار؟\n\n' +
+              'تنضاف غير منشورة — تكمل صورتها وسعرها ووصفها من أدمن مسار.')) return;
+
+  if(btn){ btn.disabled = true; btn.innerHTML = 'جاري الإضافة...'; }
+
+  let d = null;
+  try{
+    const res = await fetch(MASAR_API, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        type:'importBooking',
+        pass: MASAR_PASS,
+        ref: ref,
+        refLabel: bookingLabel(r),
+        name:    r.course  || '',
+        trainer: r.trainer || '',
+        date:    isoDate(r.start || r.date),
+        time:    r.time ? (r.time + ' مسائي') : '',
+        mode:    r.system || '',
+        topics:  r.topics || '',
+        desc:    r.msg    || '',
+        accred:  '',
+        bio:     r.member ? ('عضوية تمكين ' + r.member) : ''
+      })
+    });
+    d = await res.json();
+  }catch(e){}
+
+  if(d && d.ok){
+    masarMark(ref);
+    if(btn){ btn.disabled = true; btn.classList.add('done'); btn.innerHTML = 'مضاف للموقع ✓'; }
+    toast(d.duplicate
+      ? (d.by === 'content' ? 'توجد دورة بنفس الاسم والتاريخ في مسار' : 'هذا الطلب مضاف مسبقاً في مسار')
+      : 'أُضيف كمسودة في مسار ✓ — أكمل بياناته من الأدمن');
+    return;
+  }
+
+  if(btn){ btn.disabled = false; btn.innerHTML = 'أضف للموقع'; }
+  toast((d && d.error) ? d.error : 'تعذّر الاتصال بنظام مسار');
+}
+
 /* ============ طلبات الحجز ============ */
 async function loadBookings(){
   const tab = findTab('طلبات الحجز','حجز الدورات','حجز');
@@ -1287,6 +1394,8 @@ function renderBookings(){
   const pend=DATA.bookings.data.map(r=>mapBooking(h,r)).filter(r=>statusClass(r.status)==='st-pending').length;
   updateBadge('bookings', pend);
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد طلبات مطابقة.</div>'; return; }
+  BK_BY_ROW = {};
+  rows.forEach(r=>{ BK_BY_ROW[r._row] = r; });
   box.innerHTML = rows.map(r=>bookingCard(r,DATA.bookings.tab)).join('');
 }
 function bookingCard(r,tab){
@@ -1298,13 +1407,22 @@ function bookingCard(r,tab){
   if(r.type) meta.push(chip('tag', r.type));
   if(r.member) meta.push(chip('id', 'عضوية '+r.member));
   const topics = r.topics?`<div class="card-sub" style="margin-top:8px;"><b>المحاور:</b> ${esc(r.topics)}</div>`:'';
+  const bkRef   = bookingRef(r);
+  const already = masarAdded(bkRef);
+  const masarBtn = `<button class="act act-masar${already?' done':''}" id="mb-${r._row}"
+      ${already?'disabled':''} onclick="addToMasar(${r._row})">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>${already?'مضاف للموقع ✓':'أضف للموقع'}</button>`;
+
   let actions='';
   if(isPending){
     actions=`<div class="card-actions">
+      ${masarBtn}
       <button class="act act-approve" onclick="approveBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد</button>
       <button class="act act-warn" onclick="warnBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>تنبيه</button>
       <button class="act act-reject" onclick="rejectBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button>
     </div>`;
+  }else{
+    actions=`<div class="card-actions">${masarBtn}</div>`;
   }
   return `<div class="card">
     <div class="card-top">

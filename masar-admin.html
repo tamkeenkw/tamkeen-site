@@ -67,6 +67,16 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .pick-s{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
 
 /* فلتر الأشهر */
+.gaps{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.gbtn{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;padding:7px 15px;
+  font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:800;color:var(--muted);cursor:pointer;transition:.18s;}
+.gbtn:hover{border-color:var(--crimson);}
+.gbtn.on{background:var(--crimson);border-color:var(--crimson);color:#fff;}
+.gbtn.warn.on{background:#E65100;border-color:#E65100;}
+.miss{background:#FFF3E0;border-radius:10px;padding:9px 12px;margin-top:11px;font-size:12px;
+  font-weight:800;color:#E65100;line-height:1.6;}
+.chip.src{background:#EDE7F6;color:#4527A0;}
+
 .months{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
 .mbtn{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;padding:8px 16px;
   font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;
@@ -221,6 +231,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
 
       <div class="months" id="months"></div>
+      <div class="gaps" id="gaps"></div>
 
       <div class="loading" id="loadingState">جاري تحميل الدورات...</div>
       <div class="list" id="list"></div>
@@ -492,6 +503,7 @@ let COURSES = [];
 let PKGS = [];
 let PICKED = [];
 let MONTH = 'all';
+let GAP = 'all';
 
 /* ============ TABS ============ */
 function switchTab(t){
@@ -778,6 +790,7 @@ async function loadCourses(){
     else { COURSES = data.courses || []; PKGS = data.packages || []; }
     stats();
     buildMonths();
+    buildGaps();
     render();
     pkgStats();
     renderPkgs();
@@ -814,6 +827,35 @@ function mLabel(k){
   const p = k.split('-');
   return MO[Number(p[1])] + ' ' + ar(p[0]);
 }
+
+/* شنو ناقص في الدورة قبل نشرها */
+function missingOf(c){
+  const m = [];
+  if(!c.image) m.push('صورة');
+  if(!c.desc) m.push('وصف');
+  if(!c.topics || c.topics.length === 0) m.push('محاور');
+  if(!c.date) m.push('تاريخ');
+  if(!c.isFree && !(c.price > 0)) m.push('سعر');
+  return m;
+}
+
+function buildGaps(){
+  const box = document.getElementById('gaps');
+  if(!box) return;
+
+  const inc   = COURSES.filter(function(c){ return missingOf(c).length > 0; }).length;
+  const draft = COURSES.filter(function(c){ return !c.published; }).length;
+  const imp   = COURSES.filter(function(c){ return !!c.source; }).length;
+
+  let h = '<button class="gbtn' + (GAP === 'all' ? ' on' : '') + '" onclick="setGap(\'all\')">الكل</button>';
+  if(inc)   h += '<button class="gbtn warn' + (GAP === 'incomplete' ? ' on' : '') + '" onclick="setGap(\'incomplete\')">⚠ ناقصة بيانات ' + ar(inc) + '</button>';
+  if(draft) h += '<button class="gbtn' + (GAP === 'draft' ? ' on' : '') + '" onclick="setGap(\'draft\')">مسودات ' + ar(draft) + '</button>';
+  if(imp)   h += '<button class="gbtn' + (GAP === 'imported' ? ' on' : '') + '" onclick="setGap(\'imported\')">من طلبات الحجز ' + ar(imp) + '</button>';
+
+  box.innerHTML = (inc || draft || imp) ? h : '';
+}
+
+function setGap(g){ GAP = g; buildGaps(); render(); }
 
 function buildMonths(){
   const box = document.getElementById('months');
@@ -865,6 +907,10 @@ function render(){
   if(MONTH === 'none')      rows = rows.filter(function(c){ return !mKey(c.date); });
   else if(MONTH !== 'all')  rows = rows.filter(function(c){ return mKey(c.date) === MONTH; });
 
+  if(GAP === 'incomplete') rows = rows.filter(function(c){ return missingOf(c).length > 0; });
+  else if(GAP === 'draft')    rows = rows.filter(function(c){ return !c.published; });
+  else if(GAP === 'imported') rows = rows.filter(function(c){ return !!c.source; });
+
   if(q) rows = rows.filter(function(c){ return (c.name + ' ' + (c.trainer || '')).indexOf(q) > -1; });
 
   if(rows.length === 0){
@@ -908,8 +954,7 @@ function render(){
             (c.date    ? '<span class="chip">📅 ' + esc(c.date) + '</span>' : '') +
             (c.time    ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
             priceChip + certChip +
-            ((c.topics && c.topics.length) ? '' :
-              '<span class="chip" style="background:#FFF3E0;color:#E65100;">⚠ بلا محاور</span>') +
+            (c.source ? '<span class="chip src">📥 من طلب حجز</span>' : '') +
             '<span class="chip reg">' + ar(c.registered || 0) + ' مسجل</span>' +
             seatChip +
           '</div>' +
@@ -918,6 +963,8 @@ function render(){
           (c.published ? '● منشورة' : '○ غير منشورة') + '</span>' +
       '</div>' +
       (c.desc ? '<div class="ccard-desc">' + esc(c.desc) + '</div>' : '') +
+      (missingOf(c).length
+        ? '<div class="miss">⚠ ناقص قبل النشر: ' + missingOf(c).join(' · ') + '</div>' : '') +
       '<div class="ccard-actions">' +
         '<button class="abtn" onclick="openForm(\'' + c.id + '\')">تعديل</button>' +
         '<button class="abtn pub" onclick="togglePub(\'' + c.id + '\')">' +
