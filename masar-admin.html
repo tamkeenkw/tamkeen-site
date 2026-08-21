@@ -66,7 +66,20 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .pick-t{font-size:13.5px;font-weight:800;line-height:1.4;}
 .pick-s{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
 
-.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+/* فلتر الأشهر */
+.months{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.mbtn{background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:100px;padding:8px 16px;
+  font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;
+  transition:.18s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;}
+.mbtn:hover{border-color:var(--crimson);color:var(--crimson);}
+.mbtn.on{background:var(--crimson);border-color:var(--crimson);color:#fff;}
+.mbtn i{font-style:normal;background:var(--cream);color:var(--muted);border-radius:100px;
+  min-width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;padding:0 5px;}
+.mbtn.on i{background:rgba(255,255,255,.24);color:#fff;}
+.mbtn.past{opacity:.55;}
+
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
 .toolbar input{flex:1;min-width:180px;background:#fff;border:1.5px solid rgba(92,15,15,.1);border-radius:12px;padding:12px 15px;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;}
 .toolbar input:focus{border-color:var(--crimson);}
 .btn-add{background:var(--crimson);color:#fff;border:none;border-radius:12px;padding:12px 22px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;cursor:pointer;transition:.2s;white-space:nowrap;}
@@ -206,6 +219,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <input type="text" id="searchBox" placeholder="ابحث باسم الدورة أو المدرب..." oninput="render()">
         <button class="btn-add" onclick="openForm()">+ إضافة دورة</button>
       </div>
+
+      <div class="months" id="months"></div>
 
       <div class="loading" id="loadingState">جاري تحميل الدورات...</div>
       <div class="list" id="list"></div>
@@ -476,6 +491,7 @@ let PASS = '';
 let COURSES = [];
 let PKGS = [];
 let PICKED = [];
+let MONTH = 'all';
 
 /* ============ TABS ============ */
 function switchTab(t){
@@ -761,6 +777,7 @@ async function loadCourses(){
     if(!data.ok){ toast(data.error || 'خطأ في التحميل', true); COURSES = []; PKGS = []; }
     else { COURSES = data.courses || []; PKGS = data.packages || []; }
     stats();
+    buildMonths();
     render();
     pkgStats();
     renderPkgs();
@@ -781,17 +798,82 @@ function stats(){
 }
 
 /* ============ RENDER ============ */
+const MO = ['','يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو',
+            'أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+/* يحوّل تاريخ الدورة D-M-YYYY إلى مفتاح YYYY-MM */
+function mKey(d){
+  const p = String(d || '').split('-');
+  if(p.length < 3) return '';
+  const m = Number(p[1]), y = Number(p[2]);
+  if(!m || !y) return '';
+  return y + '-' + ('0' + m).slice(-2);
+}
+
+function mLabel(k){
+  const p = k.split('-');
+  return MO[Number(p[1])] + ' ' + ar(p[0]);
+}
+
+function buildMonths(){
+  const box = document.getElementById('months');
+  if(!box) return;
+
+  const counts = {};
+  let noDate = 0;
+
+  COURSES.forEach(function(c){
+    const k = mKey(c.date);
+    if(!k){ noDate++; return; }
+    counts[k] = (counts[k] || 0) + 1;
+  });
+
+  const keys = Object.keys(counts).sort();
+  if(keys.length === 0){ box.innerHTML = ''; return; }
+
+  const now = new Date();
+  const cur = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2);
+
+  let h = '<button class="mbtn' + (MONTH === 'all' ? ' on' : '') + '" onclick="setMonth(\'all\')">' +
+          'كل الأشهر <i>' + ar(COURSES.length) + '</i></button>';
+
+  keys.forEach(function(k){
+    h += '<button class="mbtn' + (MONTH === k ? ' on' : '') + (k < cur ? ' past' : '') +
+         '" onclick="setMonth(\'' + k + '\')">' +
+         mLabel(k) + ' <i>' + ar(counts[k]) + '</i></button>';
+  });
+
+  if(noDate > 0){
+    h += '<button class="mbtn' + (MONTH === 'none' ? ' on' : '') + '" onclick="setMonth(\'none\')">' +
+         'بلا تاريخ <i>' + ar(noDate) + '</i></button>';
+  }
+
+  box.innerHTML = h;
+}
+
+function setMonth(k){
+  MONTH = k;
+  buildMonths();
+  render();
+}
+
 function render(){
   const q    = document.getElementById('searchBox').value.trim();
   const list = document.getElementById('list');
-  const rows = q
-    ? COURSES.filter(c => (c.name + ' ' + c.trainer).indexOf(q) > -1)
-    : COURSES;
+  let rows = COURSES;
+
+  if(MONTH === 'none')      rows = rows.filter(function(c){ return !mKey(c.date); });
+  else if(MONTH !== 'all')  rows = rows.filter(function(c){ return mKey(c.date) === MONTH; });
+
+  if(q) rows = rows.filter(function(c){ return (c.name + ' ' + (c.trainer || '')).indexOf(q) > -1; });
 
   if(rows.length === 0){
+    const inMonth = (MONTH !== 'all' && MONTH !== 'none');
     list.innerHTML = '<div class="empty"><div class="empty-icon">📚</div>' +
-      '<div class="empty-title">لا توجد دورات</div>' +
-      '<div>اضغط "إضافة دورة" لإنشاء أول دورة</div></div>';
+      '<div class="empty-title">' +
+        (inMonth ? 'لا توجد دورات في ' + mLabel(MONTH) : 'لا توجد دورات') + '</div>' +
+      '<div>' + (inMonth ? 'اختر شهر ثاني أو اضغط "كل الأشهر"'
+                         : 'اضغط "إضافة دورة" لإنشاء أول دورة') + '</div></div>';
     return;
   }
 
