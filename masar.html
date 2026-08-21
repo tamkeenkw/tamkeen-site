@@ -108,10 +108,56 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 
 /* ===== CARDS ===== */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;}
+
+/* ===== الجوال: عمودان ===== */
+@media(max-width:700px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:11px;}
+  .card{border-radius:16px;}
+  .card-body{padding:13px 12px;}
+  .card-title{font-size:14px;line-height:1.4;margin-bottom:9px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px;}
+  .card-trainer{gap:7px;margin-bottom:9px;}
+  .tr-av{width:26px;height:26px;font-size:11px;}
+  .tr-name{font-size:11.5px;}
+  .tr-role{display:none;}
+  .card-meta{gap:4px;margin-bottom:9px;}
+  .card-meta .m{font-size:10px;padding:3px 7px;}
+  .card-meta .m:nth-child(n+3){display:none;}
+  .card-badge{font-size:9.5px;padding:3px 9px;top:8px;right:8px;}
+  .card-days{font-size:9.5px;padding:3px 8px;top:8px;left:8px;}
+  .card-foot{padding-top:10px;flex-direction:column;align-items:stretch;gap:8px;}
+  .price{font-size:16px;}
+  .seats{font-size:10px;}
+  .btn{padding:9px 12px;font-size:12.5px;width:100%;}
+  .card-more{font-size:11px;padding:0 12px 12px;}
+  .img-hint{display:none;}
+
+  .pkgs{grid-template-columns:1fr;gap:12px;}
+  .pcard-top{padding:18px;}
+  .pcard-n{font-size:16px;}
+  .pcard-p{font-size:24px;}
+  .pcard-b{padding:16px;}
+}
+
+@media(max-width:360px){
+  .grid{grid-template-columns:1fr;}
+  .card-meta .m:nth-child(n+3){display:inline-block;}
+  .card-title{-webkit-line-clamp:3;min-height:0;}
+}
 .card{background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 3px 16px rgba(92,15,15,.05);display:flex;flex-direction:column;overflow:hidden;transition:.28s;opacity:0;transform:translateY(18px);}
 .card.in{opacity:1;transform:none;}
 .card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(92,15,15,.13);}
-.card-imgwrap{position:relative;}
+.card-imgwrap{position:relative;cursor:pointer;}
+.card-title{cursor:pointer;}
+.img-hint{position:absolute;bottom:8px;left:8px;background:rgba(26,8,8,.62);color:#fff;
+  border-radius:100px;padding:4px 11px;font-size:10.5px;font-weight:800;
+  backdrop-filter:blur(4px);opacity:0;transition:.22s;pointer-events:none;}
+.card-imgwrap:hover .img-hint{opacity:1;}
+.card-more{width:100%;background:transparent;border:none;border-top:1px solid rgba(92,15,15,.06);
+  color:var(--crimson);font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:900;
+  cursor:pointer;padding:12px;transition:.18s;}
+.card-more:hover{background:var(--cream);}
+.btn.added,.pcard-btn.added{background:var(--green)!important;}
 .card-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:var(--cream-2);}
 .card-noimg{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,var(--crimson) 0%,var(--crimson-3) 100%);display:flex;align-items:center;justify-content:center;}
 .card-noimg span{font-size:44px;font-weight:900;color:rgba(255,255,255,.22);}
@@ -301,7 +347,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   font-size:12px;font-weight:900;color:var(--crimson);text-decoration:none;cursor:pointer;}
 .pklink:hover{background:var(--cream-2);}
 
-.card{cursor:pointer;}
+.card{cursor:default;}
 
 .state{text-align:center;padding:70px 20px;color:var(--muted);}
 .state-icon{font-size:42px;margin-bottom:14px;}
@@ -625,13 +671,16 @@ function render(){
         : '<div class="seats' + (c.remaining <= 5 ? ' low' : '') + '">باقي ' + ar(c.remaining) + ' مقعد</div>';
     }
 
-    return '<div class="card" onclick="openDetail(\'' + c.id + '\')">' +
-      '<div class="card-imgwrap">' + head +
+    const added = inCart('course', c.id);
+
+    return '<div class="card">' +
+      '<div class="card-imgwrap" onclick="openDetail(\'' + c.id + '\')" title="اضغط للتفاصيل">' + head +
         '<span class="card-badge ' + (c.isFree ? 'b-free' : 'b-paid') + '">' +
           (c.isFree ? 'حضور مجاني' : 'دورة مدفوعة') + '</span>' + days +
+        '<span class="img-hint">اضغط للتفاصيل</span>' +
       '</div>' +
       '<div class="card-body">' +
-        '<div class="card-title">' + esc(c.name) + '</div>' +
+        '<div class="card-title" onclick="openDetail(\'' + c.id + '\')">' + esc(c.name) + '</div>' +
         '<div class="card-trainer"><div class="tr-av">' + esc(initial(c.trainer)) + '</div>' +
           '<div><div class="tr-name">' + esc(c.trainer) + '</div>' +
           '<div class="tr-role">مدرب معتمد</div></div></div>' +
@@ -644,8 +693,12 @@ function render(){
         '<div class="card-foot"><div>' +
           '<div class="price">' + (c.isFree ? 'مجاني' : ar(c.price) + ' <small>د.ك</small>') + '</div>' + seats +
         '</div>' +
-        '<button class="btn">' + (full ? 'مكتملة' : 'اقرأ التفاصيل ←') + '</button>' +
-      '</div></div></div>';
+        '<button class="btn' + (added ? ' added' : '') + '" ' +
+          (full ? 'disabled' : 'onclick="addCart(\'course\',\'' + c.id + '\',this)"') + '>' +
+          (full ? 'مكتملة' : (added ? '✓ في السلة' : 'أضف للسلة')) + '</button>' +
+      '</div>' +
+      '<button class="card-more" onclick="openDetail(\'' + c.id + '\')">التفاصيل والمحاور ←</button>' +
+      '</div></div>';
   }).join('');
 
   reveal();
@@ -702,10 +755,8 @@ function addCart(kind, id, btn){
   syncCart();
 
   if(btn && btn.textContent){
-    const t = btn.textContent;
     btn.textContent = '✓ في السلة';
     btn.classList.add('added');
-    setTimeout(function(){ btn.textContent = t; btn.classList.remove('added'); }, 1600);
   }
 }
 
@@ -992,8 +1043,10 @@ function renderPkgs(){
     const full = (p.seats > 0 && p.remaining !== null && p.remaining <= 0);
     const nC   = (p.courses && p.courses.length) ? p.courses.length : 0;
 
-    return '<div class="pcard" onclick="openPkg(\'' + p.id + '\')">' +
-      '<div class="pcard-top">' +
+    const pAdded = inCart('package', p.id);
+
+    return '<div class="pcard">' +
+      '<div class="pcard-top" onclick="openPkg(\'' + p.id + '\')">' +
         (p.image ? '<div class="pcard-bg" style="background-image:url(\'' + esc(p.image) + '\')"></div>' : '') +
         '<div class="pcard-tin">' +
           '<span class="pcard-k">باقة' + (nC ? ' · ' + ar(nC) + ' دورات' : '') + '</span>' +
@@ -1004,7 +1057,11 @@ function renderPkgs(){
       '<div class="pcard-b">' +
         (p.desc ? '<div class="pcard-d">' + esc(p.desc) + '</div>' : '') +
         (full ? '<div class="seats low" style="margin-bottom:12px;">المقاعد مكتملة</div>' : '') +
-        '<button class="pcard-btn">' + (full ? 'المقاعد مكتملة' : 'اقرأ التفاصيل ←') + '</button>' +
+        '<button class="pcard-btn' + (pAdded ? ' added' : '') + '" ' +
+          (full ? 'disabled' : 'onclick="addCart(\'package\',\'' + p.id + '\',this)"') + '>' +
+          (full ? 'المقاعد مكتملة' : (pAdded ? '✓ في السلة' : 'أضف الباقة للسلة')) + '</button>' +
+        '<button class="card-more" style="margin:10px 0 0;" onclick="openPkg(\'' + p.id + '\')">' +
+          'التفاصيل والدورات ←</button>' +
       '</div></div>';
   }).join('');
 }
