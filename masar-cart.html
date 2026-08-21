@@ -45,6 +45,28 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .tagb{display:inline-block;background:var(--green-bg);color:var(--green);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:900;margin-top:6px;}
 .rm{background:transparent;border:none;color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border-radius:8px;}
 .rm:hover{color:var(--red);background:var(--red-bg);}
+.certpick{background:var(--gold-bg);border-radius:12px;padding:12px 13px;margin-top:11px;
+  border:1.5px solid transparent;transition:.2s;}
+.certpick.lock{background:#F3E5F5;border-color:#CE93D8;animation:none;}
+.certpick.lock .certpick-h{color:#6A1B9A;}
+.cp.off{background:var(--cream-2);border-color:transparent;cursor:not-allowed;opacity:.65;}
+.cp.off b,.cp.off span{color:var(--muted);}
+.certpick-n{font-size:11.5px;font-weight:700;color:#6A1B9A;margin-top:9px;line-height:1.6;}
+.certpick-n b{cursor:pointer;text-decoration:underline;}
+.certpick.need{background:#FFF3E0;border-color:#FFB74D;animation:pulse 2.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{border-color:#FFB74D}50%{border-color:#FF8F00}}
+.certpick-h{font-size:12.5px;font-weight:900;color:var(--gold);margin-bottom:9px;}
+.certpick.need .certpick-h{color:#E65100;}
+.certpick-r{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cp{background:#fff;border:2px solid rgba(92,15,15,.1);border-radius:10px;padding:10px 8px;
+  font-family:'Tajawal',sans-serif;cursor:pointer;transition:.18s;text-align:center;line-height:1.4;}
+.cp:hover{border-color:var(--crimson);}
+.cp.on{border-color:var(--crimson);background:var(--crimson);}
+.cp b{display:block;font-size:12.5px;font-weight:900;color:var(--text);}
+.cp span{display:block;font-size:11.5px;font-weight:800;color:var(--muted);margin-top:2px;}
+.cp.on b,.cp.on span{color:#fff;}
+.pay.locked{background:var(--cream-2)!important;color:var(--muted)!important;}
+
 .certbox{background:var(--gold-bg);border-radius:11px;padding:10px 13px;margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
 .certbox-t{font-size:12.5px;font-weight:800;color:var(--gold);line-height:1.5;}
 .certbox input{width:19px;height:19px;accent-color:var(--crimson);cursor:pointer;flex-shrink:0;}
@@ -171,12 +193,6 @@ const API  = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRD
 const KEY  = 'masar_cart';
 const DISC = 0.10;
 
-/* ===== عرض الاشتراك السنوي في السلة =====
-   'smart'  = يطلع فقط لو بالسلة دورة مجانية (المنطقي)
-   'off'    = ما يطلع أبداً
-   'always' = يطلع دائماً (السلوك القديم)                       */
-const UPSELL_MODE = 'smart';
-
 let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], CERTP = 15, MEM = null, TMR = null;
 let PICK_OPEN = false, PICK_TAB = 'course', PICK_Q = '';
 
@@ -287,26 +303,36 @@ function calc(){
   const disc   = active ? DISC : 0;
   let certLeft = (MEM ? MEM.certLeft : 0) + (subPlan ? subPlan.certs : 0);
 
-  let total = 0, saved = 0, lines = [];
+  let total = 0, saved = 0, lines = [], undecided = 0;
+
+  /* حق الحضور المجاني: مرة واحدة فقط لغير المشترك */
+  let freeLeft = active ? 999 : Math.max(0, (MEM ? (MEM.freeLeft !== undefined ? MEM.freeLeft : (MEM.freeTaken > 0 ? 0 : 1)) : 1));
 
   CART.forEach(function(it, i){
     const o = find(it.kind, it.id);
     if(!o){ lines.push(null); return; }
 
-    let amt = 0, was = 0, tag = '';
+    let amt = 0, was = 0, tag = '', noFree = false;
 
     if(it.kind === 'subscription'){
       amt = o.price; was = o.price;
     }else if(it.kind === 'package'){
       was = o.price; amt = r3(o.price * (1 - disc));
-      if(it.cert && o.hasCertFee){
+      if(o.hasCertFee && it.cert !== true && it.cert !== false) undecided++;
+      if(it.cert === true && o.hasCertFee){
         const need = (o.courses || []).length || 1;
         if(certLeft >= need){ certLeft -= need; tag = 'الشهادات من رصيد اشتراكك'; }
         else { was += o.certFee; amt += r3(o.certFee * (1 - disc)); }
       }
     }else{
       if(o.isFree){
-        if(it.cert && o.hasCert){
+        /* هل يقدر يختار حضور فقط؟ */
+        noFree = (freeLeft <= 0);
+        if(noFree && it.cert === false){ CART[i].cert = null; it.cert = null; }
+        if(it.cert === false) freeLeft--;
+
+        if(o.hasCert && it.cert !== true && it.cert !== false) undecided++;
+        if(it.cert === true && o.hasCert){
           was = o.certFee;
           if(certLeft > 0){ certLeft--; amt = 0; tag = 'شهادة من رصيد اشتراكك'; }
           else amt = r3(o.certFee * (1 - disc));
@@ -318,11 +344,11 @@ function calc(){
 
     total += amt;
     saved += Math.max(0, was - amt);
-    lines.push({ o:o, amt:r3(amt), was:r3(was), tag:tag });
+    lines.push({ o:o, amt:r3(amt), was:r3(was), tag:tag, noFree:noFree });
   });
 
   return { lines:lines, total:r3(total), saved:r3(saved), disc:disc,
-           active:active, certLeft:certLeft, subPlan:subPlan };
+           active:active, certLeft:certLeft, subPlan:subPlan, undecided:undecided };
 }
 
 /* ===== العرض ===== */
@@ -399,21 +425,9 @@ function paintMember(c){
     return;
   }
 
-  /* ===== هل نعرض عرض الاشتراك؟ ===== */
-  if(UPSELL_MODE === 'off'){ b.innerHTML = ''; return; }
-
-  if(UPSELL_MODE === 'smart'){
-    const hasFree = CART.some(function(it){
-      if(it.kind !== 'course') return false;
-      const o = find('course', it.id);
-      return o && o.isFree;
-    });
-    if(!hasFree){ b.innerHTML = ''; return; }
-  }
-
   const note = MEM.firstTime
-    ? 'أول دورة مجانية لك مفتوحة بلا قيد — بعدها دورة واحدة بالشهر.'
-    : 'لك دورة مجانية واحدة بالشهر. الاشتراك يفتح لك الدورات المجانية بلا حدود طول السنة.';
+    ? 'أول دورة مجانية لك مفتوحة — بعدها تختار الشهادة أو تشترك.'
+    : '🔒 استخدمت دورتك المجانية. الدورات الجاية: مع شهادة معتمدة، أو <b>اشترك</b> واحضرها كلها مجاناً.';
 
   b.innerHTML = '<div class="mem off">' +
     '<div class="mem-t">💡 اشترك سنة كاملة واحضر بلا حدود</div>' +
@@ -467,12 +481,12 @@ function paintItems(c){
           return '<div>• ' + esc(x.name) + (x.date ? ' — ' + esc(x.date) : '') + '</div>';
         }).join('') + '</div>';
       }
-      if(o.hasCertFee) cert = certBox(i, it.cert, 'أضف الشهادات المعتمدة', o.certFee);
+      if(o.hasCertFee) cert = certBox(i, it.cert, 'الشهادات المعتمدة', o.certFee, 'بدون شهادات');
     }else{
       meta = (o.trainer ? '👤 ' + esc(o.trainer) : '') +
              (o.date ? ' · 📅 ' + esc(dateAr(o.date)) : '') +
              (o.time ? ' · 🕔 ' + esc(o.time) : '');
-      if(o.isFree && o.hasCert) cert = certBox(i, it.cert, 'أضف الشهادة المعتمدة', o.certFee);
+      if(o.isFree && o.hasCert) cert = certBox(i, it.cert, 'الشهادة المعتمدة', o.certFee, 'حضور فقط', L.noFree);
     }
 
     const priceHtml = (L.amt === 0)
@@ -502,18 +516,54 @@ function paintSummary(c){
     '<div class="tot"><span class="tot-l">المجموع</span><span class="tot-v">' +
       (c.total === 0 ? 'مجاني' : ar(c.total) + ' د.ك') + '</span></div>';
 
-  const t = document.getElementById('payTxt');
-  if(t) t.textContent = (c.total === 0) ? 'أكمل التسجيل مجاناً' : 'ادفع ' + ar(c.total) + ' د.ك';
+  const t   = document.getElementById('payTxt');
+  const btn = document.getElementById('payBtn');
+
+  if(c.undecided > 0){
+    if(t) t.textContent = 'اختر نوع تسجيلك أولاً';
+    if(btn){ btn.disabled = true; btn.classList.add('locked'); }
+  }else{
+    if(t) t.textContent = (c.total === 0) ? 'أكمل التسجيل مجاناً' : 'ادفع ' + ar(c.total) + ' د.ك';
+    if(btn){ btn.disabled = false; btn.classList.remove('locked'); }
+  }
 }
 
-function certBox(i, on, label, fee){
-  return '<label class="certbox" onclick="toggleCert(' + i + ')">' +
-    '<span class="certbox-t">🎓 ' + label + ' — ' + ar(fee) + ' د.ك</span>' +
-    '<input type="checkbox" ' + (on ? 'checked' : '') + ' onclick="event.stopPropagation();toggleCert(' + i + ')">' +
-    '</label>';
+/* اختيار إجباري — لا افتراضي صامت */
+function certBox(i, val, label, fee, freeLabel, noFree){
+  const undecided = (val !== true && val !== false);
+
+  const freeBtn = noFree
+    ? '<button class="cp off" onclick="whyLocked()">' +
+        '<b>' + freeLabel + '</b><span>غير متاح</span></button>'
+    : '<button class="cp' + (val === false ? ' on' : '') + '" onclick="setCert(' + i + ',false)">' +
+        '<b>لا، ' + freeLabel + '</b><span>مجاناً</span></button>';
+
+  const head = noFree
+    ? '🔒 استخدمت دورتك المجانية — اختر الشهادة أو اشترك'
+    : (undecided ? '⚠ اختر نوع تسجيلك' : '🎓 ' + label);
+
+  return '<div class="certpick' + (undecided ? ' need' : '') + (noFree ? ' lock' : '') + '">' +
+    '<div class="certpick-h">' + head + '</div>' +
+    '<div class="certpick-r">' +
+      '<button class="cp' + (val === true ? ' on' : '') + '" onclick="setCert(' + i + ',true)">' +
+        '<b>نعم، أبي الشهادة</b><span>' + ar(fee) + ' د.ك</span></button>' +
+      freeBtn +
+    '</div>' +
+    (noFree ? '<div class="certpick-n">أو <b onclick="jumpPlans()">اشترك سنوياً</b> واحضر الدورات المجانية بلا حدود</div>' : '') +
+    '</div>';
 }
 
-function toggleCert(i){ CART[i].cert = !CART[i].cert; writeCart(CART); paint(); }
+function whyLocked(){
+  const el = document.getElementById('memBox');
+  if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function jumpPlans(){
+  const el = document.querySelector('.plans') || document.getElementById('memBox');
+  if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function setCert(i, v){ CART[i].cert = v; writeCart(CART); paint(); }
 function rm(i){ CART.splice(i, 1); writeCart(CART); render(); }
 
 function addSub(id){
@@ -620,7 +670,9 @@ function quickAdd(kind, id){
   if(CART.some(function(x){ return x.kind === kind && x.id === id; })) return;
 
   const o = find(kind, id);
-  const cert = o ? (kind === 'package' ? !!o.hasCertFee : (o.isFree ? false : true)) : false;
+  let cert = false;
+  if(kind === 'course')       cert = o ? (o.isFree ? (o.hasCert ? null : false) : true) : false;
+  else if(kind === 'package') cert = (o && o.hasCertFee) ? null : false;
 
   CART.push({ kind:kind, id:id, cert:cert });
   writeCart(CART);
@@ -630,6 +682,13 @@ function quickAdd(kind, id){
 
 /* ===== الدفع ===== */
 async function checkout(){
+  const chk = calc();
+  if(chk.undecided > 0){
+    const el = document.querySelector('.certpick.need');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
   ['w-n','w-p','w-e'].forEach(function(id){ document.getElementById(id).classList.remove('bad'); });
 
   const name  = document.getElementById('iName').value.trim();
@@ -668,11 +727,17 @@ async function checkout(){
   document.getElementById('paySp').style.display = 'none';
 
   if(d && d.blocked){
-    const names = d.blocked.map(function(x){ return '• ' + esc(x.name); }).join('<br>');
+    const names = d.blocked.map(function(x){
+      return '• ' + esc(x.name) + (x.hasCert ? ' — الشهادة ' + ar(x.certFee) + ' د.ك' : '');
+    }).join('<br>');
     document.getElementById('memBox').innerHTML =
-      '<div class="warn"><div class="warn-t">⚠ تجاوزت حد الدورات المجانية</div>' +
-      '<div class="warn-s">الدورات التالية ما تقدر تسجّل فيها هذا الشهر:<br>' + names +
-      '<br><br>لك دورة مجانية واحدة بالشهر — أو <b>اشترك</b> واحضر الدورات المجانية بلا حدود طول السنة.<br>ملاحظة: الدورات المدفوعة ما عليها سقف — تقدر تشتريها الحين عادي.</div></div>';
+      '<div class="warn"><div class="warn-t">🔒 استخدمت دورتك المجانية</div>' +
+      '<div class="warn-s">الدورات التالية تحتاج شهادة أو اشتراك:<br>' + names +
+      '<br><br>اختر <b>نعم أبي الشهادة</b> لكل وحدة، أو <b>اشترك سنوياً</b> واحضرها كلها مجاناً.' +
+      '<br><br>الدورات المدفوعة ما عليها أي قيد — تقدر تشتريها عادي.</div></div>';
+    MEM = MEM || {};
+    MEM.freeLeft = 0; MEM.freeTaken = Math.max(1, MEM.freeTaken || 1); MEM.firstTime = false;
+    paint();
     window.scrollTo({ top:0, behavior:'smooth' });
     return;
   }

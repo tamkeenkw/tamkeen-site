@@ -722,8 +722,10 @@ function addCart(kind, id, btn){
           : (kind === 'subscription') ? PLANS.find(function(x){ return x.id === id; })
           : ALL.find(function(x){ return x.id === id; });
 
-  const cert = (kind === 'subscription') ? false
-             : o ? (kind === 'package' ? !!o.hasCertFee : (o.isFree ? false : true)) : false;
+  /* null = لم يقرر بعد — يُحسم في السلة إجبارياً */
+  let cert = false;
+  if(kind === 'course')       cert = o ? (o.isFree ? (o.hasCert ? null : false) : true) : false;
+  else if(kind === 'package') cert = (o && o.hasCertFee) ? null : false;
   CART.push({ kind:kind, id:id, cert:cert });
   saveCart();
   syncCart();
