@@ -499,7 +499,12 @@ async function load(){
     CERTP = dp.certPrice || 15;
   }catch(e){ PLANS = []; }
 
-  ALL.forEach(function(c){ c.days = daysLeft(c.date); });
+  /* مفتاح داخلي فريد — يضمن فتح العنصر الصحيح حتى لو رقم التعريف ناقص */
+  ALL.forEach(function(c, i){
+    c.days = daysLeft(c.date);
+    c._key = c.id || ('TMPC-' + i);
+  });
+  PKGS.forEach(function(p, i){ p._key = p.id || ('TMPP-' + i); });
 
   const soon = ALL.filter(function(c){ return c.days !== null && c.days >= 0; });
   BAN = (soon.length ? soon : ALL).slice(0, 5);
@@ -574,7 +579,7 @@ function buildBanner(){
           (c.time ? '<span>🕔 ' + esc(c.time) + '</span>' : '') +
         '</div>' +
         '<div class="s-price">' + line + '</div>' +
-        '<button class="s-btn" onclick="openDetail(\'' + c.id + '\')">تفاصيل الدورة ←</button>' +
+        '<button class="s-btn" onclick="openDetail(\'' + c._key + '\')">تفاصيل الدورة ←</button>' +
       '</div></div>';
   });
 
@@ -661,13 +666,13 @@ function render(){
     const added = inCart('course', c.id);
 
     return '<div class="card">' +
-      '<div class="card-imgwrap" onclick="openDetail(\'' + c.id + '\')" title="اضغط للتفاصيل">' + head +
+      '<div class="card-imgwrap" onclick="openDetail(\'' + c._key + '\')" title="اضغط للتفاصيل">' + head +
         '<span class="card-badge ' + (c.isFree ? 'b-free' : 'b-paid') + '">' +
           (c.isFree ? 'حضور مجاني' : 'دورة مدفوعة') + '</span>' + days +
         '<span class="img-hint">اضغط للتفاصيل</span>' +
       '</div>' +
       '<div class="card-body">' +
-        '<div class="card-title" onclick="openDetail(\'' + c.id + '\')">' + esc(c.name) + '</div>' +
+        '<div class="card-title" onclick="openDetail(\'' + c._key + '\')">' + esc(c.name) + '</div>' +
         '<div class="card-trainer"><div class="tr-av">' + esc(initial(c.trainer)) + '</div>' +
           '<div><div class="tr-name">' + esc(c.trainer) + '</div>' +
           '<div class="tr-role">مدرب معتمد</div></div></div>' +
@@ -684,7 +689,7 @@ function render(){
           (full ? 'disabled' : 'onclick="addCart(\'course\',\'' + c.id + '\',this)"') + '>' +
           (full ? 'مكتملة' : (added ? '✓ في السلة' : 'أضف للسلة')) + '</button>' +
       '</div>' +
-      '<button class="card-more" onclick="openDetail(\'' + c.id + '\')">التفاصيل والمحاور ←</button>' +
+      '<button class="card-more" onclick="openDetail(\'' + c._key + '\')">التفاصيل والمحاور ←</button>' +
       '</div></div>';
   }).join('');
 
@@ -779,8 +784,9 @@ function toast(msg, isErr){
 }
 
 /* ===== DETAIL ===== */
-function openDetail(id){
-  const c = ALL.find(function(x){ return x.id === id; });
+function openDetail(key){
+  const c = ALL.find(function(x){ return x._key === key; })
+         || ALL.find(function(x){ return x.id && x.id === key; });
   if(!c) return;
 
   const full   = (c.seats > 0 && c.remaining !== null && c.remaining <= 0);
@@ -903,8 +909,9 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ===== PACKAGE DETAIL ===== */
-function openPkg(id){
-  const p = PKGS.find(function(x){ return x.id === id; });
+function openPkg(key){
+  const p = PKGS.find(function(x){ return x._key === key; })
+         || PKGS.find(function(x){ return x.id && x.id === key; });
   if(!p) return;
 
   const full  = (p.seats > 0 && p.remaining !== null && p.remaining <= 0);
@@ -946,7 +953,7 @@ function openPkg(id){
 
         if(!inner) inner = '<div class="pkempty">تفاصيل هذه الدورة تُضاف قريباً</div>';
 
-        inner += '<span class="pklink" onclick="event.stopPropagation();openDetail(\'' + c.id + '\')">صفحة الدورة كاملة ←</span>';
+        inner += '<span class="pklink" onclick="event.stopPropagation();openDetail(\'' + (c._key || c.id) + '\')">صفحة الدورة كاملة ←</span>';
 
         return '<div class="pkitem" id="pk-' + i + '">' +
           '<div class="pkhead" onclick="togglePk(' + i + ')">' +
@@ -1066,7 +1073,7 @@ function renderPkgs(){
     const pAdded = inCart('package', p.id);
 
     return '<div class="pcard">' +
-      '<div class="pcard-top" onclick="openPkg(\'' + p.id + '\')">' +
+      '<div class="pcard-top" onclick="openPkg(\'' + p._key + '\')">' +
         (p.image ? '<div class="pcard-bg" style="background-image:url(\'' + esc(p.image) + '\')"></div>' : '') +
         '<div class="pcard-tin">' +
           '<span class="pcard-k">باقة' + (nC ? ' · ' + ar(nC) + ' دورات' : '') + '</span>' +
@@ -1080,7 +1087,7 @@ function renderPkgs(){
         '<button class="pcard-btn' + (pAdded ? ' added' : '') + '" ' +
           (full ? 'disabled' : 'onclick="addCart(\'package\',\'' + p.id + '\',this)"') + '>' +
           (full ? 'المقاعد مكتملة' : (pAdded ? '✓ في السلة' : 'أضف الباقة للسلة')) + '</button>' +
-        '<button class="card-more" style="margin:10px 0 0;" onclick="openPkg(\'' + p.id + '\')">' +
+        '<button class="card-more" style="margin:10px 0 0;" onclick="openPkg(\'' + p._key + '\')">' +
           'التفاصيل والدورات ←</button>' +
       '</div></div>';
   }).join('');
