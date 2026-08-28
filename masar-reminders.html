@@ -190,6 +190,10 @@ tr:hover td{background:rgba(92,15,15,.02);}
         <div class="empty-sub">تحقق من اسم الدورة في الشيت</div>
       </div>
       <div class="toast" id="stToast"></div>
+      <div id="resultBox" style="display:none;margin-top:14px;border:1.5px solid rgba(92,15,15,.1);border-radius:14px;overflow:hidden;">
+        <div id="resultHead" style="padding:12px 16px;font-size:14px;font-weight:900;"></div>
+        <div id="resultList" style="padding:0;"></div>
+      </div>
     </div>
 
   </div>
@@ -333,6 +337,7 @@ async function openCourse(gi, el){
   document.getElementById('stLoading').style.display='block';
   document.getElementById('sendBtn').disabled=true;
   document.getElementById('stToast').style.display='none';
+  var rb=document.getElementById('resultBox'); if(rb) rb.style.display='none';
   document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
 
   try{
@@ -488,6 +493,46 @@ function openReminderPreview(){
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
 
 /* تأكيد الإرسال — سيُربط بـ ManyChat في الخطوة القادمة */
+/* عرض نتيجة الإرسال المفصّلة */
+function showResult(data){
+  const box = document.getElementById('resultBox');
+  const head = document.getElementById('resultHead');
+  const list = document.getElementById('resultList');
+
+  const failed = data.failed || 0;
+  const sent = data.sent || 0;
+
+  if(failed===0){
+    head.style.cssText='padding:12px 16px;font-size:14px;font-weight:900;background:#E8F5E9;color:#2E7D32;';
+    head.textContent = '✅ وصل الجميع — أُرسل '+toA(sent)+' تذكير بنجاح';
+    list.innerHTML='';
+  } else {
+    head.style.cssText='padding:12px 16px;font-size:14px;font-weight:900;background:#FFF3E0;color:#8a5a00;';
+    head.innerHTML = '✅ أُرسل: '+toA(sent)+' &nbsp;•&nbsp; ⚠️ فشل: '+toA(failed);
+    const rows = (data.errors||[]).map(function(e){
+      const parts = String(e).split(':');
+      const name = (parts.shift()||'').trim();
+      const reason = niceReason(parts.join(':').trim());
+      return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid rgba(92,15,15,.06);font-size:13px;">'
+           + '<span style="font-weight:800;color:var(--text);">❌ '+name+'</span>'
+           + '<span style="color:var(--muted);font-weight:600;font-size:12.5px;">'+reason+'</span>'
+           + '</div>';
+    }).join('');
+    list.innerHTML = rows;
+  }
+  box.style.display='block';
+}
+
+/* تبسيط سبب الفشل لكلام مفهوم */
+function niceReason(raw){
+  const r = String(raw||'');
+  if(/does not exist on WhatsApp|not.*whatsapp|invalid.*whatsapp|wa_id/i.test(r)) return 'الرقم ما عليه واتساب';
+  if(/رقم غير صالح|invalid|too short|phone/i.test(r)) return 'رقم غير صالح';
+  if(/24|window|tag/i.test(r)) return 'خارج نافذة المراسلة';
+  if(/تعذر الإنشاء|create/i.test(r)) return 'تعذّر إنشاء المشترك';
+  return r.length>40 ? 'لم يصل — تحقّق من الرقم' : (r||'لم يصل');
+}
+
 /* الإرسال المباشر عبر معالج ManyChat */
 async function doSend(){
   closeModal();
@@ -524,8 +569,9 @@ async function doSend(){
     try { data = await res.json(); } catch(e){ data = null; }
 
     if(data && typeof data.sent === 'number'){
+      showResult(data);
       if(data.failed>0){
-        stToast('✅ أُرسل '+toA(data.sent)+' — ⚠️ فشل '+toA(data.failed)+' (تحقق من الأرقام)','w');
+        stToast('✅ أُرسل '+toA(data.sent)+' — ⚠️ فشل '+toA(data.failed)+' (شوف التفاصيل تحت)','w');
       } else {
         stToast('✅ تم إرسال '+toA(data.sent)+' تذكير بنجاح!','s');
       }
