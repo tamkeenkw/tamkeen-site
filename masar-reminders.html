@@ -135,7 +135,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
   <div id="tabContent1">
 
     <div class="wip">
-      📋 <b>طريقة العمل:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«تحميل CSV»</b> فينزل ملف جاهز. افتحه في ManyChat ← <b>Import</b> ← ثم <b>Broadcast</b> بقالب «تذكير» مع فلتر <b>تاق الدورة</b>. الأرقام تُنسّق تلقائياً بصيغة +965.
+      📋 <b>طريقة العمل:</b> اختر الشهر ← الدورة ← حدّد المسجّلين ← اضغط <b>«أرسل التذكيرات»</b> → تُرسل مباشرة لكل المحدّدين على واتساب. زر <b>«CSV احتياطي»</b> لو حبيت ترفعها يدوياً في ManyChat.
     </div>
 
     <!-- MONTH SELECT -->
@@ -165,10 +165,11 @@ tr:hover td{background:rgba(92,15,15,.02);}
           <div class="results-count" id="stCount">—</div>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="remind-btn" id="csvBtn" onclick="downloadCSV()" disabled>
-            <span id="csvTxt">⬇️ تحميل CSV</span>
+          <button class="remind-btn" id="sendBtn" onclick="openReminderPreview()" disabled>
+            <span id="sendTxt">📲 أرسل التذكيرات</span>
+            <div class="spinner" id="sendSpinner"></div>
           </button>
-          <button class="preview-btn" id="remindBtn" onclick="openReminderPreview()" disabled>👁️ معاينة الرسالة</button>
+          <button class="preview-btn" id="csvBtn" onclick="downloadCSV()" disabled>⬇️ CSV احتياطي</button>
         </div>
       </div>
       <div id="stLoading" class="loading" style="display:none;">
@@ -197,7 +198,7 @@ tr:hover td{background:rgba(92,15,15,.02);}
 <!-- REMINDER PREVIEW MODAL -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
-    <div class="modal-title">📲 معاينة التذكير</div>
+    <div class="modal-title">📲 تأكيد إرسال التذكير</div>
     <div class="modal-sub" id="modalSub">سيُرسل هذا التذكير للمسجّلين</div>
     <div class="preview-box">
       <div class="preview-bubble" id="previewBubble"></div>
@@ -205,13 +206,14 @@ tr:hover td{background:rgba(92,15,15,.02);}
     <div class="preview-note">👆 نموذج بالاسم الأول — كل متدرب يستلم رسالته باسمه</div>
     <div class="modal-actions">
       <button class="mbtn mbtn-cancel" onclick="closeModal()">إلغاء</button>
-      <button class="mbtn mbtn-send" onclick="confirmSend()">⬇️ تحميل CSV</button>
+      <button class="mbtn mbtn-send" onclick="doSend()">📲 تأكيد الإرسال</button>
     </div>
   </div>
 </div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+const MANYCHAT_URL = 'https://script.google.com/macros/s/AKfycbyn_VWgB5LSAuB-wZajbvea42VQP_imLeHuC14l0sx4H6zByLoFfFO3pF1RL1hJmqQ/exec';
 
 /* أرقام عربية */
 function toA(n){return String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
@@ -329,7 +331,7 @@ async function openCourse(gi, el){
   document.getElementById('stTableWrap').style.display='none';
   document.getElementById('stEmpty').style.display='none';
   document.getElementById('stLoading').style.display='block';
-  document.getElementById('remindBtn').disabled=true;
+  document.getElementById('sendBtn').disabled=true;
   document.getElementById('stToast').style.display='none';
   document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
 
@@ -390,9 +392,10 @@ function toggleAllStudents(cb){
 /* تحديث الأزرار حسب العدد المحدّد */
 function updateRemindBtn(){
   const n = selectedIdx.size;
-  document.getElementById('csvTxt').textContent = n>0 ? ('⬇️ تحميل CSV ('+toA(n)+')') : '⬇️ اختر مسجّلين';
+  const st = document.getElementById('sendTxt');
+  if(st) st.textContent = n>0 ? ('📲 أرسل التذكيرات ('+toA(n)+')') : '☑️ اختر مسجّلين';
+  document.getElementById('sendBtn').disabled = (n===0);
   document.getElementById('csvBtn').disabled = (n===0);
-  document.getElementById('remindBtn').disabled = (n===0);
 }
 
 /* بناء نص الرسالة لمتدرب */
@@ -485,9 +488,57 @@ function openReminderPreview(){
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
 
 /* تأكيد الإرسال — سيُربط بـ ManyChat في الخطوة القادمة */
-function confirmSend(){
+/* الإرسال المباشر عبر معالج ManyChat */
+async function doSend(){
   closeModal();
-  downloadCSV();
+  const chosen = getSelectedStudents();
+  if(!currentCourse || chosen.length===0) return;
+
+  const btn = document.getElementById('sendBtn');
+  const spin = document.getElementById('sendSpinner');
+  const txt = document.getElementById('sendTxt');
+  btn.disabled = true;
+  document.getElementById('csvBtn').disabled = true;
+  spin.style.display = 'inline-block';
+  txt.textContent = 'جاري الإرسال...';
+  stToast('⏳ جاري إرسال '+toA(chosen.length)+' تذكير... لا تغلق الصفحة','w');
+
+  const payload = {
+    type: 'manychatReminder',
+    course: {
+      name:  currentCourse.name || '',
+      date:  currentCourse.date || '',
+      time:  currentCourse.time || '',
+      place: coursePlaceCSV(currentCourse)
+    },
+    students: chosen.map(s=>({ name: firstNameOnly(s.name), phone: s.phone }))
+  };
+
+  try{
+    const res = await fetch(MANYCHAT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    let data = null;
+    try { data = await res.json(); } catch(e){ data = null; }
+
+    if(data && typeof data.sent === 'number'){
+      if(data.failed>0){
+        stToast('✅ أُرسل '+toA(data.sent)+' — ⚠️ فشل '+toA(data.failed)+' (تحقق من الأرقام)','w');
+      } else {
+        stToast('✅ تم إرسال '+toA(data.sent)+' تذكير بنجاح!','s');
+      }
+    } else {
+      // تعذّر قراءة الرد (CORS) لكن الطلب أُرسل
+      stToast('✅ تم إرسال الطلب — تحقّق من ManyChat للتأكد','s');
+    }
+  }catch(err){
+    stToast('⚠️ تعذّر الاتصال — تأكد من نشر السكربت (Anyone) وحاول مرة ثانية','e');
+  }finally{
+    spin.style.display = 'none';
+    updateRemindBtn();
+  }
 }
 
 function stToast(msg,type){
