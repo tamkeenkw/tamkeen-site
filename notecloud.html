@@ -18,14 +18,29 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .logo-icon svg{width:22px;height:22px}
 .logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px}
 .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:100px;margin-bottom:22px}
-.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
 h1{font-size:clamp(30px,8vw,44px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:12px}
 h1 span{color:var(--accentlt)}
 .sub{font-size:14px;color:rgba(255,255,255,.5);line-height:1.8}
 .card{background:var(--cream);border-radius:26px;padding:clamp(22px,5vw,36px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.notice{background:rgba(13,92,72,.07);border-right:3px solid var(--accentlt);border-radius:12px;padding:14px 16px;margin-bottom:24px;display:none;gap:12px;align-items:flex-start}
+.notice.show{display:flex}
+.notice svg{width:18px;height:18px;color:var(--teal);flex-shrink:0;margin-top:2px}
+.notice-txt{font-size:13px;color:var(--text);line-height:1.8;font-weight:600}
+.notice-txt b{color:var(--teal);font-weight:900}
 .sec-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:var(--teal);letter-spacing:.5px;margin-bottom:16px;margin-top:26px}
-.sec-label:first-of-type{margin-top:0}
 .sec-line{flex:1;height:1px;background:var(--cream2)}
+
+/* شاشة التحميل */
+.loader{text-align:center;padding:40px 0}
+.loader-spin{width:34px;height:34px;border:3px solid rgba(13,92,72,.15);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+.loader p{font-size:13px;color:var(--muted);font-weight:700}
+
+/* شاشة الإغلاق */
+.closed-box{text-align:center;padding:24px 0;display:none}
+.closed-box .succ-icon-wrap{background:rgba(13,92,72,.08)}
+.closed-box .succ-title{font-size:22px}
 
 /* باقات */
 .pkg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -53,7 +68,6 @@ h1 span{color:var(--accentlt)}
 .subj-cb svg{width:11px;height:11px;opacity:0;transition:opacity .2s}
 .subj-opt.selected .subj-cb svg{opacity:1}
 .subj-name{font-size:14px;font-weight:700;color:var(--text)}
-/* radio for single */
 .subj-opt.radio .subj-cb{border-radius:50%}
 .subj-opt.radio.selected .subj-cb{background:var(--teal)}
 
@@ -61,6 +75,8 @@ h1 span{color:var(--accentlt)}
 .price-summary{margin-top:14px;background:rgba(13,92,72,.06);border-radius:14px;padding:14px 18px;display:none}
 .price-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);padding:4px 0}
 .price-row.total{font-size:16px;font-weight:900;color:var(--teal);border-top:1px solid rgba(13,92,72,.12);margin-top:6px;padding-top:10px}
+.price-note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.7;text-align:center;display:none}
+.price-note.show{display:block}
 
 /* حقول */
 .fields-grid{display:grid;gap:16px}
@@ -72,31 +88,18 @@ h1 span{color:var(--accentlt)}
 .field input::placeholder,.field textarea::placeholder{color:rgba(74,122,110,.35)}
 .field input[type=tel]{direction:ltr;text-align:right}
 .field textarea{resize:none;min-height:90px;line-height:1.7}
-.select-wrap{position:relative}
-.select-wrap::after{content:'';position:absolute;top:50%;left:18px;transform:translateY(-50%);width:0;height:0;border-top:5px solid var(--teal);border-right:4px solid transparent;border-left:4px solid transparent;pointer-events:none}
 .toggle-group{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .toggle-opt{border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:13px 16px;cursor:pointer;transition:all .2s;background:#fff;text-align:center;font-size:14px;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
 .toggle-opt:hover{border-color:var(--teal);color:var(--teal)}
 .toggle-opt.active{border-color:var(--teal);color:var(--teal);background:rgba(13,92,72,.05);box-shadow:0 0 0 3px rgba(13,92,72,.08)}
 .toggle-opt svg{width:16px;height:16px;flex-shrink:0}
 
-/* دفع */
-.pay-grid{display:grid;gap:10px}
-.pay-opt{border:1.5px solid rgba(13,92,72,.12);border-radius:14px;padding:16px 18px;cursor:pointer;transition:all .2s;background:#fff;display:flex;align-items:center;gap:14px}
-.pay-opt:hover{border-color:var(--teal)}
-.pay-opt.active{border-color:var(--teal);background:rgba(13,92,72,.04);box-shadow:0 0 0 3px rgba(13,92,72,.08)}
-.pay-radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(13,92,72,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.pay-opt.active .pay-radio{border-color:var(--teal);background:var(--teal)}
-.pay-radio-dot{width:8px;height:8px;border-radius:50%;background:#fff;opacity:0;transition:all .2s}
-.pay-opt.active .pay-radio-dot{opacity:1}
-.pay-info{flex:1}
-.pay-title{font-size:14px;font-weight:800;color:var(--text)}
-.pay-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.pay-icon{width:36px;height:36px;border-radius:10px;background:rgba(13,92,72,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pay-icon svg{width:18px;height:18px;color:var(--teal)}
+/* أقسام قابلة للإخفاء حسب الوضع */
+.mode-pay{display:none}
+.mode-pay.show{display:block}
 
 /* زر */
-.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;padding:17px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(13,92,72,.4);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:17px;font-weight:900;padding:17px;border-radius:100px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 8px 28px rgba(13,92,72,.4);margin-top:20px;display:flex;align-items:center;justify-content:center;gap:10px}
 .btn:hover{background:var(--teallt);transform:translateY(-2px)}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none}
@@ -107,9 +110,11 @@ h1 span{color:var(--accentlt)}
 .succ-icon-wrap svg{width:40px;height:40px;color:var(--teal)}
 .succ-title{font-size:24px;font-weight:900;color:var(--text);margin-bottom:10px}
 .succ-desc{font-size:14px;color:var(--muted);line-height:1.9}
+.succ-wa{display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:var(--teal);color:#fff;font-size:14px;font-weight:800;padding:13px 26px;border-radius:100px;text-decoration:none}
 footer{text-align:center;margin-top:28px;position:relative;z-index:1}
 footer p{font-size:11px;color:rgba(255,255,255,.25)}
-.field input.error{border-color:#e53e3e;box-shadow:0 0 0 3px rgba(229,62,62,.08)}
+footer a{color:rgba(255,255,255,.35);text-decoration:none}
+.field input.error,.field textarea.error{border-color:#e53e3e;box-shadow:0 0 0 3px rgba(229,62,62,.08)}
 .error-msg{font-size:12px;color:#e53e3e;font-weight:600;display:none;margin-top:4px}
 .error-msg.show{display:block}
 </style>
@@ -126,16 +131,43 @@ footer p{font-size:11px;color:rgba(255,255,255,.25)}
       </div>
       <div class="logo-text">EDUCLOUD</div>
     </div>
-    <div class="badge"><div class="badge-dot"></div>الطلب متاح الآن</div>
-    <h1>مذكرات <span>الامتحانات</span></h1>
-    <p class="sub">مذكرات مختصرة وشاملة — توصيل لباب بيتك</p>
+    <div class="badge"><div class="badge-dot"></div><span id="badgeTxt">جاري التحميل...</span></div>
+    <h1 id="pageTitle">مذكرات <span>الامتحانات</span></h1>
+    <p class="sub" id="pageSub">مذكرات مختصرة وشاملة</p>
   </div>
 
   <div class="card">
-    <div id="formWrap">
+
+    <!-- تحميل الوضع من الشيت -->
+    <div class="loader" id="loaderBox">
+      <div class="loader-spin"></div>
+      <p>جاري تحميل حالة الطلب...</p>
+    </div>
+
+    <!-- الطلب مغلق -->
+    <div class="closed-box" id="closedBox">
+      <div class="succ-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div class="succ-title">الطلب مغلق مؤقتاً</div>
+      <div class="succ-desc" id="closedDesc">راقب حسابنا بالإنستقرام <b>@educloudkw</b> — بنعلن فتح الطلب قريباً.</div>
+      <a class="succ-wa" href="https://wa.me/96597999768" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        تواصل معنا بالواتساب
+      </a>
+    </div>
+
+    <div id="formWrap" style="display:none">
+
+      <!-- تنبيه الطلب المسبق -->
+      <div class="notice" id="preNotice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div class="notice-txt">
+          هذا <b>حجز مسبق</b> — ما يتطلب أي دفع الحين.<br>
+          نأخذ اسمك ورقمك واختيارك فقط، وأول ما تجهز المذكرات نتواصل وياك لتأكيد الطلب والدفع والتوصيل.
+        </div>
+      </div>
 
       <!-- الباقة -->
-      <div class="sec-label">
+      <div class="sec-label" style="margin-top:0">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         اختر الباقة
         <div class="sec-line"></div>
@@ -185,7 +217,7 @@ footer p{font-size:11px;color:rgba(255,255,255,.25)}
 
       <!-- اختيار المواد -->
       <div class="subjects-wrap" id="subjectsWrap">
-        <div class="sec-label" style="margin-top:20px">
+        <div class="sec-label">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           اختر المواد
           <div class="sec-line"></div>
@@ -199,7 +231,8 @@ footer p{font-size:11px;color:rgba(255,255,255,.25)}
       <div class="price-summary" id="priceSummary">
         <div class="price-row"><span>سعر الباقة</span><span id="sumPkg">—</span></div>
         <div class="price-row"><span>رسوم التوصيل</span><span>٣ د.ك</span></div>
-        <div class="price-row total"><span>الإجمالي</span><span id="sumTotal">—</span></div>
+        <div class="price-row total"><span id="sumTotalLabel">الإجمالي</span><span id="sumTotal">—</span></div>
+        <div class="price-note" id="priceNote">السعر للعلم فقط — ما يتم أي دفع الآن</div>
       </div>
 
       <!-- البيانات الشخصية -->
@@ -222,66 +255,78 @@ footer p{font-size:11px;color:rgba(255,255,255,.25)}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.71 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.58 2.81.71A2 2 0 0 1 22 16.92z"/></svg>
             رقم الهاتف (واتساب)
           </label>
-          <input type="tel" id="phone" placeholder="05XXXXXXXX">
+          <input type="tel" id="phone" placeholder="9XXXXXXX" maxlength="12">
         </div>
       </div>
 
-      <!-- العنوان -->
-      <div class="sec-label">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        عنوان التوصيل
-        <div class="sec-line"></div>
-      </div>
-
-      <div class="fields-grid">
-        <div class="field">
-          <label>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            المنطقة والمنزل
-          </label>
-          <textarea id="address" placeholder="مثال: الفروانية — شارع ١٢ — قطعة ٥ — منزل ٢٢"></textarea>
+      <!-- العنوان — يظهر بوضع الدفع فقط -->
+      <div class="mode-pay" id="addressSection">
+        <div class="sec-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          عنوان التوصيل
+          <div class="sec-line"></div>
+        </div>
+        <div class="fields-grid">
+          <div class="field">
+            <label>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              المنطقة والمنزل
+            </label>
+            <textarea id="address" placeholder="مثال: الفروانية — شارع ١٢ — قطعة ٥ — منزل ٢٢"></textarea>
+          </div>
         </div>
       </div>
 
-      <!-- الدفع -->
-      <div class="sec-label">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        طريقة الدفع
-        <div class="sec-line"></div>
-      </div>
-
-<input type="hidden" id="pay1" value="1">
-      <div style="background:rgba(13,92,72,.06);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <!-- الدفع — يظهر بوضع الدفع فقط -->
+      <div class="mode-pay" id="paySection">
+        <div class="sec-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          طريقة الدفع
+          <div class="sec-line"></div>
         </div>
-        <div>
-          <div style="font-size:14px;font-weight:800;color:var(--text)">دفعة واحدة</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">دفع كامل المبلغ عند الاستلام أو تاب بيمنت</div>
+        <div style="background:rgba(13,92,72,.06);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px">
+          <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--text)">دفعة واحدة</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">دفع كامل المبلغ عند الاستلام أو تاب بيمنت</div>
+          </div>
         </div>
       </div>
 
       <button class="btn" id="submitBtn" onclick="submitForm()" disabled>
-        <span id="btnText">اطلب مذكراتك الآن</span>
+        <span id="btnText">أرسل الطلب</span>
         <div class="spin" id="btnSpin"></div>
         <svg id="btnIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
       </button>
-      <p class="terms">بالطلب تؤكد موافقتك على الشروط والأحكام</p>
+      <p class="terms" id="termsTxt">بالطلب تؤكد موافقتك على الشروط والأحكام</p>
 
       <div class="success" id="successBox">
         <div class="succ-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div class="succ-title">تم استلام طلبك! 🎉</div>
-        <div class="succ-desc" id="succDesc">سيتم التواصل معك على الواتساب خلال ساعات لتأكيد الطلب وتحديد موعد التوصيل.</div>
+        <div class="succ-title" id="succTitle">تم استلام طلبك</div>
+        <div class="succ-desc" id="succDesc"></div>
+        <a class="succ-wa" id="waLink" href="https://wa.me/96597999768" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          تواصل معنا بالواتساب
+        </a>
       </div>
 
     </div>
   </div>
 
-  <footer><p>EDUCLOUD © 2026 — <a href="#">tamkeenkuw.com/educloud</a></p></footer>
+  <footer><p>EDUCLOUD © 2026 — <a href="https://tamkeenkuw.com/educloud">tamkeenkuw.com/educloud</a></p></footer>
 </div>
 
 <script>
+/* السكربت القديم — حفظ الطلبات بالشيت (لا تغيّره) */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
+
+/* ⬇⬇⬇ السكربت الجديد — قراءة وضع الصفحة من الشيت ⬇⬇⬇
+   الصق هنا رابط الـ Deploy مال المشروع الجديد (ينتهي بـ /exec) */
+const MODE_URL   = 'https://script.google.com/macros/s/AKfycbzQxPvtRJtWmRzETFMSTkL-nY8eBlfsu96GsAWRA6C6Rpee4ubmBWLFqSqw2dW54mpc1g/exec';
+
+const WHATSAPP   = '96597999768';
 
 const SUBJECTS = {
   11: ['التاريخ','الجغرافيا','علم النفس','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية'],
@@ -290,23 +335,110 @@ const SUBJECTS = {
 const PRICES = {1:10, 2:17, 3:25};
 const DELIVERY = 3;
 
-let selPkg=0, selGrade=0, selPay=1, selSubjects=[];
+/* الأوضاع الثلاثة — تنقرأ من الشيت (ورقة إعدادات) */
+const MODES = {
+  'مسبق': {
+    badge:'الطلب المسبق مفتوح الآن',
+    title:'احجز <span>مذكراتك</span> مسبقاً',
+    sub:'سجّل حجزك الحين — بدون دفع<br>ونتواصل وياك بالواتساب عند جهوزية المذكرات',
+    btn:'أكّد حجزك المسبق',
+    terms:'الحجز المسبق لا يُلزمك بالدفع — تقدر تلغيه بأي وقت',
+    totalLabel:'الإجمالي عند الاستلام',
+    succTitle:'تم تسجيل حجزك المسبق',
+    needAddress:false, showNotice:true, showPay:false, showNote:true,
+    status:'طلب مسبق', payment:'طلب مسبق — بدون دفع'
+  },
+  'دفع': {
+    badge:'الطلب متاح الآن',
+    title:'مذكرات <span>الامتحانات</span>',
+    sub:'مذكرات مختصرة وشاملة — توصيل لباب بيتك',
+    btn:'اطلب مذكراتك الآن',
+    terms:'بالطلب تؤكد موافقتك على الشروط والأحكام',
+    totalLabel:'الإجمالي',
+    succTitle:'تم استلام طلبك',
+    needAddress:true, showNotice:false, showPay:true, showNote:false,
+    status:'طلب فعلي', payment:'دفعة واحدة'
+  }
+};
 
+let MODE = 'مسبق';
+let CFG  = MODES['مسبق'];
+let selPkg=0, selGrade=0, selSubjects=[];
+
+/* ===== جلب الوضع من الشيت عبر JSONP ===== */
+function loadMode(){
+  // إذا الرابط مو محطوط بعد → الوضع الافتراضي الآمن
+  if(!MODE_URL || MODE_URL.indexOf('script.google.com')===-1){
+    applyMode('مسبق'); return;
+  }
+
+  let done=false;
+  const cb='__mode_'+Date.now();
+  const t=setTimeout(()=>{ if(!done){done=true; cleanup(); applyMode('مسبق');} },7000);
+
+  function cleanup(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
+
+  window[cb]=function(res){
+    if(done)return; done=true; cleanup();
+    let m = (res && (res.mode||res.وضع) || '').toString().trim();
+    applyMode(m);
+  };
+
+  const s=document.createElement('script');
+  s.id=cb;
+  s.src=MODE_URL+'?callback='+cb+'&t='+Date.now();
+  s.onerror=()=>{ if(!done){done=true; cleanup(); applyMode('مسبق');} };
+  document.head.appendChild(s);
+}
+
+function normalizeMode(m){
+  m=(m||'').toString().trim().toLowerCase();
+  if(['دفع','مباشر','فعلي','مفتوح','live','pay','open'].includes(m)) return 'دفع';
+  if(['مغلق','ايقاف','إيقاف','off','closed'].includes(m)) return 'مغلق';
+  return 'مسبق';
+}
+
+function applyMode(raw){
+  MODE = normalizeMode(raw);
+  document.getElementById('loaderBox').style.display='none';
+
+  if(MODE==='مغلق'){
+    document.getElementById('badgeTxt').textContent='الطلب مغلق مؤقتاً';
+    document.getElementById('pageTitle').innerHTML='مذكرات <span>الامتحانات</span>';
+    document.getElementById('pageSub').innerHTML='الطلب بيفتح قريباً';
+    document.getElementById('closedBox').style.display='block';
+    return;
+  }
+
+  CFG = MODES[MODE];
+  document.getElementById('badgeTxt').textContent=CFG.badge;
+  document.getElementById('pageTitle').innerHTML=CFG.title;
+  document.getElementById('pageSub').innerHTML=CFG.sub;
+  document.getElementById('btnText').textContent=CFG.btn;
+  document.getElementById('termsTxt').textContent=CFG.terms;
+  document.getElementById('sumTotalLabel').textContent=CFG.totalLabel;
+  document.getElementById('succTitle').textContent=CFG.succTitle;
+  document.getElementById('preNotice').classList.toggle('show', CFG.showNotice);
+  document.getElementById('priceNote').classList.toggle('show', CFG.showNote);
+  document.getElementById('addressSection').classList.toggle('show', CFG.needAddress);
+  document.getElementById('paySection').classList.toggle('show', CFG.showPay);
+  document.getElementById('formWrap').style.display='block';
+  validate();
+}
+
+/* ===== الفورم ===== */
 function selectPkg(n){
   selPkg=n; selSubjects=[];
   document.querySelectorAll('.pkg').forEach(p=>p.classList.remove('selected'));
   document.getElementById('pkg'+n).classList.add('selected');
-  updateSubjectsUI();
-  updateSummary();
-  validate();
+  updateSubjectsUI(); updateSummary(); validate();
 }
 
 function selectGrade(g){
   selGrade=g; selSubjects=[];
   document.getElementById('g11').classList.toggle('active', g===11);
   document.getElementById('g12').classList.toggle('active', g===12);
-  updateSubjectsUI();
-  validate();
+  updateSubjectsUI(); validate();
 }
 
 function updateSubjectsUI(){
@@ -318,7 +450,6 @@ function updateSubjectsUI(){
   const isRadio=selPkg===1;
   const subs=selGrade?SUBJECTS[selGrade]:SUBJECTS[11];
   if(selPkg===3){
-    // All subjects - show as selected read-only
     selSubjects=[...subs];
     hint.textContent='جميع المواد مشمولة في باقتك';
     grid.innerHTML=subs.map(s=>`
@@ -367,11 +498,9 @@ function updateSummary(){
   document.getElementById('sumTotal').textContent=(p+DELIVERY)+' د.ك';
 }
 
-function selectPay(n){
-  selPay=n;
-  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('active'));
-  document.getElementById('pay'+n).classList.add('active');
-  validate();
+function validPhone(v){
+  const d=(v||'').replace(/\D/g,'');
+  return d.length>=8 && d.length<=12;
 }
 
 function validate(){
@@ -379,49 +508,52 @@ function validate(){
   const phone=document.getElementById('phone').value.trim();
   const addr=document.getElementById('address').value.trim();
   const subjOk=selPkg===3||(selPkg===1&&selSubjects.length===1)||(selPkg===2&&selSubjects.length===3);
-  const ok=selPkg&&selGrade&&name&&phone&&addr&&subjOk;
+  const addrOk=CFG.needAddress ? addr.length>=6 : true;
+  const ok=selPkg&&selGrade&&name.length>=3&&validPhone(phone)&&subjOk&&addrOk;
   document.getElementById('submitBtn').disabled=!ok;
 }
 
-document.getElementById('name').addEventListener('input',validate);
-document.getElementById('phone').addEventListener('input',validate);
-document.getElementById('address').addEventListener('input',validate);
+['name','phone','address'].forEach(id=>document.getElementById(id).addEventListener('input',validate));
 
 async function submitForm(){
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=true;
+  document.getElementById('submitBtn').disabled=true;
   document.getElementById('btnText').textContent='جاري الإرسال...';
   document.getElementById('btnSpin').style.display='block';
   document.getElementById('btnIcon').style.display='none';
 
   const data={
     type:'notebooks',
+    sheet:'مذكرات',
     name:document.getElementById('name').value.trim(),
     phone:document.getElementById('phone').value.trim(),
     grade:selGrade===11?'حادي عشر أدبي':'ثاني عشر أدبي',
     package:selPkg===1?'مادة واحدة':selPkg===2?'٣ مواد':'كل المواد',
     subjects:selPkg===3?'جميع المواد':selSubjects.join(' - '),
-    address:document.getElementById('address').value.trim(),
-    payment:selPay===1?'دفعة واحدة':'تقسيط ٤ دفعات',
+    address:CFG.needAddress?document.getElementById('address').value.trim():'—',
+    payment:CFG.payment,
+    status:CFG.status,
     total:(PRICES[selPkg]+DELIVERY)+' د.ك'
   };
 
-  // Add sheet tab name
-  data.sheet = 'مذكرات';
   try{
     await fetch(SCRIPT_URL+'?'+new URLSearchParams(data),{method:'GET',mode:'no-cors'});
   }catch(e){}
 
-  document.getElementById('formWrap').querySelector('div:not(#successBox)') && showSuccess(data);
+  showSuccess(data);
 }
 
 function showSuccess(data){
   document.querySelectorAll('#formWrap > *:not(#successBox)').forEach(el=>el.style.display='none');
-  const s=document.getElementById('successBox');
-  s.style.display='block';
-  document.getElementById('succDesc').textContent=
-    'تم استلام طلبك يا '+data.name+'! سيتم التواصل معك على الواتساب '+data.phone+' لتأكيد الطلب وموعد التوصيل. الإجمالي: '+data.total;
+  document.getElementById('successBox').style.display='block';
+  document.getElementById('succDesc').textContent = MODE==='مسبق'
+    ? 'شكراً '+data.name+'! تم تسجيل حجزك المسبق ('+data.package+' — '+data.grade+'). بنتواصل وياك على الواتساب '+data.phone+' أول ما تجهز المذكرات لتأكيد الطلب والتوصيل.'
+    : 'تم استلام طلبك يا '+data.name+'! بنتواصل وياك على الواتساب '+data.phone+' لتأكيد الطلب وموعد التوصيل. الإجمالي: '+data.total;
+  const msg = (MODE==='مسبق'?'مرحباً، سجلت حجز مسبق للمذكرات باسم ':'مرحباً، سجلت طلب مذكرات باسم ')+data.name+' — '+data.package+' ('+data.grade+')';
+  document.getElementById('waLink').href='https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+
+loadMode();
 </script>
 </body>
 </html>
