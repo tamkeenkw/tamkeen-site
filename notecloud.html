@@ -54,6 +54,14 @@ h1 span{color:var(--accentlt)}
 .pkg-desc{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5}
 .pkg-price{font-size:24px;font-weight:900;color:var(--teal);line-height:1}
 .pkg-cur{font-size:12px;font-weight:700;color:var(--muted)}
+.pkg-stock{font-size:10.5px;font-weight:800;margin-top:9px;padding:4px 8px;border-radius:100px;display:none;line-height:1.4}
+.pkg-stock.show{display:block}
+.pkg-stock.left{background:rgba(26,143,111,.12);color:var(--accent)}
+.pkg-stock.low{background:rgba(214,120,30,.13);color:#B8651A}
+.pkg-stock.out{background:rgba(74,122,110,.12);color:var(--muted)}
+.pkg.hidden{display:none}
+.pkg.soldout{opacity:.45;cursor:not-allowed;pointer-events:none;filter:grayscale(.6)}
+.pkg.soldout .pkg-price{text-decoration:line-through;color:var(--muted)}
 
 /* مواد */
 .subjects-wrap{display:none;margin-top:4px}
@@ -178,22 +186,25 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">مادة واحدة</div>
           <div class="pkg-desc">مذكرة مادة تختارها</div>
-          <div class="pkg-price">١٠</div>
+          <div class="pkg-price" id="price1">١٠</div>
           <div class="pkg-cur">د.ك</div>
+          <div class="pkg-stock" id="stock1"></div>
         </div>
         <div class="pkg" id="pkg2" onclick="selectPkg(2)">
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">٣ مواد</div>
           <div class="pkg-desc">اختر أي ٣ مواد</div>
-          <div class="pkg-price">١٧</div>
+          <div class="pkg-price" id="price2">١٧</div>
           <div class="pkg-cur">د.ك</div>
+          <div class="pkg-stock" id="stock2"></div>
         </div>
         <div class="pkg" id="pkg3" onclick="selectPkg(3)">
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">كل المواد</div>
           <div class="pkg-desc">جميع المواد كاملة</div>
-          <div class="pkg-price">٢٥</div>
+          <div class="pkg-price" id="price3">٢٥</div>
           <div class="pkg-cur">د.ك</div>
+          <div class="pkg-stock" id="stock3"></div>
         </div>
       </div>
 
@@ -230,7 +241,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <!-- ملخص السعر -->
       <div class="price-summary" id="priceSummary">
         <div class="price-row"><span>سعر الباقة</span><span id="sumPkg">—</span></div>
-        <div class="price-row"><span>رسوم التوصيل</span><span>٣ د.ك</span></div>
+        <div class="price-row"><span>رسوم التوصيل</span><span id="sumDelivery">٣ د.ك</span></div>
         <div class="price-row total"><span id="sumTotalLabel">الإجمالي</span><span id="sumTotal">—</span></div>
         <div class="price-note" id="priceNote">السعر للعلم فقط — ما يتم أي دفع الآن</div>
       </div>
@@ -332,8 +343,81 @@ const SUBJECTS = {
   11: ['التاريخ','الجغرافيا','علم النفس','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية'],
   12: ['التاريخ','الجغرافيا','الفلسفة','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية']
 };
-const PRICES = {1:10, 2:17, 3:25};
-const DELIVERY = 3;
+/* الأسعار الافتراضية — تُستبدل بالأسعار الجاية من الشيت */
+let PRICES   = {1:10, 2:17, 3:25};
+let DELIVERY = 3;
+
+/* تحويل الأرقام لعربية-هندية للعرض */
+function ar(n){ return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+
+function applyPrices(p){
+  if(!p) return;
+  if(p.single>0)      PRICES[1] = Number(p.single);
+  if(p.three>0)       PRICES[2] = Number(p.three);
+  if(p.all>0)         PRICES[3] = Number(p.all);
+  if(p.delivery>=0)   DELIVERY  = Number(p.delivery);
+
+  document.getElementById('price1').textContent = ar(PRICES[1]);
+  document.getElementById('price2').textContent = ar(PRICES[2]);
+  document.getElementById('price3').textContent = ar(PRICES[3]);
+  document.getElementById('sumDelivery').textContent = ar(DELIVERY)+' د.ك';
+  updateSummary();
+}
+
+/* ===== كمية / حالة الباقات ===== */
+let AVAILABLE = {1:true, 2:true, 3:true};
+
+function applyStock(st){
+  if(!st) return;
+  const map = {1:st.single, 2:st.three, 3:st.all};
+  let visible = 0;
+
+  for(const n of [1,2,3]){
+    const card = document.getElementById('pkg'+n);
+    const tag  = document.getElementById('stock'+n);
+    const raw  = (map[n]==null?'':String(map[n])).trim();
+
+    card.classList.remove('hidden','soldout');
+    tag.className='pkg-stock';
+    tag.textContent='';
+    AVAILABLE[n]=true;
+
+    // مغلق → تختفي الباقة تماماً
+    if(['مغلق','اخفاء','إخفاء','مخفي','off','hide'].includes(raw)){
+      card.classList.add('hidden');
+      AVAILABLE[n]=false;
+      continue;
+    }
+
+    visible++;
+
+    // مفتوح أو فاضي → متاحة بدون عداد
+    if(raw==='' || ['مفتوح','متاح','مفعل','مفعّل','on','open'].includes(raw)) continue;
+
+    const q = Number(raw.replace(/[^\d]/g,''));
+    if(isNaN(q)) continue;
+
+    if(q<=0){
+      card.classList.add('soldout');
+      tag.classList.add('show','out');
+      tag.textContent='نفدت';
+      AVAILABLE[n]=false;
+    } else {
+      tag.classList.add('show', q<=5?'low':'left');
+      tag.textContent = q<=5 ? ('باقي '+ar(q)+' فقط') : ('باقي '+ar(q));
+    }
+  }
+
+  // ضبط شبكة الكروت حسب عدد الظاهر
+  const grid=document.querySelector('.pkg-grid');
+  if(visible===1) grid.style.gridTemplateColumns='1fr';
+  else if(visible===2) grid.style.gridTemplateColumns='1fr 1fr';
+  else grid.style.gridTemplateColumns='1fr 1fr 1fr';
+
+  // كل الباقات مقفلة → اعتبرها إغلاق كامل
+  if(!AVAILABLE[1] && !AVAILABLE[2] && !AVAILABLE[3]) return false;
+  return true;
+}
 
 /* الأوضاع الثلاثة — تنقرأ من الشيت (ورقة إعدادات) */
 const MODES = {
@@ -380,8 +464,10 @@ function loadMode(){
 
   window[cb]=function(res){
     if(done)return; done=true; cleanup();
-    let m = (res && (res.mode||res.وضع) || '').toString().trim();
-    applyMode(m);
+    if(res && res.prices) applyPrices(res.prices);
+    const anyLeft = res && res.stock ? applyStock(res.stock) : true;
+    let m = (res && res.mode || '').toString().trim();
+    applyMode(anyLeft===false ? 'مغلق' : m);
   };
 
   const s=document.createElement('script');
@@ -428,6 +514,7 @@ function applyMode(raw){
 
 /* ===== الفورم ===== */
 function selectPkg(n){
+  if(!AVAILABLE[n]) return;
   selPkg=n; selSubjects=[];
   document.querySelectorAll('.pkg').forEach(p=>p.classList.remove('selected'));
   document.getElementById('pkg'+n).classList.add('selected');
@@ -494,8 +581,8 @@ function updateSummary(){
   if(!selPkg){sum.style.display='none';return;}
   sum.style.display='block';
   const p=PRICES[selPkg];
-  document.getElementById('sumPkg').textContent=p+' د.ك';
-  document.getElementById('sumTotal').textContent=(p+DELIVERY)+' د.ك';
+  document.getElementById('sumPkg').textContent=ar(p)+' د.ك';
+  document.getElementById('sumTotal').textContent=ar(p+DELIVERY)+' د.ك';
 }
 
 function validPhone(v){
@@ -509,7 +596,7 @@ function validate(){
   const addr=document.getElementById('address').value.trim();
   const subjOk=selPkg===3||(selPkg===1&&selSubjects.length===1)||(selPkg===2&&selSubjects.length===3);
   const addrOk=CFG.needAddress ? addr.length>=6 : true;
-  const ok=selPkg&&selGrade&&name.length>=3&&validPhone(phone)&&subjOk&&addrOk;
+  const ok=selPkg&&AVAILABLE[selPkg]&&selGrade&&name.length>=3&&validPhone(phone)&&subjOk&&addrOk;
   document.getElementById('submitBtn').disabled=!ok;
 }
 
