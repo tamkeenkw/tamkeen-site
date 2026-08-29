@@ -165,9 +165,12 @@ tr:hover td{background:rgba(92,15,15,.02);}
           <div class="results-count" id="stCount">—</div>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="remind-btn" id="sendBtn" onclick="openReminderPreview()" disabled>
+          <button class="remind-btn" id="sendBtn" onclick="openReminderPreview('reminder')" disabled>
             <span id="sendTxt">📲 أرسل التذكيرات</span>
             <div class="spinner" id="sendSpinner"></div>
+          </button>
+          <button class="remind-btn" id="followBtn" onclick="openReminderPreview('followup')" disabled style="background:#5C0F0F;">
+            <span id="followTxt">📩 أرسل المتابعة</span>
           </button>
           <button class="preview-btn" id="csvBtn" onclick="downloadCSV()" disabled>⬇️ CSV احتياطي</button>
         </div>
@@ -399,7 +402,10 @@ function updateRemindBtn(){
   const n = selectedIdx.size;
   const st = document.getElementById('sendTxt');
   if(st) st.textContent = n>0 ? ('📲 أرسل التذكيرات ('+toA(n)+')') : '☑️ اختر مسجّلين';
+  const ft = document.getElementById('followTxt');
+  if(ft) ft.textContent = n>0 ? ('📩 أرسل المتابعة ('+toA(n)+')') : '📩 المتابعة';
   document.getElementById('sendBtn').disabled = (n===0);
+  document.getElementById('followBtn').disabled = (n===0);
   document.getElementById('csvBtn').disabled = (n===0);
 }
 
@@ -480,14 +486,27 @@ function downloadCSV(){
   stToast('✅ تم تحميل ملف '+toA(chosen.length)+' مسجّل — افتح ManyChat ← Import وارفعه، ثم أرسل بتاق الدورة','s');
 }
 
-/* معاينة التذكير */
-function openReminderPreview(){
+let sendMode = 'reminder';
+
+/* معاينة/تأكيد قبل الإرسال */
+function openReminderPreview(mode){
   if(!currentCourse) return;
   const chosen = getSelectedStudents();
   if(chosen.length===0) return;
-  const sample = chosen[0].name || 'المتدرب';
-  document.getElementById('previewBubble').textContent = buildMessage(sample);
-  document.getElementById('modalSub').textContent = 'سيُرسل هذا التذكير لـ '+toA(chosen.length)+' مسجّل محدّد في «'+currentCourse.name+'»';
+  sendMode = mode || 'reminder';
+
+  const titleEl = document.querySelector('.modal-title');
+  if(sendMode==='followup'){
+    if(titleEl) titleEl.textContent = '📩 تأكيد إرسال المتابعة';
+    document.getElementById('previewBubble').textContent =
+      'رسالة المتابعة (شكر + رابط العضوية) — قالب ثابت من ManyChat.\n\nستُرسل للمسجّلين المحدّدين (اللي حضروا اللقاء).';
+    document.getElementById('modalSub').textContent = 'سترسل المتابعة لـ '+toA(chosen.length)+' محدّد';
+  } else {
+    if(titleEl) titleEl.textContent = '📲 تأكيد إرسال التذكير';
+    const sample = chosen[0].name || 'المتدرب';
+    document.getElementById('previewBubble').textContent = buildMessage(sample);
+    document.getElementById('modalSub').textContent = 'سيُرسل هذا التذكير لـ '+toA(chosen.length)+' مسجّل محدّد في «'+currentCourse.name+'»';
+  }
   document.getElementById('modalBg').classList.add('show');
 }
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
@@ -539,25 +558,35 @@ async function doSend(){
   const chosen = getSelectedStudents();
   if(!currentCourse || chosen.length===0) return;
 
-  const btn = document.getElementById('sendBtn');
-  const spin = document.getElementById('sendSpinner');
-  const txt = document.getElementById('sendTxt');
-  btn.disabled = true;
-  document.getElementById('csvBtn').disabled = true;
-  spin.style.display = 'inline-block';
-  txt.textContent = 'جاري الإرسال...';
-  stToast('⏳ جاري إرسال '+toA(chosen.length)+' تذكير... لا تغلق الصفحة','w');
+  const isFollow = (sendMode==='followup');
+  const label = isFollow ? 'متابعة' : 'تذكير';
 
-  const payload = {
-    type: 'manychatReminder',
-    course: {
-      name:  currentCourse.name || '',
-      date:  currentCourse.date || '',
-      time:  currentCourse.time || '',
-      place: coursePlaceCSV(currentCourse)
-    },
-    students: chosen.map(s=>({ name: firstNameOnly(s.name), phone: s.phone }))
-  };
+  const activeBtn = document.getElementById(isFollow ? 'followBtn' : 'sendBtn');
+  const spin = document.getElementById('sendSpinner');
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('followBtn').disabled = true;
+  document.getElementById('csvBtn').disabled = true;
+  if(spin && !isFollow) spin.style.display = 'inline-block';
+  stToast('⏳ جاري إرسال '+toA(chosen.length)+' '+label+'... لا تغلق الصفحة','w');
+
+  let payload;
+  if(isFollow){
+    payload = {
+      type: 'thankAttendees',
+      students: chosen.map(s=>({ name: firstNameOnly(s.name), phone: s.phone }))
+    };
+  } else {
+    payload = {
+      type: 'manychatReminder',
+      course: {
+        name:  currentCourse.name || '',
+        date:  currentCourse.date || '',
+        time:  currentCourse.time || '',
+        place: coursePlaceCSV(currentCourse)
+      },
+      students: chosen.map(s=>({ name: firstNameOnly(s.name), phone: s.phone }))
+    };
+  }
 
   try{
     const res = await fetch(MANYCHAT_URL, {
@@ -573,10 +602,9 @@ async function doSend(){
       if(data.failed>0){
         stToast('✅ أُرسل '+toA(data.sent)+' — ⚠️ فشل '+toA(data.failed)+' (شوف التفاصيل تحت)','w');
       } else {
-        stToast('✅ تم إرسال '+toA(data.sent)+' تذكير بنجاح!','s');
+        stToast('✅ تم إرسال '+toA(data.sent)+' '+label+' بنجاح!','s');
       }
     } else {
-      // تعذّر قراءة الرد (CORS) لكن الطلب أُرسل
       stToast('✅ تم إرسال الطلب — تحقّق من ManyChat للتأكد','s');
     }
   }catch(err){
