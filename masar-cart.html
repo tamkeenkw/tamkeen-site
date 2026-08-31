@@ -148,6 +148,19 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .f .er{display:none;font-size:11px;color:var(--red);font-weight:700;margin-top:5px;}
 .f.bad .er{display:block;}
 .f .ok{display:none;font-size:11px;color:var(--green);font-weight:800;margin-top:5px;}
+.bnpl{background:var(--cream);border-radius:14px;padding:13px;margin-top:14px;
+  border:1.5px solid rgba(92,15,15,.08);}
+.bnpl-h{font-size:12px;font-weight:900;color:var(--muted);margin-bottom:9px;}
+.bn{width:100%;background:#fff;border:2px solid rgba(92,15,15,.1);border-radius:11px;
+  padding:11px 13px;margin-bottom:7px;font-family:'Tajawal',sans-serif;cursor:pointer;
+  transition:.18s;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.bn:hover{border-color:var(--crimson);}
+.bn.on{border-color:var(--crimson);background:var(--crimson);}
+.bn b{font-size:13px;font-weight:900;color:var(--text);}
+.bn span{font-size:12.5px;font-weight:900;color:var(--crimson);white-space:nowrap;}
+.bn.on b,.bn.on span{color:#fff;}
+.bnpl-n{font-size:11px;font-weight:700;color:var(--muted);line-height:1.65;margin-top:4px;}
+
 .pay{width:100%;background:var(--crimson);color:#fff;border:none;border-radius:14px;padding:15px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:8px;}
 .pay:hover{background:var(--crimson-2);}
 .pay:disabled{opacity:.6;cursor:not-allowed;}
@@ -194,6 +207,7 @@ const KEY  = 'masar_cart';
 const DISC = 0.10;
 
 let CART = [], DATA = { courses:[], packages:[] }, PLANS = [], CERTP = 15, MEM = null, TMR = null;
+let BNPL = { enabled:false, live:false, min:20, splits:4 }, PAYMODE = 'full';
 let PICK_OPEN = false, PICK_TAB = 'course', PICK_Q = '';
 
 function readCart(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
@@ -216,6 +230,7 @@ function writeCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch
     const d2 = await r2.json();
     PLANS = d2.plans || [];
     CERTP = d2.certPrice || 15;
+    if(d2.bnpl) BNPL = d2.bnpl;
   }catch(e){}
 
   document.getElementById('loading').style.display = 'none';
@@ -375,6 +390,7 @@ function render(){
     '<div class="side">' +
       '<div class="side-h">ملخص الطلب</div>' +
       '<div id="sumBox"></div>' +
+      '<div id="bnplBox"></div>' +
       '<div style="height:14px;"></div>' +
       '<div class="f" id="w-p"><label>رقم الواتساب *</label>' +
         '<input type="tel" id="iPhone" placeholder="XXXXXXXX" oninput="onPhone()">' +
@@ -516,6 +532,8 @@ function paintSummary(c){
     '<div class="tot"><span class="tot-l">المجموع</span><span class="tot-v">' +
       (c.total === 0 ? 'مجاني' : ar(c.total) + ' د.ك') + '</span></div>';
 
+  paintBnpl(c);
+
   const t   = document.getElementById('payTxt');
   const btn = document.getElementById('payBtn');
 
@@ -523,12 +541,47 @@ function paintSummary(c){
     if(t) t.textContent = 'اختر نوع تسجيلك أولاً';
     if(btn){ btn.disabled = true; btn.classList.add('locked'); }
   }else{
-    if(t) t.textContent = (c.total === 0) ? 'أكمل التسجيل مجاناً' : 'ادفع ' + ar(c.total) + ' د.ك';
+    if(t){
+      if(c.total === 0) t.textContent = 'أكمل التسجيل مجاناً';
+      else if(PAYMODE === 'split') t.textContent = 'أرسل طلب التقسيط';
+      else t.textContent = 'ادفع ' + ar(c.total) + ' د.ك';
+    }
     if(btn){ btn.disabled = false; btn.classList.remove('locked'); }
   }
 }
 
 /* اختيار إجباري — لا افتراضي صامت */
+/* ===== خيار التقسيط ===== */
+function paintBnpl(c){
+  const box = document.getElementById('bnplBox');
+  if(!box) return;
+
+  const ok = BNPL.enabled && c.total >= BNPL.min;
+  if(!ok){
+    box.innerHTML = '';
+    if(PAYMODE !== 'full'){ PAYMODE = 'full'; }
+    return;
+  }
+
+  const per = r3(c.total / BNPL.splits);
+
+  box.innerHTML =
+    '<div class="bnpl">' +
+      '<div class="bnpl-h">💳 طريقة الدفع</div>' +
+      '<button class="bn' + (PAYMODE === 'full' ? ' on' : '') + '" onclick="setPayMode(\'full\')">' +
+        '<b>ادفع كامل الآن</b><span>' + ar(c.total) + ' د.ك</span></button>' +
+      '<button class="bn' + (PAYMODE === 'split' ? ' on' : '') + '" onclick="setPayMode(\'split\')">' +
+        '<b>قسّطها على ' + ar(BNPL.splits) + ' دفعات</b>' +
+        '<span>' + ar(per) + ' د.ك × ' + ar(BNPL.splits) + '</span></button>' +
+      '<div class="bnpl-n">' + (BNPL.live
+        ? 'بالتعاون مع <b>تابي</b> — بدون فوائد'
+        : 'خدمة التقسيط <b>قيد التفعيل</b> — اختر التقسيط ويتواصل معك الفريق لإتمامه') +
+      '</div>' +
+    '</div>';
+}
+
+function setPayMode(m){ PAYMODE = m; paint(); }
+
 function certBox(i, val, label, fee, freeLabel, noFree){
   const undecided = (val !== true && val !== false);
 
@@ -710,10 +763,27 @@ async function checkout(){
     const r = await fetch(API, {
       method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
       body: JSON.stringify({ type:'createOrder', name:name, phone:phone, email:email,
+        installments: (PAYMODE === 'split'),
         items: CART.map(function(it){ return { kind:it.kind, id:it.id, cert:(it.cert === true) }; }) })
     });
     d = await r.json();
   }catch(e){}
+
+  if(d && d.ok && d.installment){
+    writeCart([]);
+    document.getElementById('cartView').innerHTML =
+      '<div class="res"><div class="res-i">💳</div>' +
+      '<div class="res-t">سجّلنا طلب التقسيط</div>' +
+      '<div class="res-s">إجمالي طلبك <b>' + ar(d.total) + ' د.ك</b> — على ' + ar(d.splits) +
+        ' دفعات بواقع <b>' + ar(d.perSplit) + ' د.ك</b> للدفعة.<br>' +
+        'بيتواصل معك الفريق خلال ٢٤ ساعة لإتمام التقسيط.</div>' +
+      '<div class="res-o">رقم الطلب: ' + esc(d.order) + '</div>' +
+      '<a class="res-btn wa" target="_blank" href="https://wa.me/96597999768?text=' +
+        encodeURIComponent('السلام عليكم، أبي أكمل تقسيط الطلب ' + d.order) + '">تواصل واتساب الآن</a>' +
+      '<div><a class="res-btn alt" href="/masar">تصفح دورات ثانية</a></div></div>';
+    window.scrollTo({ top:0, behavior:'smooth' });
+    return;
+  }
 
   if(d && d.ok && d.url){ window.location.href = d.url; return; }
   if(d && d.ok && d.free){
