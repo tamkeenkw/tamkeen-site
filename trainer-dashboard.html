@@ -107,6 +107,19 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 .crs-count .n { font-size:24px; font-weight:900; line-height:1; }
 .crs-count .t { font-size:11px; font-weight:700; opacity:.85; margin-top:3px; }
 
+/* فصل القادمة عن السابقة */
+.crs-group-title { display:flex; align-items:center; gap:9px; font-size:13.5px; font-weight:900; letter-spacing:.02em; margin:20px 0 12px; }
+.crs-group-title:first-child { margin-top:0; }
+.crs-group-title .dot9 { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.crs-group-title.up   { color:var(--crimson); }
+.crs-group-title.up   .dot9 { background:var(--crimson); }
+.crs-group-title.past { color:var(--muted); }
+.crs-group-title.past .dot9 { background:var(--muted); }
+.crs-group-title .cnt { font-size:11px; font-weight:800; background:rgba(92,15,15,.08); color:var(--crimson); border-radius:100px; padding:2px 9px; }
+.crs-group-title.past .cnt { background:rgba(122,96,96,.14); color:var(--muted); }
+.crs-card.is-past { opacity:.72; background:#faf8f6; }
+.crs-card.is-past .crs-count { background:var(--muted); }
+
 /* عملاء المدرب */
 .cl-card { display:flex; align-items:center; gap:12px; background:#fff; border-radius:14px; padding:13px 16px; box-shadow:0 4px 18px rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.07); margin-bottom:9px; }
 .cl-avatar { flex-shrink:0; width:40px; height:40px; border-radius:50%; background:rgba(92,15,15,.08); color:var(--crimson); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; }
@@ -268,11 +281,11 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
       </a>
     </div>
 
-    <div class="section-title" style="margin-top:30px;">دوراتي هذا الشهر
+    <div class="section-title" style="margin-top:30px;">دوراتي
       <span class="count-badge" id="crsMonthLbl" style="display:none;"></span>
     </div>
     <div id="coursesBox">
-      <div class="bk-empty">جاري تحميل دورات هذا الشهر...</div>
+      <div class="bk-empty">جاري تحميل الدورات...</div>
     </div>
 
     <div class="section-title" style="margin-top:30px;">حجوزاتي
@@ -482,12 +495,13 @@ function loadMyCourses(trainerName) {
     if (done) return; done = true; clearTimeout(timer); cleanup();
     var list = (res && res.courses) ? res.courses : [];
     if (!list.length) {
-      box.innerHTML = '<div class="bk-empty">لا توجد دورات مجدولة لك هذا الشهر.</div>';
+      box.innerHTML = '<div class="bk-empty">لا توجد دورات مسجّلة لك.</div>';
       return;
     }
     var total = list.reduce(function(s, c){ return s + (c.count || 0); }, 0);
     lbl.textContent = total + ' مسجّل'; lbl.style.display = 'inline-block';
-    box.innerHTML = list.map(function(c) {
+
+    function cardHTML(c) {
       var meta = [];
       if (c.date) meta.push('<span>' + ic('cal') + c.date + '</span>');
       if (c.time) meta.push('<span>' + ic('clock') + c.time + '</span>');
@@ -495,12 +509,25 @@ function loadMyCourses(trainerName) {
                   encodeURIComponent(c.course || 'دورة') + '" data-date="' + encodeURIComponent(c.date || '') + '">' +
                   '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>' +
                   'احصل على رابط تقييم الدورة</button>';
-      return '<div class="crs-card">' +
+      return '<div class="crs-card' + (c.past ? ' is-past' : '') + '">' +
                '<div class="crs-count"><div class="n">' + (c.count || 0) + '</div><div class="t">مسجّل</div></div>' +
                '<div class="crs-info"><div class="crs-title">' + (c.course || 'دورة') + '</div>' +
                '<div class="crs-meta">' + meta.join('') + '</div>' + btn + '</div>' +
              '</div>';
-    }).join('');
+    }
+
+    var upcoming = list.filter(function(c){ return !c.past; });
+    var past     = list.filter(function(c){ return  c.past; });
+    var html = '';
+    if (upcoming.length) {
+      html += '<div class="crs-group-title up"><span class="dot9"></span>الدورات القادمة<span class="cnt">' + upcoming.length + '</span></div>';
+      html += upcoming.map(cardHTML).join('');
+    }
+    if (past.length) {
+      html += '<div class="crs-group-title past"><span class="dot9"></span>الدورات السابقة<span class="cnt">' + past.length + '</span></div>';
+      html += past.map(cardHTML).join('');
+    }
+    box.innerHTML = html;
 
     // ربط أزرار "احصل على رابط التقييم"
     box.querySelectorAll('.crs-eval-btn').forEach(function(b) {
@@ -510,7 +537,7 @@ function loadMyCourses(trainerName) {
   script.onerror = function(){ if (done) return; done = true; clearTimeout(timer); cleanup(); fail(); };
 
   function cleanup() { try { delete window[cbName]; } catch(e) { window[cbName] = undefined; } if (script.parentNode) script.parentNode.removeChild(script); }
-  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل دورات الشهر — حدّث الصفحة.</div>'; }
+  function fail() { box.innerHTML = '<div class="bk-empty">تعذّر تحميل الدورات — حدّث الصفحة.</div>'; }
 
   script.src = MASAR_URL + '?action=trainerCourses&trainer=' + encodeURIComponent(trainerName) + '&callback=' + cbName + '&t=' + Date.now();
   document.body.appendChild(script);
