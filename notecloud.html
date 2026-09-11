@@ -339,6 +339,16 @@ const MODE_URL   = 'https://script.google.com/macros/s/AKfycbzQxPvtRJtWmRzETFMST
 
 const WHATSAPP   = '96597999768';
 
+/* ════════════════════════════════════════════════
+   مفتاح الوضع
+   ────────────────────────────────────────────────
+   FORCE_MODE:  حطّ قيمة هنا لتثبيت الوضع وتجاهل الشيت نهائياً
+                'دفع' · 'مسبق' · 'مغلق'   |   '' = اقرأ من الشيت
+   DEFAULT_MODE: الوضع إذا السكربت ما رد أو تعطّل
+   ════════════════════════════════════════════════ */
+const FORCE_MODE   = 'دفع';
+const DEFAULT_MODE = 'دفع';
+
 const SUBJECTS = {
   11: ['التاريخ','الجغرافيا','علم النفس','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية'],
   12: ['التاريخ','الجغرافيا','الفلسفة','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية']
@@ -445,20 +455,23 @@ const MODES = {
   }
 };
 
-let MODE = 'مسبق';
-let CFG  = MODES['مسبق'];
+let MODE = DEFAULT_MODE;
+let CFG  = MODES[DEFAULT_MODE] || MODES['دفع'];
 let selPkg=0, selGrade=0, selSubjects=[];
 
 /* ===== جلب الوضع من الشيت عبر JSONP ===== */
 function loadMode(){
-  // إذا الرابط مو محطوط بعد → الوضع الافتراضي الآمن
+  // وضع مثبّت يدوياً → لا نسأل الشيت أصلاً
+  if(FORCE_MODE){ applyMode(FORCE_MODE); return; }
+
+  // الرابط مو محطوط → الافتراضي
   if(!MODE_URL || MODE_URL.indexOf('script.google.com')===-1){
-    applyMode('مسبق'); return;
+    applyMode(DEFAULT_MODE); return;
   }
 
   let done=false;
   const cb='__mode_'+Date.now();
-  const t=setTimeout(()=>{ if(!done){done=true; cleanup(); applyMode('مسبق');} },7000);
+  const t=setTimeout(()=>{ if(!done){done=true; cleanup(); applyMode(DEFAULT_MODE);} },7000);
 
   function cleanup(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
 
@@ -473,15 +486,16 @@ function loadMode(){
   const s=document.createElement('script');
   s.id=cb;
   s.src=MODE_URL+'?callback='+cb+'&t='+Date.now();
-  s.onerror=()=>{ if(!done){done=true; cleanup(); applyMode('مسبق');} };
+  s.onerror=()=>{ if(!done){done=true; cleanup(); applyMode(DEFAULT_MODE);} };
   document.head.appendChild(s);
 }
 
 function normalizeMode(m){
   m=(m||'').toString().trim().toLowerCase();
   if(['دفع','مباشر','فعلي','مفتوح','live','pay','open'].includes(m)) return 'دفع';
-  if(['مغلق','ايقاف','إيقاف','off','closed'].includes(m)) return 'مغلق';
-  return 'مسبق';
+  if(['مسبق','حجز','حجز مسبق','preorder','pre'].includes(m)) return 'مسبق';
+  if(['مغلق','ايقاف','إيقاف','مقفل','off','closed'].includes(m)) return 'مغلق';
+  return DEFAULT_MODE;
 }
 
 function applyMode(raw){
