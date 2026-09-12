@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>استعلام وإصدار رقم العضوية — معهد تمكين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1818; --cream:#FAF7F2; --paper:#FFFFFF;
+  --ink:#241614; --muted:#8A7A75; --line:#E8DED4;
+  --ok:#1F7A45; --warn:#A86500; --bad:#9B1C1C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--cream);color:var(--ink);
+     -webkit-font-smoothing:antialiased;line-height:1.6;padding-bottom:60px}
+button,input,select{font-family:inherit;font-size:15px}
+button{cursor:pointer;border:none}
+:focus-visible{outline:3px solid var(--crimson);outline-offset:2px}
+.hide{display:none !important}
+
+/* ── الهيدر ── */
+header{background:var(--crimson);color:#fff;padding:18px 20px}
+.hwrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:900;font-size:20px;letter-spacing:-.3px}
+.brand span{display:block;font-size:12px;font-weight:400;opacity:.75;letter-spacing:0}
+.hspace{flex:1}
+.ghost{background:rgba(255,255,255,.12);color:#fff;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600}
+.ghost:hover{background:rgba(255,255,255,.22)}
+
+/* ── الإحصائيات ── */
+.stats{max-width:1100px;margin:18px auto 0;padding:0 20px;display:grid;
+       grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat b{display:block;font-size:26px;font-weight:900;color:var(--crimson);line-height:1.2}
+.stat small{color:var(--muted);font-size:12px;font-weight:600}
+
+/* ── التبويبات ── */
+.tabs{max-width:1100px;margin:20px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap}
+.tab{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 18px;
+     font-weight:700;font-size:14px;color:var(--muted)}
+.tab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+main{max-width:1100px;margin:16px auto;padding:0 20px}
+
+/* ── البطاقات ── */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px}
+.card h2{font-size:17px;font-weight:900;margin-bottom:4px}
+.card p.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+
+/* ── الحقول ── */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px 13px;border:1.5px solid var(--line);
+  border-radius:10px;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus{border-color:var(--crimson);outline:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}}
+.btn{background:var(--crimson);color:#fff;border-radius:11px;padding:12px 22px;font-weight:700;font-size:15px}
+.btn:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.sec{background:#fff;color:var(--crimson);border:1.5px solid var(--crimson)}
+.btn.sm{padding:8px 16px;font-size:13px;border-radius:9px}
+
+/* ── جدول الطلبات ── */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th{background:#F4EDE6;color:var(--crimson);font-size:12.5px;font-weight:800;padding:11px 12px;text-align:right;
+   border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid #F2EBE3;font-size:13.5px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FCF9F5}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.4px;direction:ltr;display:inline-block}
+.empty{text-align:center;color:var(--muted);padding:36px 16px;font-size:14px}
+
+/* ── نتيجة الاستعلام ── */
+.mcard{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;background:#fff}
+.mhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.mno{background:var(--crimson);color:#fff;border-radius:9px;padding:5px 12px;font-weight:900;font-size:15px}
+.mname{font-weight:800;font-size:16px}
+.badge{border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800}
+.badge.active{background:#E6F4EC;color:var(--ok)}
+.badge.soon{background:#FBF1DF;color:var(--warn)}
+.badge.expired{background:#FBE9E9;color:var(--bad)}
+.badge.unknown{background:#EFEAE4;color:var(--muted)}
+.mrows{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.mrow{background:var(--cream);border-radius:10px;padding:9px 12px}
+.mrow .k{font-size:11.5px;color:var(--muted);font-weight:700}
+.mrow .v{font-weight:800;font-size:14px}
+.mfoot{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── المودال ── */
+.overlay{position:fixed;inset:0;background:rgba(36,22,20,.55);display:flex;align-items:center;
+  justify-content:center;padding:16px;z-index:90}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;
+  padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.modal h3{font-size:18px;font-weight:900;margin-bottom:4px}
+.modal .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.info{background:var(--cream);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px}
+.info div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.info .k{color:var(--muted);font-weight:600;font-size:13px}
+.info .v{font-weight:800}
+.note{border-radius:11px;padding:11px 13px;font-size:13.5px;font-weight:600;margin-bottom:12px}
+.note.warn{background:#FBF1DF;color:#7A4A00;border:1px solid #EBD9B4}
+.note.err{background:#FBE9E9;color:var(--bad);border:1px solid #F0CACA}
+.note.ok{background:#E6F4EC;color:var(--ok);border:1px solid #C4E4D1}
+.bigno{text-align:center;padding:20px 10px;background:var(--crimson);border-radius:14px;color:#fff;margin-bottom:14px}
+.bigno small{display:block;font-size:12px;opacity:.8;font-weight:600}
+.bigno b{font-size:40px;font-weight:900;letter-spacing:2px;direction:ltr;display:block}
+.mactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.mactions .btn{flex:1;min-width:120px;justify-content:center;text-align:center}
+
+/* ── التوست ── */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120%);
+  background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;
+  z-index:120;transition:transform .25s ease;max-width:90vw;text-align:center}
+#toast.on{transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+
+/* ── البوابة ── */
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.gatebox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px;width:100%;max-width:400px}
+.gatebox h1{font-size:20px;font-weight:900;margin-bottom:4px;color:var(--crimson)}
+.gatebox p{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.spin{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;
+  border-radius:50%;animation:sp .7s linear infinite;display:inline-block;vertical-align:-3px;margin-left:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ البوابة ═══════════ -->
+<div class="gate" id="gate">
+  <div class="gatebox">
+    <h1>استعلام وإصدار رقم العضوية</h1>
+    <p>لوحة داخلية لموظفي معهد تمكين</p>
+
+    <div id="setupBox" class="hide">
+      <div class="note warn">أول استخدام: الصق رابط النشر (Web app) الخاص بسكربت العضوية.</div>
+      <div class="field">
+        <label>رابط Apps Script</label>
+        <input id="urlIn" placeholder="https://script.google.com/macros/s/.../exec" dir="ltr">
+      </div>
+      <button class="btn" style="width:100%" onclick="saveUrl()">حفظ الرابط</button>
+    </div>
+
+    <div id="pinBox" class="hide">
+      <div class="field">
+        <label>رمز الدخول</label>
+        <input id="pinIn" type="password" inputmode="numeric" placeholder="••••" autocomplete="off">
+      </div>
+      <div id="gateErr" class="note err hide"></div>
+      <button class="btn" style="width:100%" id="pinBtn" onclick="doLogin()">دخول</button>
+      <button class="btn sec" style="width:100%;margin-top:8px" onclick="showSetup()">تغيير رابط النشر</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ التطبيق ═══════════ -->
+<div id="app" class="hide">
+  <header>
+    <div class="hwrap">
+      <div class="brand">معهد تمكين للتدريب<span>استعلام وإصدار رقم العضوية</span></div>
+      <div class="hspace"></div>
+      <button class="ghost" onclick="refreshAll()">تحديث البيانات</button>
+      <button class="ghost" onclick="logout()">خروج</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="sMembers">—</b><small>عضو مسجّل</small></div>
+    <div class="stat"><b id="sPending">—</b><small>طلب بانتظار الإصدار</small></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-tab="req" onclick="switchTab('req')">طلبات العضوية</button>
+    <button class="tab" data-tab="man" onclick="switchTab('man')">إصدار يدوي</button>
+    <button class="tab" data-tab="qry" onclick="switchTab('qry')">استعلام وتجديد</button>
+  </div>
+
+  <main>
+    <!-- تبويب الطلبات -->
+    <section id="tab-req">
+      <div class="card">
+        <h2>طلبات بانتظار إصدار رقم العضوية</h2>
+        <p class="sub">اضغط «صدّر» على الطلب — يطلب منك تاريخ بدء العضوية، ينقل البيانات لتبويب بيانات الاعضاء، ويعطيك الرقم.</p>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+          <div class="field" style="max-width:320px;flex:1;min-width:200px;margin:0">
+            <input id="reqFilter" placeholder="فلترة بالاسم أو الرقم" oninput="renderReq()">
+          </div>
+          <label style="display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;cursor:pointer">
+            <input type="checkbox" id="paidOnly" onchange="renderReq()" style="width:17px;height:17px;accent-color:#5C0F0F">
+            اعرض فقط من تم دفعه
+          </label>
+        </div>
+        <div id="reqNote" class="note warn hide" style="margin-bottom:12px"></div>
+        <div id="reqBody"><div class="empty">جاري التحميل…</div></div>
+      </div>
+    </section>
+
+    <!-- تبويب الإصدار اليدوي -->
+    <section id="tab-man" class="hide">
+      <div class="card" style="max-width:560px">
+        <h2>إصدار رقم عضوية يدوياً</h2>
+        <p class="sub">للأعضاء اللي ما قدّموا عبر الموقع. رقم العضوية يطلع تلقائياً من الشيت بعد الحفظ.</p>
+        <div class="field"><label>اسم المدرب</label><input id="mName" placeholder="الاسم الثلاثي"></div>
+        <div class="grid2">
+          <div class="field"><label>رقم التواصل</label><input id="mPhone" inputmode="numeric" placeholder="9xxxxxxx" dir="ltr"></div>
+          <div class="field"><label>الإيميل <span style="color:var(--muted);font-weight:400">(اختياري)</span></label><input id="mEmail" type="email" dir="ltr"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>تاريخ بدء العضوية</label><input id="mStart" type="date"></div>
+          <div class="field"><label>مدة العضوية</label>
+            <select id="mMonths" onchange="manPreview()">
+              <option value="12" selected>سنة — 12 شهر</option>
+              <option value="24">سنتين — 24 شهر</option>
+              <option value="6">6 أشهر</option>
+              <option value="3">3 أشهر</option>
+            </select>
+          </div>
+        </div>
+        <div class="info"><div><span class="k">تاريخ الانتهاء المحسوب</span><span class="v mono" id="mEndPrev">—</span></div></div>
+        <div id="manMsg" class="note err hide"></div>
+        <button class="btn" id="manBtn" onclick="manualIssue()">إصدار رقم العضوية</button>
+      </div>
+    </section>
+
+    <!-- تبويب الاستعلام -->
+    <section id="tab-qry" class="hide">
+      <div class="card">
+        <h2>استعلام عن عضوية</h2>
+        <p class="sub">ابحث برقم العضوية أو اسم المدرب أو رقم تواصله.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;max-width:560px">
+          <input id="qIn" placeholder="رقم العضوية / الاسم / الجوال" style="flex:1;min-width:200px;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px">
+          <button class="btn" id="qBtn" onclick="doSearch()">بحث</button>
+        </div>
+      </div>
+      <div id="qBody"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ═══════════ المودال ═══════════ -->
+<div class="overlay hide" id="overlay"><div class="modal" id="modal"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ══════════ الحالة ══════════ */
+var API = localStorage.getItem('tk_mbr_url') || '';
+var PIN = sessionStorage.getItem('tk_mbr_pin') || '';
+var REQS = [];        // الطلبات المعلّقة
+var MATCHED = 0;      // طلبات مخفية لأن أصحابها أعضاء أصلاً
+var CUR = null;       // السياق الحالي للمودال
+
+function $(id){ return document.getElementById(id); }
+
+/* ══════════ نداء الـ API (JSONP) ══════════ */
+function api(action, params){
+  return new Promise(function(resolve){
+    if(!API){ resolve({ok:false,message:'رابط النشر غير محفوظ'}); return; }
+    var cb = 'tkcb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+    var s = document.createElement('script'), done = false;
+    var q = '?action=' + encodeURIComponent(action) + '&callback=' + cb + '&t=' + Date.now();
+    if(PIN) q += '&pin=' + encodeURIComponent(PIN);
+    for(var k in (params||{})){
+      if(params[k] === undefined || params[k] === null) continue;
+      q += '&' + k + '=' + encodeURIComponent(params[k]);
+    }
+    var timer = setTimeout(function(){ if(done) return; done=true; clean(); resolve({ok:false,message:'انتهت مهلة الاتصال بالسكربت'}); }, 25000);
+    window[cb] = function(res){ if(done) return; done=true; clearTimeout(timer); clean(); resolve(res||{ok:false,message:'رد فارغ'}); };
+    s.onerror = function(){ if(done) return; done=true; clearTimeout(timer); clean(); resolve({ok:false,message:'تعذّر الوصول للسكربت — تأكد من الرابط وصلاحية النشر'}); };
+    function clean(){ try{ delete window[cb]; }catch(e){ window[cb]=undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
+    s.src = API + q;
+    document.body.appendChild(s);
+  });
+}
+
+/* ══════════ أدوات ══════════ */
+function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('on');},2800); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
+function p2(n){ return n<10 ? '0'+n : ''+n; }
+function fmtDate(iso){ if(!iso) return '—'; var a=iso.split('-'); return a.length===3 ? a[2]+'/'+a[1]+'/'+a[0] : iso; }
+function addMonthsISO(iso, months){
+  if(!iso) return '';
+  var a=iso.split('-'); if(a.length!==3) return '';
+  var d=new Date(+a[0], +a[1]-1+ (parseInt(months,10)||12), +a[2]);
+  d.setDate(d.getDate()-1);
+  return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+}
+function dayAfterISO(iso){
+  if(!iso) return todayISO();
+  var a=iso.split('-'); if(a.length!==3) return todayISO();
+  var d=new Date(+a[0], +a[1]-1, +a[2]); d.setDate(d.getDate()+1);
+  return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+}
+function toISO(ddmmyyyy){
+  if(!ddmmyyyy) return '';
+  var a=String(ddmmyyyy).split('/');
+  return a.length===3 ? a[2]+'-'+p2(+a[1])+'-'+p2(+a[0]) : '';
+}
+function copy(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast('تم النسخ'); },function(){ fallbackCopy(txt); });
+  } else fallbackCopy(txt);
+}
+function fallbackCopy(txt){
+  var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('تم النسخ'); }catch(e){ toast('انسخ يدوياً'); }
+  document.body.removeChild(ta);
+}
+
+/* ══════════ البوابة ══════════ */
+function boot(){
+  if(!API){ showSetup(); return; }
+  $('setupBox').classList.add('hide'); $('pinBox').classList.remove('hide');
+  if(PIN){ doLogin(true); } else { $('pinIn').focus(); }
+}
+function showSetup(){
+  $('pinBox').classList.add('hide'); $('setupBox').classList.remove('hide');
+  $('urlIn').value = API; $('urlIn').focus();
+}
+function saveUrl(){
+  var u = ($('urlIn').value||'').trim();
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(u)){ toast('الرابط لازم ينتهي بـ /exec'); return; }
+  API = u; localStorage.setItem('tk_mbr_url', u);
+  $('setupBox').classList.add('hide'); $('pinBox').classList.remove('hide'); $('pinIn').focus();
+}
+function doLogin(silent){
+  var pin = silent ? PIN : ($('pinIn').value||'').trim();
+  if(!pin){ gateErr('أدخل رمز الدخول'); return; }
+  var b=$('pinBtn'); b.disabled=true; b.innerHTML='جاري التحقق<span class="spin"></span>';
+  PIN = pin;
+  api('stats', {}).then(function(res){
+    b.disabled=false; b.textContent='دخول';
+    if(!res.ok){ PIN=''; sessionStorage.removeItem('tk_mbr_pin'); gateErr(res.message||'تعذّر الدخول'); return; }
+    sessionStorage.setItem('tk_mbr_pin', pin);
+    $('gate').classList.add('hide'); $('app').classList.remove('hide');
+    fillStats(res); loadRequests();
+    $('mStart').value = todayISO(); manPreview();
+  });
+}
+function gateErr(m){ var e=$('gateErr'); e.textContent=m; e.classList.remove('hide'); }
+function logout(){ sessionStorage.removeItem('tk_mbr_pin'); location.reload(); }
+
+/* ══════════ الإحصائيات ══════════ */
+function fillStats(res){
+  if(res.members !== undefined) $('sMembers').textContent = res.members;
+  if(res.pending !== undefined) $('sPending').textContent = res.pending;
+}
+function refreshAll(){
+  api('stats',{}).then(function(r){ if(r.ok) fillStats(r); });
+  loadRequests();
+  toast('يتم التحديث…');
+}
+
+/* ══════════ التبويبات ══════════ */
+function switchTab(t){
+  ['req','man','qry'].forEach(function(x){
+    $('tab-'+x).classList.toggle('hide', x!==t);
+    document.querySelector('.tab[data-tab="'+x+'"]').classList.toggle('on', x===t);
+  });
+}
+
+/* ══════════ طلبات العضوية ══════════ */
+function loadRequests(){
+  $('reqBody').innerHTML = '<div class="empty">جاري التحميل…</div>';
+  api('requests', {}).then(function(res){
+    if(!res.ok){ $('reqBody').innerHTML = '<div class="note err">'+esc(res.message||'تعذّر جلب الطلبات')+'</div>'; return; }
+    REQS = res.rows || [];
+    MATCHED = res.matched || 0;
+      $('sPending').textContent = REQS.length;
+    var nt=$('reqNote');
+    if(MATCHED){ nt.textContent = MATCHED + ' طلب مخفي — أصحابها مسجّلين مسبقاً في بيانات الاعضاء.'; nt.classList.remove('hide'); }
+    else nt.classList.add('hide');
+    renderReq();
+  });
+}
+function renderReq(){
+  var f = (($('reqFilter')||{}).value||'').trim();
+  var paidOnly = $('paidOnly') && $('paidOnly').checked;
+  var rows = REQS.filter(function(r){
+    if(paidOnly && (r.payst||'').indexOf('تم الدفع')<0) return false;
+    if(!f) return true;
+    var dg = f.replace(/\D/g,'');
+    if((r.name||'').indexOf(f)>-1) return true;
+    return dg.length>=3 && (r.phone||'').indexOf(dg)>-1;
+  });
+  if(!rows.length){
+    $('reqBody').innerHTML = '<div class="empty">'+(REQS.length ? 'ما في نتائج مطابقة للفلترة.' : 'ما في طلبات بانتظار الإصدار.')+'</div>';
+    return;
+  }
+  var h = '<div class="tblwrap"><table><thead><tr>'+
+    '<th>تاريخ الطلب</th><th>الاسم الثلاثي</th><th>التواصل</th><th>التخصص</th><th>نوع العضوية</th><th>حالة الدفع</th><th></th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(function(r){
+    var paid = (r.payst||'').indexOf('تم الدفع')>-1;
+    h += '<tr>'+
+      '<td class="mono">'+esc(r.date||'—')+'</td>'+
+      '<td><b>'+esc(r.name)+'</b></td>'+
+      '<td class="mono">'+esc(r.phone||'—')+'</td>'+
+      '<td style="max-width:190px">'+esc((r.spec||'—').substring(0,42))+'</td>'+
+      '<td>'+esc(r.plan||'—')+'</td>'+
+      '<td>'+(r.payst ? '<span class="badge '+(paid?'active':'soon')+'">'+esc(r.payst)+'</span>' : '<span style="color:var(--muted)">—</span>')+'</td>'+
+      '<td><button class="btn sm" onclick="openIssue('+r.row+')">صدّر</button></td>'+
+    '</tr>';
+  });
+  h += '</tbody></table></div>';
+  $('reqBody').innerHTML = h;
+}
+
+/* ══════════ مودال الإصدار ══════════ */
+function openModal(html){ $('modal').innerHTML = html; $('overlay').classList.remove('hide'); }
+function closeModal(){ $('overlay').classList.add('hide'); CUR=null; }
+$('overlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape' && !$('overlay').classList.contains('hide')) closeModal(); });
+
+function openIssue(row){
+  var r = REQS.filter(function(x){ return x.row===row; })[0];
+  if(!r) return;
+  CUR = { mode:'issue', req:r };
+  openModal(
+    '<h3>إصدار رقم عضوية</h3><p class="sub">راجع البيانات وحدّد تاريخ بدء العضوية.</p>'+
+    '<div class="info">'+
+      '<div><span class="k">اسم المدرب</span><span class="v">'+esc(r.name)+'</span></div>'+
+      '<div><span class="k">رقم التواصل</span><span class="v mono">'+esc(r.phone||'—')+'</span></div>'+
+      (r.plan ? '<div><span class="k">نوع العضوية</span><span class="v">'+esc(r.plan)+'</span></div>' : '')+
+      (r.payst ? '<div><span class="k">حالة الدفع</span><span class="v">'+esc(r.payst)+'</span></div>' : '')+
+    '</div>'+
+    dateBlock(todayISO())+
+    '<div class="note ok" style="background:#F4EDE6;color:#5C0F0F;border-color:#E8DED4">رقم العضوية يطلع تلقائياً من الشيت بعد الحفظ.</div>'+
+    '<div id="mdMsg" class="note err hide"></div>'+
+    '<div class="mactions">'+
+      '<button class="btn" id="mdBtn" onclick="confirmIssue(0)">صدّر الرقم</button>'+
+      '<button class="btn sec" onclick="closeModal()">إلغاء</button>'+
+    '</div>'
+  );
+  mdPreview();
+}
+
+function dateBlock(startISO){
+  return '<div class="field"><label>تاريخ بدء العضوية</label>'+
+    '<input id="mdStart" type="date" value="'+startISO+'" onchange="mdPreview()"></div>'+
+    '<div class="field"><label>مدة العضوية</label><select id="mdMonths" onchange="mdPreview()">'+
+      '<option value="12" selected>سنة — 12 شهر</option>'+
+      '<option value="24">سنتين — 24 شهر</option>'+
+      '<option value="6">6 أشهر</option>'+
+      '<option value="3">3 أشهر</option>'+
+    '</select></div>'+
+    '<div class="info"><div><span class="k">تاريخ الانتهاء</span><span class="v mono" id="mdEnd">—</span></div></div>';
+}
+function mdPreview(){
+  var s=$('mdStart'), m=$('mdMonths'), e=$('mdEnd');
+  if(!s||!e) return;
+  e.textContent = fmtDate(addMonthsISO(s.value, m ? m.value : 12));
+}
+
+function confirmIssue(force){
+  var r = CUR && CUR.req; if(!r) return;
+  var start = $('mdStart').value, months = $('mdMonths').value;
+  if(!start){ mdErr('حدد تاريخ بدء العضوية'); return; }
+  var b=$('mdBtn'); b.disabled=true; b.innerHTML='جاري الإصدار<span class="spin"></span>';
+  api('issue', { row:r.row, name:r.name, phone:r.phone, email:r.email||'', plan:r.plan||'',
+                 start:start, months:months, force:force?1:0 })
+  .then(function(res){
+    b.disabled=false; b.textContent='صدّر الرقم';
+    if(res.duplicate){ dupScreen(res, start, months); return; }
+    if(!res.ok){ mdErr(res.message||'تعذّر الإصدار'); return; }
+    REQS = REQS.filter(function(x){ return x.row!==r.row; });
+    $('sPending').textContent = REQS.length;
+    renderReq(); api('stats',{}).then(function(s){ if(s.ok) fillStats(s); });
+    successScreen(res);
+  });
+}
+function mdErr(m){ var e=$('mdMsg'); if(e){ e.textContent=m; e.classList.remove('hide'); } else toast(m); }
+
+function dupScreen(res, start, months){
+  var d = res.member || {};
+  openModal(
+    '<h3>الرقم موجود مسبقاً</h3><p class="sub">هذا الجوال مسجّل بعضوية قائمة.</p>'+
+    '<div class="note warn">'+esc(res.message||'')+'</div>'+
+    '<div class="info">'+
+      '<div><span class="k">رقم العضوية</span><span class="v mono">'+esc(d.no||'—')+'</span></div>'+
+      '<div><span class="k">الاسم</span><span class="v">'+esc(d.name||'—')+'</span></div>'+
+      '<div><span class="k">البداية</span><span class="v mono">'+esc(d.start||'—')+'</span></div>'+
+      '<div><span class="k">الانتهاء</span><span class="v mono">'+esc(d.end||'—')+'</span></div>'+
+    '</div>'+
+    '<div class="mactions">'+
+      '<button class="btn" onclick=\'openRenew('+JSON.stringify(d).replace(/'/g,"&#39;")+')\'>جدّد هذه العضوية</button>'+
+      '<button class="btn sec" onclick="forceIssue(\''+start+'\',\''+months+'\')">أصدر رقم جديد</button>'+
+    '</div>'+
+    '<div style="text-align:center;margin-top:10px"><button class="btn sm sec" onclick="closeModal()">إلغاء</button></div>'
+  );
+}
+function forceIssue(start, months){
+  var r = CUR && CUR.req; if(!r) return;
+  openModal('<h3>إصدار رقم عضوية</h3><p class="sub">تأكيد إصدار رقم جديد رغم التكرار.</p>'+
+    '<div class="info"><div><span class="k">الاسم</span><span class="v">'+esc(r.name)+'</span></div></div>'+
+    dateBlock(start)+'<div id="mdMsg" class="note err hide"></div>'+
+    '<div class="mactions"><button class="btn" id="mdBtn" onclick="confirmIssue(1)">تأكيد الإصدار</button>'+
+    '<button class="btn sec" onclick="closeModal()">إلغاء</button></div>');
+  $('mdMonths').value = months; mdPreview();
+}
+
+function successScreen(res){
+  var no = res.memberNo || '';
+  var msg = 'أهلاً ' + res.name + ' 👋\n'+
+            'تم تفعيل عضويتك في معهد تمكين للتدريب.\n'+
+            (no ? 'رقم العضوية: ' + no + '\n' : '')+
+            'تاريخ البدء: ' + res.start + '\n'+
+            'تاريخ الانتهاء: ' + res.end + '\n'+
+            'تقدر تدخل بوابة المدربين برقم عضويتك من tamkeenkuw.com';
+  openModal(
+    '<h3>تم حفظ العضو</h3><p class="sub">انحفظت البيانات في تبويب بيانات الاعضاء.</p>'+
+    (no
+      ? '<div class="bigno"><small>رقم العضوية</small><b>'+esc(no)+'</b></div>'
+      : '<div class="note warn">الصف انحفظ بس رقم العضوية ما طلع من صيغة العمود A — افتح الشيت وتأكد إن الصيغة نازلة على الصف الجديد ('+esc(res.row||'')+').</div>')+
+    '<div class="info">'+
+      '<div><span class="k">الاسم</span><span class="v">'+esc(res.name)+'</span></div>'+
+      '<div><span class="k">تاريخ البدء</span><span class="v mono">'+esc(res.start)+'</span></div>'+
+      '<div><span class="k">تاريخ الانتهاء</span><span class="v mono">'+esc(res.end)+'</span></div>'+
+    '</div>'+
+    '<div class="mactions">'+
+      (no ? '<button class="btn" onclick="copy(\''+no+'\')">نسخ الرقم</button>' : '')+
+      '<button class="btn sec" onclick=\'copy('+JSON.stringify(msg).replace(/'/g,"&#39;")+')\'>نسخ رسالة العضو</button>'+
+    '</div>'+
+    '<div style="text-align:center;margin-top:10px"><button class="btn sm sec" onclick="closeModal()">إغلاق</button></div>'
+  );
+}
+
+/* ══════════ الإصدار اليدوي ══════════ */
+function manPreview(){
+  var s=$('mStart').value, m=$('mMonths').value;
+  $('mEndPrev').textContent = s ? fmtDate(addMonthsISO(s,m)) : '—';
+}
+$('mStart').addEventListener('change', manPreview);
+
+function manualIssue(force){
+  var name=($('mName').value||'').trim(), phone=($('mPhone').value||'').replace(/\D/g,''),
+      email=($('mEmail').value||'').trim(), start=$('mStart').value, months=$('mMonths').value,
+      no='';
+  var e=$('manMsg'); e.classList.add('hide');
+  if(!name){ e.textContent='اكتب اسم المدرب'; e.classList.remove('hide'); return; }
+  if(phone.length<8){ e.textContent='رقم التواصل غير صحيح'; e.classList.remove('hide'); return; }
+  if(!start){ e.textContent='حدد تاريخ بدء العضوية'; e.classList.remove('hide'); return; }
+  var b=$('manBtn'); b.disabled=true; b.innerHTML='جاري الإصدار<span class="spin"></span>';
+  api('manual', { name:name, phone:phone, email:email, start:start, months:months, force:force?1:0 })
+  .then(function(res){
+    b.disabled=false; b.textContent='إصدار رقم العضوية';
+    if(res.duplicate){
+      var d=res.member||{};
+      openModal('<h3>الرقم موجود مسبقاً</h3><p class="sub">هذا الجوال مسجّل بعضوية قائمة.</p>'+
+        '<div class="info">'+
+          '<div><span class="k">رقم العضوية</span><span class="v mono">'+esc(d.no||'—')+'</span></div>'+
+          '<div><span class="k">الاسم</span><span class="v">'+esc(d.name||'—')+'</span></div>'+
+          '<div><span class="k">الانتهاء</span><span class="v mono">'+esc(d.end||'—')+'</span></div>'+
+        '</div>'+
+        '<div class="mactions">'+
+          '<button class="btn" onclick=\'openRenew('+JSON.stringify(d).replace(/'/g,"&#39;")+')\'>جدّد هذه العضوية</button>'+
+          '<button class="btn sec" onclick="closeModal(); manualIssue(1)">أصدر رقم جديد</button>'+
+        '</div>');
+      return;
+    }
+    if(!res.ok){ e.textContent=res.message||'تعذّر الإصدار'; e.classList.remove('hide'); return; }
+    $('mName').value=''; $('mPhone').value=''; $('mEmail').value='';
+    api('stats',{}).then(function(s){ if(s.ok) fillStats(s); });
+    successScreen(res);
+  });
+}
+
+/* ══════════ الاستعلام والتجديد ══════════ */
+$('qIn').addEventListener('keydown', function(e){ if(e.key==='Enter') doSearch(); });
+
+function doSearch(){
+  var q=($('qIn').value||'').trim();
+  if(!q){ toast('اكتب رقم أو اسم للبحث'); return; }
+  var b=$('qBtn'); b.disabled=true; b.innerHTML='جاري البحث<span class="spin"></span>';
+  $('qBody').innerHTML='<div class="card"><div class="empty">جاري البحث…</div></div>';
+  api('search', { q:q }).then(function(res){
+    b.disabled=false; b.textContent='بحث';
+    if(!res.ok){ $('qBody').innerHTML='<div class="card"><div class="note err">'+esc(res.message||'تعذّر البحث')+'</div></div>'; return; }
+    var rows=res.rows||[];
+    if(!rows.length){ $('qBody').innerHTML='<div class="card"><div class="empty">ما في نتائج مطابقة لـ «'+esc(q)+'»</div></div>'; return; }
+    var h='<div class="card"><h2>النتائج ('+rows.length+')</h2><p class="sub">تفاصيل العضوية وحالتها.</p>';
+    rows.forEach(function(m){
+      var dl = (m.daysLeft===null||m.daysLeft===undefined) ? '' :
+        (m.daysLeft<0 ? 'منتهية من ' + Math.abs(m.daysLeft) + ' يوم' : 'باقي ' + m.daysLeft + ' يوم');
+      h += '<div class="mcard">'+
+        '<div class="mhead"><span class="mno mono">'+esc(m.no||'—')+'</span>'+
+          '<span class="mname">'+esc(m.name||'—')+'</span>'+
+          '<span class="badge '+esc(m.statusCode||'unknown')+'">'+esc(m.status||'—')+(dl?' · '+dl:'')+'</span></div>'+
+        '<div class="mrows">'+
+          '<div class="mrow"><div class="k">رقم التواصل</div><div class="v mono">'+esc(m.phone||'—')+'</div></div>'+
+          '<div class="mrow"><div class="k">تاريخ البدء</div><div class="v mono">'+esc(m.start||'—')+'</div></div>'+
+          '<div class="mrow"><div class="k">تاريخ الانتهاء</div><div class="v mono">'+esc(m.end||'—')+'</div></div>'+
+          '<div class="mrow"><div class="k">الإيميل</div><div class="v" style="font-size:12.5px;word-break:break-all">'+esc(m.email||'—')+'</div></div>'+
+        '</div>'+
+        '<div class="mfoot">'+
+          '<button class="btn sm" onclick=\'openRenew('+JSON.stringify(m).replace(/'/g,"&#39;")+')\'>تجديد العضوية</button>'+
+          '<button class="btn sm sec" onclick="copy(\''+esc(m.no||'')+'\')">نسخ الرقم</button>'+
+        '</div></div>';
+    });
+    h += '</div>';
+    $('qBody').innerHTML = h;
+  });
+}
+
+function openRenew(m){
+  CUR = { mode:'renew', member:m };
+  var fromEnd = m.endISO ? dayAfterISO(m.endISO) : todayISO();
+  openModal(
+    '<h3>تجديد العضوية</h3><p class="sub">يتحدّث تاريخ البدء والانتهاء، ورقم العضوية يتعدّل تلقائياً من صيغة الشيت.</p>'+
+    '<div class="info">'+
+      '<div><span class="k">رقم العضوية</span><span class="v mono">'+esc(m.no||'—')+'</span></div>'+
+      '<div><span class="k">الاسم</span><span class="v">'+esc(m.name||'—')+'</span></div>'+
+      '<div><span class="k">الفترة الحالية</span><span class="v mono">'+esc(m.start||'—')+' → '+esc(m.end||'—')+'</span></div>'+
+    '</div>'+
+    '<div class="mactions" style="margin-bottom:12px">'+
+      '<button class="btn sm sec" onclick="setRenewDate(\''+fromEnd+'\')">يبدأ بعد الانتهاء</button>'+
+      '<button class="btn sm sec" onclick="setRenewDate(\''+todayISO()+'\')">يبدأ من اليوم</button>'+
+    '</div>'+
+    '<div class="field"><label>تاريخ بدء التجديد</label>'+
+      '<input id="rnStart" type="date" value="'+fromEnd+'" onchange="rnPreview()"></div>'+
+    '<div class="field"><label>مدة التجديد</label><select id="rnMonths" onchange="rnPreview()">'+
+      '<option value="12" selected>سنة — 12 شهر</option><option value="24">سنتين — 24 شهر</option>'+
+      '<option value="6">6 أشهر</option><option value="3">3 أشهر</option></select></div>'+
+    '<div class="info"><div><span class="k">تاريخ الانتهاء الجديد</span><span class="v mono" id="rnEnd">—</span></div></div>'+
+    '<div id="rnMsg" class="note err hide"></div>'+
+    '<div class="mactions">'+
+      '<button class="btn" id="rnBtn" onclick="confirmRenew()">تأكيد التجديد</button>'+
+      '<button class="btn sec" onclick="closeModal()">إلغاء</button>'+
+    '</div>'
+  );
+  rnPreview();
+}
+function setRenewDate(iso){ $('rnStart').value=iso; rnPreview(); }
+function rnPreview(){ var s=$('rnStart'), m=$('rnMonths'); if(s&&$('rnEnd')) $('rnEnd').textContent = fmtDate(addMonthsISO(s.value, m.value)); }
+
+function confirmRenew(){
+  var m = CUR && CUR.member; if(!m) return;
+  var start=$('rnStart').value, months=$('rnMonths').value;
+  if(!start){ $('rnMsg').textContent='حدد تاريخ بدء التجديد'; $('rnMsg').classList.remove('hide'); return; }
+  var b=$('rnBtn'); b.disabled=true; b.innerHTML='جاري التجديد<span class="spin"></span>';
+  api('renew', { row:m.row, no:m.no, start:start, months:months }).then(function(res){
+    b.disabled=false; b.textContent='تأكيد التجديد';
+    if(!res.ok){ $('rnMsg').textContent=res.message||'تعذّر التجديد'; $('rnMsg').classList.remove('hide'); return; }
+    var msg = 'أهلاً ' + res.name + ' 👋\n'+
+              'تم تجديد عضويتك في معهد تمكين للتدريب.\n'+
+              'رقم العضوية: ' + res.memberNo + '\n'+
+              'الفترة الجديدة: ' + res.start + ' حتى ' + res.end;
+    openModal(
+      '<h3>تم التجديد</h3><p class="sub">تحدّثت بيانات العضو في تبويب بيانات الاعضاء.</p>'+
+      '<div class="bigno"><small>رقم العضوية</small><b>'+esc(res.memberNo)+'</b></div>'+
+      (res.noChanged ? '<div class="note ok">تغيّر الرقم من '+esc(res.oldNo||'—')+' إلى '+esc(res.memberNo)+' حسب تاريخ التجديد.</div>' : '')+
+      '<div class="info">'+
+        '<div><span class="k">الفترة السابقة</span><span class="v mono">'+esc(res.oldStart||'—')+' → '+esc(res.oldEnd||'—')+'</span></div>'+
+        '<div><span class="k">الفترة الجديدة</span><span class="v mono">'+esc(res.start)+' → '+esc(res.end)+'</span></div>'+
+      '</div>'+
+      '<div class="mactions">'+
+        '<button class="btn" onclick=\'copy('+JSON.stringify(msg).replace(/'/g,"&#39;")+')\'>نسخ رسالة العضو</button>'+
+        '<button class="btn sec" onclick="closeModal(); doSearch()">تحديث النتائج</button>'+
+      '</div>'
+    );
+  });
+}
+
+/* ══════════ التشغيل ══════════ */
+$('pinIn').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+$('urlIn').addEventListener('keydown', function(e){ if(e.key==='Enter') saveUrl(); });
+boot();
+</script>
+</body>
+</html>
