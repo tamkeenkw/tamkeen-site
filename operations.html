@@ -1023,7 +1023,7 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
   <div class="panel" id="p-membership">
     <div class="sec-head">
       <div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><line x1="14" y1="10" x2="19" y2="10"/></svg>استعلام وإصدار رقم العضوية</div>
-      <div class="sec-desc">رقم العضوية يتولّد من معادلة العمود A في «بيانات الاعضاء » — اللوحة تكتب البيانات وتقرأ الرقم</div></div>
+      <div class="sec-desc">اللوحة تكتب الاسم والجوال وتاريخ البدء فقط — رقم العضوية وتاريخ الانتهاء معادلات بالشيت</div></div>
       <button class="btn btn-ghost" onclick="mbrRefresh()"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
     </div>
 
@@ -1050,20 +1050,12 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 
     <div id="mbr-man" style="display:none">
       <div style="max-width:560px">
-        <div class="mbr-note info">الاسم ورقم التواصل وتاريخ البدء فقط — رقم العضوية يطلع تلقائياً من الشيت بعد الحفظ.</div>
+        <div class="mbr-note info">ثلاث خانات فقط — رقم العضوية وتاريخ الانتهاء يطلعان من معادلات الشيت بعد الحفظ.</div>
         <div class="mbr-f"><label>اسم المدرب</label><input id="mbrMName" placeholder="الاسم الثلاثي"></div>
         <div class="mbr-g2">
           <div class="mbr-f"><label>رقم التواصل</label><input id="mbrMPhone" inputmode="numeric" placeholder="9xxxxxxx" dir="ltr"></div>
-          <div class="mbr-f"><label>الإيميل (اختياري)</label><input id="mbrMEmail" type="email" dir="ltr"></div>
+          <div class="mbr-f"><label>تاريخ بدء العضوية</label><input id="mbrMStart" type="date"></div>
         </div>
-        <div class="mbr-g2">
-          <div class="mbr-f"><label>تاريخ بدء العضوية</label><input id="mbrMStart" type="date" onchange="mbrManPrev()"></div>
-          <div class="mbr-f"><label>مدة العضوية</label>
-            <select id="mbrMMonths" onchange="mbrManPrev()">
-              <option value="12" selected>سنة — 12 شهر</option><option value="24">سنتين — 24 شهر</option>
-              <option value="6">6 أشهر</option><option value="3">3 أشهر</option></select></div>
-        </div>
-        <div class="mbr-info"><div><span class="k">تاريخ الانتهاء المحسوب</span><span class="v mbr-mono" id="mbrMEnd">—</span></div></div>
         <div id="mbrManMsg" class="mbr-note err" style="display:none"></div>
         <button class="btn btn-primary" id="mbrManBtn" onclick="mbrManual(0)" style="background:var(--crimson);color:#fff">حفظ وإصدار الرقم</button>
       </div>
@@ -2951,13 +2943,6 @@ function mbrApi(action, params){
 function mbrP2(n){ return n<10 ? '0'+n : ''+n; }
 function mbrToday(){ var d=new Date(); return d.getFullYear()+'-'+mbrP2(d.getMonth()+1)+'-'+mbrP2(d.getDate()); }
 function mbrFmtD(iso){ if(!iso) return '—'; var a=iso.split('-'); return a.length===3 ? a[2]+'/'+a[1]+'/'+a[0] : iso; }
-function mbrAddMonths(iso, months){
-  if(!iso) return '';
-  var a=iso.split('-'); if(a.length!==3) return '';
-  var d=new Date(+a[0], +a[1]-1+(parseInt(months,10)||12), +a[2]);
-  d.setDate(d.getDate()-1);
-  return d.getFullYear()+'-'+mbrP2(d.getMonth()+1)+'-'+mbrP2(d.getDate());
-}
 function mbrDayAfter(iso){
   if(!iso) return mbrToday();
   var a=iso.split('-'); if(a.length!==3) return mbrToday();
@@ -2982,7 +2967,6 @@ function mbrInit(){
   if(MBR_READY) return;
   MBR_READY = true;
   document.getElementById('mbrMStart').value = mbrToday();
-  mbrManPrev();
   document.getElementById('mbrQ').addEventListener('keydown', function(e){ if(e.key==='Enter') mbrSearch(); });
   mbrRefresh();
 }
@@ -3043,15 +3027,7 @@ function mbrRenderReq(){
 
 /* ── مودال الإصدار ── */
 function mbrDates(startISO){
-  return '<div class="mbr-f"><label>تاريخ بدء العضوية</label><input id="mbrDStart" type="date" value="'+startISO+'" onchange="mbrDPrev()"></div>'+
-    '<div class="mbr-f"><label>مدة العضوية</label><select id="mbrDMonths" onchange="mbrDPrev()">'+
-    '<option value="12" selected>سنة — 12 شهر</option><option value="24">سنتين — 24 شهر</option>'+
-    '<option value="6">6 أشهر</option><option value="3">3 أشهر</option></select></div>'+
-    '<div class="mbr-info"><div><span class="k">تاريخ الانتهاء</span><span class="v mbr-mono" id="mbrDEnd">—</span></div></div>';
-}
-function mbrDPrev(){
-  var s=document.getElementById('mbrDStart'), m=document.getElementById('mbrDMonths'), e=document.getElementById('mbrDEnd');
-  if(s&&e) e.textContent = mbrFmtD(mbrAddMonths(s.value, m?m.value:12));
+  return '<div class="mbr-f"><label>تاريخ بدء العضوية</label><input id="mbrDStart" type="date" value="'+startISO+'"></div>';
 }
 function mbrIssue(row){
   var r=MBR_REQS.filter(function(x){return x.row===row;})[0]; if(!r) return;
@@ -3063,22 +3039,21 @@ function mbrIssue(row){
       (r.plan?'<div><span class="k">نوع العضوية</span><span class="v">'+esc(r.plan)+'</span></div>':'')+
       (r.payst?'<div><span class="k">حالة الدفع</span><span class="v">'+esc(r.payst)+'</span></div>':'')+
     '</div>'+ mbrDates(mbrToday())+
-    '<div class="mbr-note info">رقم العضوية يطلع تلقائياً من معادلة الشيت بعد الحفظ.</div>'+
+    '<div class="mbr-note info">رقم العضوية وتاريخ الانتهاء يطلعان تلقائياً من معادلات الشيت بعد الحفظ.</div>'+
     '<div id="mbrDMsg" class="mbr-note err" style="display:none"></div>'+
     '<div class="mbr-acts"><button class="btn" id="mbrDBtn" style="background:var(--crimson);color:#fff" onclick="mbrDoIssue(0)">صدّر الرقم</button>'+
     '<button class="btn btn-ghost" onclick="mbrClose()">إلغاء</button></div>');
-  mbrDPrev();
 }
 function mbrDErr(m){ var e=document.getElementById('mbrDMsg'); if(e){ e.textContent=m; e.style.display=''; } else toast(m); }
 function mbrDoIssue(force){
   var r=MBR_CUR&&MBR_CUR.req; if(!r) return;
-  var start=document.getElementById('mbrDStart').value, months=document.getElementById('mbrDMonths').value;
+  var start=document.getElementById('mbrDStart').value;
   if(!start){ mbrDErr('حدد تاريخ بدء العضوية'); return; }
   var b=document.getElementById('mbrDBtn'); b.disabled=true; b.textContent='جاري الإصدار...';
-  mbrApi('issue',{ row:r.row, name:r.name, phone:r.phone, email:r.email||'', plan:r.plan||'', start:start, months:months, force:force?1:0 })
+  mbrApi('issue',{ row:r.row, name:r.name, phone:r.phone, plan:r.plan||'', start:start, force:force?1:0 })
   .then(function(res){
     b.disabled=false; b.textContent='صدّر الرقم';
-    if(res.duplicate){ mbrDupScreen(res, start, months); return; }
+    if(res.duplicate){ mbrDupScreen(res, start); return; }
     if(!res.ok){ mbrDErr(res.message||'تعذّر الإصدار'); return; }
     MBR_REQS = MBR_REQS.filter(function(x){ return x.row!==r.row; });
     document.getElementById('mbrPending').textContent = MBR_REQS.length;
@@ -3087,7 +3062,7 @@ function mbrDoIssue(force){
     mbrDone(res);
   });
 }
-function mbrDupScreen(res, start, months){
+function mbrDupScreen(res, start){
   var d=res.member||{};
   mbrOpen('<h3>الرقم موجود مسبقاً</h3><p class="sub">هذا الجوال مسجّل بعضوية قائمة.</p>'+
     '<div class="mbr-note warn">'+esc(res.message||'')+'</div>'+
@@ -3099,32 +3074,32 @@ function mbrDupScreen(res, start, months){
     '</div>'+
     '<div class="mbr-acts">'+
       '<button class="btn" style="background:var(--crimson);color:#fff" onclick=\'mbrRenew('+JSON.stringify(d).replace(/'/g,"&#39;")+')\'>جدّد هذه العضوية</button>'+
-      '<button class="btn btn-ghost" onclick="mbrForce(\''+start+'\',\''+months+'\')">أصدر رقم جديد</button>'+
+      '<button class="btn btn-ghost" onclick="mbrForce(\''+start+'\')">أصدر رقم جديد</button>'+
     '</div>'+
     '<div style="text-align:center;margin-top:10px"><button class="btn btn-ghost" onclick="mbrClose()">إلغاء</button></div>');
 }
-function mbrForce(start, months){
+function mbrForce(start){
   var r=MBR_CUR&&MBR_CUR.req; if(!r) return;
   mbrOpen('<h3>إصدار رقم عضوية</h3><p class="sub">تأكيد إصدار رقم جديد رغم التكرار.</p>'+
     '<div class="mbr-info"><div><span class="k">الاسم</span><span class="v">'+esc(r.name)+'</span></div></div>'+
     mbrDates(start)+'<div id="mbrDMsg" class="mbr-note err" style="display:none"></div>'+
     '<div class="mbr-acts"><button class="btn" id="mbrDBtn" style="background:var(--crimson);color:#fff" onclick="mbrDoIssue(1)">تأكيد الإصدار</button>'+
     '<button class="btn btn-ghost" onclick="mbrClose()">إلغاء</button></div>');
-  document.getElementById('mbrDMonths').value = months; mbrDPrev();
 }
 function mbrDone(res){
-  var no=res.memberNo||'';
+  var no=res.memberNo||'', end=res.end||'';
   var msg='أهلاً '+res.name+'\nتم تفعيل عضويتك في معهد تمكين للتدريب.\n'+
           (no?'رقم العضوية: '+no+'\n':'')+
-          'تاريخ البدء: '+res.start+'\nتاريخ الانتهاء: '+res.end+'\n'+
+          'تاريخ البدء: '+res.start+(end?'\nتاريخ الانتهاء: '+end:'')+'\n'+
           'تقدر تدخل بوابة المدربين برقم عضويتك من tamkeenkuw.com';
   mbrOpen('<h3>تم حفظ العضو</h3><p class="sub">انحفظت البيانات في تبويب بيانات الاعضاء.</p>'+
     (no ? '<div class="mbr-big"><small>رقم العضوية</small><b>'+esc(no)+'</b></div>'
         : '<div class="mbr-note warn">الصف انحفظ بس رقم العضوية ما طلع من معادلة العمود A — تأكد إن المعادلة تغطي الصف '+esc(res.row||'')+'.</div>')+
+    (end ? '' : '<div class="mbr-note warn">تاريخ الانتهاء ما طلع من معادلة العمود F — راجع الصف '+esc(res.row||'')+' بالشيت.</div>')+
     '<div class="mbr-info">'+
       '<div><span class="k">الاسم</span><span class="v">'+esc(res.name)+'</span></div>'+
       '<div><span class="k">تاريخ البدء</span><span class="v mbr-mono">'+esc(res.start)+'</span></div>'+
-      '<div><span class="k">تاريخ الانتهاء</span><span class="v mbr-mono">'+esc(res.end)+'</span></div>'+
+      '<div><span class="k">تاريخ الانتهاء</span><span class="v mbr-mono">'+esc(end||'—')+'</span></div>'+
     '</div>'+
     '<div class="mbr-acts">'+
       (no?'<button class="btn" style="background:var(--crimson);color:#fff" onclick="mbrCopy(\''+no+'\')">نسخ الرقم</button>':'')+
@@ -3134,21 +3109,16 @@ function mbrDone(res){
 }
 
 /* ── إصدار يدوي ── */
-function mbrManPrev(){
-  var s=document.getElementById('mbrMStart').value, m=document.getElementById('mbrMMonths').value;
-  document.getElementById('mbrMEnd').textContent = s ? mbrFmtD(mbrAddMonths(s,m)) : '—';
-}
 function mbrManual(force){
   var name=(document.getElementById('mbrMName').value||'').trim();
   var phone=(document.getElementById('mbrMPhone').value||'').replace(/\D/g,'');
-  var email=(document.getElementById('mbrMEmail').value||'').trim();
-  var start=document.getElementById('mbrMStart').value, months=document.getElementById('mbrMMonths').value;
+  var start=document.getElementById('mbrMStart').value;
   var e=document.getElementById('mbrManMsg'); e.style.display='none';
   if(!name){ e.textContent='اكتب اسم المدرب'; e.style.display=''; return; }
   if(phone.length<8){ e.textContent='رقم التواصل غير صحيح'; e.style.display=''; return; }
   if(!start){ e.textContent='حدد تاريخ بدء العضوية'; e.style.display=''; return; }
   var b=document.getElementById('mbrManBtn'); b.disabled=true; b.textContent='جاري الحفظ...';
-  mbrApi('manual',{ name:name, phone:phone, email:email, start:start, months:months, force:force?1:0 })
+  mbrApi('manual',{ name:name, phone:phone, start:start, force:force?1:0 })
   .then(function(res){
     b.disabled=false; b.textContent='حفظ وإصدار الرقم';
     if(res.duplicate){
@@ -3164,7 +3134,7 @@ function mbrManual(force){
       return;
     }
     if(!res.ok){ e.textContent=res.message||'تعذّر الحفظ'; e.style.display=''; return; }
-    document.getElementById('mbrMName').value=''; document.getElementById('mbrMPhone').value=''; document.getElementById('mbrMEmail').value='';
+    document.getElementById('mbrMName').value=''; document.getElementById('mbrMPhone').value='';
     mbrApi('stats',{}).then(function(s){ if(s.ok) document.getElementById('mbrMembers').textContent=s.members; });
     mbrDone(res);
   });
@@ -3214,38 +3184,30 @@ function mbrRenew(m){
       '<button class="btn btn-ghost" style="padding:8px 14px;font-size:13px" onclick="mbrSetRn(\''+fromEnd+'\')">يبدأ بعد الانتهاء</button>'+
       '<button class="btn btn-ghost" style="padding:8px 14px;font-size:13px" onclick="mbrSetRn(\''+mbrToday()+'\')">يبدأ من اليوم</button>'+
     '</div>'+
-    '<div class="mbr-f"><label>تاريخ بدء التجديد</label><input id="mbrRnStart" type="date" value="'+fromEnd+'" onchange="mbrRnPrev()"></div>'+
-    '<div class="mbr-f"><label>مدة التجديد</label><select id="mbrRnMonths" onchange="mbrRnPrev()">'+
-      '<option value="12" selected>سنة — 12 شهر</option><option value="24">سنتين — 24 شهر</option>'+
-      '<option value="6">6 أشهر</option><option value="3">3 أشهر</option></select></div>'+
-    '<div class="mbr-info"><div><span class="k">تاريخ الانتهاء الجديد</span><span class="v mbr-mono" id="mbrRnEnd">—</span></div></div>'+
+    '<div class="mbr-f"><label>تاريخ بدء التجديد</label><input id="mbrRnStart" type="date" value="'+fromEnd+'"></div>'+
+    '<div class="mbr-note info">تاريخ الانتهاء الجديد يطلع من معادلة الشيت بعد الحفظ.</div>'+
     '<div id="mbrRnMsg" class="mbr-note err" style="display:none"></div>'+
     '<div class="mbr-acts"><button class="btn" id="mbrRnBtn" style="background:var(--crimson);color:#fff" onclick="mbrDoRenew()">تأكيد التجديد</button>'+
     '<button class="btn btn-ghost" onclick="mbrClose()">إلغاء</button></div>');
-  mbrRnPrev();
 }
-function mbrSetRn(iso){ document.getElementById('mbrRnStart').value=iso; mbrRnPrev(); }
-function mbrRnPrev(){
-  var s=document.getElementById('mbrRnStart'), m=document.getElementById('mbrRnMonths'), e=document.getElementById('mbrRnEnd');
-  if(s&&e) e.textContent = mbrFmtD(mbrAddMonths(s.value, m.value));
-}
+function mbrSetRn(iso){ document.getElementById('mbrRnStart').value=iso; }
 function mbrDoRenew(){
   var m=MBR_CUR&&MBR_CUR.member; if(!m) return;
-  var start=document.getElementById('mbrRnStart').value, months=document.getElementById('mbrRnMonths').value;
+  var start=document.getElementById('mbrRnStart').value;
   var e=document.getElementById('mbrRnMsg');
   if(!start){ e.textContent='حدد تاريخ بدء التجديد'; e.style.display=''; return; }
   var b=document.getElementById('mbrRnBtn'); b.disabled=true; b.textContent='جاري التجديد...';
-  mbrApi('renew',{ row:m.row, no:m.no, start:start, months:months }).then(function(res){
+  mbrApi('renew',{ row:m.row, no:m.no, start:start }).then(function(res){
     b.disabled=false; b.textContent='تأكيد التجديد';
     if(!res.ok){ e.textContent=res.message||'تعذّر التجديد'; e.style.display=''; return; }
     var msg='أهلاً '+res.name+'\nتم تجديد عضويتك في معهد تمكين للتدريب.\nرقم العضوية: '+res.memberNo+
-            '\nالفترة الجديدة: '+res.start+' حتى '+res.end;
+            '\nالفترة الجديدة: '+res.start+(res.end?' حتى '+res.end:'');
     mbrOpen('<h3>تم التجديد</h3><p class="sub">تحدّثت بيانات العضو في تبويب بيانات الاعضاء.</p>'+
       '<div class="mbr-big"><small>رقم العضوية</small><b>'+esc(res.memberNo)+'</b></div>'+
       (res.noChanged?'<div class="mbr-note info">تغيّر الرقم من '+esc(res.oldNo||'—')+' إلى '+esc(res.memberNo)+' حسب تاريخ التجديد.</div>':'')+
       '<div class="mbr-info">'+
         '<div><span class="k">الفترة السابقة</span><span class="v mbr-mono">'+esc(res.oldStart||'—')+' → '+esc(res.oldEnd||'—')+'</span></div>'+
-        '<div><span class="k">الفترة الجديدة</span><span class="v mbr-mono">'+esc(res.start)+' → '+esc(res.end)+'</span></div>'+
+        '<div><span class="k">الفترة الجديدة</span><span class="v mbr-mono">'+esc(res.start)+' → '+esc(res.end||'—')+'</span></div>'+
       '</div>'+
       '<div class="mbr-acts">'+
         '<button class="btn" style="background:var(--crimson);color:#fff" onclick=\'mbrCopy('+JSON.stringify(msg).replace(/'/g,"&#39;")+')\'>نسخ رسالة العضو</button>'+
