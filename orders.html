@@ -112,7 +112,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .kv dt{color:var(--muted);font-weight:700}
 .kv dd{font-weight:700;word-break:break-word;white-space:pre-line}
 .kv dd.ltr{direction:ltr;text-align:right}
-.ops{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}
+.oplabel{font-size:11.5px;font-weight:800;color:var(--muted);margin-top:13px}
+.ops{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
 .op{font-size:11.5px;font-weight:800;color:var(--muted2);background:rgba(255,255,255,.05);
  border:1.5px solid var(--bd);border-radius:10px;padding:8px 13px;cursor:pointer;transition:.2s}
 .op.on{background:var(--teal);border-color:var(--teal);color:#fff}
@@ -198,7 +199,7 @@ td.sm{color:var(--muted2);font-weight:600;max-width:210px;font-size:11.5px}
         </div>
       </div>
       <div class="hacts">
-        <a class="btn sm gh" href="staff.html" style="text-decoration:none">سجل المعلمين</a>
+        <a class="btn sm gh" href="staff-edu.html" style="text-decoration:none">سجل المعلمين</a>
         <button class="btn sm gh" onclick="refresh()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           تحديث
@@ -248,6 +249,7 @@ const LIVE = STAFF_URL.indexOf('script.google.com') > -1;
 
 /* ══════════ الحالة ══════════ */
 let KEY='', USER='', ORDERS=[], STATES=['جديد','مؤكد','مجهّز','تم التوصيل','ملغي'];
+let PAYS=['غير مدفوع','مدفوع جزئي','مدفوع'];
 let DELIVERY=3, filter='الكل', view='cards', sel=new Set(), openRows=new Set();
 
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -257,16 +259,16 @@ const kd  = n => (Math.round((Number(n)||0)*1000)/1000).toFixed(3)+' د.ك';
 let DEMO = [
   {row:2,id:'EC-0002',date:'18/09/2026',name:'محمد العنزي',phone:'99112233',grade:'الثاني عشر — أدبي',
    pkg:'٣ مواد',items:'التاريخ - الجغرافيا - الفلسفة',courses:'',address:'صباح السالم · ق٣ · ش١٢ · منزل ٤٥',
-   total:20,kind:'طلب فعلي',pay:'دفعة واحدة',teacher:'أ. أحمد الرشيدي',ops:'جديد',note:''},
+   total:20,kind:'طلب فعلي',pay:'دفعة واحدة',teacher:'أ. أحمد الرشيدي',ops:'جديد',note:'',paid:'مدفوع'},
   {row:3,id:'EC-0003',date:'18/09/2026',name:'دانة الفضلي',phone:'66778899',grade:'الحادي عشر — أدبي',
    pkg:'كل المواد',items:'التاريخ - الجغرافيا - الفلسفة - العربية - الإسلامية',courses:'مكثف التاريخ',
-   address:'',total:28,kind:'طلب مسبق',pay:'',teacher:'',ops:'مؤكد',note:'تبي تسلّم بالمعهد'},
+   address:'',total:28,kind:'طلب مسبق',pay:'',teacher:'',ops:'مؤكد',note:'تبي تسلّم بالمعهد',paid:'غير مدفوع'},
   {row:4,id:'EC-0004',date:'19/09/2026',name:'يوسف المطيري',phone:'55443322',grade:'الثاني عشر — أدبي',
    pkg:'مادة واحدة',items:'الإحصاء',courses:'',address:'الجهراء · القصر · ق٢ · ش٧ · م١٠',
-   total:13,kind:'طلب فعلي',pay:'كي نت',teacher:'',ops:'مجهّز',note:''},
+   total:13,kind:'طلب فعلي',pay:'كي نت',teacher:'',ops:'مجهّز',note:'',paid:'مدفوع'},
   {row:5,id:'EC-0005',date:'19/09/2026',name:'سارة الرشيدي',phone:'97001122',grade:'الحادي عشر — أدبي',
    pkg:'٣ مواد',items:'التاريخ - العربية - الإسلامية',courses:'',address:'السالمية · ق١٠ · ش٥ · شقة ٣',
-   total:20,kind:'طلب فعلي',pay:'دفعة واحدة',teacher:'',ops:'تم التوصيل',note:'تم التسليم للوالد'}
+   total:20,kind:'طلب فعلي',pay:'دفعة واحدة',teacher:'',ops:'تم التوصيل',note:'تم التسليم للوالد',paid:'مدفوع جزئي'}
 ];
 
 /* ══════════ الاتصال ══════════ */
@@ -289,11 +291,13 @@ function call(params){
 function demoCall(p){
   return new Promise(res=>setTimeout(()=>{
     if(p.action==='ping')   return res({ok:true,user:'موظف تجريبي'});
-    if(p.action==='orders') return res({ok:true,user:'موظف تجريبي',orders:DEMO.slice().reverse(),states:STATES,delivery:3});
+    if(p.action==='orders') return res({ok:true,user:'موظف تجريبي',orders:DEMO.slice().reverse(),
+      states:STATES,paystates:PAYS,delivery:3});
     if(p.action==='order'){
       const o=DEMO.find(x=>x.row==p.row);
       if(!o) return res({ok:false,msg:'ما لقيت الطلب'});
       if(p.ops!==undefined)     o.ops=p.ops;
+      if(p.paid!==undefined)    o.paid=p.paid;
       if(p.note!==undefined)    o.note=p.note;
       if(p.address!==undefined) o.address=p.address;
       return res({ok:true,msg:'تم الحفظ (تجريبي)'});
@@ -350,6 +354,7 @@ async function refresh(){
     if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر جلب الطلبات');
     ORDERS=r.orders||[];
     if(r.states&&r.states.length) STATES=r.states;
+    if(r.paystates&&r.paystates.length) PAYS=r.paystates;
     if(typeof r.delivery==='number') DELIVERY=r.delivery;
     paintStats(); paintChips(); paint();
   }catch(err){ toast(err.message,true); }
@@ -360,13 +365,14 @@ async function refresh(){
 function paintStats(){
   const live=ORDERS.filter(o=>o.ops!=='ملغي');
   const rev=live.reduce((s,o)=>s+(o.total||0),0);
+  const paid=live.filter(o=>o.paid==='مدفوع').reduce((s,o)=>s+(o.total||0),0);
+  const due=rev-paid;
   const pend=live.filter(o=>o.ops==='جديد'||o.ops==='مؤكد').length;
-  const noAddr=live.filter(o=>!o.address).length;
   document.getElementById('stats').innerHTML=
     st(live.length,'طلب فعّال')+
     st(kd(rev),'إجمالي القيمة','acc')+
-    st(pend,'بانتظار التجهيز')+
-    st(noAddr,'بدون عنوان',noAddr?'warn':'');
+    st(kd(due),'غير محصّل',due>0?'warn':'')+
+    st(pend,'بانتظار التجهيز');
 }
 function st(v,l,c){ return '<div class="st '+(c||'')+'"><b>'+esc(v)+'</b><span>'+l+'</span></div>'; }
 
@@ -378,6 +384,7 @@ function paintChips(){
   STATES.forEach(s=>{
     h+='<div class="chip '+(filter===s?'on':'')+'" onclick="setFilter(\''+s+'\')">'+s+' ('+(c[s]||0)+')</div>';
   });
+  h+='<div class="chip '+(filter==='غير مدفوع'?'on':'')+'" onclick="setFilter(\'غير مدفوع\')">غير مدفوع</div>';
   h+='<div class="chip '+(filter==='بدون عنوان'?'on':'')+'" onclick="setFilter(\'بدون عنوان\')">بدون عنوان</div>';
   document.getElementById('chips').innerHTML=h;
 }
@@ -387,6 +394,7 @@ function filtered(){
   const q=document.getElementById('q').value.trim().toLowerCase();
   return ORDERS.filter(o=>{
     if(filter==='بدون عنوان'){ if(o.address||o.ops==='ملغي') return false; }
+    else if(filter==='غير مدفوع'){ if(o.paid==='مدفوع'||o.ops==='ملغي') return false; }
     else if(filter!=='الكل' && o.ops!==filter) return false;
     if(!q) return true;
     return [o.name,o.phone,o.grade,o.items,o.courses,o.address,o.id,o.teacher,o.note]
@@ -420,6 +428,11 @@ function sTag(s){
   return '<span class="tagS '+c+'">'+esc(s)+'</span>';
 }
 
+function pTag(p){
+  const c = p==='مدفوع'?'s-done' : p==='مدفوع جزئي'?'s-prep':'s-cx';
+  return '<span class="tagS '+c+'">'+esc(p||'غير مدفوع')+'</span>';
+}
+
 function card(o){
   const sub=[o.grade,o.items||o.pkg].filter(Boolean).join(' · ')||'—';
   return '<div class="row '+(sel.has(o.row)?'pick ':'')+(o.ops==='ملغي'?'cancel ':'')+(openRows.has(o.row)?'open':'')+'" id="r'+o.row+'">'+
@@ -428,7 +441,7 @@ function card(o){
         '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'+
       '</div>'+
       '<div class="rmain" onclick="toggleRow('+o.row+')">'+
-        '<div class="rname">'+esc(o.name)+' '+sTag(o.ops)+
+        '<div class="rname">'+esc(o.name)+' '+sTag(o.ops)+' '+pTag(o.paid)+
           (!o.address&&o.ops!=='ملغي'?'<span class="noaddr">بدون عنوان</span>':'')+'</div>'+
         '<div class="rsub">'+esc(o.id)+' · '+esc(sub)+'</div>'+
       '</div>'+
@@ -451,8 +464,13 @@ function card(o){
       '<div class="editbox"><label>ملاحظات إدارية</label>'+
         '<input id="nt'+o.row+'" value="'+esc(o.note)+'" placeholder="ملاحظة داخلية للفريق"></div>'+
 
+      '<div class="oplabel">حالة التنفيذ</div>'+
       '<div class="ops">'+
         STATES.map(s=>'<div class="op '+(o.ops===s?'on':'')+'" onclick="setOps('+o.row+',\''+s+'\')">'+s+'</div>').join('')+
+      '</div>'+
+      '<div class="oplabel">حالة الدفع</div>'+
+      '<div class="ops">'+
+        PAYS.map(s=>'<div class="op '+((o.paid||'غير مدفوع')===s?'on':'')+'" onclick="setPaid('+o.row+',\''+s+'\')">'+s+'</div>').join('')+
       '</div>'+
 
       '<div class="racts">'+
@@ -465,7 +483,7 @@ function card(o){
 
 function table(data){
   let h='<tr><th>المعرف</th><th>الاسم</th><th>رقم العميل</th><th>المرحلة</th><th>المواد</th>'+
-        '<th>العنوان</th><th>الإجمالي</th><th>حالة التنفيذ</th><th></th></tr>';
+        '<th>العنوان</th><th>الإجمالي</th><th>الدفع</th><th>حالة التنفيذ</th><th></th></tr>';
   data.forEach(o=>{
     h+='<tr>'+
       '<td class="ltr">'+esc(o.id)+'</td>'+
@@ -475,6 +493,7 @@ function table(data){
       '<td class="sm">'+esc(o.items||o.pkg||'—')+'</td>'+
       '<td class="sm">'+(o.address?esc(o.address):'<span class="noaddr">بدون عنوان</span>')+'</td>'+
       '<td class="ltr">'+kd(o.total)+'</td>'+
+      '<td>'+pTag(o.paid)+'</td>'+
       '<td>'+sTag(o.ops)+'</td>'+
       '<td><span class="tlink" onclick="printOne('+o.row+')">فاتورة</span></td>'+
     '</tr>';
@@ -517,6 +536,16 @@ async function setOps(row,s){
   }catch(err){ toast(err.message,true); }
 }
 
+async function setPaid(row,s){
+  try{
+    const r=await call({action:'order',row:row,paid:s});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'ما تم التعديل');
+    const o=ORDERS.find(x=>x.row==row); if(o) o.paid=s;
+    toast('الدفع: '+s);
+    paintStats(); paintChips(); paint();
+  }catch(err){ toast(err.message,true); }
+}
+
 async function saveRow(row){
   const a=document.getElementById('ad'+row), n=document.getElementById('nt'+row);
   if(!a||!n) return;
@@ -535,10 +564,10 @@ function exportCsv(){
   const data=filtered();
   if(!data.length) return toast('ما في بيانات للتصدير',true);
   const head=['المعرف','التاريخ','الاسم','رقم العميل','المرحلة','الباقة','المواد','الدورات',
-              'العنوان','الإجمالي','نوع الطلب','حالة التنفيذ','ملاحظات إدارية'];
+              'العنوان','الإجمالي','حالة الدفع','نوع الطلب','حالة التنفيذ','ملاحظات إدارية'];
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
   const rows=data.map(o=>[o.id,o.date,o.name,o.phone,o.grade,o.pkg,o.items,o.courses,
-                          o.address,o.total,o.kind,o.ops,o.note].map(q).join(','));
+                          o.address,o.total,o.paid,o.kind,o.ops,o.note].map(q).join(','));
   const csv='\uFEFF'+head.map(q).join(',')+'\n'+rows.join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
@@ -578,40 +607,39 @@ function page(o){
   if(o.courses) lines+=tr('دورات: '+esc(o.courses),'');
   if(o.address && DELIVERY>0) lines+=tr('رسوم التوصيل',kd(DELIVERY));
 
-  const pre=(o.kind||'').indexOf('مسبق')>-1;
-  const stamp=pre?'<div class="stamp pre">حجز مسبق — يُحصّل عند الاستلام</div>'
-                 :'<div class="stamp">'+esc(o.pay||'دفعة واحدة')+'</div>';
+  /* الختم — يعتمد على حالة الدفع فقط */
+  const pd=o.paid||'غير مدفوع';
+  let stamp;
+  if(pd==='مدفوع')
+    stamp='<div class="stamp paid">مدفوع'+(o.pay?' · '+esc(o.pay):'')+'</div>';
+  else if(pd==='مدفوع جزئي')
+    stamp='<div class="stamp pre">مدفوع جزئياً — يُراجع المتبقي عند الاستلام</div>';
+  else
+    stamp='<div class="stamp pre">غير مدفوع — يُحصّل '+kd(o.total)+' عند الاستلام</div>';
 
   return '<div class="sheet">'+
-    '<div class="inv">'+
-      '<div class="ihead"><div><div class="brand">'+BRAND.name+'</div>'+
-        '<div class="org">'+BRAND.org+'</div></div>'+
-        '<div class="meta"><div class="oid">'+esc(o.id)+'</div>'+
-        '<div class="odate">'+esc(o.date||'')+'</div></div></div>'+
-      '<div class="cust">'+
-        '<div><span>العميل</span><b>'+esc(o.name)+'</b></div>'+
-        '<div><span>الواتساب</span><b dir="ltr">'+esc(o.phone)+'</b></div>'+
-        (o.grade?'<div><span>المرحلة</span><b>'+esc(o.grade)+'</b></div>':'')+
-        (o.teacher?'<div><span>عن طريق</span><b>'+esc(o.teacher)+'</b></div>':'')+
-      '</div>'+
-      '<table class="items"><tr><th>البند</th><th class="l">المبلغ</th></tr>'+lines+
-        '<tr class="tot"><td>الإجمالي</td><td class="l">'+kd(o.total)+'</td></tr></table>'+
-      stamp+
-      '<div class="ifoot">شكراً لطلبك من '+BRAND.name+' — للاستفسار واتساب <b dir="ltr">'+BRAND.phone+'</b>'+
-        '<br>'+BRAND.site+' · '+BRAND.insta+'</div>'+
+    '<div class="ihead"><div><div class="brand">'+BRAND.name+'</div>'+
+      '<div class="org">'+BRAND.org+'</div></div>'+
+      '<div class="meta"><div class="oid">'+esc(o.id)+'</div>'+
+      '<div class="odate">'+esc(o.date||'')+'</div></div></div>'+
+
+    '<div class="cust">'+
+      '<div><span>العميل</span><b>'+esc(o.name)+'</b></div>'+
+      '<div><span>الواتساب</span><b dir="ltr">'+esc(o.phone)+'</b></div>'+
+      (o.grade?'<div><span>المرحلة</span><b>'+esc(o.grade)+'</b></div>':'')+
+      (o.teacher?'<div><span>عن طريق</span><b>'+esc(o.teacher)+'</b></div>':'')+
     '</div>'+
-    '<div class="cut"><span>اقطع هنا — الأعلى داخل البوكس · الأسفل يُلصق عليه</span></div>'+
-    '<div class="label">'+
-      '<div class="lhead"><div class="lbrand">'+BRAND.name+'</div><div class="lid">'+esc(o.id)+'</div></div>'+
-      '<div class="lname">'+esc(o.name)+'</div>'+
-      '<div class="lphone" dir="ltr">'+esc(o.phone)+'</div>'+
-      '<div class="laddr">'+(o.address?esc(o.address):
-        '<span class="noaddr">العنوان غير مسجّل — اتصل بالعميل قبل التوصيل</span>')+'</div>'+
-      '<div class="lfoot"><div class="lcontent">'+
-        esc((list.join(' · ')||o.pkg||'مذكرات')+(o.courses?' + '+o.courses:''))+'</div>'+
-        '<div class="lamount">'+(pre?'يُحصّل: '+kd(o.total):'مدفوع')+'</div></div>'+
-      '<div class="lfrom">من: '+BRAND.name+' · '+BRAND.phone+'</div>'+
-    '</div>'+
+
+    '<div class="addr"><span>عنوان التوصيل</span><b>'+
+      (o.address?esc(o.address):'<em>غير مسجّل — يُتواصل مع العميل</em>')+'</b></div>'+
+
+    '<table class="items"><tr><th>البند</th><th class="l">المبلغ</th></tr>'+lines+
+      '<tr class="tot"><td>الإجمالي</td><td class="l">'+kd(o.total)+'</td></tr></table>'+
+
+    stamp+
+
+    '<div class="ifoot">شكراً لطلبك من '+BRAND.name+' — للاستفسار واتساب <b dir="ltr">'+BRAND.phone+'</b>'+
+      '<br>'+BRAND.site+' · '+BRAND.insta+'</div>'+
   '</div>';
 }
 
@@ -629,8 +657,8 @@ function shell(pages){
   '.tb p{font-size:12.5px;opacity:.75;font-weight:600}'+
   '.pb{background:#fff;color:#0D5C48;border:none;font-family:Cairo,sans-serif;font-size:14px;'+
     'font-weight:900;padding:11px 26px;border-radius:100px;cursor:pointer}'+
-  '.sheet{background:#fff;width:210mm;min-height:297mm;margin:0 auto 16px;padding:14mm 13mm;'+
-    'display:flex;flex-direction:column;box-shadow:0 3px 16px rgba(0,0,0,.12)}'+
+  '.sheet{background:#fff;width:210mm;margin:0 auto 16px;padding:14mm 13mm;'+
+    'box-shadow:0 3px 16px rgba(0,0,0,.12)}'+
   '.ihead{display:flex;justify-content:space-between;align-items:flex-start;'+
     'padding-bottom:12px;border-bottom:2.5px solid #0D5C48}'+
   '.brand{font-size:26px;font-weight:900;color:#0D5C48;letter-spacing:2px}'+
@@ -651,30 +679,20 @@ function shell(pages){
   '.stamp{display:inline-block;margin-top:14px;font-size:11.5px;font-weight:800;color:#0D5C48;'+
     'background:#E8F4F0;padding:7px 16px;border-radius:100px}'+
   '.stamp.pre{color:#B8651A;background:#FBF0E4}'+
+  '.stamp.paid{color:#0B6B4F;background:#DFF3EA;border:1.5px solid #9FD9C4}'+
+  '.addr{display:flex;gap:9px;align-items:baseline;font-size:13px;margin:0 0 16px;'+
+    'background:#F5FAF8;border-radius:9px;padding:11px 14px}'+
+  '.addr span{color:#4A7A6E;font-weight:700;min-width:82px}'+
+  '.addr b{font-weight:800;line-height:1.7;white-space:pre-line}'+
+  '.addr em{color:#B8651A;font-style:normal;font-weight:800}'+
   '.ifoot{margin-top:16px;padding-top:12px;border-top:1px solid #E8F4F0;font-size:11px;'+
     'color:#4A7A6E;line-height:1.9;font-weight:600}'+
-  '.cut{margin:16mm 0 10mm;border-top:2px dashed #B9CFC8;text-align:center;position:relative}'+
-  '.cut span{position:relative;top:-9px;background:#fff;padding:0 14px;font-size:10px;color:#8FA9A1;font-weight:700}'+
-  '.label{border:2.5px solid #0A2620;border-radius:9px;padding:12mm 10mm}'+
-  '.lhead{display:flex;justify-content:space-between;align-items:center;'+
-    'padding-bottom:8px;border-bottom:1.5px solid #0A2620;margin-bottom:12px}'+
-  '.lbrand{font-size:16px;font-weight:900;letter-spacing:1.5px}'+
-  '.lid{font-size:16px;font-weight:900;direction:ltr}'+
-  '.lname{font-size:27px;font-weight:900;line-height:1.3}'+
-  '.lphone{font-size:25px;font-weight:900;margin-top:5px;letter-spacing:1.5px}'+
-  '.laddr{font-size:17px;font-weight:700;line-height:1.75;margin-top:10px;white-space:pre-line}'+
-  '.noaddr{color:#B8651A;font-weight:900;font-size:15px}'+
-  '.lfoot{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-top:14px;'+
-    'padding-top:10px;border-top:1px dashed #B9CFC8}'+
-  '.lcontent{font-size:12.5px;font-weight:700;color:#33564D;flex:1}'+
-  '.lamount{font-size:16px;font-weight:900;white-space:nowrap}'+
-  '.lfrom{font-size:11px;color:#4A7A6E;font-weight:700;margin-top:9px}'+
   '@media print{body{background:#fff;padding:0}.tb{display:none}'+
-    '.sheet{width:auto;min-height:auto;margin:0;box-shadow:none;padding:10mm 9mm;'+
+    '.sheet{width:auto;margin:0;box-shadow:none;padding:10mm 9mm;'+
     'page-break-after:always;break-after:page}'+
     '.sheet:last-child{page-break-after:auto;break-after:auto}@page{size:A4;margin:8mm}}'+
   '</style></head><body>'+
-  '<div class="tb"><p>راجع الصفحات ثم اطبع — كل طلب بصفحة مستقلة</p>'+
+  '<div class="tb"><p>راجع الفواتير ثم اطبع — كل طلب بصفحة مستقلة</p>'+
   '<button class="pb" onclick="window.print()">طباعة</button></div>'+pages+'</body></html>';
 }
 
