@@ -355,6 +355,30 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 .mbr-chk{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
 .mbr-chk input{width:17px;height:17px;accent-color:var(--crimson);}
 
+
+/* ===== تعديل طلب الحجز ===== */
+.act-edit{background:var(--cream);color:var(--crimson);border:1.5px solid var(--line);} .act-edit:hover{border-color:var(--crimson);}
+.bke-ov{position:fixed;inset:0;background:rgba(30,8,8,.45);z-index:9000;display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow-y:auto;}
+.bke-ov.show{display:flex;}
+.bke-box{background:#fff;border-radius:20px;width:100%;max-width:560px;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.bke-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.bke-head h3{margin:0;font-size:18px;font-weight:900;color:var(--crimson);}
+.bke-head .sub{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:3px;}
+.bke-x{background:var(--cream);border:none;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:18px;color:var(--crimson);font-family:inherit;}
+.bke-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
+.bke-f{display:flex;flex-direction:column;gap:6px;}
+.bke-f.full{grid-column:1/-1;}
+.bke-f label{font-size:12.5px;font-weight:800;color:var(--text);}
+.bke-f input,.bke-f select,.bke-f textarea{width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:600;background:#fff;color:var(--text);outline:none;}
+.bke-f input:focus,.bke-f select:focus,.bke-f textarea:focus{border-color:var(--crimson);}
+.bke-f textarea{min-height:120px;resize:vertical;line-height:1.7;}
+.bke-f.changed input,.bke-f.changed select,.bke-f.changed textarea{border-color:#B26A00;background:#FFFBF2;}
+.bke-note{font-size:12px;color:var(--muted);font-weight:600;margin-top:12px;line-height:1.7;background:var(--cream);border-radius:10px;padding:9px 12px;}
+.bke-acts{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;}
+.bke-acts button{padding:11px 20px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;border:none;}
+.bke-save{background:var(--crimson);color:#fff;} .bke-save:disabled{opacity:.55;cursor:default;}
+.bke-cancel{background:#fff;color:var(--crimson);border:1.5px solid var(--line)!important;}
+@media(max-width:560px){.bke-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -1523,17 +1547,19 @@ function bookingCard(r,tab){
   const masarBtn = `<button class="act act-masar${already?' done':''}" id="mb-${r._row}"
       ${already?'disabled':''} onclick="addToMasar(${r._row})">
       <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>${already?'مضاف للموقع ✓':'أضف للموقع'}</button>`;
+  const editBtn = `<button class="act act-edit" onclick="openBkEdit(${r._row})"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>تعديل</button>`;
 
   let actions='';
   if(isPending){
     actions=`<div class="card-actions">
       ${masarBtn}
+      ${editBtn}
       <button class="act act-approve" onclick="approveBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد</button>
       <button class="act act-warn" onclick="warnBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>تنبيه</button>
       <button class="act act-reject" onclick="rejectBooking('${tab}',${r._row},${r.statusColIndex})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>رفض</button>
     </div>`;
   }else{
-    actions=`<div class="card-actions">${masarBtn}</div>`;
+    actions=`<div class="card-actions">${masarBtn}${editBtn}</div>`;
   }
   return `<div class="card">
     <div class="card-top">
@@ -1561,6 +1587,94 @@ function chip(icon,txt){
 async function approveBooking(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تم'); toast('تم الاعتماد ✓ (سيُرسل إيميل للمدرب)'); markLocal('bookings',row,col,'تم'); }
 async function rejectBooking(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'مرفوض'); toast('تم الرفض'); markLocal('bookings',row,col,'مرفوض'); }
 async function warnBooking(tab,row,col){ if(col<0){toast('عمود الحالة غير معروف');return;} await setStatus(tab,row,col,'تنبيه'); toast('تم إرسال تنبيه'); markLocal('bookings',row,col,'تنبيه'); }
+/* ============ تعديل طلب الحجز من اللوحة ============ */
+const BKE_FIELDS = [
+  {k:'course', label:'عنوان الدورة',    type:'text',   keys:['عنوان','دورة'], full:true},
+  {k:'type',   label:'نوع الدورة',      type:'select', keys:['نوع'],   opts:['وفق الجدول','خاصة']},
+  {k:'system', label:'نظام الدورة',     type:'select', keys:['نظام'],  opts:['حضوري','أونلاين']},
+  {k:'time',   label:'التوقيت (مسائي)', type:'select', keys:['توقيت','وقت'], opts:['5-7','7-9']},
+  {k:'start',  label:'تاريخ البدء',     type:'date',   keys:['البدء','بدء']},
+  {k:'end',    label:'تاريخ الانتهاء',  type:'date',   keys:['الانتهاء','نهاية']},
+  {k:'topics', label:'المحاور التدريبية', type:'area', keys:['محاور','مواضيع'], full:true}
+];
+let BKE_CUR = null;
+function bkeToISO(v){ const d=parseDate(v); if(!d) return ''; const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function bkeEnsureModal(){
+  if(document.getElementById('bkeOv')) return;
+  const ov=document.createElement('div'); ov.className='bke-ov'; ov.id='bkeOv';
+  ov.innerHTML='<div class="bke-box"><div class="bke-head"><div><h3>تعديل طلب الحجز</h3><div class="sub" id="bkeSub"></div></div><button class="bke-x" onclick="closeBkEdit()">✕</button></div><div class="bke-grid" id="bkeGrid"></div><div class="bke-note" id="bkeNote"></div><div class="bke-acts"><button class="bke-cancel" onclick="closeBkEdit()">إلغاء</button><button class="bke-save" id="bkeSave" onclick="saveBkEdit()">حفظ التعديلات</button></div></div>';
+  ov.addEventListener('click',e=>{ if(e.target===ov) closeBkEdit(); });
+  document.body.appendChild(ov);
+}
+function openBkEdit(row){
+  if(!DATA.bookings||!DATA.bookings.tab){ toast('بيانات الحجز غير محمّلة'); return; }
+  const h=DATA.bookings.headers;
+  const raw=DATA.bookings.data.find(x=>x._row===row); if(!raw){ toast('الطلب غير موجود'); return; }
+  const r=mapBooking(h,raw);
+  bkeEnsureModal();
+  BKE_CUR={row, tab:DATA.bookings.tab, fields:[]};
+  document.getElementById('bkeSub').textContent=(r.trainer||'')+(r.member?' — عضوية '+r.member:'')+' — صف '+row;
+  let html='';
+  BKE_FIELDS.forEach(f=>{
+    const col=colIdx(h,...f.keys);
+    if(col<0) return;                      // العمود غير موجود بالشيت → نتجاهله
+    let val=String(cell(raw,col)||'');
+    if(f.type==='date') val=bkeToISO(val)||val;
+    BKE_CUR.fields.push({k:f.k, col, type:f.type, orig:val});
+    const id='bke-'+f.k, cls='bke-f'+(f.full?' full':'');
+    let input='';
+    if(f.type==='select'){
+      const opts=f.opts.slice(); if(val && opts.indexOf(val)===-1) opts.unshift(val);
+      input='<select id="'+id+'">'+(val?'':'<option value="">— اختر —</option>')+opts.map(o=>'<option'+(o===val?' selected':'')+'>'+esc(o)+'</option>').join('')+'</select>';
+    }else if(f.type==='area'){
+      input='<textarea id="'+id+'">'+esc(val)+'</textarea>';
+    }else{
+      input='<input id="'+id+'" type="'+(f.type==='date'?'date':'text')+'" value="'+esc(val)+'">';
+    }
+    html+='<div class="'+cls+'" id="w-'+id+'"><label>'+f.label+'</label>'+input+'</div>';
+  });
+  if(!BKE_CUR.fields.length){ toast('ما لقينا أعمدة قابلة للتعديل في التبويب'); return; }
+  document.getElementById('bkeGrid').innerHTML=html;
+  document.getElementById('bkeNote').innerHTML='التعديل يُحفظ مباشرة في الشيت. '+(statusClass(r.status)==='st-done'?'<b>هذا الطلب معتمد</b> — التعديل ما يرسل إيميل جديد للمدرب، بلّغه بالتغيير.':'بعد الحفظ تقدر تعتمد الطلب عادي وبيوصل المدرب الإيميل بالبيانات الجديدة.');
+  BKE_CUR.fields.forEach(f=>{ const el=document.getElementById('bke-'+f.k); el.addEventListener('input',()=>bkeMark(f)); el.addEventListener('change',()=>bkeMark(f)); });
+  const sv=document.getElementById('bkeSave'); sv.disabled=false; sv.textContent='حفظ التعديلات';
+  document.getElementById('bkeOv').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function bkeMark(f){ const el=document.getElementById('bke-'+f.k); document.getElementById('w-bke-'+f.k).classList.toggle('changed', el.value.trim()!==String(f.orig).trim()); }
+function closeBkEdit(){ const ov=document.getElementById('bkeOv'); if(ov) ov.classList.remove('show'); document.body.style.overflow=''; BKE_CUR=null; }
+async function saveBkEdit(){
+  if(!BKE_CUR) return;
+  const changes=[];
+  BKE_CUR.fields.forEach(f=>{ const v=document.getElementById('bke-'+f.k).value.trim(); if(v!==String(f.orig).trim()) changes.push({f,v}); });
+  if(!changes.length){ toast('ما في تعديل'); return; }
+  const g=k=>{ const x=BKE_CUR.fields.find(f=>f.k===k); return x?document.getElementById('bke-'+k).value.trim():''; };
+  if(g('start') && g('end') && g('end')<g('start')){ toast('تاريخ الانتهاء قبل تاريخ البدء!'); return; }
+  if(!OPS_BACKEND_URL || OPS_BACKEND_URL.indexOf('exec')===-1){ toast('الباك إند غير مهيأ'); return; }
+  const sv=document.getElementById('bkeSave'); sv.disabled=true; sv.textContent='جاري الحفظ...';
+  const {row,tab}=BKE_CUR;
+  for(const c of changes){
+    // نثبّت القيمة كنص: التواريخ بصيغة yyyy-mm-dd، والمحاور اللي تبدأ بـ - أو = ما تنقلب معادلة
+    let v=c.v;
+    if(v && (c.f.type==='date' || /^[=+\-@]/.test(v))) v="'"+v;
+    await setStatus(tab,row,c.f.col,v);
+    const d=DATA.bookings.data.find(x=>x._row===row);
+    if(d){ while(d.cells.length<=c.f.col) d.cells.push(''); d.cells[c.f.col]=c.v; }
+  }
+  closeBkEdit();
+  renderBookings(); renderSchedule(); updateStats(); renderOverview();
+  toast('تم حفظ التعديلات ✓ ('+changes.length+')');
+  setTimeout(()=>bkeVerify(tab,row,changes),2500);
+}
+/* تحقق فعلي من الشيت بعد الحفظ */
+async function bkeVerify(tab,row,changes){
+  try{
+    const fresh=await readTab(tab);
+    const r=fresh.data.find(x=>x._row===row); if(!r) return;
+    const bad=changes.filter(c=>{ let got=String(r.cells[c.f.col]||'').trim(); if(c.f.type==='date') got=bkeToISO(got)||got; return got!==c.v; });
+    if(bad.length){ toast('⚠️ بعض التعديلات ما انحفظت بالشيت — تأكد من تحديث OperationsBackend'); DATA.bookings=fresh; renderBookings(); renderSchedule(); }
+  }catch(e){}
+}
 function markLocal(which,row,col,val){
   const d=DATA[which]; if(!d) return;
   const r=d.data.find(x=>x._row===row); if(r) r.cells[col]=val;
