@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>التسجيل — فرع المطلاع | EDUCLOUD</title>
+<meta name="description" content="تسجيل الطلاب في فرع المطلاع — تأسيس وتقوية للابتدائي والمتوسط والثانوي.">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0D5C48;--teallt:#15705A;--accent:#1A8F6F;--accentlt:#22B08A;
+ --bg:#040d09;--card:rgba(255,255,255,.045);--bd:rgba(255,255,255,.08);
+ --muted:rgba(255,255,255,.38);--muted2:rgba(255,255,255,.62);
+ --warn:#D6781E;--warnbg:rgba(214,120,30,.14);--red:#D65454}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:#fff;min-height:100vh;
+ padding:22px 16px 70px;position:relative;-webkit-text-size-adjust:100%}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:radial-gradient(ellipse 80% 50% at 15% 0%,#0d5c48 0%,transparent 60%),
+            radial-gradient(ellipse 60% 40% at 85% 100%,#093d2e 0%,transparent 55%),var(--bg)}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+ background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+                  linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+ background-size:56px 56px}
+.wrap{position:relative;z-index:1;max-width:680px;margin:0 auto}
+
+.hero{text-align:center;margin-bottom:24px}
+.hero .lg{width:56px;height:56px;background:rgba(255,255,255,.07);border:1.5px solid var(--bd);
+ border-radius:17px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hero .lg svg{width:29px;height:29px}
+.hero .bd{font-size:26px;font-weight:900;letter-spacing:3px;line-height:1.2}
+.hero .br{font-size:13px;font-weight:800;color:var(--accentlt);margin-top:6px;letter-spacing:1px}
+.hero p{font-size:13px;color:var(--muted2);font-weight:700;margin-top:12px;line-height:1.9}
+.offer{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:rgba(34,176,138,.12);
+ border:1.5px solid rgba(34,176,138,.32);border-radius:100px;padding:9px 20px;
+ font-size:13px;font-weight:900;color:var(--accentlt)}
+
+.sec{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:900;
+ color:var(--accentlt);letter-spacing:.4px;margin:26px 0 13px}
+.sec .ln{flex:1;height:1px;background:rgba(255,255,255,.08)}
+.prices{display:flex;flex-direction:column;gap:8px}
+.pr{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);
+ border-radius:14px;padding:13px 15px}
+.pr .t{flex:1;min-width:0}
+.pr .t b{display:block;font-size:13.5px;font-weight:900}
+.pr .t span{display:block;font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.pr .v{text-align:center;white-space:nowrap}
+.pr .v b{display:block;font-size:16px;font-weight:900;color:var(--accentlt)}
+.pr .v s{display:block;font-size:11px;color:var(--muted);font-weight:700}
+
+.box{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:800;color:var(--muted2);margin-bottom:7px}
+.field label i{color:var(--accentlt);font-style:normal}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.05);
+ border:1.5px solid var(--bd);border-radius:13px;padding:13px 15px;font-family:'Cairo',sans-serif;
+ font-size:15px;color:#fff;outline:none;transition:.22s}
+.field textarea{min-height:70px;resize:vertical;line-height:1.7}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accentlt);
+ box-shadow:0 0 0 3px rgba(34,176,138,.1)}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted)}
+.field input.ltr{direction:ltr;text-align:right}
+.field select option{background:#0b1d16;color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.opts{display:flex;gap:7px;flex-wrap:wrap}
+.opt{font-size:13px;font-weight:800;color:var(--muted2);background:rgba(255,255,255,.05);
+ border:1.5px solid var(--bd);border-radius:11px;padding:11px 16px;cursor:pointer;transition:.2s}
+.opt.on{background:rgba(34,176,138,.12);border-color:var(--accentlt);color:var(--accentlt)}
+.opt.sm{font-size:12px;padding:9px 13px}
+.opt small{display:block;font-size:10.5px;color:var(--muted);font-weight:700;margin-top:2px}
+
+.stu{background:rgba(255,255,255,.035);border:1.5px solid var(--bd);border-radius:17px;
+ padding:16px;margin-bottom:12px}
+.stu .sh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.stu .no{width:28px;height:28px;border-radius:9px;background:rgba(34,176,138,.14);
+ border:1.5px solid rgba(34,176,138,.24);display:flex;align-items:center;justify-content:center;
+ font-size:13px;font-weight:900;color:var(--accentlt);flex-shrink:0}
+.stu .sh b{flex:1;font-size:13.5px;font-weight:900}
+.del{background:rgba(214,84,84,.12);border:1.5px solid rgba(214,84,84,.28);color:#F0A0A0;
+ font-family:'Cairo',sans-serif;font-size:11.5px;font-weight:800;border-radius:9px;
+ padding:7px 12px;cursor:pointer}
+.ptag{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px;
+ padding-top:12px;border-top:1px dashed rgba(255,255,255,.08);font-size:12.5px;font-weight:800}
+.ptag .l{color:var(--muted)}
+.ptag .r b{font-size:16px;font-weight:900;color:var(--accentlt)}
+.ptag .r s{color:var(--muted);font-weight:700;margin-left:8px;font-size:12px}
+
+.addbtn{width:100%;background:rgba(255,255,255,.05);border:1.5px dashed var(--bd);
+ color:var(--muted2);font-family:'Cairo',sans-serif;font-size:13.5px;font-weight:800;
+ border-radius:14px;padding:14px;cursor:pointer;transition:.2s}
+.addbtn:hover{border-color:var(--accentlt);color:var(--accentlt)}
+
+.total{background:linear-gradient(135deg,rgba(13,92,72,.5),rgba(26,143,111,.18));
+ border:1.5px solid rgba(34,176,138,.3);border-radius:18px;padding:18px;margin-top:18px}
+.tl{display:flex;justify-content:space-between;align-items:center;font-size:13px;
+ font-weight:800;color:var(--muted2);margin-bottom:9px}
+.tl.big{font-size:15px;color:#fff;margin:13px 0 0;padding-top:13px;
+ border-top:1px solid rgba(255,255,255,.12)}
+.tl.big b{font-size:24px;font-weight:900;color:var(--accentlt)}
+.tl s{color:var(--muted)}
+
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;
+ font-weight:900;border:none;border-radius:100px;padding:17px;cursor:pointer;transition:.25s;
+ display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px}
+.btn:hover{background:var(--teallt)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.gh{background:rgba(255,255,255,.06);border:1.5px solid var(--bd);font-size:14px;padding:14px}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;
+ border-radius:50%;animation:sp .8s linear infinite;display:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ferr{font-size:13px;color:var(--red);font-weight:800;min-height:20px;margin-top:10px;text-align:center}
+.note{font-size:11.5px;color:var(--muted);font-weight:700;line-height:1.9;margin-top:14px;text-align:center}
+
+#boot{text-align:center;padding:14vh 0}
+#boot .s{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--accentlt);
+ border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 14px}
+#boot p{font-size:13px;color:var(--muted);font-weight:700}
+#closed{display:none;text-align:center;padding:10vh 0}
+#closed .ic{width:64px;height:64px;border-radius:50%;background:var(--warnbg);
+ border:2px solid rgba(214,120,30,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+#closed .ic svg{width:30px;height:30px;stroke:var(--warn)}
+#closed p{font-size:15px;font-weight:800;line-height:2;color:var(--muted2);max-width:420px;margin:0 auto}
+
+#done{display:none;text-align:center;padding:8vh 0}
+#done .ok{width:72px;height:72px;border-radius:50%;background:rgba(34,176,138,.14);
+ border:2px solid rgba(34,176,138,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+#done .ok svg{width:34px;height:34px;stroke:var(--accentlt)}
+#done h2{font-size:22px;font-weight:900;margin-bottom:10px}
+#done p{font-size:13.5px;color:var(--muted2);font-weight:700;line-height:2}
+#done .id{display:inline-block;margin-top:16px;background:rgba(255,255,255,.06);
+ border:1.5px solid var(--bd);border-radius:12px;padding:12px 22px;font-size:16px;
+ font-weight:900;direction:ltr}
+#form{display:none}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="lg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <div class="bd">EDUCLOUD</div>
+    <div class="br" id="branch">فرع المطلاع</div>
+    <p>تأسيس وتقوية للابتدائي والمتوسط والثانوي<br>مجموعات صغيرة ومعلمون معتمدون</p>
+    <div class="offer hide" id="offer"></div>
+  </div>
+
+  <div id="boot"><div class="s"></div><p>جاري تحميل الباقات...</p></div>
+
+  <div id="closed">
+    <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <p id="closedTxt"></p>
+  </div>
+
+  <div id="form">
+    <div class="sec">قائمة الأسعار<div class="ln"></div></div>
+    <div class="prices" id="prices"></div>
+
+    <div class="sec">بيانات ولي الأمر<div class="ln"></div></div>
+    <div class="box">
+      <div class="grid2">
+        <div class="field">
+          <label>اسم ولي الأمر <i>*</i></label>
+          <input type="text" id="fParent" placeholder="الاسم الكامل">
+        </div>
+        <div class="field">
+          <label>رقم التواصل / واتساب <i>*</i></label>
+          <input type="tel" id="fPhone" class="ltr" placeholder="9XXXXXXX" maxlength="15">
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>المنطقة</label>
+        <input type="text" id="fArea" placeholder="المطلاع · ق٥">
+      </div>
+    </div>
+
+    <div class="sec">بيانات الطلاب<div class="ln"></div></div>
+    <div id="students"></div>
+    <button class="addbtn" onclick="addStu()">+ إضافة طالب آخر</button>
+
+    <div class="total" id="total"></div>
+
+    <div class="box" style="margin-top:16px">
+      <div class="field" style="margin-bottom:0">
+        <label>ملاحظات</label>
+        <textarea id="fNote" placeholder="أوقات مفضلة، مواد يحتاجها الطالب، أي ملاحظة..."></textarea>
+      </div>
+    </div>
+
+    <div class="ferr" id="err"></div>
+    <button class="btn" id="sendBtn" onclick="send()">
+      <span id="sendTxt">إرسال طلب التسجيل</span><div class="spin" id="sendSpin"></div>
+    </button>
+    <div class="note" id="foot"></div>
+  </div>
+
+  <div id="done">
+    <div class="ok">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>وصلنا طلبك</h2>
+    <p id="doneTxt"></p>
+    <div class="id" id="doneId"></div>
+    <a class="btn" id="waBtn" href="#" target="_blank" style="text-decoration:none;max-width:320px;margin:22px auto 0">تواصل معنا بالواتساب</a>
+    <button class="btn gh" onclick="location.reload()" style="max-width:320px;margin:10px auto 0">تسجيل جديد</button>
+  </div>
+
+</div>
+
+<script>
+/* رابط السكربت — كل الأسعار والإعدادات تجي من الشيت */
+const STAFF_URL = 'https://script.google.com/macros/s/AKfycbwzFj5x3jJTep0wm6NET-05i5vAm1a_foecHOBjH3YfjggI4bcHHJpAB67XZPcXR_yOiQ/exec';
+
+const GRADES = {
+  'ابتدائي':['الأول','الثاني','الثالث','الرابع','الخامس'],
+  'متوسط'  :['السادس','السابع','الثامن','التاسع'],
+  'ثانوي'  :['العاشر','الحادي عشر','الثاني عشر']
+};
+
+let C=null, STU=[], seq=0;
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kd  = n => (Math.round((Number(n)||0)*1000)/1000).toFixed(3).replace(/\.?0+$/,'')+' د.ك';
+
+/* ══════════ الاتصال ══════════ */
+function call(params){
+  return new Promise((resolve,reject)=>{
+    const cb='__mt_'+Math.random().toString(36).slice(2);
+    let done=false;
+    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة — تأكد من الإنترنت'));} },25000);
+    function clean(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
+    window[cb]=r=>{ if(done)return; done=true; clean(); resolve(r); };
+    const qs=new URLSearchParams(Object.assign({},params,{callback:cb,_:Date.now()}));
+    const s=document.createElement('script');
+    s.id=cb; s.src=STAFF_URL+'?'+qs.toString();
+    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر الاتصال — حاول مرة ثانية'));} };
+    document.head.appendChild(s);
+  });
+}
+
+/* ══════════ الإقلاع ══════════ */
+(async function(){
+  try{
+    const r=await call({action:'mutlaa-config'});
+    if(!r||!r.ok||!r.config) throw new Error('تعذّر تحميل الباقات');
+    C=r.config;
+    document.getElementById('boot').style.display='none';
+    document.getElementById('branch').textContent=C.title||'فرع المطلاع';
+
+    if(!C.open){
+      document.getElementById('closed').style.display='block';
+      document.getElementById('closedTxt').textContent=C.closedMsg||'التسجيل مقفل حالياً';
+      return;
+    }
+    if(C.discountOn && C.offerText){
+      const o=document.getElementById('offer');
+      o.classList.remove('hide');
+      o.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>'+esc(C.offerText);
+    }
+    document.getElementById('foot').innerHTML=
+      'التسجيل مبدئي — بيتواصل معك الفريق لتأكيد الموعد وطريقة الدفع.'+
+      (C.wa?'<br>للاستفسار واتساب <b dir="ltr">'+esc(C.wa)+'</b>':'');
+    document.getElementById('form').style.display='block';
+    paintPrices(); addStu();
+  }catch(e){
+    document.getElementById('boot').innerHTML='<p style="color:#D65454;font-weight:800">'+esc(e.message)+'</p>';
+  }
+})();
+
+/* ══════════ الأسعار ══════════ */
+function off(v){ return C.discountOn ? Math.round(v*(1-(C.discount||0)/100)*1000)/1000 : v; }
+
+function paintPrices(){
+  document.getElementById('prices').innerHTML=C.packages.map(p=>
+    '<div class="pr"><div class="t"><b>'+esc(p.name)+'</b>'+
+      (p.desc?'<span>'+esc(p.desc)+'</span>':'')+'</div>'+
+    '<div class="v"><b>'+kd(off(p.price))+'</b>'+
+      (C.discountOn?'<s>'+kd(p.price)+'</s>':'')+'</div></div>').join('');
+}
+
+/* ══════════ الطلاب ══════════ */
+function tracksOf(stage){
+  return C.packages.filter(p=>p.stage===stage && p.type==='باقة');
+}
+
+function addStu(){
+  if(STU.length>=8) return err('الحد ٨ طلاب بالتسجيل الواحد');
+  const t=tracksOf('ابتدائي');
+  STU.push({k:++seq,name:'',stage:'ابتدائي',grade:'',pkg:t.length?t[0].id:'',subs:[],plan:'شهري'});
+  paintStu();
+}
+function delStu(k){
+  if(STU.length<=1) return err('لازم طالب واحد على الأقل');
+  STU=STU.filter(s=>s.k!==k); paintStu();
+}
+function setS(k,f,v){
+  const s=STU.find(x=>x.k===k); if(!s) return;
+  s[f]=v;
+  if(f==='stage'){
+    s.grade=''; s.subs=[];
+    const t=tracksOf(v);
+    s.pkg=t.length?t[0].id:'';
+  }
+  paintStu();
+}
+function tgSub(k,i){
+  const s=STU.find(x=>x.k===k); if(!s) return;
+  const sub=C.subjects[i];
+  const x=s.subs.indexOf(sub);
+  if(x>-1) s.subs.splice(x,1); else s.subs.push(sub);
+  paintStu();
+}
+
+function priceOf(s){
+  let base=0;
+  if(s.stage==='ثانوي'){
+    let first=0,extra=0;
+    C.packages.forEach(p=>{ if(p.type==='مادة أولى')first=p.price; if(p.type==='مادة إضافية')extra=p.price; });
+    const n=s.subs.length;
+    base = n ? first+extra*(n-1) : 0;
+  }else{
+    const p=C.packages.find(x=>x.id===s.pkg);
+    base = p?p.price:0;
+  }
+  const mult = s.plan==='شهري' ? 1 : (C.courseMult||1);
+  const before = Math.round(base*mult*1000)/1000;
+  return { before:before, due:off(before) };
+}
+
+function paintStu(){
+  const stages=['ابتدائي','متوسط','ثانوي'].filter(g=>
+    g==='ثانوي' ? C.packages.some(p=>p.type==='مادة أولى') : tracksOf(g).length);
+
+  document.getElementById('students').innerHTML=STU.map((s,i)=>{
+    const p=priceOf(s);
+    const tr=tracksOf(s.stage);
+    let first=0,extra=0;
+    C.packages.forEach(x=>{ if(x.type==='مادة أولى')first=x.price; if(x.type==='مادة إضافية')extra=x.price; });
+
+    return '<div class="stu">'+
+      '<div class="sh"><div class="no">'+(i+1)+'</div><b>الطالب '+(i+1)+'</b>'+
+        (STU.length>1?'<button class="del" onclick="delStu('+s.k+')">حذف</button>':'')+'</div>'+
+
+      '<div class="field"><label>اسم الطالب <i>*</i></label>'+
+        '<input type="text" value="'+esc(s.name)+'" placeholder="الاسم الكامل" '+
+        'oninput="STU.find(x=>x.k==='+s.k+').name=this.value;calc()"></div>'+
+
+      '<div class="field"><label>المرحلة <i>*</i></label><div class="opts">'+
+        stages.map(g=>'<div class="opt '+(s.stage===g?'on':'')+'" onclick="setS('+s.k+',\'stage\',\''+g+'\')">'+g+'</div>').join('')+
+      '</div></div>'+
+
+      '<div class="field"><label>الصف</label><select onchange="setS('+s.k+',\'grade\',this.value)">'+
+        '<option value="">— اختر الصف —</option>'+
+        (GRADES[s.stage]||[]).map(g=>'<option '+(s.grade===g?'selected':'')+'>'+g+'</option>').join('')+
+      '</select></div>'+
+
+      (s.stage!=='ثانوي'&&tr.length?'<div class="field"><label>نظام التسجيل <i>*</i></label><div class="opts">'+
+        tr.map(t=>'<div class="opt '+(s.pkg===t.id?'on':'')+'" onclick="setS('+s.k+',\'pkg\',\''+t.id+'\')">'+
+          esc(t.name)+'<small>'+kd(off(t.price))+'</small></div>').join('')+
+      '</div></div>':'')+
+
+      (s.stage==='ثانوي'?'<div class="field"><label>المواد المطلوبة <i>*</i>'+
+        '<span style="color:var(--muted);font-weight:700"> — '+kd(off(first))+' للأولى و'+kd(off(extra))+' لكل إضافية</span></label>'+
+        '<div class="opts">'+C.subjects.map((v,ix)=>'<div class="opt sm '+(s.subs.indexOf(v)>-1?'on':'')+
+          '" onclick="tgSub('+s.k+','+ix+')">'+esc(v)+'</div>').join('')+'</div></div>':'')+
+
+      '<div class="field" style="margin-bottom:0"><label>الاشتراك <i>*</i></label><div class="opts">'+
+        ['شهري',C.courseName].map((v,ix)=>'<div class="opt '+(s.plan===v?'on':'')+
+          '" onclick="setS('+s.k+',\'plan\','+(ix===0?"'شهري'":'C.courseName')+')">'+esc(v)+'</div>').join('')+
+      '</div></div>'+
+
+      '<div class="ptag"><span class="l">المستحق لهذا الطالب</span>'+
+        '<span class="r">'+(C.discountOn&&p.before?'<s>'+kd(p.before)+'</s>':'')+'<b>'+kd(p.due)+'</b></span></div>'+
+    '</div>';
+  }).join('');
+  calc();
+}
+
+function calc(){
+  let before=0, due=0;
+  STU.forEach(s=>{ const p=priceOf(s); before+=p.before; due+=p.due; });
+  let h='<div class="tl"><span>عدد الطلاب</span><span>'+STU.length+'</span></div>';
+  if(C.discountOn){
+    h+='<div class="tl"><span>الإجمالي قبل الخصم</span><s>'+kd(before)+'</s></div>'+
+       '<div class="tl"><span>خصم التسجيل '+(C.discount||0)+'٪</span>'+
+       '<span style="color:var(--accentlt)">− '+kd(before-due)+'</span></div>';
+  }
+  h+='<div class="tl big"><span>المستحق</span><b>'+kd(due)+'</b></div>';
+  document.getElementById('total').innerHTML=h;
+}
+
+/* ══════════ الإرسال ══════════ */
+function err(m){ document.getElementById('err').textContent=m||''; }
+
+function normPhone(v){
+  let d=String(v||'').replace(/\D/g,'');
+  if(d.length===11 && d.indexOf('965')===0) d=d.slice(3);
+  if(d.length===13 && d.indexOf('00965')===0) d=d.slice(5);
+  return d.length===8 ? d : '';
+}
+
+async function send(){
+  err('');
+  const parent=document.getElementById('fParent').value.trim();
+  const phone=normPhone(document.getElementById('fPhone').value);
+  if(parent.length<3) return err('اكتب اسم ولي الأمر');
+  if(!phone)          return err('رقم التواصل لازم يكون ٨ أرقام');
+
+  for(let i=0;i<STU.length;i++){
+    const s=STU[i];
+    if(s.name.trim().length<2) return err('اكتب اسم الطالب '+(i+1));
+    if(s.stage==='ثانوي' && !s.subs.length) return err('اختر مواد الطالب '+(i+1));
+    if(s.stage!=='ثانوي' && !s.pkg) return err('اختر نظام التسجيل للطالب '+(i+1));
+  }
+
+  const payload={
+    action:'mutlaa-add', parent:parent, phone:phone,
+    area:document.getElementById('fArea').value.trim(),
+    note:document.getElementById('fNote').value.trim(),
+    students:JSON.stringify(STU.map(s=>({
+      name:s.name.trim(), stage:s.stage, grade:s.grade, pkg:s.pkg,
+      subjects:s.subs.join(' · '), count:s.stage==='ثانوي'?s.subs.length:0, plan:s.plan
+    })))
+  };
+
+  const b=document.getElementById('sendBtn'); b.disabled=true;
+  document.getElementById('sendTxt').textContent='جاري الإرسال...';
+  document.getElementById('sendSpin').style.display='block';
+  try{
+    const r=await call(payload);
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'ما تم الإرسال');
+    document.getElementById('form').style.display='none';
+    document.getElementById('done').style.display='block';
+    document.getElementById('doneTxt').innerHTML=
+      'سجّلنا '+r.count+' طالب بمبلغ مستحق <b>'+kd(r.total)+'</b>.<br>'+
+      'بيتواصل معك الفريق خلال ٢٤ ساعة لتأكيد الموعد.';
+    document.getElementById('doneId').textContent=r.id||'';
+    const wa=String(C.wa||'').replace(/\D/g,'');
+    document.getElementById('waBtn').href='https://wa.me/965'+wa+'?text='+
+      encodeURIComponent('السلام عليكم، سجّلت بفرع المطلاع — رقم التسجيل '+(r.id||''));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){ err(e.message); }
+  b.disabled=false;
+  document.getElementById('sendTxt').textContent='إرسال طلب التسجيل';
+  document.getElementById('sendSpin').style.display='none';
+}
+</script>
+</body>
+</html>
