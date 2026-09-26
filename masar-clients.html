@@ -388,7 +388,7 @@ function payTags(c){
   let h='<div class="pt-row">';
   if(c.paid)    h+='<span class="pt pt-paid">تم الدفع '+toA(c.paid)+'</span>';
   if(c.pending) h+='<span class="pt pt-pend">قيد الدفع '+toA(c.pending)+'</span>';
-  if(c.notPaid) h+='<span class="pt pt-no">لم يدفع '+toA(c.notPaid)+'</span>';
+  if(c.notPaid) h+='<span class="pt pt-no">لم يتم الدفع '+toA(c.notPaid)+'</span>';
   if(c.other)   h+='<span class="pt pt-none">بدون حالة '+toA(c.other)+'</span>';
   return h+'</div>';
 }
@@ -430,21 +430,31 @@ async function openCourse(month,i,el){
 }
 
 /* ── ٤. جدول المسجّلين ── */
+/* "لم يتم الدفع" فيها "تم الدفع" — نفحص النفي أول */
+function payState(v){
+  const t=String(v||'').trim();
+  if(!t) return '';
+  if(/^لم|غير مدفوع|ما دفع/.test(t)) return 'no';
+  if(t.indexOf('قيد')!==-1 || t.indexOf('معلق')!==-1) return 'pending';
+  if(t.indexOf('تم الدفع')!==-1 || t==='مدفوع') return 'paid';
+  return 'other';
+}
 function certCls(v){ return v.indexOf('نعم')!==-1 ? 'yes' : 'no'; }
 function payCls(v){
-  if(v.indexOf('تم الدفع')!==-1) return 'yes';
-  if(v.indexOf('قيد الدفع')!==-1) return 'mid';
+  const st=payState(v);
+  if(st==='paid') return 'yes';
+  if(st==='pending') return 'mid';
   return 'no';
 }
 
 function renderStudents(list){
-  const paid = list.filter(s=>String(s.payment).indexOf('تم الدفع')!==-1).length;
+  const paid = list.filter(s=>payState(s.payment)==='paid').length;
   document.getElementById('stCount').textContent = toA(list.length)+' مسجّل — '+toA(paid)+' دفعوا، '+toA(list.length-paid)+' باقين';
 
   document.getElementById('stBody').innerHTML = list.map((s,i)=>{
     const cert = String(s.wantCert||'لا');
     const pay  = String(s.payment||'').trim();
-    const isPaid = pay.indexOf('تم الدفع')!==-1;
+    const isPaid = payState(pay)==='paid';
     const msg = (pay.indexOf('قيد الدفع')!==-1 ? WA_MSG.pay.replace('[الدورة]', s.course||'الدورة') : WA_MSG.cert);
 
     return '<tr id="r-'+s.row+'" class="'+(isPaid?'paid':'')+'">'
@@ -493,8 +503,9 @@ async function saveNote(el){
 
 /* قائمة الدفع تعرض قيمة عمود M كما هي — حتى لو فاضية أو غير الثلاث */
 function payOpts(cur){
-  const std=['لم يدفع','قيد الدفع','تم الدفع'];
-  const hit=std.find(v=>cur.indexOf(v)!==-1);
+  const std=['لم يتم الدفع','قيد الدفع','تم الدفع'];
+  const st=payState(cur);
+  const hit= st==='no' ? 'لم يتم الدفع' : st==='pending' ? 'قيد الدفع' : st==='paid' ? 'تم الدفع' : null;
   let h='';
   if(!cur) h+='<option value="" selected disabled>— بدون حالة —</option>';
   else if(!hit) h+='<option value="" selected disabled>'+esc(cur)+'</option>';
