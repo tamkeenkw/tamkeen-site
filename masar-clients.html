@@ -41,6 +41,12 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text)}
 .cc-line{font-size:12px;font-weight:700;color:var(--muted);margin-top:3px}
 .cc-tag{display:inline-block;margin-top:9px;background:var(--red-bg);color:var(--red);padding:4px 11px;border-radius:100px;font-size:11.5px;font-weight:900}
 .cc-tag.zero{background:var(--green-bg);color:var(--green)}
+.pt-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.pt{padding:4px 10px;border-radius:100px;font-size:11.5px;font-weight:900;white-space:nowrap}
+.pt-paid{background:var(--green-bg);color:var(--green)}
+.pt-pend{background:var(--amber-bg);color:var(--amber)}
+.pt-no{background:var(--red-bg);color:var(--red)}
+.pt-none{background:var(--cream2);color:var(--muted)}
 
 .results-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
 .results-title{font-size:16px;font-weight:900}
@@ -371,9 +377,20 @@ function renderCourses(){
     + (c.dateLabel?'<div class="cc-line">'+esc(c.dateLabel)+(c.fromSheet?'':' (تقديري)')+'</div>':'')
     + (c.trainer?'<div class="cc-line">'+esc(c.trainer)+'</div>':'')
     + '<div class="cc-line">'+toA(c.total)+' مسجّل</div>'
-    + '<span class="cc-tag'+(c.unpaid===0?' zero':'')+'">'+(c.unpaid===0?'الكل دفع':toA(c.unpaid)+' ما دفعوا')+'</span>'
+    + payTags(c)
     + '</div>'
   ).join('');
+}
+
+/* حالة الدفع من عمود M — كل حالة بعددها */
+function payTags(c){
+  if(!c.total) return '<div class="pt-row"><span class="pt pt-none">ما فيه مسجّلين</span></div>';
+  let h='<div class="pt-row">';
+  if(c.paid)    h+='<span class="pt pt-paid">تم الدفع '+toA(c.paid)+'</span>';
+  if(c.pending) h+='<span class="pt pt-pend">قيد الدفع '+toA(c.pending)+'</span>';
+  if(c.notPaid) h+='<span class="pt pt-no">لم يدفع '+toA(c.notPaid)+'</span>';
+  if(c.other)   h+='<span class="pt pt-none">بدون حالة '+toA(c.other)+'</span>';
+  return h+'</div>';
 }
 
 /* ── ٣. فتح دورة ── */
@@ -426,7 +443,7 @@ function renderStudents(list){
 
   document.getElementById('stBody').innerHTML = list.map((s,i)=>{
     const cert = String(s.wantCert||'لا');
-    const pay  = String(s.payment||'لم يدفع');
+    const pay  = String(s.payment||'').trim();
     const isPaid = pay.indexOf('تم الدفع')!==-1;
     const msg = (pay.indexOf('قيد الدفع')!==-1 ? WA_MSG.pay.replace('[الدورة]', s.course||'الدورة') : WA_MSG.cert);
 
@@ -437,8 +454,8 @@ function renderStudents(list){
       + '<td><select class="cell-sel '+certCls(cert)+'" onchange="save('+s.row+',\'cert\',this)">'
       +   opt(['نعم','لا'], cert.indexOf('نعم')!==-1?'نعم':'لا')
       + '</select></td>'
-      + '<td><select class="cell-sel '+payCls(pay)+'" onchange="save('+s.row+',\'pay\',this)">'
-      +   opt(['لم يدفع','قيد الدفع','تم الدفع'], pay)
+      + '<td><select class="cell-sel '+payCls2(pay)+'" onchange="save('+s.row+',\'pay\',this)">'
+      +   payOpts(pay)
       + '</select></td>'
       + '<td>'+lastCell(s)+'</td>'
       + '<td><textarea class="note-in" rows="1" placeholder="اكتب ملاحظتك…" data-row="'+s.row+'" data-phone="'+esc(s.phone)+'" data-old="'+esc(s.note||'')+'" onchange="saveNote(this)">'+esc(s.note||'')+'</textarea></td>'
@@ -473,6 +490,17 @@ async function saveNote(el){
   }
   el.classList.remove('saving');
 }
+
+/* قائمة الدفع تعرض قيمة عمود M كما هي — حتى لو فاضية أو غير الثلاث */
+function payOpts(cur){
+  const std=['لم يدفع','قيد الدفع','تم الدفع'];
+  const hit=std.find(v=>cur.indexOf(v)!==-1);
+  let h='';
+  if(!cur) h+='<option value="" selected disabled>— بدون حالة —</option>';
+  else if(!hit) h+='<option value="" selected disabled>'+esc(cur)+'</option>';
+  return h+std.map(v=>'<option value="'+v+'"'+(v===hit?' selected':'')+'>'+v+'</option>').join('');
+}
+function payCls2(v){ return v ? payCls(v) : ''; }
 
 function opt(arr,cur){
   return arr.map(v=>'<option value="'+esc(v)+'"'+(String(cur).indexOf(v)!==-1?' selected':'')+'>'+esc(v)+'</option>').join('');
