@@ -47,7 +47,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--text)}
 .results-count{font-size:13px;font-weight:700;color:var(--muted);margin-top:3px}
 
 .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
-table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:900px}
 th{background:var(--cream2);color:var(--crimson);font-size:12.5px;font-weight:900;padding:12px 13px;text-align:right;white-space:nowrap}
 td{padding:11px 13px;border-top:1px solid var(--border);vertical-align:middle}
 tr.paid td{background:var(--green-bg)}
@@ -62,6 +62,13 @@ tr.paid td{background:var(--green-bg)}
 .cell-sel.no{background:var(--red-bg);border-color:rgba(198,40,40,.25);color:var(--red)}
 .cell-sel.saving{opacity:.5}
 
+.note-in{width:100%;min-width:190px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;color:var(--text);outline:none;resize:vertical;min-height:38px;line-height:1.6}
+.note-in:focus{border-color:var(--gold);background:#fff}
+.note-in.saving{opacity:.5}
+.note-in.saved{border-color:var(--green);background:var(--green-bg)}
+.last{font-size:12.5px;font-weight:800;white-space:nowrap}
+.last small{display:block;font-size:11px;font-weight:700;color:var(--muted)}
+.last.none{color:var(--red)}
 .wa{background:var(--crimson);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-size:12.5px;font-weight:800;display:inline-block;white-space:nowrap}
 .wa:active{opacity:.8}
 
@@ -179,7 +186,7 @@ tr.paid td{background:var(--green-bg)}
   <div class="view on" id="view-courses">
 
   <div class="wip">
-    <b>طريقة العمل:</b> اختر الشهر ← الدورة ← تطلع لك قائمة المسجّلين. غيّر <b>«يبي شهادة»</b> أو <b>«الدفع»</b> من القائمة المنسدلة — ينحفظ في الشيت مباشرة. اللي يصير <b>تم الدفع</b> يصير صفّه أخضر.
+    <b>طريقة العمل:</b> اختر الشهر ← الدورة ← تطلع لك قائمة المسجّلين. غيّر <b>«يبي شهادة»</b> أو <b>«الدفع»</b> من القائمة المنسدلة — ينحفظ في الشيت مباشرة. اللي يصير <b>تم الدفع</b> يصير صفّه أخضر.<br>اكتب <b>ملاحظتك</b> بعد التواصل — تنحفظ أول ما تطلع من الخانة، و<b>آخر تواصل</b> يصير تاريخ اليوم باسمك.<br>كل دفعة من الدورة تطلع <b>لحالها</b> بمسجّلينها بس.
   </div>
 
   <div class="card">
@@ -211,6 +218,8 @@ tr.paid td{background:var(--green-bg)}
           <th>الواتساب</th>
           <th>يبي شهادة</th>
           <th>الدفع</th>
+          <th>آخر تواصل</th>
+          <th>ملاحظة الموظف</th>
           <th></th>
         </tr></thead>
         <tbody id="stBody"></tbody>
@@ -312,7 +321,7 @@ async function api(p){
 /* ── ١. تحميل الدورات ── */
 async function loadCourses(){
   try{
-    const r = await api({ type:'salesCourses' });
+    const r = await api({ type:'salesCoursesB' });
     if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب الدورات');
     COURSES = r.courses||[];
 
@@ -332,7 +341,9 @@ async function loadCourses(){
       const un = BY_MONTH[m].reduce((s,c)=>s+c.unpaid,0);
       return '<option value="'+esc(m)+'">'+esc(BY_MONTH[m][0].monthLabel)+' — '+toA(un)+' ما دفعوا</option>';
     }).join('');
-    sel.value = months[0];
+    const now = new Date();
+    const curM = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    sel.value = months.indexOf(curM)!==-1 ? curM : months[0];
     renderCourses();
   }catch(e){
     showErr('تعذّر التحميل: '+e.message);
@@ -382,7 +393,7 @@ async function openCourse(month,i,el){
   document.getElementById('studentsCard').scrollIntoView({behavior:'smooth',block:'nearest'});
 
   try{
-    const r = await api({ type:'salesStudents', course:c.name });
+    const r = await api({ type:'salesStudentsB', key:c.key });
     document.getElementById('stLoading').style.display='none';
     if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر جلب المسجّلين');
 
@@ -429,11 +440,38 @@ function renderStudents(list){
       + '<td><select class="cell-sel '+payCls(pay)+'" onchange="save('+s.row+',\'pay\',this)">'
       +   opt(['لم يدفع','قيد الدفع','تم الدفع'], pay)
       + '</select></td>'
+      + '<td>'+lastCell(s)+'</td>'
+      + '<td><textarea class="note-in" rows="1" placeholder="اكتب ملاحظتك…" data-row="'+s.row+'" data-phone="'+esc(s.phone)+'" data-old="'+esc(s.note||'')+'" onchange="saveNote(this)">'+esc(s.note||'')+'</textarea></td>'
       + '<td>'+(isPaid?'':'<a class="wa" target="_blank" rel="noopener" href="https://wa.me/'+waNum(s.phone)+'?text='+encodeURIComponent(msg)+'">واتساب</a>')+'</td>'
       + '</tr>';
   }).join('');
 
   document.getElementById('stTableWrap').style.display='block';
+}
+
+function lastCell(s){
+  if(!s.lastContact) return '<span class="last none">ما تواصل أحد</span>';
+  return '<span class="last" id="lc-'+s.row+'">'+esc(fmtD(s.lastContact))+(s.lastBy?'<small>'+esc(s.lastBy)+'</small>':'')+'</span>';
+}
+function fmtD(iso){ const p=String(iso).split('-'); return p.length===3 ? toA(Number(p[2])+'/'+Number(p[1])+'/'+p[0]) : iso; }
+
+async function saveNote(el){
+  const v = el.value.trim();
+  if(v === el.dataset.old) return;
+  el.classList.remove('saved'); el.classList.add('saving');
+  try{
+    const r = await api({ type:'salesNote', row:Number(el.dataset.row), phone:el.dataset.phone, note:v });
+    if(!r || !r.ok) throw new Error((r&&r.error)||'تعذّر الحفظ');
+    el.dataset.old = v;
+    el.classList.add('saved');
+    const td = el.closest('tr').cells[5];
+    td.innerHTML = lastCell({ row:el.dataset.row, lastContact:r.lastContact, lastBy:r.lastBy });
+    toast('تم حفظ الملاحظة','ok');
+    setTimeout(()=>el.classList.remove('saved'),1500);
+  }catch(e){
+    toast('تعذّر الحفظ: '+e.message,'bad');
+  }
+  el.classList.remove('saving');
 }
 
 function opt(arr,cur){
@@ -453,7 +491,7 @@ async function save(row, field, el){
     if(field==='pay' && tr){
       const done = v==='تم الدفع';
       tr.className = done ? 'paid' : '';
-      const cell = tr.cells[5];
+      const cell = tr.cells[7];
       if(done) cell.innerHTML='';
     }
     toast('تم الحفظ','ok');
