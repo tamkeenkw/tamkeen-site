@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار تحديد الاحتياج وتنسيق الدورة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#5C0F0F; --wine-2:#7a1f1f; --wine-soft:#f3e7e4;
+    --cream:#FAF7F2; --paper:#ffffff; --ink:#2b1a1a; --muted:#7d6a66;
+    --line:#e8ddd6; --ok:#1f6b3a; --bad:#a32020; --warn:#9a6212;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);line-height:1.8;min-height:100vh}
+  .top{background:var(--wine);color:var(--cream);position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+  .top-in{max-width:760px;margin:auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{font-weight:800;font-size:15px}
+  .brand small{display:block;font-weight:400;font-size:11px;opacity:.8}
+  .timer{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:4px 12px;font-weight:800;font-size:18px;letter-spacing:1px;min-width:86px;text-align:center;display:none}
+  .timer.warn{background:#c9831f;border-color:#c9831f}
+  .progress{height:4px;background:rgba(255,255,255,.15)}
+  .progress i{display:block;height:100%;width:0;background:var(--cream);transition:width .35s}
+  main{max-width:760px;margin:auto;padding:20px 16px 60px}
+  .step{display:none;animation:fade .3s ease}
+  .step.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px}
+  h1{font-size:24px;color:var(--wine);line-height:1.5}
+  h2{font-size:19px;color:var(--wine);margin-bottom:4px}
+  .sub{color:var(--muted);font-size:14px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+  .stat{background:var(--wine-soft);border-radius:12px;padding:12px 6px;text-align:center}
+  .stat b{display:block;font-size:24px;color:var(--wine);line-height:1.3}
+  .stat span{font-size:12px;color:var(--muted)}
+  table.dist{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  table.dist th,table.dist td{padding:8px;border-bottom:1px solid var(--line);text-align:right}
+  table.dist th{color:var(--muted);font-weight:600}
+  ul.rules{padding-right:18px;font-size:14px;color:var(--ink)}
+  ul.rules li{margin:4px 0}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px}
+  .pill{background:var(--wine);color:var(--cream);font-size:12px;border-radius:20px;padding:3px 12px;white-space:nowrap}
+  .q{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+  .q.miss{border-color:#d9a0a0;background:#fffafa}
+  .q-t{font-weight:700;margin-bottom:10px;font-size:15.5px}
+  .q-t .n{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--wine-soft);color:var(--wine);font-size:13px;margin-left:8px}
+  .opt{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;margin:7px 0;cursor:pointer;font-size:14.5px;transition:.15s}
+  .opt:hover{border-color:#cfb3ab}
+  .opt input{display:none}
+  .opt .l{flex:0 0 28px;height:28px;border-radius:8px;background:var(--cream);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--wine)}
+  .opt.sel{border-color:var(--wine);background:var(--wine-soft)}
+  .opt.sel .l{background:var(--wine);color:var(--cream);border-color:var(--wine)}
+  .order-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .order-row:last-child{border-bottom:0}
+  .order-row select{flex:0 0 74px;font-family:inherit;font-size:16px;font-weight:700;padding:6px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream);color:var(--wine);text-align:center}
+  .order-row select.dup{border-color:var(--bad);background:#fff0f0}
+  .order-row span{font-size:14.5px}
+  .template{background:var(--wine-soft);border-radius:12px;padding:12px 14px;font-size:14px;margin:10px 0}
+  .template b{color:var(--wine)}
+  .example{font-size:13.5px;border:1px dashed #d8c3bb;border-radius:12px;padding:10px 14px;margin:10px 0;color:var(--ink)}
+  .example em{color:var(--muted);font-style:normal;display:block;font-size:12px}
+  .case{background:#fff8ef;border-right:4px solid var(--warn);border-radius:10px;padding:12px 14px;font-size:14.5px;margin:12px 0}
+  label.f{display:block;font-weight:700;font-size:14px;margin:14px 0 6px;color:var(--wine)}
+  input.t,textarea{width:100%;font-family:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .2s}
+  input.t:focus,textarea:focus,select:focus{outline:none;border-color:var(--wine)}
+  textarea{min-height:90px;resize:vertical}
+  .nav{display:flex;gap:10px;justify-content:space-between;margin-top:16px}
+  .btn{font-family:inherit;font-size:16px;font-weight:700;border:0;border-radius:12px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn.main{background:var(--wine);color:var(--cream);flex:1}
+  .btn.main:hover{background:var(--wine-2)}
+  .btn.ghost{background:transparent;color:var(--wine);border:1.5px solid var(--wine)}
+  .btn:disabled{opacity:.55;cursor:wait}
+  .alert{border-radius:10px;padding:10px 14px;font-size:14px;margin-top:12px;display:none}
+  .alert.on{display:block}
+  .alert.warn{background:#fff4e2;color:#7a4b0c;border:1px solid #f0d3a4}
+  .alert.err{background:#fdecec;color:var(--bad);border:1px solid #f1c2c2}
+  .alert.info{background:var(--wine-soft);color:var(--wine)}
+  .score{text-align:center;padding:26px 16px}
+  .ring{width:150px;height:150px;border-radius:50%;margin:8px auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column;background:conic-gradient(var(--wine) calc(var(--p)*1%), var(--line) 0)}
+  .ring>div{width:118px;height:118px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring b{font-size:34px;color:var(--wine);line-height:1.1}
+  .ring span{font-size:13px;color:var(--muted)}
+  .badge{display:inline-block;padding:5px 18px;border-radius:20px;font-weight:800}
+  .badge.ok{background:#e4f3e9;color:var(--ok)}
+  .badge.no{background:#fbe9e9;color:var(--bad)}
+  .bar{margin:10px 0}
+  .bar-h{display:flex;justify-content:space-between;font-size:14px}
+  .bar-t{height:9px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:4px}
+  .bar-t i{display:block;height:100%;background:var(--wine);border-radius:9px}
+  .recs li{margin:8px 0;font-size:14.5px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:10px}
+  fieldset{border:0}
+  @media (max-width:520px){
+    h1{font-size:20px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .card{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <div class="brand">اختبار تحديد الاحتياج وتنسيق الدورة<small>مركز خدمة المجتمع والتعليم المستمر</small></div>
+    <div class="timer" id="timer">20:00</div>
+  </div>
+  <div class="progress"><i id="prog"></i></div>
+</div>
+
+<main>
+<fieldset id="exam">
+
+  <!-- ═══ البداية ═══ -->
+  <section class="step on" data-step="intro">
+    <div class="card">
+      <h1>اختبار: تحديد الاحتياج التدريبي وتنسيق الدورة</h1>
+      <p class="sub">مركز خدمة المجتمع والتعليم المستمر</p>
+      <div class="stats">
+        <div class="stat"><b>٢٥</b><span>الدرجة الكلية</span></div>
+        <div class="stat"><b>٤</b><span>عدد الأقسام</span></div>
+        <div class="stat"><b>٢٠</b><span>الزمن بالدقائق</span></div>
+        <div class="stat"><b>١٨</b><span>درجة النجاح</span></div>
+      </div>
+      <table class="dist">
+        <tr><th>القسم</th><th>المحتوى</th><th>الدرجة</th></tr>
+        <tr><td>أولاً</td><td>تحديد الاحتياج التدريبي</td><td>٦</td></tr>
+        <tr><td>ثانياً</td><td>تنسيق الدورة</td><td>٦</td></tr>
+        <tr><td>ثالثاً</td><td>ترتيب خطوات تنسيق الدورة</td><td>٨</td></tr>
+        <tr><td>رابعاً</td><td>صياغة الاحتياج بشكل فني</td><td>٥</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h2>قبل ما تبدأ</h2>
+      <ul class="rules">
+        <li>يبدأ العد التنازلي (٢٠ دقيقة) أول ما تضغط «ابدأ الاختبار».</li>
+        <li>لكل سؤال اختيار إجابة صحيحة واحدة فقط.</li>
+        <li>تقدر ترجع للأقسام السابقة وتعدّل قبل الإرسال.</li>
+        <li>بعد انتهاء الإجابة يُطلب منك الاسم الثلاثي ورقم الهاتف لإرسال النتيجة.</li>
+      </ul>
+    </div>
+    <button class="btn main" style="width:100%" onclick="startExam()">ابدأ الاختبار</button>
+  </section>
+
+  <!-- ═══ أولاً ═══ -->
+  <section class="step" data-step="s1">
+    <div class="sec-head"><div><h2>أولاً: تحديد الاحتياج التدريبي</h2><p class="sub">درجة لكل سؤال</p></div><span class="pill">٦ درجات</span></div>
+    <div id="s1"></div>
+    <div class="alert warn" id="w-s1"></div>
+    <div class="nav"><button class="btn ghost" onclick="go(-1)">السابق</button><button class="btn main" onclick="next('s1')">التالي</button></div>
+  </section>
+
+  <!-- ═══ ثانياً ═══ -->
+  <section class="step" data-step="s2">
+    <div class="sec-head"><div><h2>ثانياً: تنسيق الدورة</h2><p class="sub">درجة لكل سؤال</p></div><span class="pill">٦ درجات</span></div>
+    <div id="s2"></div>
+    <div class="alert warn" id="w-s2"></div>
+    <div class="nav"><button class="btn ghost" onclick="go(-1)">السابق</button><button class="btn main" onclick="next('s2')">التالي</button></div>
+  </section>
+
+  <!-- ═══ ثالثاً ═══ -->
+  <section class="step" data-step="s3">
+    <div class="sec-head"><div><h2>ثالثاً: ترتيب خطوات تنسيق الدورة</h2><p class="sub">اختر الرقم المناسب لكل خطوة، من ١ (الأولى) إلى ٨ (الأخيرة) — درجة لكل خطوة</p></div><span class="pill">٨ درجات</span></div>
+    <div class="card" id="s3"></div>
+    <div class="alert warn" id="w-s3"></div>
+    <div class="nav"><button class="btn ghost" onclick="go(-1)">السابق</button><button class="btn main" onclick="next('s3')">التالي</button></div>
+  </section>
+
+  <!-- ═══ رابعاً ═══ -->
+  <section class="step" data-step="s4">
+    <div class="sec-head"><div><h2>رابعاً: صياغة الاحتياج بشكل فني</h2></div><span class="pill">٥ درجات</span></div>
+    <div class="card">
+      <div class="template"><b>قالب الصياغة الفنية:</b><br>تمكين [الفئة + العدد] من [سلوك قابل للملاحظة]، لتحقيق [مؤشر: من ... إلى ...]، خلال [المدة].</div>
+      <div class="example"><em>صياغة ضعيفة</em>دورة تواصل للموظفين</div>
+      <div class="example"><em>صياغة فنية</em>تمكين موظفي الاستقبال (١٢ موظفاً) من الرد على استفسارات المراجعين هاتفياً وفق دليل الإجراءات، لخفض الاتصالات المعادة من ١٥ إلى أقل من ٦ أسبوعياً، خلال شهرين.</div>
+      <div class="case"><b>الحالة المطلوب صياغتها:</b><br>قسم خدمة المراجعين في جهة حكومية، وعدد موظفي الاستقبال فيه ١٥ موظفاً. يبيّن سجل الشكاوى ورود ٨ شكاوى شهرياً سببها أسلوب تعامل الموظف مع المراجع. وترغب الجهة في خفض هذا الرقم خلال ٣ أشهر.</div>
+      <p class="sub">أكمل العناصر الأربعة، ثم اكتب الصياغة الكاملة في سطر واحد.</p>
+      <label class="f" for="f-group">١. الفئة + العدد</label><input class="t" id="f-group" data-save>
+      <label class="f" for="f-behavior">٢. السلوك المطلوب</label><input class="t" id="f-behavior" data-save>
+      <label class="f" for="f-indicator">٣. المؤشر (من ... إلى ...)</label><input class="t" id="f-indicator" data-save>
+      <label class="f" for="f-duration">٤. المدة</label><input class="t" id="f-duration" data-save>
+      <label class="f" for="f-full">الصياغة الكاملة</label><textarea id="f-full" data-save></textarea>
+    </div>
+    <div class="alert warn" id="w-s4"></div>
+    <div class="nav"><button class="btn ghost" onclick="go(-1)">السابق</button><button class="btn main" onclick="next('s4')">إنهاء الإجابة</button></div>
+  </section>
+
+</fieldset>
+
+  <!-- ═══ البيانات ═══ -->
+  <section class="step" data-step="info">
+    <div class="card">
+      <h2>خلصت الإجابة 👏</h2>
+      <p class="sub">اكتب بياناتك لإرسال الاختبار وعرض نتيجتك.</p>
+      <div class="alert info" id="timeup">انتهى الوقت المحدد — تم حفظ إجاباتك، أكمل بياناتك للإرسال.</div>
+      <label class="f" for="name">الاسم الثلاثي</label>
+      <input class="t" id="name" autocomplete="name" placeholder="مثال: محمد أحمد العلي">
+      <label class="f" for="phone">رقم الهاتف</label>
+      <input class="t" id="phone" type="tel" inputmode="numeric" maxlength="12" placeholder="٨ أرقام" style="direction:ltr;text-align:right">
+      <div class="alert err" id="err"></div>
+      <div class="nav">
+        <button class="btn ghost" id="backBtn" onclick="go(-1)">مراجعة الإجابات</button>
+        <button class="btn main" id="sendBtn" onclick="submitExam()">إرسال الاختبار</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ النتيجة ═══ -->
+  <section class="step" data-step="result">
+    <div class="card score">
+      <p class="sub" id="r-name"></p>
+      <div class="ring" id="ring" style="--p:0"><div><b id="r-total">0</b><span>من ٢٥</span></div></div>
+      <span class="badge" id="r-badge"></span>
+      <p class="note">درجة القسم الرابع مبدئية وتُراجع من المصحح.</p>
+    </div>
+    <div class="card">
+      <h2>درجاتك حسب الأقسام</h2>
+      <div id="r-areas"></div>
+    </div>
+    <div class="card">
+      <h2>التوصيات</h2>
+      <ul class="recs" id="r-recs"></ul>
+    </div>
+    <p class="note" style="text-align:center">شكراً لوقتك ومشاركتك — تم تسجيل نتيجتك.</p>
+  </section>
+</main>
+
+<script>
+/* ════════ الإعدادات ════════
+   الصق رابط الـ Web App بعد نشر TrainingNeedsExam.gs */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxDJsGTL2LQlJ-vOjA9J7I5FdGIxhPAVghLRyUFm2WoqqCJedhh5W5AKkDTnGs0kej4/exec';
+const PAGE_VERSION = 'needs-exam-v1';
+const DURATION_MIN = 20;
+const STORE = 'needs_exam_v1';
+
+/* ════════ الأسئلة (بدون مفتاح الإجابات) ════════ */
+const S1 = [
+  ['الاحتياج التدريبي هو الفجوة بين:', ['رغبة المتدرب وميزانية المركز','الأداء المطلوب والأداء الحالي','عدد المسجلين وعدد الحاضرين']],
+  ['أيٌّ مما يلي ليس مصدراً لتحديد الاحتياج؟', ['استبيانات الدورات السابقة','طلب رسمي من جهة','رأي شخصي بدون بيانات']],
+  ['«الموظف يعرف عمله، لكن النظام الإلكتروني معطّل» — الحل:', ['دورة تدريبية','معالجة تقنية، وليست تدريباً','تغيير المدرب']],
+  ['ما الحد الأدنى لعدد مصادر البيانات عند تحديد الاحتياج؟', ['مصدر واحد','مصدران','لا يوجد حد أدنى']],
+  ['«٧٠٪ من المشاركين طلبوا مستوى متقدماً» — هذه:', ['رغبة بلا دليل','حاجة مدعومة برقم','شكوى إدارية']],
+  ['بعد جمع الاحتياجات، ما الخطوة التالية؟', ['حجز القاعة','ترتيب الاحتياجات حسب الأولوية','طباعة الشهادات']]
+];
+const S2 = [
+  ['متى يُغلق باب التسجيل؟', ['يوم انعقاد الدورة','قبل ٥ أيام من الانعقاد','لا يُغلق']],
+  ['كشف الحضور الموقَّع يُستخدم في:', ['الحملات التسويقية','صرف مستحقات المدرب وإصدار الشهادات','قياس رضا المشاركين']],
+  ['أنسب توقيت لدورة موظفي جهة حكومية:', ['صباحاً بكتاب تفريغ رسمي من الجهة','مساءً بعد انتهاء الدوام','خلال الإجازات الرسمية']],
+  ['ما الذي يجب إنجازه قبل يوم الدورة؟', ['تجربة الأجهزة وتجهيز نسخة احتياطية من العرض','إصدار الشهادات','تحليل استبيانات الرضا']],
+  ['تأخّر المدرب ٢٠ دقيقة والقاعة ممتلئة — أول تصرف:', ['إلغاء الدورة فوراً','البدء بالتعارف وعرض الأهداف ريثما يصل','صرف المشاركين']],
+  ['تُصدَر شهادات الحضور بناءً على:', ['عدد المسجلين','كشف الحضور الموقَّع','طلب المتدرب']]
+];
+const STEPS = [
+  'إصدار الشهادات وتوزيعها على المشاركين',
+  'إغلاق التسجيل واعتماد قائمة المشاركين',
+  'تحديد الاحتياج التدريبي من البيانات',
+  'تجهيز القاعة والأجهزة قبل بدء الدورة',
+  'إطلاق التسويق وفتح باب التسجيل',
+  'اعتماد البرنامج وتحديد موعده',
+  'تنفيذ الدورة وتوقيع كشف الحضور',
+  'التعاقد مع المدرب وتوقيع العقد'
+];
+const L = ['a','b','c'], LA = ['أ','ب','ج'];
+const ar = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+/* ════════ الحالة ════════ */
+let state = { mcq: Array(12).fill(''), order: Array(8).fill(''), form: {}, startedAt: 0, step: 'intro', timeUp: false };
+const ORDER_STEPS = ['intro','s1','s2','s3','s4','info','result'];
+let warned = {}, timerId = null, submitted = false;
+
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if(s && s.startedAt) state = Object.assign(state, s); }catch(e){} }
+
+/* ════════ البناء ════════ */
+function renderMCQ(id, list, offset){
+  document.getElementById(id).innerHTML = list.map((q, i) => {
+    const idx = offset + i;
+    return `<div class="q" id="q${idx}"><div class="q-t"><span class="n">${ar(idx+1)}</span>${q[0]}</div>` +
+      q[1].map((o, j) => `<label class="opt" data-q="${idx}" data-v="${L[j]}"><input type="radio" name="m${idx}" value="${L[j]}"><span class="l">${LA[j]}</span><span>${o}</span></label>`).join('') +
+      `</div>`;
+  }).join('');
+}
+function renderOrder(){
+  const opts = '<option value="">—</option>' + [1,2,3,4,5,6,7,8].map(n => `<option value="${n}">${ar(n)}</option>`).join('');
+  document.getElementById('s3').innerHTML = STEPS.map((s, i) =>
+    `<div class="order-row"><select data-o="${i}" aria-label="ترتيب: ${s}">${opts}</select><span>${s}</span></div>`).join('');
+}
+function hydrate(){
+  document.querySelectorAll('.opt').forEach(el => {
+    const q = +el.dataset.q; el.classList.toggle('sel', state.mcq[q] === el.dataset.v);
+  });
+  document.querySelectorAll('select[data-o]').forEach(s => s.value = state.order[+s.dataset.o] || '');
+  document.querySelectorAll('[data-save]').forEach(el => el.value = state.form[el.id.slice(2)] || '');
+  markDups();
+}
+function markDups(){
+  const sels = [...document.querySelectorAll('select[data-o]')];
+  const count = {}; sels.forEach(s => { if(s.value) count[s.value] = (count[s.value]||0) + 1; });
+  sels.forEach(s => s.classList.toggle('dup', !!s.value && count[s.value] > 1));
+  return Object.values(count).some(c => c > 1);
+}
+
+/* ════════ التنقل ════════ */
+function show(step){
+  state.step = step; save();
+  document.querySelectorAll('.step').forEach(s => s.classList.toggle('on', s.dataset.step === step));
+  const i = ORDER_STEPS.indexOf(step);
+  document.getElementById('prog').style.width = (i / (ORDER_STEPS.length - 1) * 100) + '%';
+  document.getElementById('timeup').classList.toggle('on', state.timeUp);
+  document.getElementById('backBtn').style.display = state.timeUp ? 'none' : '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function go(d){ const i = ORDER_STEPS.indexOf(state.step); show(ORDER_STEPS[Math.max(1, i + d)]); }
+
+function next(sec){
+  const w = document.getElementById('w-' + sec);
+  let msg = '';
+  document.querySelectorAll('.q.miss').forEach(q => q.classList.remove('miss'));
+  if (sec === 's1' || sec === 's2'){
+    const off = sec === 's1' ? 0 : 6, miss = [];
+    for (let i = off; i < off + 6; i++) if (!state.mcq[i]) { miss.push(ar(i+1)); document.getElementById('q'+i).classList.add('miss'); }
+    if (miss.length) msg = `في ${ar(miss.length)} ${miss.length > 1 ? 'أسئلة' : 'سؤال'} بدون إجابة (${miss.join('، ')}).`;
+  } else if (sec === 's3'){
+    const empty = state.order.filter(v => !v).length;
+    if (markDups()) msg = 'في أرقام مكررة (معلّمة بالأحمر) — كل خطوة لازم يكون لها رقم مختلف.';
+    else if (empty) msg = `في ${ar(empty)} ${empty > 1 ? 'خطوات' : 'خطوة'} بدون ترتيب.`;
+  } else if (sec === 's4'){
+    const empty = ['group','behavior','indicator','duration','full'].filter(k => !(state.form[k]||'').trim()).length;
+    if (empty) msg = `في ${ar(empty)} ${empty > 1 ? 'حقول' : 'حقل'} فاضية.`;
+  }
+  if (msg && !warned[sec]){
+    warned[sec] = true;
+    w.textContent = msg + ' اضغط مرة ثانية للمتابعة على أي حال.';
+    w.classList.add('on'); return;
+  }
+  w.classList.remove('on'); warned[sec] = false;
+  go(1);
+}
+
+/* ════════ المؤقت ════════ */
+function startExam(){
+  if (!state.startedAt) state.startedAt = Date.now();
+  save(); runTimer(); show('s1');
+}
+function runTimer(){
+  const t = document.getElementById('timer'); t.style.display = 'block';
+  clearInterval(timerId);
+  const tick = () => {
+    const left = Math.max(0, DURATION_MIN * 60 - Math.floor((Date.now() - state.startedAt) / 1000));
+    t.textContent = `${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`;
+    t.classList.toggle('warn', left <= 180);
+    if (left === 0){ clearInterval(timerId); timeUp(); }
+  };
+  tick(); timerId = setInterval(tick, 1000);
+}
+function timeUp(){
+  if (submitted) return;
+  state.timeUp = true; save();
+  document.getElementById('exam').disabled = true;
+  if (['s1','s2','s3','s4','intro'].includes(state.step)) show('info'); else show(state.step);
+}
+
+/* ════════ الإرسال ════════ */
+function toEn(s){ return String(s||'').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)); }
+async function submitExam(){
+  const err = document.getElementById('err'); err.classList.remove('on');
+  const name = document.getElementById('name').value.trim().replace(/\s+/g,' ');
+  let phone = toEn(document.getElementById('phone').value).replace(/\D/g,'');
+  if (phone.startsWith('00965')) phone = phone.slice(5); else if (phone.startsWith('965') && phone.length === 11) phone = phone.slice(3);
+  if (name.split(' ').length < 3) return showErr('الرجاء كتابة الاسم الثلاثي.');
+  if (!/^\d{8}$/.test(phone)) return showErr('رقم الهاتف لازم يكون ٨ أرقام.');
+  if (SCRIPT_URL.includes('PASTE')) return showErr('وضع المعاينة: الصفحة مو مربوطة بالشيت بعد.');
+
+  const btn = document.getElementById('sendBtn'); btn.disabled = true; btn.textContent = 'جاري الإرسال...';
+  const payload = {
+    type:'needs_exam', version:PAGE_VERSION, name, phone,
+    mcq: state.mcq, order: state.order, form: state.form,
+    durationSec: Math.min(DURATION_MIN * 60, Math.round((Date.now() - state.startedAt) / 1000))
+  };
+  try{
+    const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'خطأ غير معروف');
+    submitted = true; clearInterval(timerId);
+    document.getElementById('timer').style.display = 'none';
+    try{ localStorage.removeItem(STORE); }catch(e){}
+    showResult(name, data);
+  }catch(e){
+    btn.disabled = false; btn.textContent = 'إعادة المحاولة';
+    showErr('ما قدرنا نرسل الاختبار: ' + e.message + ' — تأكد من الاتصال وحاول مرة ثانية، إجاباتك محفوظة.');
+  }
+}
+function showErr(m){ const e = document.getElementById('err'); e.textContent = m; e.classList.add('on'); }
+
+function showResult(name, d){
+  document.getElementById('r-name').textContent = name;
+  document.getElementById('r-total').textContent = ar(d.total);
+  document.getElementById('ring').style.setProperty('--p', Math.round(d.total / 25 * 100));
+  const b = document.getElementById('r-badge');
+  b.textContent = d.pass ? 'ناجح ✓' : 'لم تصل لدرجة النجاح';
+  b.className = 'badge ' + (d.pass ? 'ok' : 'no');
+  const max = { need:6, coordination:6, sequence:8, formulation:5 };
+  const got = { need:d.p1, coordination:d.p2, sequence:d.p3, formulation:d.p4 };
+  document.getElementById('r-areas').innerHTML = d.areas.map(a =>
+    `<div class="bar"><div class="bar-h"><span>${a.name}</span><b>${ar(got[a.key])} / ${ar(max[a.key])}</b></div><div class="bar-t"><i style="width:${a.pct}%"></i></div></div>`).join('');
+  document.getElementById('r-recs').innerHTML = d.recs.map(r => `<li>${r}</li>`).join('');
+  document.getElementById('exam').disabled = true;
+  show('result');
+}
+
+/* ════════ التشغيل ════════ */
+renderMCQ('s1', S1, 0); renderMCQ('s2', S2, 6); renderOrder();
+document.addEventListener('click', e => {
+  const o = e.target.closest('.opt'); if (!o || document.getElementById('exam').disabled) return;
+  e.preventDefault();
+  state.mcq[+o.dataset.q] = o.dataset.v; save();
+  document.querySelectorAll(`.opt[data-q="${o.dataset.q}"]`).forEach(x => x.classList.toggle('sel', x === o));
+  document.getElementById('q'+o.dataset.q).classList.remove('miss');
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('select[data-o]')){ state.order[+e.target.dataset.o] = e.target.value; save(); markDups(); }
+});
+document.addEventListener('input', e => {
+  if (e.target.matches('[data-save]')){ state.form[e.target.id.slice(2)] = e.target.value; save(); }
+});
+
+load(); hydrate();
+if (state.startedAt && !['intro','result'].includes(state.step)){
+  runTimer();
+  if (state.timeUp) document.getElementById('exam').disabled = true;
+  show(state.step);
+}
+</script>
+</body>
+</html>
