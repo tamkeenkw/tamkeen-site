@@ -168,6 +168,8 @@ input[type=time]{color-scheme:dark;direction:ltr;text-align:right}
       </div>
       <div class="hacts">
         <a class="btn sm gh" href="reception.html" style="text-decoration:none">الاستقبال</a>
+        <a class="btn sm gh" href="students.html" style="text-decoration:none">الطلاب</a>
+        <a class="btn sm gh" href="attend.html" style="text-decoration:none">التحضير</a>
         <a class="btn sm gh" href="staff-edu.html" style="text-decoration:none">المعلمين</a>
         <a class="btn sm gh" href="orders.html" style="text-decoration:none">الطلبات</a>
         <a class="btn sm gh" href="services.html" style="text-decoration:none">الخدمات</a>
@@ -206,6 +208,10 @@ input[type=time]{color-scheme:dark;direction:ltr;text-align:right}
         <div class="field">
           <label>الصلاحيات</label>
           <div class="perms" id="nPerms"></div>
+        </div>
+        <div class="note" style="margin:-4px 0 12px">
+          «التحضير فقط» للمعلم أو مشرف الشعبة — يشوف أسماء طلاب الشعبة ويحضّرهم،
+          بدون رسوم ولا بيانات الأسر. و«متابعة الطلاب» للإدارة: الاشتراكات والتقييمات والتقارير.
         </div>
         <button class="btn" onclick="addMem()" style="width:100%">إضافة الموظف</button>
         <div class="note">
@@ -297,14 +303,16 @@ input[type=time]{color-scheme:dark;direction:ltr;text-align:right}
 const STAFF_URL = 'https://script.google.com/macros/s/AKfycbwzFj5x3jJTep0wm6NET-05i5vAm1a_foecHOBjH3YfjggI4bcHHJpAB67XZPcXR_yOiQ/exec';
 
 const LABEL = {
-  teachers :'سجل المعلمين',
-  orders   :'طلبات المذكرات',
-  services :'جدول الخدمات',
-  mutlaa   :'فرع المطلاع',
-  reception:'تسجيل الطلاب',
-  admin    :'أدمن — كل شي'
+  reception :'تسجيل الطلاب',
+  students  :'متابعة الطلاب',
+  attendance:'التحضير فقط',
+  orders    :'طلبات المذكرات',
+  services  :'جدول الخدمات',
+  teachers  :'سجل المعلمين',
+  mutlaa    :'فرع المطلاع',
+  admin     :'أدمن — كل شي'
 };
-const ORDER = ['reception','orders','services','teachers','mutlaa','admin'];
+const ORDER = ['reception','students','attendance','orders','services','teachers','mutlaa','admin'];
 
 let KEY='', USER='', TEAM=[], SECS=[], RECS=[], TCH=[], CENTER={}, newPerms=['reception'];
 
