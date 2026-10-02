@@ -68,6 +68,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
 .field input,.field select{width:100%;background:rgba(255,255,255,.05);
  border:1.5px solid var(--bd);border-radius:12px;padding:12px 14px;font-family:'Cairo',sans-serif;
  font-size:14px;color:#fff;outline:none}
+.field textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bd);
+ border-radius:12px;padding:13px 15px;font-family:'Cairo',sans-serif;font-size:13.5px;
+ color:#fff;outline:none;line-height:2;resize:vertical;min-height:110px}
+.field textarea.big{min-height:300px}
+.field textarea:focus{border-color:var(--accentlt)}
 .field input:focus,.field select:focus{border-color:var(--accentlt)}
 .field input::placeholder{color:var(--muted)}
 .field input.ltr{direction:ltr;text-align:right}
@@ -175,6 +180,7 @@ input[type=time]{color-scheme:dark;direction:ltr;text-align:right}
     <div class="tabs">
       <div class="tab on" id="tabA" onclick="go('a')">صلاحيات الموظفين</div>
       <div class="tab" id="tabB" onclick="go('b')">جدول الشعب</div>
+      <div class="tab" id="tabC" onclick="go('c')">الشروط والأحكام</div>
     </div>
 
     <div class="loading" id="loading"><div class="s"></div><p>جاري التحميل...</p></div>
@@ -240,6 +246,48 @@ input[type=time]{color-scheme:dark;direction:ltr;text-align:right}
         </div>
       </div>
     </div>
+
+    <!-- ══ الشروط والأحكام ══ -->
+    <div id="viewC" class="hide">
+      <div class="warnbox">
+        <b>هذا النص يطلع بمكانين</b>
+        أسفل استمارة التسجيل المطبوعة قبل خانة التوقيع، وبصفحة فاتورة الدفع
+        مع خانة «قرأت ووافقت» — ولي الأمر ما يقدر يدفع قبل ما يعلّمها.
+      </div>
+
+      <div class="box">
+        <div class="sec">بيانات المركز<div class="ln"></div></div>
+        <div class="grid2">
+          <div class="field"><label>اسم المركز</label>
+            <input type="text" id="cName" placeholder="EDUCLOUD — مركز التعليم"></div>
+          <div class="field"><label>واتساب المركز</label>
+            <input type="text" id="cWa" class="ltr" placeholder="97999768"></div>
+        </div>
+        <div class="field">
+          <label>عنوان المركز</label>
+          <input type="text" id="cAddr" placeholder="المطلاع · ق٥ · مجمع ...">
+        </div>
+        <div class="field">
+          <label>ملاحظة أسفل زر الدفع</label>
+          <input type="text" id="cNote" placeholder="الدفع عبر بوابة Tap — K-NET ومدى والبطاقات">
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="sec">نص الشروط والأحكام<div class="ln"></div></div>
+        <div class="field">
+          <label>اكتب كل شرط بسطر مستقل — الأسطر تنحفظ زي ما هي</label>
+          <textarea id="cTerms" class="big"></textarea>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+          <button class="btn" onclick="saveCenter()" style="flex:1;min-width:190px">
+            <span id="ctTxt">حفظ الشروط والبيانات</span><div class="spin" id="ctSpin"></div>
+          </button>
+          <button class="btn gh" onclick="previewTerms()">معاينة الطباعة</button>
+        </div>
+        <div class="note" id="cLen"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -258,7 +306,7 @@ const LABEL = {
 };
 const ORDER = ['reception','orders','services','teachers','mutlaa','admin'];
 
-let KEY='', USER='', TEAM=[], SECS=[], RECS=[], TCH=[], newPerms=['reception'];
+let KEY='', USER='', TEAM=[], SECS=[], RECS=[], TCH=[], CENTER={}, newPerms=['reception'];
 
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const J   = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
@@ -315,29 +363,30 @@ document.getElementById('keyIn').addEventListener('keydown',e=>{ if(e.key==='Ent
 async function refresh(){
   document.getElementById('loading').style.display='block';
   try{
-    const [t,s,rc,tc]=await Promise.all([
+    const [t,sc,rc,tc,ce]=await Promise.all([
       call({action:'team'}),
       call({action:'sections'}),
       call({action:'reception-list'}),
-      call({action:'list'})
+      call({action:'list'}),
+      call({action:'center'})
     ]);
     if(!t||!t.ok) throw new Error(t&&t.msg?t.msg:'تعذّر جلب الفريق');
     TEAM=t.team||[];
-    SECS=(s&&s.sections)||[];
+    SECS=(sc&&sc.sections)||[];
     RECS=(rc&&rc.regs)||[];
     TCH=((tc&&tc.teachers)||[]).filter(x=>x.status==='مفعّل');
-    paintTeam(); paintSecs(); buildNew();
+    CENTER=(ce&&ce.center)||{};
+    paintTeam(); paintSecs(); buildNew(); fillCenter();
   }catch(e){ toast(e.message,true); }
   document.getElementById('loading').style.display='none';
   document.getElementById('viewA').classList.remove('hide');
 }
 
 function go(v){
-  const A=v==='a';
-  document.getElementById('viewA').classList.toggle('hide',!A);
-  document.getElementById('viewB').classList.toggle('hide',A);
-  document.getElementById('tabA').classList.toggle('on',A);
-  document.getElementById('tabB').classList.toggle('on',!A);
+  ['a','b','c'].forEach(x=>{
+    document.getElementById('view'+x.toUpperCase()).classList.toggle('hide', x!==v);
+    document.getElementById('tab'+x.toUpperCase()).classList.toggle('on', x===v);
+  });
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -505,6 +554,84 @@ async function secCall(o){
     toast(r.msg||'تم');
     return true;
   }catch(e){ toast(e.message,true); return false; }
+}
+
+/* ══════════ إعدادات المركز والشروط ══════════ */
+function fillCenter(){
+  document.getElementById('cName').value  = CENTER.name  || '';
+  document.getElementById('cAddr').value  = CENTER.addr  || '';
+  document.getElementById('cWa').value    = CENTER.wa    || '';
+  document.getElementById('cNote').value  = CENTER.payNote || '';
+  document.getElementById('cTerms').value = CENTER.terms || '';
+  showLen();
+}
+
+function showLen(){
+  const t=document.getElementById('cTerms').value;
+  const lines=t.split('\n').filter(x=>x.trim()).length;
+  document.getElementById('cLen').textContent=
+    t.trim() ? (lines+' سطر · '+t.length+' حرف من ٤٠٠٠')
+             : 'ما في شروط محفوظة — بدونها ما يطلع قسم الشروط بالاستمارة ولا بصفحة الدفع.';
+}
+document.getElementById('cTerms').addEventListener('input',showLen);
+
+async function saveCenter(){
+  const items=[
+    ['اسم_المركز',       document.getElementById('cName').value.trim()],
+    ['عنوان_المركز',     document.getElementById('cAddr').value.trim()],
+    ['واتساب_المركز',    document.getElementById('cWa').value.trim()],
+    ['ملاحظة_الفاتورة',  document.getElementById('cNote').value.trim()],
+    ['الشروط_والأحكام',  document.getElementById('cTerms').value]
+  ];
+  const b=document.getElementById('ctTxt');
+  document.getElementById('ctSpin').style.display='block';
+  b.textContent='جاري الحفظ...';
+  try{
+    for(const [k,v] of items){
+      const r=await call({action:'center-set',k:k,v:v});
+      if(!r||!r.ok) throw new Error((r&&r.msg?r.msg:'فشل حفظ ')+k);
+      if(r.center) CENTER=r.center;
+    }
+    toast('تم حفظ الشروط والبيانات');
+    fillCenter();
+  }catch(e){ toast(e.message,true); }
+  b.textContent='حفظ الشروط والبيانات';
+  document.getElementById('ctSpin').style.display='none';
+}
+
+function previewTerms(){
+  const terms=document.getElementById('cTerms').value;
+  if(!terms.trim()) return toast('اكتب الشروط أولاً',true);
+  const nm=document.getElementById('cName').value.trim()||'EDUCLOUD';
+  const w=window.open('','_blank');
+  if(!w) return toast('المتصفح منع النافذة',true);
+  w.document.open();
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+    '<title>معاينة الشروط</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">'+
+    '<style>*{margin:0;padding:0;box-sizing:border-box}'+
+    'body{font-family:Cairo,sans-serif;background:#eef2f0;color:#0A2620;padding:16px}'+
+    '.tb{background:#0D5C48;color:#fff;padding:12px 16px;border-radius:12px;display:flex;'+
+      'justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}'+
+    '.tb p{font-size:12.5px;opacity:.75;font-weight:600}'+
+    '.pb{background:#fff;color:#0D5C48;border:none;font-family:Cairo,sans-serif;font-size:14px;'+
+      'font-weight:900;padding:11px 26px;border-radius:100px;cursor:pointer}'+
+    '.sheet{background:#fff;width:210mm;margin:0 auto;padding:14mm 13mm;box-shadow:0 3px 16px rgba(0,0,0,.12)}'+
+    '.bd{font-size:22px;font-weight:900;color:#0D5C48;letter-spacing:2px;'+
+      'padding-bottom:10px;border-bottom:2.5px solid #0D5C48}'+
+    '.sl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;color:#0D5C48;margin:16px 0 8px}'+
+    '.sl .ln{flex:1;height:1px;background:rgba(13,92,72,.18)}'+
+    '.terms{font-size:10.5px;line-height:1.95;color:#33564D;font-weight:600;white-space:pre-line;'+
+      'background:#fff;border:1px solid #D8E8E2;border-radius:7px;padding:10px 13px}'+
+    '@media print{body{background:#fff;padding:0}.tb{display:none}'+
+      '.sheet{width:auto;margin:0;box-shadow:none;padding:9mm}@page{size:A4;margin:8mm}}'+
+    '</style></head><body>'+
+    '<div class="tb"><p>هذا شكل الشروط بالاستمارة المطبوعة</p>'+
+    '<button class="pb" onclick="window.print()">طباعة</button></div>'+
+    '<div class="sheet"><div class="bd">'+esc(nm)+'</div>'+
+    '<div class="sl">الشروط والأحكام<div class="ln"></div></div>'+
+    '<div class="terms">'+esc(terms)+'</div></div></body></html>');
+  w.document.close();
 }
 
 let tT;

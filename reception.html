@@ -186,6 +186,12 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
  border-radius:10px;padding:10px 12px;font-size:10.5px;font-weight:600;color:var(--muted2);
  direction:ltr;text-align:left;word-break:break-all;line-height:1.7;max-height:66px;overflow:auto}
 .invbox .ivn{font-size:11px;color:var(--muted);font-weight:700;line-height:1.8;margin-top:10px}
+.invbox .ivdone{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.1)}
+.invbox .ivdone.on{display:block}
+.invbox .ivcode{display:flex;align-items:center;gap:10px;justify-content:space-between;
+ background:rgba(34,176,138,.1);border:1.5px solid rgba(34,176,138,.3);border-radius:11px;padding:11px 14px}
+.invbox .ivcode span{font-size:11.5px;color:var(--muted2);font-weight:700}
+.invbox .ivcode b{font-size:19px;font-weight:900;color:var(--accentlt);direction:ltr;letter-spacing:2px}
 
 .empty{text-align:center;padding:52px 20px;color:var(--muted);font-size:13px;font-weight:700}
 .toast{position:fixed;bottom:26px;right:50%;transform:translateX(50%) translateY(20px);z-index:60;
@@ -389,8 +395,8 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
 <script>
 const STAFF_URL = 'https://script.google.com/macros/s/AKfycbwzFj5x3jJTep0wm6NET-05i5vAm1a_foecHOBjH3YfjggI4bcHHJpAB67XZPcXR_yOiQ/exec';
 
-/* رابط سلة الدفع — عدّله لو غيّرت مسار الصفحة */
-const CART_URL = 'https://tamkeenkuw.com/cart';
+/* صفحة الدفع القصيرة — عدّلها لو غيّرت مسار الصفحة */
+const PAY_PAGE = 'https://tamkeenkuw.com/pay';
 
 const BRAND = { name:'EDUCLOUD', org:'معهد تمكين إيديوكلاود', phone:'97999768',
                 site:'tamkeenkuw.com/educloud', insta:'@educloudkw' };
@@ -419,7 +425,7 @@ const NAVS = [
 let KEY='', USER='', PERMS=[], REGS=[], SECS=[], STATES=['جديد','مؤكد','موقوف','منتهي'];
 let TYPES=['شهري','كورس','خاصة','مكثف'];
 let stage='ابتدائي', family='', type='شهري', subs=[], q3='نعم';
-let picked=[], allSecs=false;
+let picked=[], allSecs=false, CENTER={};
 let filter='الكل', openRows=new Set();
 
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -490,9 +496,13 @@ function paintNav(){
 async function refresh(){
   document.getElementById('loading').style.display='block';
   try{
-    const r=await call({action:'reception-list'});
+    const [r,c]=await Promise.all([
+      call({action:'reception-list'}),
+      call({action:'center'})
+    ]);
     if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر جلب البيانات');
     REGS=r.regs||[]; SECS=r.sections||[];
+    if(c&&c.ok&&c.center) CENTER=c.center;
     if(r.states&&r.states.length) STATES=r.states;
     if(r.types&&r.types.length)  TYPES=r.types;
     buildForm(); paintStats(); paintChips(); paint();
@@ -722,90 +732,20 @@ function card(r){
 
       /* ── لوحة الفاتورة ── */
       '<div class="invbox" id="iv'+r.row+'">'+
-        '<div class="ivh">فاتورة دفع — يُرسل الرابط لولي الأمر</div>'+
+        '<div class="ivh">فاتورة دفع — يُنشأ كود قصير ويُرسل لولي الأمر</div>'+
         '<div class="ivg">'+
           '<div class="field" style="margin:0"><label>بند الفاتورة</label>'+
-            '<input id="il'+r.row+'" value="'+esc(invLabel(r))+'" oninput="syncInv('+r.row+')"></div>'+
+            '<input id="il'+r.row+'" value="'+esc(invLabel(r))+'"></div>'+
           '<div class="field" style="margin:0"><label>المبلغ (د.ك)</label>'+
-            '<input type="number" step="0.5" min="0" class="ltr" id="ia'+r.row+'" value="'+(r.fee||'')+'" oninput="syncInv('+r.row+')"></div>'+
+            '<input type="number" step="0.5" min="0" class="ltr" id="ia'+r.row+'" value="'+(r.fee||'')+'"></div>'+
         '</div>'+
-        '<div class="ivl" id="iu'+r.row+'"></div>'+
         '<div class="racts">'+
-          '<button class="btn sm" onclick="waInv('+r.row+')">إرسال بالواتساب</button>'+
-          '<button class="btn sm gh" onclick="copyInv('+r.row+')">نسخ الرابط</button>'+
-          '<button class="btn sm gh" onclick="openInv('+r.row+')">معاينة السلة</button>'+
+          '<button class="btn sm" id="ib'+r.row+'" onclick="makeInv('+r.row+')">'+
+            '<span id="ibt'+r.row+'">إنشاء الفاتورة</span><div class="spin" id="ibs'+r.row+'"></div></button>'+
         '</div>'+
-        '<div class="ivn">المبلغ يظهر بالرابط — راجع المبلغ المدفوع بورقة «اشتراكات الموقع» قبل تفعيل الاشتراك.</div>'+
+        '<div class="ivdone" id="id'+r.row+'"></div>'+
       '</div>'+
     '</div></div>';
-}
-
-/* ══════════ فاتورة الدفع ══════════ */
-function invLabel(r){
-  const bits=[r.type, r.stage].filter(Boolean).join(' ');
-  return (bits||'اشتراك')+' — '+(r.name||'');
-}
-
-function invLink(row){
-  const r=REGS.find(v=>v.row===row); if(!r) return '';
-  const lbl=(document.getElementById('il'+row)||{}).value || invLabel(r);
-  const amt=(document.getElementById('ia'+row)||{}).value || r.fee || 0;
-  const desc=[r.id, r.section, r.from?('من '+r.from):''].filter(Boolean).join(' · ');
-  const q=new URLSearchParams({
-    course: lbl.trim(), fee: String(amt), desc: desc,
-    name: r.parent||'', phone: r.wa||r.phone||''
-  });
-  return CART_URL+'?'+q.toString();
-}
-
-function syncInv(row){
-  const el=document.getElementById('iu'+row);
-  if(el) el.textContent=invLink(row);
-}
-
-function tgInv(row){
-  const b=document.getElementById('iv'+row); if(!b) return;
-  const on=b.classList.toggle('on');
-  if(on) syncInv(row);
-}
-
-function invAmt(row){
-  const r=REGS.find(v=>v.row===row);
-  const v=Number((document.getElementById('ia'+row)||{}).value || (r&&r.fee) || 0);
-  return v;
-}
-
-function waInv(row){
-  const r=REGS.find(v=>v.row===row); if(!r) return;
-  if(invAmt(row)<=0) return toast('اكتب مبلغ الفاتورة',true);
-  const to=r.wa||r.phone;
-  if(!to) return toast('ما في رقم واتساب للطالب',true);
-  const msg='السلام عليكم '+(r.parent||'')+'\n'+
-    'فاتورة اشتراك '+r.name+' في '+BRAND.name+'\n'+
-    'المبلغ: '+kd(invAmt(row))+'\n'+
-    'رابط الدفع:\n'+invLink(row);
-  window.open('https://wa.me/965'+to+'?text='+encodeURIComponent(msg),'_blank');
-}
-
-function openInv(row){
-  if(invAmt(row)<=0) return toast('اكتب مبلغ الفاتورة',true);
-  window.open(invLink(row),'_blank');
-}
-
-function copyInv(row){
-  if(invAmt(row)<=0) return toast('اكتب مبلغ الفاتورة',true);
-  const url=invLink(row);
-  const done=()=>toast('تم نسخ الرابط');
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(done,()=>fallback(url,done));
-  } else fallback(url,done);
-}
-function fallback(txt,done){
-  const t=document.createElement('textarea');
-  t.value=txt; t.style.position='fixed'; t.style.opacity='0';
-  document.body.appendChild(t); t.select();
-  try{ document.execCommand('copy'); done(); }catch(e){ toast('انسخ الرابط يدوياً',true); }
-  t.remove();
 }
 
 function tg(n){
@@ -821,6 +761,87 @@ async function setSt(row,s){
     toast('الحالة: '+s);
     paintStats(); paintChips(); paint(); paintSecs();
   }catch(e){ toast(e.message,true); }
+}
+
+/* ══════════ فاتورة الدفع ══════════ */
+function invLabel(r){
+  const bits=[r.type, r.stage].filter(Boolean).join(' ');
+  return (bits||'اشتراك')+' — '+(r.name||'');
+}
+
+function tgInv(row){
+  const b=document.getElementById('iv'+row);
+  if(b) b.classList.toggle('on');
+}
+
+/* ينشئ الفاتورة بالشيت ويرجّع كود قصير */
+async function makeInv(row){
+  const r=REGS.find(v=>v.row===row); if(!r) return;
+  const item=(document.getElementById('il'+row)||{}).value.trim();
+  const amt=Number((document.getElementById('ia'+row)||{}).value||0);
+  const to=r.wa||r.phone;
+
+  if(!item)  return toast('اكتب بند الفاتورة',true);
+  if(amt<=0) return toast('اكتب مبلغ الفاتورة',true);
+  if(!to)    return toast('ما في رقم واتساب للطالب',true);
+
+  const b=document.getElementById('ib'+row);
+  b.disabled=true;
+  document.getElementById('ibs'+row).style.display='block';
+  document.getElementById('ibt'+row).textContent='جاري الإنشاء...';
+
+  try{
+    const res=await call({ action:'inv-add', sid:r.id, name:r.name,
+      parent:r.parent||'', wa:to, item:item, amount:amt });
+    if(!res||!res.ok) throw new Error(res&&res.msg?res.msg:'ما تم إنشاء الفاتورة');
+
+    const link=PAY_PAGE+'?i='+res.code;
+    const msg='السلام عليكم '+(r.parent||'')+'\n'+
+      'فاتورة اشتراك '+r.name+' في '+BRAND.name+'\n'+
+      'المبلغ: '+kd(amt)+'\n'+
+      'رقم الفاتورة: '+res.code+'\n'+
+      link;
+
+    document.getElementById('id'+row).innerHTML=
+      '<div class="ivcode"><span>رقم الفاتورة</span><b>'+esc(res.code)+'</b></div>'+
+      '<div class="ivl">'+esc(link)+'</div>'+
+      '<div class="racts">'+
+        '<a class="btn sm" style="text-decoration:none" target="_blank" href="https://wa.me/965'+
+          esc(to)+'?text='+encodeURIComponent(msg)+'">إرسال بالواتساب</a>'+
+        '<button class="btn sm gh" onclick="copyTxt(\''+J(link)+'\')">نسخ الرابط</button>'+
+        '<a class="btn sm gh" style="text-decoration:none" target="_blank" href="'+esc(link)+'">معاينة</a>'+
+        '<button class="btn sm gh" onclick="resetInv('+row+')">فاتورة أخرى</button>'+
+      '</div>'+
+      '<div class="ivn">الفاتورة محفوظة بورقة «فواتير» — المبلغ ما يظهر بالرابط وما ينفع تعديله.</div>';
+    document.getElementById('id'+row).classList.add('on');
+    b.style.display='none';
+    toast(res.msg||('تم إنشاء الفاتورة '+res.code));
+  }catch(e){ toast(e.message,true); }
+
+  b.disabled=false;
+  document.getElementById('ibs'+row).style.display='none';
+  document.getElementById('ibt'+row).textContent='إنشاء الفاتورة';
+}
+
+function resetInv(row){
+  const d=document.getElementById('id'+row);
+  if(d){ d.innerHTML=''; d.classList.remove('on'); }
+  const b=document.getElementById('ib'+row);
+  if(b) b.style.display='';
+}
+
+function copyTxt(txt){
+  const done=()=>toast('تم نسخ الرابط');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,()=>fallback(txt,done));
+  } else fallback(txt,done);
+}
+function fallback(txt,done){
+  const t=document.createElement('textarea');
+  t.value=txt; t.style.position='fixed'; t.style.opacity='0';
+  document.body.appendChild(t); t.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ toast('انسخ الرابط يدوياً',true); }
+  t.remove();
 }
 
 /* ══════════ الحفظ ══════════ */
@@ -921,6 +942,7 @@ function printForm(d){
 }
 
 const R = (l,v) => '<div class="r"><span>'+l+'</span><b>'+(v?esc(v):'—')+'</b></div>';
+const C_TERMS = () => String(CENTER.terms||'').trim();
 
 function formHtml(d){
   return '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
@@ -956,6 +978,8 @@ function formHtml(d){
   '.qb{background:#F5FAF8;border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:12px}'+
   '.qb .q{color:#4A7A6E;font-weight:700;margin-bottom:3px;font-size:11px}'+
   '.qb .a{font-weight:800;line-height:1.7}'+
+  '.terms{font-size:10.5px;line-height:1.95;color:#33564D;font-weight:600;white-space:pre-line;'+
+    'background:#fff;border:1px solid #D8E8E2;border-radius:7px;padding:10px 13px}'+
   '.pledge{font-size:11px;line-height:1.95;color:#33564D;font-weight:600;'+
     'background:#F5FAF8;border-right:3px solid #0D5C48;border-radius:6px;padding:10px 13px;margin-top:10px}'+
   '.sigrow{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}'+
@@ -974,7 +998,7 @@ function formHtml(d){
 
   '<div class="sheet">'+
     '<div class="hd"><div><div class="brand">'+BRAND.name+'</div>'+
-      '<div class="org">'+BRAND.org+'</div></div>'+
+      '<div class="org">'+esc(CENTER.name||BRAND.org)+'</div></div>'+
       '<div class="meta"><div class="oid">'+esc(d.id||'')+'</div>'+
       '<div class="odate">'+esc(d.date||'')+'</div></div></div>'+
 
@@ -1023,10 +1047,14 @@ function formHtml(d){
 
     (d.note?'<div class="qb"><div class="q">ملاحظات</div><div class="a">'+esc(d.note)+'</div></div>':'')+
 
+    (C_TERMS()?'<div class="sl">الشروط والأحكام<div class="ln"></div></div>'+
+      '<div class="terms">'+esc(C_TERMS())+'</div>':'')+
+
     '<div class="pledge">'+
-      'أقرّ بصحة البيانات أعلاه، وأوافق على تسجيل الطالب في '+BRAND.name+' وفق نظام المركز '+
-      'ومواعيد الشعبة المحددة. وأتعهّد بإبلاغ الإدارة بأي تغيير في الحالة الصحية أو أرقام التواصل، '+
-      'وبالتزام الطالب بالحضور والانصراف مع الشخص المذوكر أعلاه.'+
+      'أقرّ بصحة البيانات أعلاه، وبأنني قرأت الشروط والأحكام ووافقت عليها، وأوافق على تسجيل '+
+      'الطالب في '+esc(CENTER.name||BRAND.name)+' وفق نظام المركز ومواعيد الشعب المحددة. '+
+      'وأتعهّد بإبلاغ الإدارة بأي تغيير في الحالة الصحية أو أرقام التواصل، وبالتزام الطالب '+
+      'بالحضور والانصراف مع الشخص المحدد أعلاه.'+
     '</div>'+
 
     '<div class="sigrow">'+

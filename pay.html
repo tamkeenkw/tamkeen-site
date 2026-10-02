@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فاتورة الدفع | EDUCLOUD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0D5C48;--teal2:#0A4D3C;--teallt:#15705A;--accent:#1A8F6F;--accentlt:#22B08A;
+ --cream:#F5FAF8;--cream2:#E8F4F0;--text:#0A2620;--muted:#4A7A6E;--red:#C0392B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--teal);min-height:100vh;
+ padding:30px 16px 60px;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+ background-image:radial-gradient(circle at 20% 20%,rgba(26,143,111,.15) 0%,transparent 50%),
+                  radial-gradient(circle at 80% 80%,rgba(10,77,60,.3) 0%,transparent 50%)}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+ background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+                  linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:52px 52px}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:22px}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.12);border-radius:10px;
+ display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18)}
+.logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);
+ border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;
+ padding:8px 20px;border-radius:100px;margin-bottom:14px}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0}
+h1{font-size:clamp(23px,7vw,32px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:6px}
+h1 span{color:var(--accentlt)}
+.sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.8}
+
+.card{background:var(--cream);border-radius:26px;padding:clamp(20px,5vw,28px);
+ box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.sec-label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;
+ color:var(--teal);letter-spacing:.5px;margin-bottom:14px}
+.sec-line{flex:1;height:1px;background:var(--cream2)}
+
+.inv{background:#fff;border:1.5px solid rgba(13,92,72,.1);border-radius:16px;padding:16px;margin-bottom:12px}
+.inv .code{display:flex;justify-content:space-between;align-items:center;gap:10px;
+ padding-bottom:11px;margin-bottom:11px;border-bottom:1px dashed rgba(13,92,72,.15)}
+.inv .code b{font-size:14px;font-weight:900;color:var(--teal);direction:ltr;letter-spacing:1px}
+.inv .code span{font-size:11.5px;color:var(--muted);font-weight:700}
+.kv{display:grid;grid-template-columns:78px 1fr;gap:7px 10px;font-size:13px}
+.kv dt{color:var(--muted);font-weight:700}
+.kv dd{font-weight:800;line-height:1.6;word-break:break-word}
+
+.total-box{background:rgba(13,92,72,.06);border-radius:14px;padding:16px 18px;margin:16px 0}
+.total-row{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:900;color:var(--text)}
+.total-amount{font-size:26px;font-weight:900;color:var(--teal)}
+.total-amount small{font-size:13px;font-weight:700;color:var(--muted);margin-right:4px}
+
+.field{display:grid;gap:7px;margin-bottom:13px}
+.field label{font-size:13px;font-weight:800;color:var(--text)}
+.field input{width:100%;background:#fff;border:1.5px solid rgba(13,92,72,.12);border-radius:14px;
+ padding:14px 18px;font-family:'Cairo',sans-serif;font-size:15px;color:var(--text);outline:none;transition:.25s}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,92,72,.07)}
+.field input::placeholder{color:rgba(74,122,110,.35)}
+.field input[type=tel]{direction:ltr;text-align:right}
+
+/* الشروط */
+.terms{background:#fff;border:1.5px solid rgba(13,92,72,.1);border-radius:14px;
+ padding:14px 16px;margin-bottom:13px}
+.terms .tx{font-size:12px;color:var(--muted);font-weight:600;line-height:2;
+ white-space:pre-line;max-height:160px;overflow:auto}
+.agree{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;cursor:pointer}
+.agree .bx{width:22px;height:22px;border-radius:7px;border:1.8px solid rgba(13,92,72,.25);
+ background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+ transition:.2s;margin-top:1px}
+.agree .bx svg{width:13px;height:13px;stroke:#fff;opacity:0}
+.agree.on .bx{background:var(--teal);border-color:var(--teal)}
+.agree.on .bx svg{opacity:1}
+.agree .lb{font-size:12.5px;font-weight:800;color:var(--text);line-height:1.75}
+
+.btn{width:100%;background:var(--teal);color:#fff;font-family:'Cairo',sans-serif;font-size:16px;
+ font-weight:900;padding:16px;border-radius:100px;border:none;cursor:pointer;transition:.3s;
+ box-shadow:0 8px 28px rgba(13,92,72,.35);display:flex;align-items:center;justify-content:center;gap:10px}
+.btn:hover{background:var(--teallt)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn2{background:transparent;border:1.5px solid rgba(13,92,72,.2);color:var(--teal);
+ box-shadow:none;margin-top:10px;font-size:14px;padding:14px}
+.btn2:hover{background:rgba(13,92,72,.05)}
+.spin{width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;
+ border-radius:50%;animation:sp .8s linear infinite;display:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.err{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);color:var(--red);
+ font-size:13px;font-weight:700;padding:12px 16px;border-radius:12px;margin-bottom:13px;
+ display:none;text-align:center;line-height:1.7}
+.secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;
+ color:var(--muted);margin-top:15px;text-align:center;line-height:1.7}
+.secure svg{width:14px;height:14px;stroke:var(--muted);flex-shrink:0}
+
+.state{text-align:center;padding:16px 0}
+.state .ic{width:72px;height:72px;border-radius:50%;background:rgba(13,92,72,.1);
+ margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.state .ic svg{width:34px;height:34px;stroke:var(--teal)}
+.state .ic.warn{background:rgba(192,57,43,.08)}
+.state .ic.warn svg{stroke:var(--red)}
+.state h2{font-size:19px;font-weight:900;color:var(--text);margin-bottom:9px}
+.state p{font-size:13.5px;color:var(--muted);line-height:1.9}
+.wa{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;
+ color:var(--teal);text-decoration:none;margin-top:12px}
+.boot{text-align:center;padding:30px 0}
+.boot .s{width:30px;height:30px;border:3px solid rgba(13,92,72,.12);border-top-color:var(--teal);
+ border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 13px}
+.boot p{font-size:13px;color:var(--muted);font-weight:700}
+.foot{display:block;text-align:center;font-size:12px;color:rgba(255,255,255,.45);
+ text-decoration:none;margin-top:18px;font-weight:700;line-height:1.9}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="logo-text">EDUCLOUD</div>
+    </div>
+    <div class="badge"><div class="badge-dot"></div> فاتورة اشتراك</div>
+    <h1>إتمام <span>الدفع</span></h1>
+    <div class="sub" id="centerName">راجع تفاصيل الفاتورة قبل التأكيد</div>
+  </div>
+
+  <div class="card">
+
+    <div class="boot" id="boot"><div class="s"></div><p>جاري تحميل الفاتورة...</p></div>
+
+    <!-- ══ خطأ ══ -->
+    <div class="state hide" id="bad">
+      <div class="ic warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h2 id="badTitle">الفاتورة غير موجودة</h2>
+      <p id="badTxt">تأكد من الرابط، أو تواصل معنا وبنرسل لك فاتورة جديدة.</p>
+      <a class="wa" id="badWa" href="#" target="_blank">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2z"/></svg>
+        تواصل معنا بالواتساب
+      </a>
+    </div>
+
+    <!-- ══ مدفوعة ══ -->
+    <div class="state hide" id="paid">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>هذي الفاتورة مدفوعة</h2>
+      <p id="paidTxt"></p>
+      <a class="wa" id="paidWa" href="#" target="_blank">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2z"/></svg>
+        تواصل معنا بالواتساب
+      </a>
+    </div>
+
+    <!-- ══ الفاتورة ══ -->
+    <div class="hide" id="main">
+      <div class="sec-label">تفاصيل الفاتورة <div class="sec-line"></div></div>
+
+      <div class="inv">
+        <div class="code"><b id="iCode">—</b><span id="iDate"></span></div>
+        <dl class="kv">
+          <dt>الطالب</dt><dd id="iName">—</dd>
+          <dt>البند</dt><dd id="iItem">—</dd>
+          <dd id="iParentWrap" class="hide" style="grid-column:1/3"></dd>
+        </dl>
+      </div>
+
+      <div class="total-box">
+        <div class="total-row">
+          <span>الإجمالي</span>
+          <span class="total-amount"><span id="iAmt">—</span> <small>د.ك</small></span>
+        </div>
+      </div>
+
+      <div id="termsWrap" class="hide">
+        <div class="sec-label">الشروط والأحكام <div class="sec-line"></div></div>
+        <div class="terms"><div class="tx" id="iTerms"></div></div>
+        <div class="agree" id="agree" onclick="tgAgree()">
+          <div class="bx">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="lb">قرأت الشروط والأحكام وأوافق عليها</div>
+        </div>
+      </div>
+
+      <div class="sec-label">بيانات الدافع <div class="sec-line"></div></div>
+      <div class="err" id="err"></div>
+
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="fName" placeholder="اسم ولي الأمر" oninput="clearErr()">
+      </div>
+      <div class="field">
+        <label>رقم الواتساب</label>
+        <input type="tel" id="fPhone" placeholder="9XXXXXXX" maxlength="15" oninput="clearErr()">
+      </div>
+
+      <button class="btn" id="btnPay" onclick="payNow()">
+        <span id="payTxt">ادفع الآن ←</span><div class="spin" id="paySpin"></div>
+      </button>
+
+      <button class="btn btn2" id="btnWa" onclick="askHelp()">عندي سؤال قبل الدفع</button>
+
+      <div class="secure">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span id="payNote">دفع آمن عبر بوابة Tap — K-NET ومدى والبطاقات</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+/* ══════════ الإعدادات ══════════ */
+/* سكربت الموظفين — يقرأ الفاتورة بالكود */
+const STAFF_URL = 'https://script.google.com/macros/s/AKfycbwzFj5x3jJTep0wm6NET-05i5vAm1a_foecHOBjH3YfjggI4bcHHJpAB67XZPcXR_yOiQ/exec';
+
+/* سكربت الدفع القديم — هو اللي ينشئ رابط Tap */
+const PAY_URL = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
+
+const FALLBACK_WA = '96597999768';
+
+let INV=null, C=null, agreed=false;
+
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ar  = n => String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const kd  = n => ar((Math.round((Number(n)||0)*1000)/1000).toFixed(3).replace(/\.?0+$/,''))+' د.ك';
+
+function waNum(){
+  const d=String((C&&C.wa)||'').replace(/\D/g,'');
+  if(!d) return FALLBACK_WA;
+  return d.length===8 ? '965'+d : d;
+}
+
+/* ══════════ قراءة الفاتورة ══════════ */
+function call(params){
+  return new Promise((resolve,reject)=>{
+    const cb='__pv_'+Math.random().toString(36).slice(2);
+    let done=false;
+    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة'));} },20000);
+    function clean(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
+    window[cb]=r=>{ if(done)return; done=true; clean(); resolve(r); };
+    const qs=new URLSearchParams(Object.assign({},params,{callback:cb,_:Date.now()}));
+    const s=document.createElement('script');
+    s.id=cb; s.src=STAFF_URL+'?'+qs.toString();
+    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر الاتصال'));} };
+    document.head.appendChild(s);
+  });
+}
+
+function show(id){
+  ['boot','bad','paid','main'].forEach(x=>
+    document.getElementById(x).classList.toggle('hide', x!==id));
+}
+
+(async function(){
+  const code=(new URLSearchParams(location.search).get('i')||'').trim();
+  if(!code){ fail('رابط غير مكتمل','ما في كود فاتورة بالرابط. تواصل معنا وبنرسل لك الرابط الصح.'); return; }
+  try{
+    const r=await call({action:'inv-get', i:code});
+    if(!r||!r.ok){ fail('الفاتورة غير موجودة', (r&&r.msg)||'تأكد من الرابط أو تواصل معنا.'); return; }
+    INV=r.inv; C=r.center||{};
+    paintFoot();
+    if(INV.status==='ملغية'){ fail('هذي الفاتورة ملغية','تواصل معنا وبنرسل لك فاتورة جديدة.'); return; }
+    if(INV.status==='مدفوعة'){
+      document.getElementById('paidTxt').innerHTML=
+        'فاتورة <b dir="ltr">'+esc(INV.code)+'</b> بمبلغ <b>'+kd(INV.amount)+'</b> مسجّلة مدفوعة.<br>'+
+        'إذا تتوقع غير ذلك تواصل معنا.';
+      document.getElementById('paidWa').href='https://wa.me/'+waNum();
+      show('paid'); return;
+    }
+    paint(); show('main');
+  }catch(e){ fail('تعذّر تحميل الفاتورة', e.message+' — جرّب تحديث الصفحة.'); }
+})();
+
+function fail(t,m){
+  document.getElementById('badTitle').textContent=t;
+  document.getElementById('badTxt').textContent=m;
+  document.getElementById('badWa').href='https://wa.me/'+waNum();
+  paintFoot(); show('bad');
+}
+
+function paintFoot(){
+  const nm=(C&&C.name)||'';
+  if(nm) document.getElementById('centerName').textContent=nm;
+  document.getElementById('foot').innerHTML=
+    (nm?esc(nm):'')+((C&&C.addr)?'<br>'+esc(C.addr):'')+
+    ((C&&C.wa)?'<br>واتساب '+esc(C.wa):'');
+}
+
+function paint(){
+  document.getElementById('iCode').textContent=INV.code;
+  document.getElementById('iDate').textContent=INV.date||'';
+  document.getElementById('iName').textContent=INV.name||'—';
+  document.getElementById('iItem').textContent=INV.item||'—';
+  document.getElementById('iAmt').textContent=
+    ar((Math.round(INV.amount*1000)/1000).toFixed(3).replace(/\.?0+$/,''));
+
+  if(C.payNote) document.getElementById('payNote').textContent=C.payNote;
+
+  if(C.terms && C.terms.trim()){
+    document.getElementById('iTerms').textContent=C.terms;
+    document.getElementById('termsWrap').classList.remove('hide');
+    document.getElementById('btnPay').disabled=true;
+  }
+
+  document.getElementById('fName').value=INV.parent||'';
+  document.getElementById('fPhone').value=INV.wa||'';
+}
+
+function tgAgree(){
+  agreed=!agreed;
+  document.getElementById('agree').classList.toggle('on',agreed);
+  document.getElementById('btnPay').disabled=!agreed;
+  if(agreed) clearErr();
+}
+
+/* ══════════ الدفع ══════════ */
+function showErr(m){ const e=document.getElementById('err'); e.textContent=m; e.style.display='block'; }
+function clearErr(){ document.getElementById('err').style.display='none'; }
+
+function normPhone(v){
+  let d=String(v||'').replace(/\D/g,'');
+  if(d.length===11 && d.indexOf('965')===0) d=d.slice(3);
+  if(d.length===13 && d.indexOf('00965')===0) d=d.slice(5);
+  return d.length===8 ? d : '';
+}
+
+async function payNow(){
+  clearErr();
+  const terms=!!(C.terms && C.terms.trim());
+  if(terms && !agreed) return showErr('وافق على الشروط والأحكام أولاً');
+
+  const name=document.getElementById('fName').value.trim();
+  const phone=normPhone(document.getElementById('fPhone').value);
+  if(name.length<3) return showErr('اكتب الاسم الكامل');
+  if(!phone)        return showErr('رقم الواتساب لازم يكون ٨ أرقام');
+
+  const b=document.getElementById('btnPay');
+  b.disabled=true;
+  document.getElementById('payTxt').style.opacity='.5';
+  document.getElementById('paySpin').style.display='block';
+
+  try{
+    const res=await fetch(PAY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        type:'courseSubscribe', payMode:'now',
+        name:name, phone:phone,
+        course: INV.item + ' — ' + INV.name + ' [' + INV.code + ']',
+        fee: INV.amount,
+        redirect: location.href.split('?')[0] + '?i=' + encodeURIComponent(INV.code)
+      })
+    });
+    const data=await res.json();
+    if(data && data.url){ location.href=data.url; return; }
+    showErr((data && data.message) || 'تعذّر فتح بوابة الدفع — حاول مرة ثانية');
+  }catch(e){
+    showErr('تعذّر الاتصال ببوابة الدفع — حاول مرة ثانية أو تواصل معنا');
+  }
+  b.disabled=false;
+  document.getElementById('payTxt').style.opacity='1';
+  document.getElementById('paySpin').style.display='none';
+}
+
+function askHelp(){
+  const msg='السلام عليكم، عندي سؤال عن فاتورة '+(INV?INV.code:'')+
+            (INV?(' باسم '+INV.name):'');
+  window.open('https://wa.me/'+waNum()+'?text='+encodeURIComponent(msg),'_blank');
+}
+</script>
+</body>
+</html>
