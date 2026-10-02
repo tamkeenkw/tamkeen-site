@@ -434,17 +434,47 @@ const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
 const kd  = n => (Math.round((Number(n)||0)*1000)/1000).toFixed(3).replace(/\.?0+$/,'')+' د.ك';
 const J   = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 
+/* ══════════ الاتصال ══════════ */
+/* القراءة بـ JSONP · الكتابة بـ POST (بلا حد لطول البيانات) */
+const READ_ACTIONS = ['ping','list','orders','services','mutlaa-list','mutlaa-config','sections','reception-list','team','center','students','attend-get','attend-student','inv-list','inv-get'];
+
 function call(params){
+  const act=String(params.action||'');
+  return READ_ACTIONS.indexOf(act)>-1 ? jsonp(params) : post(params);
+}
+
+async function post(params){
+  const body=Object.assign({},params);
+  if(typeof KEY!=='undefined' && KEY) body.key=KEY;
+  let res;
+  try{
+    res=await fetch(STAFF_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(body)
+    });
+  }catch(e){
+    throw new Error('ما وصل الطلب للخادم — تأكد من الإنترنت');
+  }
+  if(!res.ok) throw new Error('الخادم رد بخطأ '+res.status+' — راجع نشر السكربت');
+  const txt=await res.text();
+  try{ return JSON.parse(txt); }
+  catch(e){ throw new Error('رد غير مفهوم من الخادم: '+txt.slice(0,120)); }
+}
+
+function jsonp(params){
   return new Promise((resolve,reject)=>{
     const cb='__rc_'+Math.random().toString(36).slice(2);
     let done=false;
-    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة'));} },25000);
+    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة — الخادم ما رد'));} },30000);
     function clean(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
     window[cb]=r=>{ if(done)return; done=true; clean(); resolve(r); };
-    const qs=new URLSearchParams(Object.assign({},params,{key:KEY,callback:cb,_:Date.now()}));
+    const extra={callback:cb,_:Date.now()};
+    if(typeof KEY!=='undefined' && KEY) extra.key=KEY;
+    const qs=new URLSearchParams(Object.assign({},params,extra));
     const s=document.createElement('script');
     s.id=cb; s.src=STAFF_URL+'?'+qs.toString();
-    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر الاتصال بالسكربت'));} };
+    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر تحميل البيانات — تأكد من رابط السكربت ونشره'));} };
     document.head.appendChild(s);
   });
 }

@@ -242,6 +242,8 @@ input[type=date],input[type=time]{color-scheme:dark;direction:ltr;text-align:rig
         <a class="btn sm gh" href="orders.html" style="text-decoration:none">الطلبات</a>
         <a class="btn sm gh" href="mutlaa-ops.html" style="text-decoration:none">المطلاع</a>
         <a class="btn sm gh" href="reception.html" style="text-decoration:none">الاستقبال</a>
+        <a class="btn sm gh" href="students.html" style="text-decoration:none">الطلاب</a>
+        <a class="btn sm gh" href="attend.html" style="text-decoration:none">التحضير</a>
         <a class="btn sm gh" href="admin.html" style="text-decoration:none">الصلاحيات</a>
         <button class="btn sm gh" onclick="refresh()">تحديث</button>
         <button class="btn sm gh" onclick="exportCsv()">تصدير</button>
@@ -374,18 +376,46 @@ let DS=[
   rate:15,fee:30,price:60,status:'مجدولة',note:'',by:'عتيق'}];
 
 /* ══════════ الاتصال ══════════ */
+/* القراءة بـ JSONP · الكتابة بـ POST (بلا حد لطول البيانات) */
+const READ_ACTIONS = ['ping','list','orders','services','mutlaa-list','mutlaa-config','sections','reception-list','team','center','students','attend-get','attend-student','inv-list','inv-get'];
+
 function call(params){
-  if(!LIVE) return demoCall(params);
+  const act=String(params.action||'');
+  return READ_ACTIONS.indexOf(act)>-1 ? jsonp(params) : post(params);
+}
+
+async function post(params){
+  const body=Object.assign({},params);
+  if(typeof KEY!=='undefined' && KEY) body.key=KEY;
+  let res;
+  try{
+    res=await fetch(STAFF_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(body)
+    });
+  }catch(e){
+    throw new Error('ما وصل الطلب للخادم — تأكد من الإنترنت');
+  }
+  if(!res.ok) throw new Error('الخادم رد بخطأ '+res.status+' — راجع نشر السكربت');
+  const txt=await res.text();
+  try{ return JSON.parse(txt); }
+  catch(e){ throw new Error('رد غير مفهوم من الخادم: '+txt.slice(0,120)); }
+}
+
+function jsonp(params){
   return new Promise((resolve,reject)=>{
     const cb='__sv_'+Math.random().toString(36).slice(2);
     let done=false;
-    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة — تأكد من الاتصال'));} },25000);
+    const t=setTimeout(()=>{ if(!done){done=true;clean();reject(new Error('انتهت المهلة — الخادم ما رد'));} },30000);
     function clean(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
     window[cb]=r=>{ if(done)return; done=true; clean(); resolve(r); };
-    const qs=new URLSearchParams(Object.assign({},params,{key:KEY,callback:cb,_:Date.now()}));
+    const extra={callback:cb,_:Date.now()};
+    if(typeof KEY!=='undefined' && KEY) extra.key=KEY;
+    const qs=new URLSearchParams(Object.assign({},params,extra));
     const s=document.createElement('script');
     s.id=cb; s.src=STAFF_URL+'?'+qs.toString();
-    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر الاتصال بالسكربت'));} };
+    s.onerror=()=>{ if(!done){done=true;clean();reject(new Error('تعذّر تحميل البيانات — تأكد من رابط السكربت ونشره'));} };
     document.head.appendChild(s);
   });
 }
