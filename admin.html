@@ -421,8 +421,10 @@ async function teamCall(o){
 }
 
 /* ══════════ الشعب ══════════ */
+const splitSecs = v => String(v||'').split(/\s*[·,،]\s*/).map(x=>x.trim()).filter(Boolean);
 function loadOf(name){
-  return RECS.filter(r=>r.section===name && r.status!=='موقوف' && r.status!=='منتهي').length;
+  return RECS.filter(r=>r.status!=='موقوف' && r.status!=='منتهي'
+    && splitSecs(r.section).indexOf(name)>-1).length;
 }
 
 function paintSecs(){
