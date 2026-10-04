@@ -380,13 +380,51 @@ function showToday(){
 }
 
 /* ================== الاتصال ================== */
-function api(payload){
+function api(payload, timeoutMs){
+  var ctrl = (typeof AbortController!=='undefined') ? new AbortController() : null;
+  var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeoutMs || 45000) : null;
   return fetch(SCRIPT_URL, {
     method:'POST',
     headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
-  }).then(function(r){ return r.json(); });
+    body: JSON.stringify(payload),
+    signal: ctrl ? ctrl.signal : undefined
+  }).then(function(r){ return r.text(); })
+    .then(function(t){
+      if(timer) clearTimeout(timer);
+      try{ return JSON.parse(t); }
+      catch(e){ var er = new Error('BAD_RESPONSE'); er.kind='bad'; throw er; }
+    }, function(e){
+      if(timer) clearTimeout(timer);
+      var er = new Error('NETWORK'); er.kind = (e && e.name==='AbortError') ? 'timeout' : 'net'; throw er;
+    });
 }
+
+/* يجيب الحالة الحقيقية من الخادم (بعد أي خطأ، وعند الرجوع للصفحة، وعند تغيّر اليوم) */
+var LAST_DAY = new Date().toDateString();
+var REFRESHING = false;
+function refreshStatus(silent){
+  if(!CUR.name || !CUR.pass || REFRESHING) return Promise.resolve(null);
+  REFRESHING = true;
+  return api({ action:'login', name:CUR.name, pass:CUR.pass }, 30000).then(function(res){
+    REFRESHING = false;
+    if(res && res.ok){
+      LAST_DAY = new Date().toDateString();
+      showToday();
+      applyStatus(res.status || {});
+      renderHistory(res.history || []);
+      return res.status || {};
+    }
+    return null;
+  }).catch(function(){ REFRESHING = false; if(!silent) toast('تعذّر تحديث الحالة', true); return null; });
+}
+/* لما الموظف يرجع للصفحة (الجوال كان مقفول أو التاب بالخلفية) */
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='visible' && CUR.name) refreshStatus(true);
+});
+/* لو الصفحة مفتوحة من أمس، حدّث تلقائياً أول ما يتغيّر اليوم */
+setInterval(function(){
+  if(CUR.name && new Date().toDateString()!==LAST_DAY) refreshStatus(true);
+}, 60000);
 
 /* ================== الدخول ================== */
 document.getElementById('passInp').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
@@ -431,6 +469,7 @@ function openDash(status, history){
   document.getElementById('dashScreen').style.display='block';
   document.getElementById('empName').textContent = CUR.name;
   showToday(); tick();
+  LAST_DAY = new Date().toDateString();
   applyStatus(status || {});
   renderHistory(history || []);
   TK.loaded = false; TK.list = []; tkBadge();
@@ -555,8 +594,14 @@ function resetLoc(){
   document.getElementById('locTxt').textContent = 'سيتم تحديد موقعك عند التسجيل';
 }
 function getLocation(){
-  return new Promise(function(resolve){
+  return new Promise(function(resolve0){
+    var settled = false;
+    var resolve = function(v){ if(settled) return; settled = true; clearTimeout(hard); resolve0(v); };
     var b = document.getElementById('locBox'), t = document.getElementById('locTxt');
+    var hard = setTimeout(function(){
+      b.className='locbox err'; t.textContent='تعذّر تحديد الموقع (انتهت المهلة)';
+      resolve(null);
+    }, 16000);
     if(!navigator.geolocation){
       b.className='locbox err'; t.textContent='جهازك لا يدعم تحديد الموقع';
       resolve(null); return;
@@ -577,7 +622,7 @@ function getLocation(){
       b.className='locbox err';
       t.textContent = (e.code===1) ? 'رفضت إذن الموقع — فعّله من إعدادات المتصفح' : 'تعذّر تحديد الموقع';
       resolve(null);
-    }, { enableHighAccuracy:true, timeout:12000, maximumAge:0 });
+    }, { enableHighAccuracy:true, timeout:12000, maximumAge:30000 });
   });
 }
 
@@ -590,12 +635,12 @@ function punch(action){
     if(!loc){
       // إذن الموقع مرفوض — نسأل قبل المتابعة بدون موقع
       var go = confirm('تعذّر تحديد موقعك. تبي تكمّل التسجيل بدون تسجيل الموقع؟');
-      if(!go){ setBtn(which, false); return; }
+      if(!go){ setBtn(which, false); toast('لم يتم التسجيل — أُلغي', true); return; }
       loc = { lat:'', lng:'', acc:'' };
     } else if(loc.acc > 300){
       // دقة ضعيفة — غالباً شبكة/VPN مو GPS
       var ok = confirm('دقة موقعك ضعيفة (±'+loc.acc+'م) وقد يكون غير صحيح (شبكة/VPN بدل GPS).\n\nيُفضّل التسجيل من الجوال مع تفعيل GPS.\n\nتبي تكمّل التسجيل بهذا الموقع التقريبي؟');
-      if(!ok){ setBtn(which, false); return; }
+      if(!ok){ setBtn(which, false); toast('لم يتم التسجيل — أُلغي', true); return; }
     }
     var payload = {
       action: action, name: CUR.name, pass: CUR.pass,
@@ -614,11 +659,20 @@ function punch(action){
         toast(res.message || 'تم التسجيل ✓', false);
       } else {
         toast((res && res.message) ? res.message : 'تعذّر التسجيل', true);
+        refreshStatus(true);
       }
     });
-  }).catch(function(){
+  }).catch(function(e){
     setBtn(which, false);
-    toast('تعذّر الاتصال بالخادم', true);
+    var label = which==='in' ? 'الدخول' : 'الخروج';
+    toast('جاري التأكد من تسجيل '+label+'...', false);
+    /* الطلب ممكن يكون وصل للخادم والرد تأخر — نتأكد من الحالة الفعلية */
+    refreshStatus(true).then(function(st){
+      if(!st){ toast('تعذّر الاتصال بالخادم — حاول مرة ثانية', true); return; }
+      var done = which==='in' ? st.checkedIn : st.checkedOut;
+      if(done) toast('تم تسجيل '+label+' ✓', false);
+      else toast((e && e.kind==='timeout' ? 'الخادم تأخر بالرد' : 'تعذّر الاتصال')+' — لم يُسجَّل '+label+'، حاول مرة ثانية', true);
+    });
   });
 }
 
