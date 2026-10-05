@@ -825,6 +825,42 @@ var DAILY_TOKEN = 'tmk-daily-2026';
 
 /* نماذج التقارير حسب نوع القسم */
 var RP_FORMS = {
+  center: {
+    label: 'تقرير المركز التعليمي',
+    sections: [
+      { key:'inquiries', num:'١', title:'الاستفسارات والتواصل', fields:true,
+        cols:[ {k:'total',label:'إجمالي الاستفسارات',type:'number'},
+               {k:'calls',label:'عدد الاتصالات',type:'number'},
+               {k:'wa',label:'رسائل الواتساب',type:'number'} ] },
+      { key:'topics', num:'٢', title:'أكثر استفسار كان على', add:'إضافة نوع آخر', unit:'نوع',
+        cols:[ {k:'topic',label:'نوع الاستفسار',type:'select',
+                opts:['الرسوم والأسعار','المواعيد والجدول','التأسيس','التقوية','الثانوي',
+                      'المواد المتاحة','موقع المركز','النقل','شهادات وتقارير','أخرى']},
+               {k:'detail',label:'تفصيل (اختياري)'},
+               {k:'count',label:'العدد التقريبي',type:'number'} ] },
+      { key:'ops', num:'٣', title:'التشغيل', fields:true,
+        cols:[ {k:'rooms',label:'القاعات المشغّلة فعلياً',type:'number'},
+               {k:'students',label:'عدد الطلبة',type:'number'},
+               {k:'present',label:'الحضور الفعلي',type:'number'} ] },
+      { key:'staff', num:'٤', title:'حضور الموظفين', add:'إضافة موظف آخر', unit:'موظف',
+        cols:[ {k:'name',label:'اسم الموظف'},
+               {k:'state',label:'الحالة',type:'select',opts:['حاضر','متأخر','غائب','إجازة']},
+               {k:'note',label:'ملاحظة (اختياري)'} ] },
+      { key:'solved', num:'٥', title:'مشكلة تم حلها', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+        cols:[ {k:'problem',label:'المشكلة'},{k:'solution',label:'كيف تم الحل'} ] },
+      { key:'urgent', num:'٦', title:'مشكلة تحتاج حل سريع', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+        cols:[ {k:'problem',label:'المشكلة'},
+               {k:'need',label:'المطلوب من الإدارة'},
+               {k:'level',label:'الأولوية',type:'select',opts:['عاجل اليوم','خلال أسبوع','متابعة']} ] },
+      { key:'income', num:'٧', title:'الأهداف — المدخول اليومي', fields:true,
+        sum:'total', money:true,
+        cols:[ {k:'cash',label:'كاش',type:'number'},
+               {k:'knet',label:'كي نت',type:'number'},
+               {k:'link',label:'لنك',type:'number'},
+               {k:'taly',label:'تالي',type:'number'},
+               {k:'total',label:'إجمالي المدخول',type:'number',readonly:true} ] }
+    ]
+  },
   operations: {
     label: 'تقرير العمليات',
     sections: [
@@ -888,6 +924,8 @@ function rpTypeFor(role){
   var r = String(role||'');
   if (r.indexOf('علاقات') > -1) return 'pr';
   if (r.indexOf('مبيعات') > -1) return 'sales';
+  /* مسؤول العمليات التعليمية / المركز → تقرير المركز */
+  if (r.indexOf('تعليمي') > -1 || r.indexOf('المركز') > -1 || r.indexOf('مركز') > -1) return 'center';
   return 'operations';   // الافتراضي: عمليات
 }
 
@@ -921,6 +959,12 @@ function rpBuild(){
         +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div></div>'
         +   '<textarea class="rp-notes" id="rpfree-'+sec.key+'" placeholder="'+esc(sec.placeholder||'')+'"></textarea>'
         + '</div>';
+    } else if(sec.fields){
+      h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
+        +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
+        +     (sec.money?'<span class="rp-count" id="rpsum-'+sec.key+'">٠ د.ك</span>':'') + '</div>'
+        +   '<div class="rp-rows" id="rprows-'+sec.key+'"></div>'
+        + '</div>';
     } else {
       h += '<div class="rp-sec" id="rpsec-'+sec.key+'">'
         +   '<div class="rp-sec-head"><div class="rp-sec-title"><span class="rp-dot">'+sec.num+'</span>'+esc(sec.title)+'</div>'
@@ -944,21 +988,45 @@ function rpRowHtml(sec, vals){
       h += '</select>';
     } else {
       var t = c.type==='date'?'date':(c.type==='number'?'number':'text');
-      h += '<input type="'+t+'" data-k="'+c.k+'" value="'+esc(vals[c.k]||'')+'"'+(t==='number'?' min="0"':'')+' placeholder="'+esc(c.label)+'">';
+      h += '<input type="'+t+'" data-k="'+c.k+'" value="'+esc(vals[c.k]||'')+'"'
+        + (t==='number'?' min="0"':'')
+        + (c.readonly?' readonly style="background:#F2EDE5;font-weight:900"':'')
+        + ' placeholder="'+esc(c.label)+'">';
     }
     h += '</div>';
   });
-  h += '<button class="rp-x" onclick="rpRemoveRow(this,\''+sec.key+'\')" title="حذف">×</button></div>';
+  h += (sec.fields ? '' : '<button class="rp-x" onclick="rpRemoveRow(this,\''+sec.key+'\')" title="حذف">×</button>');
+  h += '</div>';
   return h;
 }
 function rpAddRow(key, vals){
   var sec=rpSec(key); if(!sec) return;
   var box=document.getElementById('rprows-'+key);
+  if(sec.fields && box.children.length) return;        /* قسم حقول: صف واحد فقط */
   var tmp=document.createElement('div'); tmp.innerHTML=rpRowHtml(sec,vals);
   var row=tmp.firstChild;
-  row.addEventListener('input',function(){ rpCount(key); });
-  row.addEventListener('change',function(){ rpCount(key); });
-  box.appendChild(row); rpCount(key);
+  row.addEventListener('input',function(){ rpCount(key); rpSum(key); });
+  row.addEventListener('change',function(){ rpCount(key); rpSum(key); });
+  box.appendChild(row); rpCount(key); rpSum(key);
+}
+
+/* يجمع الحقول الرقمية ويكتب الناتج بحقل المجموع */
+function rpSum(key){
+  var sec=rpSec(key);
+  if(!sec || !sec.fields || !sec.sum) return;
+  var row=document.querySelector('#rprows-'+key+' .rp-row');
+  if(!row) return;
+  var t=0;
+  sec.cols.forEach(function(c){
+    if(c.k===sec.sum || c.type!=='number') return;
+    var el=row.querySelector('[data-k="'+c.k+'"]');
+    t += el ? (parseFloat(el.value)||0) : 0;
+  });
+  t = Math.round(t*1000)/1000;
+  var out=row.querySelector('[data-k="'+sec.sum+'"]');
+  if(out) out.value = t ? t : '';
+  var chip=document.getElementById('rpsum-'+key);
+  if(chip) chip.textContent = rpAr(t)+' د.ك';
 }
 function rpRemoveRow(btn,key){
   var box=document.getElementById('rprows-'+key);
@@ -997,7 +1065,7 @@ function rpClearForm(silent){
   if(!silent && !confirm('تفريغ كل الحقول؟')) return;
   rpForm().sections.forEach(function(sec){
     if(sec.freeText){ var el=document.getElementById('rpfree-'+sec.key); if(el) el.value=''; }
-    else { document.getElementById('rprows-'+sec.key).innerHTML=''; rpAddRow(sec.key); }
+    else { document.getElementById('rprows-'+sec.key).innerHTML=''; rpAddRow(sec.key); rpSum(sec.key); }
   });
   document.getElementById('rpNotes').value='';
   if(!silent) toast('تم تفريغ النموذج');
@@ -1065,7 +1133,16 @@ function rpRenderList(){
   if(!d.length){ box.innerHTML='<div class="rp-empty">لا توجد تقارير سابقة.</div>'; return; }
   box.innerHTML=d.map(function(r){
     var f=RP_FORMS[r.type]||rpForm(), s=r.sections||{};
-    var chips=f.sections.filter(function(sec){ return !sec.freeText; }).map(function(sec){ return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr((s[sec.key]||[]).length)+'</b></span>'; }).join('');
+    var chips=f.sections.filter(function(sec){ return !sec.freeText; }).map(function(sec){
+      var rows=s[sec.key]||[];
+      if(sec.fields){
+        var o=rows[0]||{};
+        if(sec.money && sec.sum) return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr(o[sec.sum]||0)+' د.ك</b></span>';
+        var parts=sec.cols.map(function(c){ return o[c.k]?(c.label+' '+rpAr(o[c.k])):''; }).filter(Boolean);
+        return parts.length?'<span class="rp-chip">'+esc(parts.join(' · '))+'</span>':'';
+      }
+      return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr(rows.length)+'</b></span>';
+    }).filter(Boolean).join('');
     return '<div class="rp-histcard"><div class="rp-hist-top">'
       + '<div><div class="rp-hist-date">'+esc(rpPretty(r.date))+'</div><div class="rp-hist-sub">أُرسل '+esc(r.time||'')+'</div></div>'
       + '<span class="rp-lock">🔒 محفوظ</span></div>'
@@ -1088,7 +1165,7 @@ function rpOpen(id){
       return;
     }
     var rows=(r.sections||{})[sec.key]||[];
-    h += '<div class="rp-view-tt">'+esc(sec.title)+' — '+rpAr(rows.length)+'</div>';
+    h += '<div class="rp-view-tt">'+esc(sec.title)+(sec.fields?'':' — '+rpAr(rows.length))+'</div>';
     if(!rows.length){ h+='<div class="rp-hist-sub" style="margin-bottom:8px;">لا يوجد.</div>'; return; }
     h += '<div class="rp-tbwrap"><table class="rp-tb"><thead><tr>'+sec.cols.map(function(c){return '<th>'+esc(c.label)+'</th>';}).join('')+'</tr></thead><tbody>'
       + rows.map(function(o){ return '<tr>'+sec.cols.map(function(c){ var v=o[c.k]||''; if(c.type==='date'&&v) v=rpPretty(v); return '<td>'+esc(v||'—')+'</td>'; }).join('')+'</tr>'; }).join('')
