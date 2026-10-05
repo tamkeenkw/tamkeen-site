@@ -832,27 +832,54 @@ var RP_FORMS = {
         cols:[ {k:'total',label:'إجمالي الاستفسارات',type:'number'},
                {k:'calls',label:'عدد الاتصالات',type:'number'},
                {k:'wa',label:'رسائل الواتساب',type:'number'} ] },
+
       { key:'topics', num:'٢', title:'أكثر استفسار كان على', add:'إضافة نوع آخر', unit:'نوع',
+        totals:[{k:'count',label:'استفسار'}],
         cols:[ {k:'topic',label:'نوع الاستفسار',type:'select',
                 opts:['الرسوم والأسعار','المواعيد والجدول','التأسيس','التقوية','الثانوي',
                       'المواد المتاحة','موقع المركز','النقل','شهادات وتقارير','أخرى']},
                {k:'detail',label:'تفصيل (اختياري)'},
                {k:'count',label:'العدد التقريبي',type:'number'} ] },
-      { key:'ops', num:'٣', title:'التشغيل', fields:true,
-        cols:[ {k:'rooms',label:'القاعات المشغّلة فعلياً',type:'number'},
+
+      { key:'rooms', num:'٣', title:'التشغيل — القاعات المشغّلة', add:'إضافة قاعة أخرى', unit:'قاعة',
+        totals:[{k:'students',label:'طالب'},{k:'present',label:'حاضر'}],
+        cols:[ {k:'room',label:'القاعة أو الشعبة'},
+               {k:'stage',label:'المرحلة / المادة'},
+               {k:'teacher',label:'المعلم'},
                {k:'students',label:'عدد الطلبة',type:'number'},
-               {k:'present',label:'الحضور الفعلي',type:'number'} ] },
+               {k:'present',label:'الحضور الفعلي',type:'number'},
+               {k:'note',label:'ملاحظة (اختياري)'} ] },
+
       { key:'staff', num:'٤', title:'حضور الموظفين', add:'إضافة موظف آخر', unit:'موظف',
         cols:[ {k:'name',label:'اسم الموظف'},
                {k:'state',label:'الحالة',type:'select',opts:['حاضر','متأخر','غائب','إجازة']},
                {k:'note',label:'ملاحظة (اختياري)'} ] },
-      { key:'solved', num:'٥', title:'مشكلة تم حلها', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+
+      { key:'newsubs', num:'٥', title:'الاشتراكات الجديدة اليوم', add:'إضافة اشتراك آخر', unit:'اشتراك',
+        totals:[{k:'fee',label:'د.ك'}],
+        cols:[ {k:'student',label:'اسم الطالب'},
+               {k:'stage',label:'المرحلة',type:'select',opts:['ابتدائي','متوسط','ثانوي']},
+               {k:'plan',label:'نوع الاشتراك',type:'select',opts:['شهري','كورس','خاصة','مكثف']},
+               {k:'fee',label:'الرسوم',type:'number'},
+               {k:'pay',label:'طريقة الدفع',type:'select',opts:['كاش','كي نت','لنك','تالي','آجل']} ] },
+
+      { key:'expiring', num:'٦', title:'اشتراكات قاربت على الانتهاء', add:'إضافة طالب آخر', unit:'طالب',
+        cols:[ {k:'student',label:'اسم الطالب'},
+               {k:'ends',label:'تاريخ الانتهاء',type:'date'},
+               {k:'contacted',label:'تم التواصل؟',type:'select',opts:['تم التواصل','لم يتم','لم يرد']},
+               {k:'reply',label:'الرد',type:'select',
+                opts:['سيجدد','يفكر','يبي يغيّر الباقة','لن يجدد','لم يرد']},
+               {k:'advice',label:'التوصية'} ] },
+
+      { key:'solved', num:'٧', title:'مشكلة تم حلها', add:'إضافة مشكلة أخرى', unit:'مشكلة',
         cols:[ {k:'problem',label:'المشكلة'},{k:'solution',label:'كيف تم الحل'} ] },
-      { key:'urgent', num:'٦', title:'مشكلة تحتاج حل سريع', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+
+      { key:'urgent', num:'٨', title:'مشكلة تحتاج حل سريع', add:'إضافة مشكلة أخرى', unit:'مشكلة',
         cols:[ {k:'problem',label:'المشكلة'},
                {k:'need',label:'المطلوب من الإدارة'},
                {k:'level',label:'الأولوية',type:'select',opts:['عاجل اليوم','خلال أسبوع','متابعة']} ] },
-      { key:'income', num:'٧', title:'الأهداف — المدخول اليومي', fields:true,
+
+      { key:'income', num:'٩', title:'الأهداف — المدخول اليومي', fields:true,
         sum:'total', money:true,
         cols:[ {k:'cash',label:'كاش',type:'number'},
                {k:'knet',label:'كي نت',type:'number'},
@@ -1045,9 +1072,27 @@ function rpReadSection(key){
   });
   return out;
 }
+/* يجمع عموداً رقمياً عبر صفوف القسم */
+function rpTotal(rows, k){
+  var t=0; rows.forEach(function(o){ t += parseFloat(o[k])||0; });
+  return Math.round(t*1000)/1000;
+}
+
+/* نص العدّاد: عدد الصفوف + أي إجماليات معرّفة */
+function rpCountTxt(sec, rows){
+  var txt = rpAr(rows.length)+' '+sec.unit;
+  if(sec.totals){
+    sec.totals.forEach(function(t){
+      var v = rpTotal(rows, t.k);
+      if(v) txt += ' · ' + rpAr(v) + ' ' + t.label;
+    });
+  }
+  return txt;
+}
+
 function rpCount(key){
   var el=document.getElementById('rpcnt-'+key);
-  if(el){ var sec=rpSec(key); el.textContent=rpAr(rpReadSection(key).length)+' '+sec.unit; }
+  if(el){ var sec=rpSec(key); el.textContent=rpCountTxt(sec, rpReadSection(key)); }
 }
 function rpCollect(){
   var f=rpForm(), data={};
@@ -1141,7 +1186,7 @@ function rpRenderList(){
         var parts=sec.cols.map(function(c){ return o[c.k]?(c.label+' '+rpAr(o[c.k])):''; }).filter(Boolean);
         return parts.length?'<span class="rp-chip">'+esc(parts.join(' · '))+'</span>':'';
       }
-      return '<span class="rp-chip">'+esc(sec.title)+': <b>'+rpAr(rows.length)+'</b></span>';
+      return '<span class="rp-chip">'+esc(sec.title)+': <b>'+esc(rpCountTxt(sec, rows))+'</b></span>';
     }).filter(Boolean).join('');
     return '<div class="rp-histcard"><div class="rp-hist-top">'
       + '<div><div class="rp-hist-date">'+esc(rpPretty(r.date))+'</div><div class="rp-hist-sub">أُرسل '+esc(r.time||'')+'</div></div>'
@@ -1169,6 +1214,13 @@ function rpOpen(id){
     if(!rows.length){ h+='<div class="rp-hist-sub" style="margin-bottom:8px;">لا يوجد.</div>'; return; }
     h += '<div class="rp-tbwrap"><table class="rp-tb"><thead><tr>'+sec.cols.map(function(c){return '<th>'+esc(c.label)+'</th>';}).join('')+'</tr></thead><tbody>'
       + rows.map(function(o){ return '<tr>'+sec.cols.map(function(c){ var v=o[c.k]||''; if(c.type==='date'&&v) v=rpPretty(v); return '<td>'+esc(v||'—')+'</td>'; }).join('')+'</tr>'; }).join('')
+      + (sec.totals ? '<tr style="background:#F2EDE5;font-weight:900">'
+          + sec.cols.map(function(c,ci){
+              if(ci===0) return '<td>الإجمالي — '+rpAr(rows.length)+' '+esc(sec.unit)+'</td>';
+              var t=null;
+              sec.totals.forEach(function(x){ if(x.k===c.k) t=x; });
+              return '<td>'+(t ? rpAr(rpTotal(rows,c.k))+' '+esc(t.label) : '')+'</td>';
+            }).join('') + '</tr>' : '')
       + '</tbody></table></div>';
   });
   h += '<div class="rp-view-tt">الملاحظات</div>'+(r.notes?'<div class="rp-notes-box">'+esc(r.notes)+'</div>':'<div class="rp-hist-sub">لا توجد ملاحظات.</div>');
