@@ -176,6 +176,17 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
  border:1.5px solid var(--bd);border-radius:10px;padding:8px 13px;cursor:pointer;transition:.2s}
 .op.on{background:var(--teal);border-color:var(--teal);color:#fff}
 .racts{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.edbox{display:none;margin-top:12px;background:rgba(255,255,255,.04);
+ border:1.5px solid var(--bd);border-radius:14px;padding:15px}
+.edbox.on{display:block}
+.edbox .edsec{font-size:11.5px;font-weight:900;color:var(--accentlt);
+ margin:16px 0 10px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.08)}
+.edbox .edsec:first-of-type{margin-top:10px;padding-top:0;border-top:none}
+.edbox select{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bd);
+ border-radius:13px;padding:13px 15px;font-family:'Cairo',sans-serif;font-size:14px;color:#fff;outline:none}
+.edbox select:focus{border-color:var(--accentlt)}
+.edbox select option{background:#0b1d16}
+.edbox textarea{min-height:56px}
 .invbox{display:none;margin-top:12px;background:rgba(34,176,138,.06);
  border:1.5px solid rgba(34,176,138,.22);border-radius:14px;padding:14px}
 .invbox.on{display:block}
@@ -758,9 +769,13 @@ function card(r){
         '" onclick="setSt('+r.row+',\''+s+'\')">'+s+'</div>').join('')+'</div>'+
       '<div class="racts">'+
         '<button class="btn sm" onclick="printRow('+r.row+')">طباعة الفورمة</button>'+
+        '<button class="btn sm gh" onclick="tgEdit('+r.row+')">تعديل البيانات</button>'+
         '<button class="btn sm gh" onclick="tgInv('+r.row+')">أرسل فاتورة</button>'+
         (r.wa?'<a class="btn sm gh" style="text-decoration:none" target="_blank" href="https://wa.me/965'+esc(r.wa)+'">واتساب</a>':'')+
       '</div>'+
+
+      /* ── لوحة تعديل البيانات ── */
+      '<div class="edbox" id="ed'+r.row+'">'+editPanel(r)+'</div>'+
 
       /* ── لوحة الفاتورة ── */
       '<div class="invbox" id="iv'+r.row+'">'+
@@ -793,6 +808,142 @@ async function setSt(row,s){
     toast('الحالة: '+s);
     paintStats(); paintChips(); paint(); paintSecs();
   }catch(e){ toast(e.message,true); }
+}
+
+/* ══════════ تعديل بيانات الطالب ══════════ */
+const STAGES=['ابتدائي','متوسط','ثانوي'];
+
+/* dd/MM/yyyy → yyyy-MM-dd لحقول التاريخ */
+function isoOf(v){
+  const m=String(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  return m ? (m[3]+'-'+m[2]+'-'+m[1]) : '';
+}
+
+function editPanel(r){
+  const n=r.row;
+  const sel=(id,val,opts)=>'<select id="'+id+n+'">'+
+    opts.map(o=>'<option '+(val===o?'selected':'')+'>'+esc(o)+'</option>').join('')+'</select>';
+  const inp=(id,val,ph,cls)=>'<input id="'+id+n+'" class="'+(cls||'')+'" value="'+esc(val||'')+
+    '" placeholder="'+esc(ph||'')+'">';
+
+  return '<div class="ivh">تعديل بيانات الطالب — كل تغيير يُسجَّل باسمك</div>'+
+
+    '<div class="edsec">بيانات الطالب</div>'+
+    '<div class="field"><label>الاسم الثلاثي</label>'+inp('eName',r.name,'الاسم كاملاً')+'</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>رقم التواصل</label>'+inp('ePhone',r.phone,'9XXXXXXX','ltr')+'</div>'+
+      '<div class="field" style="margin:0"><label>الواتساب</label>'+inp('eWa',r.wa,'9XXXXXXX','ltr')+'</div>'+
+    '</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>المرحلة</label>'+
+        '<select id="eStage'+n+'" onchange="onStageChange('+n+')">'+
+        STAGES.map(o=>'<option '+(r.stage===o?'selected':'')+'>'+esc(o)+'</option>').join('')+'</select></div>'+
+      '<div class="field" style="margin:0"><label>الصف</label>'+
+        '<select id="eGrade'+n+'">'+gradeOpts(r.stage,r.grade)+'</select></div>'+
+    '</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>المدرسة</label>'+inp('eSchool',r.school,'اسم المدرسة')+'</div>'+
+      '<div class="field" style="margin:0"><label>حساب المدرسة</label>'+inp('eSoc',r.schoolSocial,'@account','ltr')+'</div>'+
+    '</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>تقدير آخر مرحلة</label>'+inp('eLast',r.lastGrade,'امتياز · ٨٥٪')+'</div>'+
+      '<div class="field" style="margin:0"><label>الحالة الاجتماعية</label>'+
+        sel('eFam',r.family,['','الوالدان معاً','الأم','الأب','الجد أو الجدة','وصي آخر'])+'</div>'+
+    '</div>'+
+
+    '<div class="edsec">الاشتراك</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>نوع الاشتراك</label>'+sel('eType',r.type,TYPES)+'</div>'+
+      '<div class="field" style="margin:0"><label>الرسوم (د.ك)</label>'+
+        '<input type="number" step="0.5" min="0" class="ltr" id="eFee'+n+'" value="'+(r.fee||'')+'"></div>'+
+    '</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>بداية الاشتراك</label>'+
+        '<input type="date" id="eFrom'+n+'" value="'+isoOf(r.from)+'"></div>'+
+      '<div class="field" style="margin:0"><label>نهاية الاشتراك</label>'+
+        '<input type="date" id="eTo'+n+'" value="'+isoOf(r.to)+'"></div>'+
+    '</div>'+
+    '<div class="field"><label>المواد</label>'+inp('eSubs',r.subjects,'افصل بـ ·')+'</div>'+
+    '<div class="field"><label>الشعب</label>'+inp('eSec',r.section,'افصل بـ ·')+'</div>'+
+
+    '<div class="edsec">ولي الأمر والموافقات</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>اسم ولي الأمر</label>'+inp('eParent',r.parent,'الاسم')+'</div>'+
+      '<div class="field" style="margin:0"><label>صلته بالطالب</label>'+inp('eRel',r.relation,'الأب · الأم')+'</div>'+
+    '</div>'+
+    '<div class="field"><label>المسؤول عن الاستلام</label>'+inp('eQ4',r.q4,'الاسم · الصفة')+'</div>'+
+    '<div class="ivg">'+
+      '<div class="field" style="margin:0"><label>رقم بديل</label>'+inp('eAlt',r.alt,'9XXXXXXX','ltr')+'</div>'+
+      '<div class="field" style="margin:0"><label>صفة صاحب الرقم</label>'+inp('eAltRel',r.altRel,'العم · الخال')+'</div>'+
+    '</div>'+
+    '<div class="field"><label>موافقة التصوير</label>'+sel('eQ3',r.q3||'نعم',['نعم','لا'])+'</div>'+
+    '<div class="field"><label>مشاكل صحية</label>'+
+      '<textarea id="eQ1'+n+'" placeholder="لا يوجد">'+esc(r.q1||'')+'</textarea></div>'+
+    '<div class="field"><label>صعوبات تعلم</label>'+
+      '<textarea id="eQ2'+n+'" placeholder="لا يوجد">'+esc(r.q2||'')+'</textarea></div>'+
+    '<div class="field"><label>ملاحظات الموظف</label>'+
+      '<textarea id="eNote'+n+'" placeholder="ملاحظة داخلية">'+esc(r.note||'')+'</textarea></div>'+
+
+    '<div class="racts">'+
+      '<button class="btn sm" id="eb'+n+'" onclick="saveEdit('+n+')">'+
+        '<span id="ebt'+n+'">حفظ التعديلات</span><div class="spin" id="ebs'+n+'"></div></button>'+
+      '<button class="btn sm gh" onclick="tgEdit('+n+')">إغلاق</button>'+
+    '</div>'+
+    '<div class="ivn">التوقيع ومعرّف الطالب وتاريخ التسجيل ما تنعدّل — سجل التعديلات محفوظ بورقة «سجل الهيئة».</div>';
+}
+
+function gradeOpts(stage,cur){
+  const g=GRADES[stage]||[];
+  return '<option value="">— الصف —</option>'+
+    g.map(x=>'<option '+(cur===x?'selected':'')+'>'+esc(x)+'</option>').join('');
+}
+
+function onStageChange(row){
+  const st=document.getElementById('eStage'+row).value;
+  const gr=document.getElementById('eGrade'+row);
+  if(gr) gr.innerHTML=gradeOpts(st,'');
+}
+
+function tgEdit(row){
+  const b=document.getElementById('ed'+row);
+  if(b) b.classList.toggle('on');
+}
+
+async function saveEdit(row){
+  const r=REGS.find(v=>v.row===row); if(!r) return;
+  const g=id=>{ const e=document.getElementById(id+row); return e?e.value.trim():''; };
+
+  const name=g('eName');
+  if(name.split(/\s+/).filter(Boolean).length<3) return toast('اكتب الاسم الثلاثي',true);
+  const phone=normPhone(g('ePhone'));
+  if(!phone) return toast('رقم التواصل لازم ٨ أرقام',true);
+  const wa=normPhone(g('eWa'))||phone;
+  if(g('eParent').length<3) return toast('اكتب اسم ولي الأمر',true);
+  if(g('eAlt') && !normPhone(g('eAlt'))) return toast('الرقم البديل غير صحيح',true);
+  if(g('eTo') && g('eFrom') && g('eTo')<g('eFrom')) return toast('تاريخ النهاية قبل البداية',true);
+
+  const b=document.getElementById('eb'+row);
+  b.disabled=true;
+  document.getElementById('ebs'+row).style.display='block';
+  document.getElementById('ebt'+row).textContent='جاري الحفظ...';
+  try{
+    const res=await call({ action:'reception-set', row:row,
+      name:name, phone:phone, wa:wa,
+      stage:g('eStage'), grade:g('eGrade'), lastGrade:g('eLast'),
+      school:g('eSchool'), schoolSocial:g('eSoc'), family:g('eFam'),
+      type:g('eType'), subjects:g('eSubs'), from:g('eFrom'), to:g('eTo'),
+      section:g('eSec'), fee:g('eFee')||0,
+      parent:g('eParent'), relation:g('eRel'),
+      q1:g('eQ1'), q2:g('eQ2'), q3:g('eQ3'), q4:g('eQ4'),
+      alt:g('eAlt')?normPhone(g('eAlt')):'', altRel:g('eAltRel'),
+      note:g('eNote') });
+    if(!res||!res.ok) throw new Error(res&&res.msg?res.msg:'ما تم الحفظ');
+    toast(res.msg||'تم الحفظ');
+    await refresh();
+  }catch(e){ toast(e.message,true); }
+  b.disabled=false;
+  document.getElementById('ebs'+row).style.display='none';
+  document.getElementById('ebt'+row).textContent='حفظ التعديلات';
 }
 
 /* ══════════ فاتورة الدفع ══════════ */
