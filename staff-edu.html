@@ -153,6 +153,51 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
 .ferr{font-size:12.5px;color:var(--red);font-weight:800;min-height:18px;margin-top:4px}
 .fnote{font-size:11.5px;color:var(--muted);font-weight:700;line-height:1.8;margin-top:10px}
 
+/* ═══ الحصص وكشف الشهر ═══ */
+.mbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;
+ background:linear-gradient(135deg,rgba(13,92,72,.45),rgba(26,143,111,.14));
+ border:1.5px solid rgba(34,176,138,.26);border-radius:18px;padding:15px 17px}
+.mbar .mt{flex:1;min-width:150px}
+.mbar .mt b{display:block;font-size:18px;font-weight:900;line-height:1.35}
+.mbar .mt span{display:block;font-size:11.5px;color:var(--muted2);font-weight:700;margin-top:3px}
+.sel{background:rgba(255,255,255,.07);border:1.5px solid var(--bd);border-radius:12px;
+ padding:11px 15px;font-family:'Cairo',sans-serif;font-size:14px;color:#fff;outline:none}
+.sel:focus{border-color:var(--accentlt)}
+.sel option{background:#0b1d16}
+.secpill{display:inline-flex;align-items:center;gap:7px;background:rgba(34,176,138,.1);
+ border:1.5px solid rgba(34,176,138,.26);border-radius:11px;padding:8px 12px;
+ font-size:11.5px;font-weight:800;margin:0 0 6px 6px}
+.secpill small{color:var(--muted);font-weight:700}
+.secpill.off{opacity:.45;border-style:dashed}
+.edsec2{font-size:11.5px;font-weight:900;color:var(--accentlt);margin:14px 0 9px}
+.sessbox{display:none;margin-top:12px;background:rgba(34,176,138,.06);
+ border:1.5px solid rgba(34,176,138,.22);border-radius:14px;padding:15px}
+.sessbox.on{display:block}
+.sessbox .sh{font-size:12px;font-weight:900;color:var(--accentlt);margin-bottom:12px}
+.sg2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+@media(max-width:620px){.sg2,.sg3{grid-template-columns:1fr}}
+.sessbox select{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bd);
+ border-radius:12px;padding:12px 14px;font-family:'Cairo',sans-serif;font-size:14px;color:#fff;outline:none}
+.sessbox select option{background:#0b1d16}
+.payout{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+ background:rgba(34,176,138,.1);border:1.5px solid rgba(34,176,138,.3);border-radius:12px;
+ padding:12px 15px;margin-top:11px}
+.payout .l{font-size:12.5px;font-weight:800;color:var(--muted2)}
+.payout .v{font-size:21px;font-weight:900;color:var(--accentlt)}
+.sesslog{margin-top:12px}
+.sl1{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.035);
+ border:1.5px solid var(--bd);border-radius:11px;padding:10px 12px;margin-bottom:6px;font-size:12px;font-weight:700}
+.sl1.cx{opacity:.45;text-decoration:line-through}
+.sl1 .d{min-width:88px;color:var(--muted2)}
+.sl1 .a{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sl1 .p{color:var(--accentlt);font-weight:900;white-space:nowrap}
+.sl1 .x{background:rgba(214,84,84,.12);border:1.5px solid rgba(214,84,84,.28);color:#F0A0A0;
+ font-family:'Cairo',sans-serif;font-size:10.5px;font-weight:800;border-radius:8px;padding:5px 9px;cursor:pointer}
+.tagq{font-size:10px;font-weight:800;border-radius:100px;padding:3px 9px;white-space:nowrap}
+.q-m{background:rgba(255,255,255,.08);color:var(--muted2)}
+.q-s{background:rgba(34,176,138,.14);color:var(--accentlt)}
+
 /* ═══ عام ═══ */
 .empty{text-align:center;padding:56px 20px;color:var(--muted);font-size:13px;font-weight:700}
 .toast{position:fixed;bottom:26px;right:50%;transform:translateX(50%) translateY(20px);z-index:60;
@@ -237,6 +282,10 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
         تسجيل معلم جديد
       </div>
+      <div class="tab" id="tabPay" onclick="go('pay')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        كشف الشهر
+      </div>
     </div>
 
     <!-- ── عرض القائمة ── -->
@@ -249,6 +298,19 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
       <div class="loading" id="loading"><div class="s"></div><p>جاري تحميل البيانات...</p></div>
       <div class="list" id="list"></div>
       <div class="tblwrap hide" id="tblwrap"><table id="tbl"></table></div>
+    </div>
+
+    <!-- ── كشف الشهر ── -->
+    <div id="viewPay" class="hide">
+      <div class="mbar">
+        <div class="mt"><b id="mTitle">—</b><span id="mSub">—</span></div>
+        <select class="sel" id="mPick" onchange="loadPay()"></select>
+        <button class="btn sm gh" onclick="printPay()">طباعة الكشف</button>
+        <button class="btn sm gh" onclick="exportPay()">تصدير</button>
+      </div>
+      <div class="stats" id="mStats"></div>
+      <div class="loading hide" id="mLoading"><div class="s"></div><p>جاري الحساب...</p></div>
+      <div class="list" id="payList"></div>
     </div>
 
     <!-- ── عرض النموذج ── -->
@@ -337,6 +399,9 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
 const STAFF_URL = 'https://script.google.com/macros/s/AKfycbwzFj5x3jJTep0wm6NET-05i5vAm1a_foecHOBjH3YfjggI4bcHHJpAB67XZPcXR_yOiQ/exec';
 
 const WHATSAPP = '965';
+const BRAND_NAME = 'EDUCLOUD';
+const BRAND_ORG  = 'معهد تمكين إيديوكلاود';
+const J = v => String(v==null?'':v).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 const GRADES = ['ابتدائي','متوسط','العاشر','الحادي عشر','الثاني عشر','جامعي'];
 const SUBJECTS = ['التاريخ','الجغرافيا','الفلسفة','علم النفس','الإحصاء','اللغة العربية',
   'اللغة الإنجليزية','اللغة الفرنسية','التربية الإسلامية','الرياضيات','الفيزياء','الكيمياء',
@@ -356,7 +421,7 @@ let DEMO = [
   {row:2,id:'M-0002',date:'12/09/2026',name:'أ. أحمد الرشيدي',phone:'99887766',email:'ahmad@educloud.kw',
    grade:'الحادي عشر · الثاني عشر',subj:'التاريخ',rate:12,note:'١٢ سنة خبرة — متوفر مساءً فقط',status:'مفعّل',by:'عتيق'},
   {row:3,id:'M-0003',date:'13/09/2026',name:'أ. نورة العجمي',phone:'66554433',email:'',
-   grade:'الثاني عشر',subj:'الإحصاء',rate:15,note:'تفضّل الجهراء والعاصمة',status:'مفعّل',by:'عبدالرحمن'},
+   grade:'الثاني عشر',subj:'الإحصاء',rate:15,note:'تفضّل الجهراء والعاصمة',status:'مفعّل',by:'احمد الفضلي'},
   {row:4,id:'M-0004',date:'14/09/2026',name:'أ. فيصل المطيري',phone:'55112233',email:'faisal.m@mail.com',
    grade:'متوسط · العاشر',subj:'الرياضيات',rate:9,note:'',status:'قيد المراجعة',by:'عتيق'},
   {row:5,id:'M-0005',date:'15/09/2026',name:'أ. دلال الخالدي',phone:'97001122',email:'',
@@ -478,10 +543,13 @@ async function refresh(){
   document.getElementById('list').innerHTML='';
   document.getElementById('tblwrap').innerHTML='<table></table>';
   try{
-    const r=await call({action:'list'});
+    const r=await call({action:'teacher-pack', month:MONTH});
     if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر جلب البيانات');
     LIST=r.teachers||[];
     if(r.states&&r.states.length) STATES=r.states;
+    TSECS=r.secs||{}; MONTH=r.month||MONTH; MONTHS=r.months||[];
+    KINDS=r.kinds||KINDS; MODES=r.modes||MODES;
+    SESS=r.sessions||[]; CENTER=r.center||{};
     paintStats(); paintChips(); paint();
   }catch(err){ toast(err.message,true); }
   document.getElementById('loading').style.display='none';
@@ -526,6 +594,23 @@ function filtered(){
 }
 
 /* ══════════ العرض ══════════ */
+/* ══════════ حصص المعلمين ══════════ */
+let TSECS={}, SESS=[], MONTHS=[], CENTER={}, PAY=null;
+let MONTH=(new Date()).toISOString().slice(0,7);
+let KINDS=['حصة شعبة','حصة خاصة','دورة','مراجعة','تصحيح','نشاط آخر'];
+let MODES=['بالساعة','مكافأة ثابتة'];
+const arN = n => String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const MN = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function moLabel(m){
+  const x=String(m||'').split('-');
+  return x.length===2 ? (MN[+x[1]-1]+' '+x[0]) : String(m||'');
+}
+function sessOf(name){ return SESS.filter(x=>x.teacher===name); }
+function payOf(name){
+  return Math.round(sessOf(name).filter(x=>x.status==='تم التنفيذ')
+    .reduce((a,x)=>a+(x.pay||0),0)*1000)/1000;
+}
+
 function toggleView(){
   view = view==='cards' ? 'table' : 'cards';
   document.getElementById('viewBtn').textContent = view==='cards' ? 'عرض جدول' : 'عرض بطاقات';
@@ -572,14 +657,140 @@ function card(t){
         '<dt>الملاحظات</dt><dd>'+esc(t.note||'—')+'</dd>'+
         '<dt>مسجَّل</dt><dd>'+esc(t.date||'—')+(t.by?' · '+esc(t.by):'')+'</dd>'+
       '</dl>'+
+      secsBlock(t)+
       '<div class="racts">'+
         '<button class="btn sm" onclick="openForm('+t.row+')">تعديل البيانات</button>'+
+        '<button class="btn sm gh" onclick="tgSess('+t.row+')">تسجيل حصة</button>'+
         (t.phone?'<a class="btn sm gh" style="text-decoration:none" target="_blank" href="https://wa.me/'+WHATSAPP+esc(t.phone)+'">واتساب</a>':'')+
         (t.status==='موقوف'
           ? '<button class="btn sm gh" onclick="setStatus('+t.row+',\'مفعّل\')">تفعيل</button>'
           : '<button class="btn sm dg" onclick="setStatus('+t.row+',\'موقوف\')">إيقاف</button>')+
       '</div>'+
+      '<div class="sessbox" id="sb'+t.row+'">'+sessPanel(t)+'</div>'+
     '</div></div>';
+}
+
+/* شعب المعلم + ملخص الشهر */
+function secsBlock(t){
+  const mine=TSECS[t.name]||[];
+  const list=sessOf(t.name).filter(x=>x.status==='تم التنفيذ');
+  const hrs=Math.round(list.reduce((a,x)=>a+(x.hours||0),0)*100)/100;
+  let h='<div class="edsec2">الشعب المسندة</div>';
+  h += mine.length
+    ? mine.map(x=>'<span class="secpill'+(x.show?'':' off')+'">'+esc(x.name)+
+        '<small>'+esc(x.stage||'')+(x.days?' · '+esc(x.days):'')+
+        (x.from?' · '+esc(x.from)+'-'+esc(x.to):'')+'</small></span>').join('')
+    : '<div style="font-size:12px;color:var(--muted);font-weight:700">ما في شعب مسندة له — تُسند من لوحة الصلاحيات</div>';
+  h += '<div class="payout"><div class="l">'+esc(moLabel(MONTH))+' — '+
+       arN(list.length)+' حصة · '+arN(hrs)+' ساعة</div>'+
+       '<div class="v">'+kd(payOf(t.name))+'</div></div>';
+  return h;
+}
+
+/* لوحة تسجيل حصة */
+function sessPanel(t){
+  const n=t.row;
+  const mine=TSECS[t.name]||[];
+  const acts=mine.map(x=>x.name);
+  const today=new Date().toISOString().slice(0,10);
+  const log=sessOf(t.name);
+
+  return '<div class="sh">تسجيل حصة — تُحتسب لـ '+esc(moLabel(MONTH))+'</div>'+
+    '<div class="sg3">'+
+      '<div class="field" style="margin:0"><label>التاريخ</label>'+
+        '<input type="date" id="sd'+n+'" value="'+today+'"></div>'+
+      '<div class="field" style="margin:0"><label>النوع</label>'+
+        '<select id="sk'+n+'">'+KINDS.map(k=>'<option>'+esc(k)+'</option>').join('')+'</select></div>'+
+      '<div class="field" style="margin:0"><label>طريقة الاحتساب</label>'+
+        '<select id="sm'+n+'" onchange="sessCalc('+n+')">'+
+        MODES.map(k=>'<option>'+esc(k)+'</option>').join('')+'</select></div>'+
+    '</div>'+
+    '<div class="field"><label>النشاط أو الشعبة</label>'+
+      '<input id="sa'+n+'" list="al'+n+'" placeholder="اسم الشعبة أو وصف النشاط" '+
+      'value="'+esc(acts.length===1?acts[0]:'')+'">'+
+      '<datalist id="al'+n+'">'+acts.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div>'+
+    '<div class="sg3">'+
+      '<div class="field" style="margin:0"><label>عدد الساعات</label>'+
+        '<input type="number" step="0.5" min="0" class="ltr" id="sh'+n+'" value="1" oninput="sessCalc('+n+')"></div>'+
+      '<div class="field" style="margin:0"><label>تكلفة الساعة</label>'+
+        '<input type="number" step="0.5" min="0" class="ltr" id="sr'+n+'" value="'+(t.rate||'')+'" oninput="sessCalc('+n+')"></div>'+
+      '<div class="field" style="margin:0"><label>مكافأة ثابتة</label>'+
+        '<input type="number" step="0.5" min="0" class="ltr" id="sp'+n+'" placeholder="0" oninput="sessCalc('+n+')" disabled></div>'+
+    '</div>'+
+    '<div class="field"><label>ملاحظة</label>'+
+      '<input id="sn'+n+'" placeholder="اختياري"></div>'+
+    '<div class="payout"><div class="l">المستحق عن هذي الحصة</div>'+
+      '<div class="v" id="so'+n+'">—</div></div>'+
+    '<div class="racts">'+
+      '<button class="btn sm" id="sbt'+n+'" onclick="addSess('+n+')">'+
+        '<span id="sbx'+n+'">تم التنفيذ — احسبها له</span><div class="spin" id="sbs'+n+'"></div></button>'+
+      '<button class="btn sm gh" onclick="tgSess('+n+')">إغلاق</button>'+
+    '</div>'+
+    (log.length?'<div class="sesslog"><div class="edsec2">حصص '+esc(moLabel(MONTH))+
+      ' ('+arN(log.length)+')</div>'+
+      log.map(x=>'<div class="sl1'+(x.status!=='تم التنفيذ'?' cx':'')+'">'+
+        '<span class="d">'+esc(x.date)+'</span>'+
+        '<span class="a">'+esc(x.activity||x.kind)+'</span>'+
+        '<span class="tagq '+(x.src==='خدمات'?'q-s':'q-m')+'">'+
+          (x.src==='خدمات'?'خدمات':(x.hours?arN(x.hours)+' س':'مكافأة'))+'</span>'+
+        '<span class="p">'+kd(x.pay)+'</span>'+
+        (x.src==='حصص'&&x.status==='تم التنفيذ'
+          ?'<button class="x" onclick="cxSess('+x.row+')">إلغاء</button>':'')+
+      '</div>').join('')+'</div>':'');
+}
+
+function tgSess(row){
+  const b=document.getElementById('sb'+row);
+  if(b){ b.classList.toggle('on'); if(b.classList.contains('on')) sessCalc(row); }
+}
+
+function sessCalc(n){
+  const mode=document.getElementById('sm'+n).value;
+  const byHour = mode==='بالساعة';
+  document.getElementById('sh'+n).disabled=!byHour;
+  document.getElementById('sr'+n).disabled=!byHour;
+  document.getElementById('sp'+n).disabled=byHour;
+  const h=+document.getElementById('sh'+n).value||0;
+  const r=+document.getElementById('sr'+n).value||0;
+  const f=+document.getElementById('sp'+n).value||0;
+  const v=byHour ? Math.round(h*r*1000)/1000 : f;
+  document.getElementById('so'+n).textContent = v>0 ? kd(v) : '—';
+}
+
+async function addSess(n){
+  const t=LIST.find(x=>x.row===n); if(!t) return;
+  const g=id=>{ const e=document.getElementById(id+n); return e?e.value.trim():''; };
+  const mode=g('sm');
+  if(!g('sd')) return toast('حدد تاريخ الحصة',true);
+  if(mode==='بالساعة'){
+    if(!(+g('sh')>0)) return toast('اكتب عدد الساعات',true);
+    if(!(+g('sr')>0)) return toast('اكتب تكلفة الساعة',true);
+  }else if(!(+g('sp')>0)) return toast('اكتب قيمة المكافأة',true);
+
+  const b=document.getElementById('sbt'+n); b.disabled=true;
+  document.getElementById('sbs'+n).style.display='block';
+  document.getElementById('sbx'+n).textContent='جاري الحفظ...';
+  try{
+    const r=await call({ action:'tsess-add', teacher:t.name, date:g('sd'),
+      kind:g('sk'), mode:mode, activity:g('sa'),
+      hours:g('sh')||0, rate:g('sr')||0, pay:g('sp')||0, note:g('sn') });
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'ما تم الحفظ');
+    toast(r.msg||'تم التسجيل');
+    await refresh();
+  }catch(e){ toast(e.message,true); }
+  b.disabled=false;
+  document.getElementById('sbs'+n).style.display='none';
+  document.getElementById('sbx'+n).textContent='تم التنفيذ — احسبها له';
+}
+
+async function cxSess(row){
+  if(!confirm('إلغاء هذي الحصة؟ ما راح تُحتسب بكشف الشهر.')) return;
+  try{
+    const r=await call({action:'tsess-set', row:row, status:'ملغية'});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'ما تم الإلغاء');
+    toast('تم الإلغاء');
+    await refresh();
+  }catch(e){ toast(e.message,true); }
 }
 
 function toggleRow(r){
@@ -610,12 +821,192 @@ function table(data){
 
 /* ══════════ التبويبات ══════════ */
 function go(v){
-  const isList = v==='list';
-  document.getElementById('viewList').classList.toggle('hide',!isList);
-  document.getElementById('viewForm').classList.toggle('hide',isList);
-  document.getElementById('tabList').classList.toggle('on',isList);
-  document.getElementById('tabForm').classList.toggle('on',!isList);
+  const map={list:['viewList','tabList'],form:['viewForm','tabForm'],pay:['viewPay','tabPay']};
+  for(const k in map){
+    document.getElementById(map[k][0]).classList.toggle('hide', k!==v);
+    document.getElementById(map[k][1]).classList.toggle('on', k===v);
+  }
+  if(v==='pay') loadPay();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══════════ كشف الشهر ══════════ */
+function monthSel(){
+  const el=document.getElementById('mPick');
+  const list=MONTHS.length?MONTHS:[MONTH];
+  el.innerHTML=list.map(m=>'<option value="'+m+'" '+(m===MONTH?'selected':'')+'>'+
+    esc(moLabel(m))+'</option>').join('');
+}
+
+async function loadPay(){
+  monthSel();
+  const m=document.getElementById('mPick').value||MONTH;
+  document.getElementById('mLoading').classList.remove('hide');
+  document.getElementById('payList').innerHTML='';
+  try{
+    const r=await call({action:'payroll', month:m});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر الحساب');
+    PAY=r; MONTH=r.month||m;
+    if(r.months&&r.months.length){ MONTHS=r.months; monthSel(); }
+    paintPay();
+  }catch(e){ toast(e.message,true); }
+  document.getElementById('mLoading').classList.add('hide');
+}
+
+function paintPay(){
+  if(!PAY) return;
+  const T=PAY.totals||{};
+  document.getElementById('mTitle').textContent='كشف '+moLabel(PAY.month);
+  document.getElementById('mSub').textContent=
+    'يتحدّث تلقائياً من الحصص المسجّلة والخدمات المنفّذة';
+  document.getElementById('mStats').innerHTML=
+    st(arN(T.teachers||0),'معلم له حصص')+
+    st(arN(T.sessions||0),'حصة منفّذة')+
+    st(arN(T.hours||0)+' س','مجموع الساعات')+
+    st(kd(T.pay||0),'إجمالي المستحق','acc');
+
+  const rows=PAY.rows||[];
+  const L=document.getElementById('payList');
+  if(!rows.length){
+    L.innerHTML='<div class="empty">ما في حصص مسجّلة بهذا الشهر</div>'; return;
+  }
+  L.innerHTML=rows.map((o,i)=>{
+    const det=(PAY.sessions||[]).filter(x=>x.teacher===o.teacher&&x.status==='تم التنفيذ');
+    return '<div class="row '+(openPay.has(o.teacher)?'open':'')+'" id="p'+i+'">'+
+      '<div class="rhead" onclick="tgPay('+i+',\''+J(o.teacher)+'\')">'+
+        '<div class="av">'+esc((o.teacher||'م').replace(/^أ\.\s*/,'').charAt(0))+'</div>'+
+        '<div class="rmain"><div class="rname">'+esc(o.teacher)+
+          (o.status&&o.status!=='مفعّل'?' <span class="tagq q-m">'+esc(o.status)+'</span>':'')+'</div>'+
+          '<div class="rsub">'+arN(o.sessions)+' حصة · '+arN(o.hours)+' ساعة'+
+          (o.subj?' · '+esc(o.subj):'')+(o.last?' · آخر حصة '+esc(o.last):'')+'</div></div>'+
+        '<div class="rrate">'+kd(o.pay)+'<small>المستحق</small></div>'+
+      '</div>'+
+      '<div class="rbody"><dl class="kv">'+
+        '<dt>المعرف</dt><dd class="ltr">'+esc(o.id||'—')+'</dd>'+
+        '<dt>الرقم</dt><dd class="ltr">'+esc(o.phone||'—')+'</dd>'+
+        '<dt>تكلفة الساعة</dt><dd>'+kd(o.rate)+'</dd>'+
+        '<dt>مصدر الحصص</dt><dd>'+arN(o.manual)+' مسجّلة يدوياً · '+arN(o.svc)+' من الخدمات</dd>'+
+      '</dl>'+
+      '<div class="sesslog">'+det.map(x=>'<div class="sl1">'+
+        '<span class="d">'+esc(x.date)+'</span>'+
+        '<span class="a">'+esc(x.activity||x.kind)+'</span>'+
+        '<span class="tagq '+(x.src==='خدمات'?'q-s':'q-m')+'">'+
+          (x.src==='خدمات'?'خدمات':(x.hours?arN(x.hours)+' س':'مكافأة'))+'</span>'+
+        '<span class="p">'+kd(x.pay)+'</span></div>').join('')+'</div>'+
+      '<div class="racts">'+
+        (o.phone?'<a class="btn sm gh" style="text-decoration:none" target="_blank" href="https://wa.me/'+WHATSAPP+esc(o.phone)+'">واتساب</a>':'')+
+        '<button class="btn sm" onclick="printOne(\''+J(o.teacher)+'\')">كشف المعلم</button>'+
+      '</div>'+
+    '</div></div>';
+  }).join('');
+}
+
+let openPay=new Set();
+function tgPay(i,name){
+  if(openPay.has(name)) openPay.delete(name); else openPay.add(name);
+  const el=document.getElementById('p'+i); if(el) el.classList.toggle('open');
+}
+
+/* ══════════ طباعة الكشف ══════════ */
+function printPay(){ if(PAY) printSheet(PAY.rows||[], null); }
+function printOne(name){
+  if(!PAY) return;
+  const r=(PAY.rows||[]).filter(x=>x.teacher===name);
+  printSheet(r, name);
+}
+
+function printSheet(rows, one){
+  if(!rows.length) return toast('ما في بيانات',true);
+  const w=window.open('','_blank');
+  if(!w) return toast('المتصفح منع النافذة — اسمح بالنوافذ المنبثقة',true);
+  const tot=rows.reduce((a,o)=>({s:a.s+o.sessions,h:a.h+o.hours,p:a.p+o.pay}),{s:0,h:0,p:0});
+  const det=one ? (PAY.sessions||[]).filter(x=>x.teacher===one&&x.status==='تم التنفيذ') : null;
+
+  const html='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+  '<title>كشف '+esc(moLabel(PAY.month))+(one?' — '+esc(one):'')+'</title>'+
+  '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}'+
+  'body{font-family:Cairo,sans-serif;background:#eef2f0;color:#0A2620;padding:16px}'+
+  '.tb{background:#0D5C48;color:#fff;padding:12px 16px;border-radius:12px;display:flex;'+
+    'justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}'+
+  '.tb p{font-size:12.5px;opacity:.75;font-weight:600}'+
+  '.pb{background:#fff;color:#0D5C48;border:none;font-family:Cairo,sans-serif;font-size:14px;'+
+    'font-weight:900;padding:11px 26px;border-radius:100px;cursor:pointer}'+
+  '.sheet{background:#fff;width:210mm;margin:0 auto;padding:13mm 12mm;box-shadow:0 3px 16px rgba(0,0,0,.12)}'+
+  '.hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:10px;border-bottom:2.5px solid #0D5C48}'+
+  '.brand{font-size:23px;font-weight:900;color:#0D5C48;letter-spacing:2px}'+
+  '.org{font-size:11px;color:#4A7A6E;font-weight:700;margin-top:2px}'+
+  '.meta{text-align:left;font-size:11.5px;color:#4A7A6E;font-weight:800;line-height:1.85}'+
+  '.ttl{text-align:center;font-size:16px;font-weight:900;margin:12px 0 3px}'+
+  '.sub{text-align:center;font-size:10.5px;color:#4A7A6E;font-weight:700;margin-bottom:12px}'+
+  '.boxes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}'+
+  '.bx{background:#F5FAF8;border-radius:9px;padding:11px;text-align:center}'+
+  '.bx b{display:block;font-size:19px;font-weight:900;color:#0D5C48}'+
+  '.bx span{display:block;font-size:10px;color:#4A7A6E;font-weight:700;margin-top:2px}'+
+  'table{width:100%;border-collapse:collapse;font-size:12px}'+
+  'th{background:#0D5C48;color:#fff;font-size:11px;font-weight:800;padding:8px 10px;text-align:right}'+
+  'td{padding:8px 10px;border-bottom:1px solid #E8F4F0;font-weight:700}'+
+  'td.l{text-align:left;direction:ltr;font-weight:900}'+
+  'tr.t td{background:#F5FAF8;font-size:14px;font-weight:900;color:#0D5C48;border-bottom:none}'+
+  '.sl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;color:#0D5C48;margin:16px 0 8px}'+
+  '.sl .ln{flex:1;height:1px;background:rgba(13,92,72,.18)}'+
+  '.sig{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}'+
+  '.sg{text-align:center}.sg .im{height:48px;border-bottom:1.5px solid #0A2620}'+
+  '.sg .lb{font-size:10.5px;color:#4A7A6E;font-weight:800;margin-top:5px}'+
+  '.ft{margin-top:13px;padding-top:9px;border-top:1px solid #E8F4F0;font-size:10px;'+
+    'color:#4A7A6E;line-height:1.85;font-weight:600;text-align:center}'+
+  '@media print{body{background:#fff;padding:0}.tb{display:none}'+
+    '.sheet{width:auto;margin:0;box-shadow:none;padding:9mm}@page{size:A4;margin:8mm}}'+
+  '</style></head><body>'+
+  '<div class="tb"><p>'+(one?'كشف مستحقات معلم':'كشف مستحقات المعلمين')+'</p>'+
+  '<button class="pb" onclick="window.print()">طباعة</button></div>'+
+  '<div class="sheet">'+
+    '<div class="hd"><div><div class="brand">'+BRAND_NAME+'</div>'+
+      '<div class="org">'+esc(CENTER.name||BRAND_ORG)+'</div></div>'+
+      '<div class="meta">'+esc(moLabel(PAY.month))+'<br>'+
+      '<span style="font-weight:600">طُبع '+new Date().toLocaleDateString('en-GB')+'</span></div></div>'+
+    '<div class="ttl">'+(one?('كشف مستحقات — '+esc(one)):'كشف مستحقات المعلمين')+'</div>'+
+    '<div class="sub">عن شهر '+esc(moLabel(PAY.month))+' · أعدّه '+esc(USER)+'</div>'+
+    '<div class="boxes">'+
+      '<div class="bx"><b>'+arN(rows.length)+'</b><span>معلم</span></div>'+
+      '<div class="bx"><b>'+arN(tot.s)+'</b><span>حصة</span></div>'+
+      '<div class="bx"><b>'+arN(Math.round(tot.h*100)/100)+'</b><span>ساعة</span></div>'+
+      '<div class="bx"><b>'+kd(tot.p)+'</b><span>الإجمالي</span></div>'+
+    '</div>'+
+    '<table><tr><th>#</th><th>المعلم</th><th>التخصص</th><th>الحصص</th>'+
+      '<th>الساعات</th><th style="text-align:left">المستحق</th></tr>'+
+      rows.map((o,i)=>'<tr><td>'+arN(i+1)+'</td><td>'+esc(o.teacher)+'</td>'+
+        '<td>'+esc(o.subj||'—')+'</td><td>'+arN(o.sessions)+'</td>'+
+        '<td>'+arN(o.hours)+'</td><td class="l">'+kd(o.pay)+'</td></tr>').join('')+
+      '<tr class="t"><td colspan="3">الإجمالي</td><td>'+arN(tot.s)+'</td>'+
+      '<td>'+arN(Math.round(tot.h*100)/100)+'</td><td class="l">'+kd(tot.p)+'</td></tr>'+
+    '</table>'+
+    (det&&det.length ? '<div class="sl">تفصيل الحصص<div class="ln"></div></div>'+
+      '<table><tr><th>التاريخ</th><th>النشاط</th><th>النوع</th><th>الساعات</th>'+
+      '<th style="text-align:left">المبلغ</th></tr>'+
+      det.map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.activity||'—')+'</td>'+
+        '<td>'+esc(x.kind)+'</td><td>'+(x.hours?arN(x.hours):'—')+'</td>'+
+        '<td class="l">'+kd(x.pay)+'</td></tr>').join('')+'</table>' : '')+
+    '<div class="sig">'+
+      '<div class="sg"><div class="im"></div><div class="lb">'+(one?'توقيع المعلم':'مسؤول الحسابات')+'</div></div>'+
+      '<div class="sg"><div class="im"></div><div class="lb">الإدارة</div></div></div>'+
+    '<div class="ft">'+esc(CENTER.name||BRAND_ORG)+
+      (CENTER.wa?' · واتساب '+esc(CENTER.wa):'')+'</div>'+
+  '</div></body></html>';
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+function exportPay(){
+  if(!PAY||!(PAY.rows||[]).length) return toast('ما في بيانات',true);
+  const head=['المعلم','المعرف','الرقم','التخصص','عدد الحصص','الساعات','تكلفة الساعة','المستحق','آخر حصة'];
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=PAY.rows.map(o=>[o.teacher,o.id,o.phone,o.subj,o.sessions,o.hours,o.rate,o.pay,o.last].map(q).join(','));
+  const csv='\uFEFF'+head.map(q).join(',')+'\n'+rows.join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='payroll-'+PAY.month+'.csv';
+  a.click();
+  toast('تم تصدير '+PAY.rows.length+' معلم');
 }
 
 /* ══════════ النموذج ══════════ */
