@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>TMadmin — لوحة المالك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F; --crimson-2:#7A1515; --cream:#FAF7F2; --cream-2:#F2EDE5;
+  --text:#1A0808; --muted:#7A6060; --white:#fff; --line:rgba(92,15,15,.09);
+  --green:#2E7D32; --green-bg:#E8F5E9; --yellow:#B26A00; --yellow-bg:#FFF8E1;
+  --blue:#1565C0; --blue-bg:#E3F2FD; --red:#C62828; --red-bg:#FDECEC;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+
+/* ===== الدخول ===== */
+#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--crimson);z-index:50;padding:16px}
+.gate-box{background:var(--cream);border-radius:20px;padding:36px 28px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.gate-box .logo{font-weight:900;font-size:30px;color:var(--crimson);letter-spacing:1px}
+.gate-box p{color:var(--muted);margin:6px 0 22px}
+.gate-box input{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;text-align:center;font-size:22px;letter-spacing:8px;background:#fff;outline:none}
+.gate-box input:focus{border-color:var(--crimson)}
+.gate-box .err{color:var(--red);min-height:22px;margin-top:8px;font-size:13px}
+.btn{background:var(--crimson);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:800;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--crimson);border:1.5px solid var(--crimson)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:9px}
+.gate-box .btn{width:100%;margin-top:6px}
+
+/* ===== الهيدر ===== */
+header{background:var(--crimson);color:#fff;padding:16px 20px 0;position:sticky;top:0;z-index:10}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1200px;margin:auto}
+.top h1{font-size:20px;font-weight:900}
+.top h1 small{font-weight:500;opacity:.7;font-size:13px;margin-right:6px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.top select{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:7px 10px;outline:none}
+.top select option{color:var(--text)}
+.icon-btn{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:10px;padding:7px 11px;cursor:pointer}
+nav{display:flex;gap:4px;max-width:1200px;margin:14px auto 0;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:transparent;color:rgba(255,255,255,.7);border:0;padding:11px 16px;border-radius:12px 12px 0 0;font-weight:700;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--cream);color:var(--crimson)}
+
+main{max-width:1200px;margin:auto;padding:20px 16px 60px}
+.view{display:none}.view.on{display:block}
+
+/* ===== البطاقات ===== */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border-radius:16px;padding:16px;border:1px solid var(--line)}
+.kpi .n{font-size:28px;font-weight:900;color:var(--crimson);line-height:1.1}
+.kpi .l{color:var(--muted);font-size:13px;margin-top:4px}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:18px}
+.card{background:#fff;border-radius:16px;border:1px solid var(--line);padding:18px;margin-bottom:14px}
+.card h3{font-size:16px;font-weight:800;color:var(--crimson);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h3 .sub{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ترتيب */
+.rank{list-style:none}
+.rank li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.rank li:last-child{border:0}
+.rank .pos{width:26px;height:26px;border-radius:50%;background:var(--cream-2);color:var(--crimson);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
+.rank li:first-child .pos{background:var(--crimson);color:#fff}
+.rank .nm{flex:1;min-width:0}
+.rank .nm b{display:block;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .nm span{font-size:12px;color:var(--muted)}
+.rank .val{font-weight:900;color:var(--crimson)}
+.bar{height:5px;background:var(--cream-2);border-radius:5px;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--crimson);border-radius:5px}
+
+/* جدول */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--cream-2);color:var(--crimson);font-weight:800;text-align:right;padding:10px;white-space:nowrap;font-size:13px}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover td{background:#FFFCF8}
+.num{font-weight:800;text-align:center}
+th.num{text-align:center}
+
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-green{background:var(--green-bg);color:var(--green)}
+.p-yellow{background:var(--yellow-bg);color:var(--yellow)}
+.p-blue{background:var(--blue-bg);color:var(--blue)}
+.p-red{background:var(--red-bg);color:var(--red)}
+.p-gray{background:var(--cream-2);color:var(--muted)}
+
+/* اختيار */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:30px;padding:8px 16px;cursor:pointer;font-weight:700;color:var(--text)}
+.chip.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.chip small{font-weight:500;opacity:.7;margin-right:4px}
+
+.search{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;outline:none;margin-bottom:14px}
+.search:focus{border-color:var(--crimson)}
+
+/* موظف */
+.emp-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--crimson);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px}
+.emp-head h2{font-size:20px;font-weight:900}
+.emp-head p{color:var(--muted);font-size:13px}
+.absent-list{display:flex;flex-wrap:wrap;gap:6px}
+
+/* المهام */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.form .full{grid-column:1/-1}
+.form label{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:4px}
+.form input,.form select,.form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none}
+.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--crimson);background:#fff}
+.form textarea{min-height:70px;resize:vertical}
+.staff-pick{display:flex;flex-wrap:wrap;gap:6px}
+.staff-pick .chip{padding:6px 12px;font-size:13px}
+.task{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;background:#fff;border-right:4px solid var(--blue)}
+.task.done{border-right-color:var(--green);opacity:.75}
+.task.late{border-right-color:var(--red)}
+.task.prog{border-right-color:var(--yellow)}
+.task-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.task b{font-size:15px}
+.task .meta{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.task .desc{font-size:14px;margin-top:8px;white-space:pre-wrap}
+.task .note{background:var(--green-bg);color:var(--green);padding:8px 10px;border-radius:9px;margin-top:8px;font-size:13px}
+.task-act{display:flex;gap:6px;align-items:center}
+.task-act select{padding:5px 8px;border-radius:8px;border:1px solid var(--line);background:var(--cream);font-size:13px}
+
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+.loading{text-align:center;padding:50px 10px;color:var(--muted)}
+.spin{width:30px;height:30px;border:3px solid var(--cream-2);border-top-color:var(--crimson);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;transition:.3s;z-index:60}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.note-line{font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:14px}
+
+@media(max-width:600px){
+  .top h1 small{display:none}
+  .kpi .n{font-size:24px}
+  main{padding:14px 12px 50px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== الدخول ===== -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="logo">TMadmin</div>
+    <p>لوحة المالك — معهد تمكين</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••">
+    <div class="err" id="pinErr"></div>
+    <button class="btn" id="pinBtn" onclick="login()">دخول</button>
+  </div>
+</div>
+
+<header>
+  <div class="top">
+    <h1>TMadmin <small>لوحة المالك</small></h1>
+    <div class="top-actions">
+      <select id="month" onchange="onMonth()"></select>
+      <button class="icon-btn" title="تحديث" onclick="refresh()">↻</button>
+      <button class="icon-btn" title="خروج" onclick="logout()">⎋</button>
+    </div>
+  </div>
+  <nav id="nav">
+    <button data-v="courses" class="on">الدورات</button>
+    <button data-v="demand">الأكثر طلباً</button>
+    <button data-v="staff">الموظفين</button>
+    <button data-v="trainers">المدربين</button>
+    <button data-v="tasks">المهام</button>
+  </nav>
+</header>
+
+<main>
+  <section class="view on" id="v-courses"></section>
+  <section class="view" id="v-demand"></section>
+  <section class="view" id="v-staff"></section>
+  <section class="view" id="v-trainers"></section>
+  <section class="view" id="v-tasks"></section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ضع رابط نشر TMAdmin.gs هنا */
+const API = 'https://script.google.com/macros/s/AKfycbz-eLL94d6hIhKEVkBSou_w344_bJGpNlQQqvqe5RT2b5T5eL20fAPJZFX2HoL3EDIkEA/exec';
+
+let PIN = '';
+let VIEW = 'courses';
+let STAFF_SEL = '';
+let TRAINER_SEL = '';
+const CACHE = {};
+const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const DAYS_AR = {Sunday:'الأحد',Monday:'الاثنين',Tuesday:'الثلاثاء',Wednesday:'الأربعاء',Thursday:'الخميس',Friday:'الجمعة',Saturday:'السبت'};
+
+/* ===== أدوات ===== */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function toast(t){ const el = $('toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2400); }
+function monthLabel(ym){
+  if (ym === 'all') return 'كل الفترات';
+  const [y, m] = ym.split('-'); return AR_MONTHS[+m - 1] + ' ' + y;
+}
+function fmtDate(s){
+  if (!s) return '—';
+  const [y, m, d] = s.split('-'); return +d + ' ' + AR_MONTHS[+m - 1] + ' ' + y;
+}
+function loading(id){ $(id).innerHTML = '<div class="loading"><div class="spin"></div>جاري التحميل…</div>'; }
+function errBox(id, msg){ $(id).innerHTML = '<div class="empty">⚠️ ' + esc(msg) + '<br><br><button class="btn sm" onclick="refresh()">إعادة المحاولة</button></div>'; }
+
+function api(params){
+  return new Promise((resolve, reject) => {
+    const cb = 'tm_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+    const qs = new URLSearchParams(Object.assign({}, params, { pin: PIN, callback: cb })).toString();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cleanup(); reject(new Error('انتهت مهلة الاتصال')); }, 30000);
+    function cleanup(){ clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = data => {
+      cleanup();
+      if (data && data.auth === false){ logout(true); reject(new Error('الرمز غير صحيح')); return; }
+      data && data.ok ? resolve(data) : reject(new Error((data && data.error) || 'خطأ غير معروف'));
+    };
+    s.onerror = () => { cleanup(); reject(new Error('تعذّر الاتصال بالسكربت')); };
+    s.src = API + '?' + qs;
+    document.body.appendChild(s);
+  });
+}
+
+/* ===== الدخول ===== */
+async function login(){
+  const v = $('pin').value.trim();
+  if (!v) return;
+  $('pinBtn').disabled = true; $('pinErr').textContent = '';
+  PIN = v;
+  try{
+    const d = await api({ action: 'login' });
+    try{ sessionStorage.setItem('tmpin', PIN); }catch(e){}
+    CACHE.staffList = d.staff || [];
+    fillMonths(d.months || []);
+    $('gate').style.display = 'none';
+    show(VIEW);
+  }catch(e){
+    PIN = '';
+    $('pinErr').textContent = e.message;
+  }finally{ $('pinBtn').disabled = false; }
+}
+function logout(silent){
+  PIN = '';
+  try{ sessionStorage.removeItem('tmpin'); }catch(e){}
+  Object.keys(CACHE).forEach(k => delete CACHE[k]);
+  $('pin').value = '';
+  $('gate').style.display = 'flex';
+  if (silent) $('pinErr').textContent = 'انتهت الجلسة، أدخل الرمز من جديد';
+}
+function fillMonths(list){
+  const cur = new Date().toISOString().slice(0, 7);
+  if (list.indexOf(cur) < 0) list.unshift(cur);
+  $('month').innerHTML = list.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('')
+    + '<option value="all">كل الفترات</option>';
+  $('month').value = cur;
+}
+const M = () => $('month').value;
+
+/* ===== التنقل ===== */
+$('nav').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('on', x === b));
+  show(b.dataset.v);
+});
+function show(v){
+  VIEW = v;
+  document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
+  $('month').style.visibility = (v === 'trainers' || v === 'tasks') ? 'hidden' : 'visible';
+  ({ courses: loadCourses, demand: loadCourses, staff: loadStaff, trainers: loadTrainers, tasks: loadTasks })[v]();
+}
+function onMonth(){ show(VIEW); }
+function refresh(){ Object.keys(CACHE).forEach(k => { if (k !== 'staffList') delete CACHE[k]; }); show(VIEW); }
+
+/* ===== الدورات ===== */
+async function getCourses(){
+  const k = 'c_' + M();
+  if (!CACHE[k]) CACHE[k] = await api({ action: 'courses', month: M() });
+  return CACHE[k];
+}
+async function loadCourses(){
+  const target = VIEW === 'demand' ? 'v-demand' : 'v-courses';
+  loading(target);
+  try{
+    const d = await getCourses();
+    VIEW === 'demand' ? renderDemand(d) : renderCourses(d);
+  }catch(e){ errBox(target, e.message); }
+}
+
+function rankList(items, field, label, emptyMsg){
+  if (!items.length) return `<div class="empty">${emptyMsg}</div>`;
+  const max = Math.max(...items.map(x => x[field])) || 1;
+  return '<ul class="rank">' + items.map((c, i) => `
+    <li><div class="pos">${i + 1}</div>
+      <div class="nm"><b>${esc(c.name)}</b><span>${esc(c.trainer || '')}${c.date ? ' · ' + fmtDate(c.date) : ''}</span>
+        <div class="bar"><i style="width:${Math.round(c[field] * 100 / max)}%"></i></div></div>
+      <div class="val">${c[field]} <small style="font-weight:500;color:var(--muted);font-size:11px">${label}</small></div>
+    </li>`).join('') + '</ul>';
+}
+
+function renderCourses(d){
+  const t = d.totals;
+  let h = `
+  <div class="kpis">
+    <div class="kpi"><div class="n">${t.courses}</div><div class="l">دورة</div><div class="s">${t.online} أونلاين · ${t.onsite} حضوري</div></div>
+    <div class="kpi"><div class="n">${t.regs}</div><div class="l">تسجيل</div></div>
+    <div class="kpi"><div class="n">${t.attended}</div><div class="l">حضروا</div><div class="s">نسبة الحضور ${t.rate}%</div></div>
+    <div class="kpi"><div class="n">${t.certs}</div><div class="l">شهادة صادرة</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>الأعلى حضوراً <span class="sub">${monthLabel(d.month)}</span></h3>${rankList(d.topAttendance, 'attended', 'حاضر', 'ما فيه حضور مسجّل لهالشهر')}</div>
+    <div class="card"><h3>الأكثر شهادات <span class="sub">${monthLabel(d.month)}</span></h3>${rankList(d.topCerts, 'certs', 'شهادة', 'ما صدرت شهادات لدورات هالشهر')}</div>
+  </div>
+  <div class="card"><h3>كل الدورات <span class="sub">${d.courses.length} دورة</span></h3>`;
+  if (!d.courses.length) h += '<div class="empty">ما فيه دورات بهالشهر</div>';
+  else h += `<div class="tbl-wrap"><table><thead><tr>
+      <th>الدورة</th><th>المدرب</th><th>التاريخ</th><th>النظام</th>
+      <th class="num">مسجلين</th><th class="num">حضروا</th><th class="num">نسبة</th><th class="num">شهادات</th></tr></thead><tbody>
+      ${d.courses.map(c => `<tr>
+        <td><b>${esc(c.name)}</b></td><td>${esc(c.trainer)}</td><td style="white-space:nowrap">${fmtDate(c.date)}</td>
+        <td><span class="pill ${c.mode === 'أونلاين' ? 'p-blue' : 'p-yellow'}">${c.mode}</span></td>
+        <td class="num">${c.regs}</td><td class="num">${c.attended}</td>
+        <td class="num"><span class="pill ${c.rate >= 60 ? 'p-green' : c.rate >= 30 ? 'p-yellow' : 'p-red'}">${c.rate}%</span></td>
+        <td class="num">${c.certs}</td></tr>`).join('')}
+      </tbody></table></div>`;
+  h += '</div>';
+  $('v-courses').innerHTML = h;
+}
+
+function renderDemand(d){
+  const list = d.demand;
+  let h = `<p class="note-line">الطلب = عدد التسجيلات على الدورة · ${monthLabel(d.month)} — اختر «كل الفترات» من فوق للترتيب العام</p>`;
+  if (!list.length){ $('v-demand').innerHTML = h + '<div class="card"><div class="empty">ما فيه تسجيلات بهالفترة</div></div>'; return; }
+  const max = list[0].regs || 1;
+  h += `<div class="card"><h3>الدورات الأكثر طلباً</h3><ul class="rank">` + list.map((c, i) => `
+    <li><div class="pos">${i + 1}</div>
+      <div class="nm"><b>${esc(c.name)}</b><span>انطرحت ${c.times} ${c.times > 1 ? 'مرات' : 'مرة'} · حضر ${c.attended} (${c.regs ? Math.round(c.attended * 100 / c.regs) : 0}%)</span>
+        <div class="bar"><i style="width:${Math.round(c.regs * 100 / max)}%"></i></div></div>
+      <div class="val">${c.regs} <small style="font-weight:500;color:var(--muted);font-size:11px">تسجيل</small></div>
+    </li>`).join('') + '</ul></div>';
+  $('v-demand').innerHTML = h;
+}
+
+/* ===== الموظفين ===== */
+async function loadStaff(){
+  loading('v-staff');
+  try{
+    const ym = M() === 'all' ? new Date().toISOString().slice(0, 7) : M();
+    const k = 's_' + ym;
+    if (!CACHE[k]) CACHE[k] = await api({ action: 'staff', month: ym });
+    renderStaff(CACHE[k]);
+  }catch(e){ errBox('v-staff', e.message); }
+}
+function renderStaff(d){
+  if (!d.staff.length){ $('v-staff').innerHTML = '<div class="card"><div class="empty">ما فيه موظفين في تبويب «موظفو المبيعات»</div></div>'; return; }
+  if (!STAFF_SEL || !d.staff.some(s => s.name === STAFF_SEL)) STAFF_SEL = d.staff[0].name;
+  let h = (M() === 'all' ? '<p class="note-line">الحضور يُعرض شهر بشهر — معروض الشهر الحالي</p>' : '') +
+    '<div class="chips">' + d.staff.map(s =>
+      `<button class="chip ${s.name === STAFF_SEL ? 'on' : ''}" onclick="pickStaff('${esc(s.name).replace(/'/g, "\\'")}')">${esc(s.name)}<small>${s.absent ? '· غياب ' + s.absent : ''}</small></button>`).join('') + '</div>';
+
+  const s = d.staff.find(x => x.name === STAFF_SEL);
+  h += `<div class="card">
+    <div class="emp-head"><div class="avatar">${esc(s.name.trim()[0] || '؟')}</div>
+      <div><h2>${esc(s.name)}</h2><p>${esc(s.title)} · ${monthLabel(d.month)}</p></div></div>
+    <div class="kpis" style="margin-bottom:0">
+      <div class="kpi"><div class="n" style="color:var(--green)">${s.present}</div><div class="l">يوم داوم</div><div class="s">من ${s.workDays} يوم دوام</div></div>
+      <div class="kpi"><div class="n" style="color:var(--red)">${s.absent}</div><div class="l">يوم غياب</div></div>
+      <div class="kpi"><div class="n">${s.hours}</div><div class="l">ساعة دوام</div><div class="s">معدل ${s.avgHours} س/يوم</div></div>
+      <div class="kpi"><div class="n" style="color:var(--yellow)">${s.incomplete}</div><div class="l">يوم ناقص</div><div class="s">بدون تسجيل خروج</div></div>
+    </div></div>`;
+
+  if (s.absentDays.length){
+    h += `<div class="card"><h3>أيام الغياب <span class="sub">${s.absentDays.length} يوم</span></h3><div class="absent-list">` +
+      s.absentDays.map(a => `<span class="pill p-red">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)}</span>`).join('') + '</div></div>';
+  }
+
+  h += `<div class="card"><h3>سجل الدوام</h3>`;
+  if (!s.days.length) h += '<div class="empty">ما فيه تسجيل دوام بهالشهر</div>';
+  else h += `<div class="tbl-wrap"><table><thead><tr><th>اليوم</th><th>التاريخ</th><th>الدخول</th><th>الخروج</th><th class="num">المدة</th><th></th></tr></thead><tbody>` +
+    s.days.map(x => {
+      const hh = Math.floor(x.mins / 60), mm = x.mins % 60;
+      const bad = !x.out || !x.mins;
+      return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
+        <td>${esc(x.in) || '—'}</td><td>${x.out ? esc(x.out) : '<span class="pill p-yellow">بدون خروج</span>'}</td>
+        <td class="num">${bad ? '—' : hh + ' س ' + String(mm).padStart(2, '0') + ' د'}</td>
+        <td>${/^https?:/.test(x.map) ? `<a href="${esc(x.map)}" target="_blank" rel="noopener" style="color:var(--crimson)">الموقع</a>` : ''}</td></tr>`;
+    }).join('') + '</tbody></table></div>';
+  h += '</div>';
+  $('v-staff').innerHTML = h;
+}
+function pickStaff(n){ STAFF_SEL = n; loadStaff(); }
+
+/* ===== المدربين ===== */
+async function loadTrainers(){
+  loading('v-trainers');
+  try{
+    if (!CACHE.trainers) CACHE.trainers = await api({ action: 'trainers' });
+    renderTrainers();
+  }catch(e){ errBox('v-trainers', e.message); }
+}
+function renderTrainers(){
+  const list = CACHE.trainers.trainers;
+  const q = ($('trSearch') && $('trSearch').value) || '';
+  let h = `<input class="search" id="trSearch" placeholder="🔍 اكتب اسم المدرب…" value="${esc(q)}" oninput="renderTrainers()">`;
+  const norm = s => String(s).replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+  const f = list.filter(t => !q || norm(t.name).indexOf(norm(q)) > -1);
+
+  if (!f.length){ $('v-trainers').innerHTML = h + '<div class="card"><div class="empty">ما فيه مدرب بهالاسم</div></div>'; keepFocus(); return; }
+  if (!TRAINER_SEL || !f.some(t => t.name === TRAINER_SEL)) TRAINER_SEL = f[0].name;
+
+  h += '<div class="chips">' + f.map(t =>
+    `<button class="chip ${t.name === TRAINER_SEL ? 'on' : ''}" onclick="pickTrainer('${esc(t.name).replace(/'/g, "\\'")}')">${esc(t.name)}<small>· ${t.count}</small></button>`).join('') + '</div>';
+
+  const t = f.find(x => x.name === TRAINER_SEL);
+  h += `<div class="card">
+    <div class="emp-head"><div class="avatar">${esc(t.name.replace(/^(د\.|أ\.)\s*/, '').trim()[0] || '؟')}</div>
+      <div><h2>${esc(t.name)}</h2><p>${t.unique} دورة مختلفة</p></div></div>
+    <div class="kpis" style="margin-bottom:0">
+      <div class="kpi"><div class="n">${t.count}</div><div class="l">دورة قدّمها</div></div>
+      <div class="kpi"><div class="n">${t.regs}</div><div class="l">مسجل</div></div>
+      <div class="kpi"><div class="n">${t.attended}</div><div class="l">حاضر</div><div class="s">نسبة ${t.regs ? Math.round(t.attended * 100 / t.regs) : 0}%</div></div>
+      <div class="kpi"><div class="n">${t.certs}</div><div class="l">شهادة</div></div>
+    </div></div>
+    <div class="card"><h3>الدورات اللي قدّمها</h3><div class="tbl-wrap"><table><thead><tr>
+      <th>#</th><th>الدورة</th><th>التاريخ</th><th>النظام</th><th class="num">مسجلين</th><th class="num">حضروا</th><th class="num">شهادات</th></tr></thead><tbody>` +
+    t.courses.map((c, i) => `<tr><td>${t.courses.length - i}</td><td><b>${esc(c.name)}</b></td><td style="white-space:nowrap">${fmtDate(c.date)}</td>
+      <td><span class="pill ${c.mode === 'أونلاين' ? 'p-blue' : 'p-yellow'}">${c.mode}</span></td>
+      <td class="num">${c.regs}</td><td class="num">${c.attended}</td><td class="num">${c.certs}</td></tr>`).join('') +
+    '</tbody></table></div></div>';
+  $('v-trainers').innerHTML = h;
+  keepFocus();
+}
+function keepFocus(){
+  const el = $('trSearch');
+  if (el && document.activeElement !== el && el.value){ el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
+function pickTrainer(n){ TRAINER_SEL = n; renderTrainers(); }
+
+/* ===== المهام ===== */
+let TASK_FILTER = 'open';
+let PICKED = [];
+async function loadTasks(force){
+  if (!CACHE.tasks || force) loading('v-tasks');
+  try{
+    if (!CACHE.tasks || force) CACHE.tasks = await api({ action: 'tasks' });
+    renderTasks();
+  }catch(e){ errBox('v-tasks', e.message); }
+}
+function renderTasks(){
+  const d = CACHE.tasks, staff = d.staff || [];
+  const tasks = d.tasks || [];
+  const open = tasks.filter(t => t.status !== 'منجز').length;
+  const late = tasks.filter(t => t.late).length;
+  const done = tasks.filter(t => t.status === 'منجز').length;
+
+  let h = `<div class="card"><h3>مهمة جديدة</h3>
+    <div class="form">
+      <div class="full"><label>الموظف (تقدر تختار أكثر من واحد)</label><div class="staff-pick">` +
+      staff.map(s => `<button type="button" class="chip ${PICKED.indexOf(s.name) > -1 ? 'on' : ''}" onclick="togglePick('${esc(s.name).replace(/'/g, "\\'")}')">${esc(s.name)} <small>${esc(s.title)}</small></button>`).join('') +
+      `</div></div>
+      <div class="full"><label>عنوان المهمة</label><input id="tTitle" placeholder="مثال: تجهيز قاعة دورة الأحد"></div>
+      <div class="full"><label>التفاصيل</label><textarea id="tDesc" placeholder="اختياري"></textarea></div>
+      <div><label>الأولوية</label><select id="tPri"><option>عادية</option><option>مهمة</option><option>عاجلة</option></select></div>
+      <div><label>تاريخ التسليم</label><input id="tDue" type="date"></div>
+      <div><label>رابط ملف (اختياري)</label><input id="tLink" type="url" placeholder="https://drive.google.com/…"></div>
+      <div class="full"><button class="btn" id="tBtn" onclick="addTask()">إرسال المهمة</button></div>
+    </div></div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="n" style="color:var(--blue)">${open}</div><div class="l">مفتوحة</div></div>
+      <div class="kpi"><div class="n" style="color:var(--red)">${late}</div><div class="l">متأخرة</div></div>
+      <div class="kpi"><div class="n" style="color:var(--green)">${done}</div><div class="l">منجزة</div></div>
+    </div>
+    <div class="chips">
+      ${[['open', 'المفتوحة'], ['late', 'المتأخرة'], ['done', 'المنجزة'], ['all', 'الكل']].map(([k, l]) =>
+        `<button class="chip ${TASK_FILTER === k ? 'on' : ''}" onclick="TASK_FILTER='${k}';renderTasks()">${l}</button>`).join('')}
+    </div>`;
+
+  const list = tasks.filter(t => TASK_FILTER === 'all' ? true : TASK_FILTER === 'done' ? t.status === 'منجز' :
+    TASK_FILTER === 'late' ? t.late : t.status !== 'منجز');
+  if (!list.length) h += '<div class="card"><div class="empty">ما فيه مهام هني</div></div>';
+  else h += list.map(t => {
+    const cls = t.status === 'منجز' ? 'done' : t.late ? 'late' : t.status === 'قيد التنفيذ' ? 'prog' : '';
+    const pri = t.priority === 'عاجلة' ? 'p-red' : t.priority === 'مهمة' ? 'p-yellow' : 'p-gray';
+    return `<div class="task ${cls}">
+      <div class="task-top">
+        <div><b>${esc(t.title)}</b>
+          <div class="meta"><span>👤 ${esc(t.staff)}</span><span class="pill ${pri}">${esc(t.priority)}</span>
+            ${t.due ? `<span>📅 ${fmtDate(t.due)}${t.late ? ' <span class="pill p-red">متأخرة</span>' : ''}</span>` : ''}
+            <span>أُنشئت ${esc(t.created)}</span></div></div>
+        <div class="task-act">
+          <select onchange="setStatus('${esc(t.id)}', this.value)">
+            ${['جديد', 'قيد التنفيذ', 'منجز'].map(s => `<option ${s === t.status ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn ghost sm" onclick="delTask('${esc(t.id)}')">حذف</button>
+        </div>
+      </div>
+      ${t.desc ? `<div class="desc">${esc(t.desc)}</div>` : ''}
+      ${/^https?:/.test(t.link) ? `<div class="meta"><a href="${esc(t.link)}" target="_blank" rel="noopener" style="color:var(--crimson)">📎 الملف المرفق</a></div>` : ''}
+      ${t.note || t.doneAt ? `<div class="note">✓ ${t.doneAt ? 'أُنجزت ' + esc(t.doneAt) : ''}${t.note ? ' — ' + esc(t.note) : ''}</div>` : ''}
+    </div>`;
+  }).join('');
+  $('v-tasks').innerHTML = h;
+}
+function togglePick(n){
+  const i = PICKED.indexOf(n); i > -1 ? PICKED.splice(i, 1) : PICKED.push(n);
+  const keep = { t: $('tTitle').value, d: $('tDesc').value, p: $('tPri').value, du: $('tDue').value, l: $('tLink').value };
+  renderTasks();
+  $('tTitle').value = keep.t; $('tDesc').value = keep.d; $('tPri').value = keep.p; $('tDue').value = keep.du; $('tLink').value = keep.l;
+}
+async function addTask(){
+  const title = $('tTitle').value.trim();
+  if (!PICKED.length) return toast('اختر موظف');
+  if (!title) return toast('اكتب عنوان المهمة');
+  $('tBtn').disabled = true;
+  try{
+    await api({ action: 'addTask', staff: PICKED.join('|'), title, desc: $('tDesc').value.trim(),
+                priority: $('tPri').value, due: $('tDue').value, link: $('tLink').value.trim() });
+    toast('انرسلت المهمة ✓');
+    PICKED = [];
+    loadTasks(true);
+  }catch(e){ toast(e.message); $('tBtn').disabled = false; }
+}
+async function setStatus(id, status){
+  try{ await api({ action: 'setStatus', id, status }); toast('تم التحديث'); loadTasks(true); }
+  catch(e){ toast(e.message); }
+}
+async function delTask(id){
+  if (!confirm('حذف المهمة نهائياً؟')) return;
+  try{ await api({ action: 'deleteTask', id }); toast('انحذفت'); loadTasks(true); }
+  catch(e){ toast(e.message); }
+}
+
+/* ===== البداية ===== */
+$('pin').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+(function init(){
+  let saved = '';
+  try{ saved = sessionStorage.getItem('tmpin') || ''; }catch(e){}
+  if (saved){ $('pin').value = saved; login(); }
+  else $('pin').focus();
+})();
+</script>
+</body>
+</html>
