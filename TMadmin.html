@@ -135,6 +135,72 @@ th.num{text-align:center}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .note-line{font-size:12px;color:var(--muted);margin-top:-8px;margin-bottom:14px}
 
+/* ===== المدربين ===== */
+.tr-layout{display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:start}
+.tr-side{position:sticky;top:130px;padding:14px;margin:0;max-height:calc(100vh - 150px);display:flex;flex-direction:column}
+.tr-side .search{margin-bottom:10px}
+.tr-sort{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.tr-sort button{border:1.5px solid var(--line);background:var(--cream);border-radius:9px;padding:7px 4px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+.tr-sort button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.tr-count{font-size:12px;color:var(--muted);margin:2px 4px 8px}
+.tr-list{overflow-y:auto;flex:1;margin:0 -6px;padding:0 6px}
+.tr-item{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;border-radius:12px;padding:9px 8px;cursor:pointer;text-align:right;color:var(--text)}
+.tr-item:hover{background:var(--cream)}
+.tr-item.on{background:var(--cream-2);box-shadow:inset -3px 0 0 var(--crimson)}
+.tr-rank{width:18px;font-size:11px;color:var(--muted);font-weight:700;text-align:center;flex-shrink:0}
+.tr-av{width:34px;height:34px;border-radius:50%;background:var(--cream-2);color:var(--crimson);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
+.tr-item.on .tr-av{background:var(--crimson);color:#fff}
+.tr-nm{flex:1;min-width:0}
+.tr-nm b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-nm small{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.dot-g{background:var(--green)}.dot-b{background:var(--blue)}.dot-x{background:#C9B8B8}
+.tr-metric{font-size:12px;font-weight:800;color:var(--crimson);white-space:nowrap}
+
+.tr-hero{background:linear-gradient(135deg,var(--crimson),#3E0909);color:#fff;border:0}
+.tr-hero-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.tr-hero h2{font-size:22px;font-weight:900}
+.tr-hero p{opacity:.75;font-size:13px;margin-top:2px}
+.avatar.lg{width:60px;height:60px;font-size:26px;background:rgba(255,255,255,.15);flex-shrink:0}
+.tr-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.tr-kpis div{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 6px;text-align:center}
+.tr-kpis b{display:block;font-size:22px;font-weight:900}
+.tr-kpis span{font-size:11px;opacity:.75}
+
+.tr-titles{display:flex;flex-wrap:wrap;gap:6px}
+.tr-titles span{background:var(--cream);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font-size:13px}
+.tr-titles i{font-style:normal;color:var(--crimson);font-weight:800;font-size:12px}
+
+.tl-month{display:flex;align-items:center;gap:10px;margin:16px 0 6px;color:var(--crimson);font-weight:800;font-size:14px}
+.tl-month:first-of-type{margin-top:0}
+.tl-month i{flex:1;height:1px;background:var(--line)}
+.tl-month small{background:var(--cream-2);border-radius:20px;padding:1px 9px;font-size:12px}
+.tl-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tl-row:last-child{border:0}
+.tl-date{width:46px;text-align:center;background:var(--cream);border-radius:10px;padding:5px 0;flex-shrink:0}
+.tl-row.up .tl-date{background:var(--green-bg);color:var(--green)}
+.tl-date b{display:block;font-size:18px;font-weight:900;line-height:1.1}
+.tl-date small{font-size:10px;color:var(--muted)}
+.tl-body{flex:1;min-width:0}
+.tl-body b{font-size:14px}
+.tl-tags{display:flex;gap:6px;margin-top:4px;align-items:center;flex-wrap:wrap}
+.tl-time{font-size:12px;color:var(--muted)}
+.tl-stats{display:flex;gap:12px;align-items:center;flex-shrink:0}
+.tl-stats span{text-align:center;font-size:11px;color:var(--muted)}
+.tl-stats span b{display:block;font-size:15px;color:var(--text);font-weight:800}
+.tl-stats .pill{font-size:12px}
+
+@media(max-width:900px){
+  .tr-layout{grid-template-columns:1fr}
+  .tr-side{position:static;max-height:none}
+  .tr-list{max-height:290px}
+  .tr-kpis{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:560px){
+  .tl-row{flex-wrap:wrap}
+  .tl-stats{width:100%;padding-right:58px;gap:14px}
+}
+
 @media(max-width:600px){
   .top h1 small{display:none}
   .kpi .n{font-size:24px}
@@ -330,7 +396,24 @@ function renderCourses(d){
         <td class="num">${c.certs}</td></tr>`).join('')}
       </tbody></table></div>`;
   h += '</div>';
+  h += diagBox(d);
   $('v-courses').innerHTML = h;
+}
+
+function diagBox(d){
+  const g = d.diag; if (!g) return '';
+  const miss = (g.regMissing || []).length + (g.certMissing || []).length;
+  if (d.totals.regs > 0 && !miss) return '';
+  const li = arr => arr.map(x => `<li style="padding:4px 0">${esc(x.name)} <span class="pill p-gray">${x.n}</span></li>`).join('');
+  return `<div class="card" style="border-color:var(--yellow);background:var(--yellow-bg)">
+    <h3 style="color:var(--yellow)">فحص الربط <span class="sub">صوّرها وأرسلها لو الأرقام مو مضبوطة</span></h3>
+    <div style="font-size:13px;line-height:1.9">
+      تبويب التسجيلات: ${g.regRows || 0} صف · انربط ${g.regMatched || 0} · مستثنى (اشتراك/غير مكتمل) ${g.regSkipped || 0}<br>
+      عمود الدورة المستخدم: <b>${esc(g.regCols && g.regCols.course)}</b> · عمود التاريخ: <b>${esc(g.regCols && g.regCols.date)}</b> · عمود الحضور: <b>${esc(g.regCols && g.regCols.att)}</b><br>
+      تبويب الشهادات: ${g.certRows || 0} صف · انربط ${g.certMatched || 0}
+      ${(g.regMissing || []).length ? '<br><b>أسماء بالتسجيلات ما لقيت لها دورة:</b><ul style="list-style:none">' + li(g.regMissing) + '</ul>' : ''}
+      ${(g.certMissing || []).length ? '<b>أسماء بالشهادات ما لقيت لها دورة:</b><ul style="list-style:none">' + li(g.certMissing) + '</ul>' : ''}
+    </div></div>`;
 }
 
 function renderDemand(d){
@@ -397,50 +480,152 @@ function renderStaff(d){
 function pickStaff(n){ STAFF_SEL = n; loadStaff(); }
 
 /* ===== المدربين ===== */
+let TR_SORT = 'count';
+const TODAY = new Date().toISOString().slice(0, 10);
+const trNorm = s => String(s).replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase();
+const initial = n => esc(String(n).replace(/^(د|أ|م)\.\s*/, '').trim()[0] || '؟');
+
 async function loadTrainers(){
   loading('v-trainers');
   try{
-    if (!CACHE.trainers) CACHE.trainers = await api({ action: 'trainers' });
-    renderTrainers();
+    if (!CACHE.trainers){
+      const d = await api({ action: 'trainers' });
+      d.trainers.forEach(t => {
+        const past = t.courses.filter(c => c.date && c.date <= TODAY);
+        const next = t.courses.filter(c => c.date && c.date > TODAY);
+        t.rate = t.regs ? Math.round(t.attended * 100 / t.regs) : 0;
+        t.avg = t.count ? Math.round(t.regs / t.count) : 0;
+        t.last = past.length ? past.map(c => c.date).sort().pop() : '';
+        t.first = t.courses.map(c => c.date).filter(Boolean).sort()[0] || '';
+        t.upcoming = next.length;
+        const days = t.last ? (Date.now() - new Date(t.last).getTime()) / 864e5 : 9999;
+        t.status = t.upcoming ? 'قادم' : days <= 60 ? 'نشط' : 'متوقف';
+      });
+      CACHE.trainers = d;
+    }
+    $('v-trainers').innerHTML = `
+      <div class="tr-layout">
+        <aside class="tr-side card">
+          <input class="search" id="trSearch" placeholder="🔍 ابحث عن مدرب…" oninput="renderTrList()">
+          <div class="tr-sort">
+            ${[['count','الأكثر دورات'],['regs','الأكثر مسجلين'],['rate','أعلى حضور'],['last','الأحدث']].map(([k,l]) =>
+              `<button class="${TR_SORT === k ? 'on' : ''}" data-s="${k}" onclick="setTrSort('${k}')">${l}</button>`).join('')}
+          </div>
+          <div class="tr-count" id="trCount"></div>
+          <div class="tr-list" id="trList"></div>
+        </aside>
+        <section class="tr-main" id="trDetail"></section>
+      </div>`;
+    renderTrList();
   }catch(e){ errBox('v-trainers', e.message); }
 }
-function renderTrainers(){
-  const list = CACHE.trainers.trainers;
-  const q = ($('trSearch') && $('trSearch').value) || '';
-  let h = `<input class="search" id="trSearch" placeholder="🔍 اكتب اسم المدرب…" value="${esc(q)}" oninput="renderTrainers()">`;
-  const norm = s => String(s).replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
-  const f = list.filter(t => !q || norm(t.name).indexOf(norm(q)) > -1);
 
-  if (!f.length){ $('v-trainers').innerHTML = h + '<div class="card"><div class="empty">ما فيه مدرب بهالاسم</div></div>'; keepFocus(); return; }
+function setTrSort(k){
+  TR_SORT = k;
+  document.querySelectorAll('.tr-sort button').forEach(b => b.classList.toggle('on', b.dataset.s === k));
+  renderTrList();
+}
+
+function renderTrList(){
+  const q = trNorm(($('trSearch') || {}).value || '');
+  const all = CACHE.trainers.trainers;
+  const f = all.filter(t => !q || trNorm(t.name).indexOf(q) > -1).sort((a, b) =>
+    TR_SORT === 'last' ? (b.last || '').localeCompare(a.last || '') :
+    TR_SORT === 'rate' ? (b.rate - a.rate) || (b.regs - a.regs) :
+    (b[TR_SORT] - a[TR_SORT]) || (b.regs - a.regs));
+  $('trCount').textContent = f.length + ' مدرب' + (q ? ' من ' + all.length : '');
+  if (!f.length){ $('trList').innerHTML = '<div class="empty">ما فيه مدرب بهالاسم</div>'; return; }
   if (!TRAINER_SEL || !f.some(t => t.name === TRAINER_SEL)) TRAINER_SEL = f[0].name;
-
-  h += '<div class="chips">' + f.map(t =>
-    `<button class="chip ${t.name === TRAINER_SEL ? 'on' : ''}" onclick="pickTrainer('${esc(t.name).replace(/'/g, "\\'")}')">${esc(t.name)}<small>· ${t.count}</small></button>`).join('') + '</div>';
-
-  const t = f.find(x => x.name === TRAINER_SEL);
-  h += `<div class="card">
-    <div class="emp-head"><div class="avatar">${esc(t.name.replace(/^(د\.|أ\.)\s*/, '').trim()[0] || '؟')}</div>
-      <div><h2>${esc(t.name)}</h2><p>${t.unique} دورة مختلفة</p></div></div>
-    <div class="kpis" style="margin-bottom:0">
-      <div class="kpi"><div class="n">${t.count}</div><div class="l">دورة قدّمها</div></div>
-      <div class="kpi"><div class="n">${t.regs}</div><div class="l">مسجل</div></div>
-      <div class="kpi"><div class="n">${t.attended}</div><div class="l">حاضر</div><div class="s">نسبة ${t.regs ? Math.round(t.attended * 100 / t.regs) : 0}%</div></div>
-      <div class="kpi"><div class="n">${t.certs}</div><div class="l">شهادة</div></div>
-    </div></div>
-    <div class="card"><h3>الدورات اللي قدّمها</h3><div class="tbl-wrap"><table><thead><tr>
-      <th>#</th><th>الدورة</th><th>التاريخ</th><th>النظام</th><th class="num">مسجلين</th><th class="num">حضروا</th><th class="num">شهادات</th></tr></thead><tbody>` +
-    t.courses.map((c, i) => `<tr><td>${t.courses.length - i}</td><td><b>${esc(c.name)}</b></td><td style="white-space:nowrap">${fmtDate(c.date)}</td>
-      <td><span class="pill ${c.mode === 'أونلاين' ? 'p-blue' : 'p-yellow'}">${c.mode}</span></td>
-      <td class="num">${c.regs}</td><td class="num">${c.attended}</td><td class="num">${c.certs}</td></tr>`).join('') +
-    '</tbody></table></div></div>';
-  $('v-trainers').innerHTML = h;
-  keepFocus();
+  const metric = t => TR_SORT === 'regs' ? t.regs + ' مسجل' : TR_SORT === 'rate' ? t.rate + '%' :
+                      TR_SORT === 'last' ? (t.last ? fmtDate(t.last) : '—') : t.count + ' دورة';
+  $('trList').innerHTML = f.map((t, i) => `
+    <button class="tr-item ${t.name === TRAINER_SEL ? 'on' : ''}" onclick="pickTrainer(this, ${all.indexOf(t)})">
+      <span class="tr-rank">${i + 1}</span>
+      <span class="tr-av">${initial(t.name)}</span>
+      <span class="tr-nm"><b>${esc(t.name)}</b><small><i class="dot dot-${t.status === 'نشط' ? 'g' : t.status === 'قادم' ? 'b' : 'x'}"></i>${t.status}</small></span>
+      <span class="tr-metric">${metric(t)}</span>
+    </button>`).join('');
+  renderTrDetail();
 }
-function keepFocus(){
-  const el = $('trSearch');
-  if (el && document.activeElement !== el && el.value){ el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+
+function pickTrainer(el, idx){
+  TRAINER_SEL = CACHE.trainers.trainers[idx].name;
+  document.querySelectorAll('.tr-item').forEach(b => b.classList.toggle('on', b === el));
+  renderTrDetail();
+  if (window.innerWidth < 900) $('trDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-function pickTrainer(n){ TRAINER_SEL = n; renderTrainers(); }
+
+function courseRow(c){
+  const up = c.date > TODAY;
+  return `<div class="tl-row ${up ? 'up' : ''}">
+    <div class="tl-date"><b>${c.date ? +c.date.slice(8) : '—'}</b><small>${c.date ? AR_MONTHS[+c.date.slice(5, 7) - 1] : ''}</small></div>
+    <div class="tl-body">
+      <b>${esc(c.name)}</b>
+      <div class="tl-tags"><span class="pill ${c.mode === 'أونلاين' ? 'p-blue' : 'p-yellow'}">${c.mode}</span>${up ? '<span class="pill p-green">قادمة</span>' : ''}${c.time ? `<span class="tl-time">${esc(c.time)}</span>` : ''}</div>
+    </div>
+    ${up ? '<div class="tl-stats"><span><b>' + c.regs + '</b>مسجل</span></div>' : `<div class="tl-stats">
+      <span><b>${c.regs}</b>مسجل</span><span><b>${c.attended}</b>حضر</span><span><b>${c.certs}</b>شهادة</span>
+      <span class="pill ${c.rate >= 60 ? 'p-green' : c.rate >= 30 ? 'p-yellow' : 'p-red'}">${c.rate}%</span></div>`}
+  </div>`;
+}
+
+function renderTrDetail(){
+  const t = CACHE.trainers.trainers.find(x => x.name === TRAINER_SEL);
+  if (!t){ $('trDetail').innerHTML = ''; return; }
+  const upcoming = t.courses.filter(c => c.date > TODAY).sort((a, b) => a.date.localeCompare(b.date));
+  const past = t.courses.filter(c => !(c.date > TODAY));
+  const best = past.filter(c => c.attended > 0).slice().sort((a, b) => b.attended - a.attended).slice(0, 3);
+
+  /* تجميع السابقة حسب الشهر */
+  const groups = {};
+  past.forEach(c => { const k = c.date ? c.date.slice(0, 7) : 'بدون تاريخ'; (groups[k] = groups[k] || []).push(c); });
+  const gKeys = Object.keys(groups).sort().reverse();
+
+  /* تكرار الدورات */
+  const rep = {};
+  t.courses.forEach(c => rep[c.name] = (rep[c.name] || 0) + 1);
+  const repList = Object.keys(rep).sort((a, b) => rep[b] - rep[a]);
+
+  $('trDetail').innerHTML = `
+    <div class="card tr-hero">
+      <div class="tr-hero-top">
+        <div class="avatar lg">${initial(t.name)}</div>
+        <div style="flex:1;min-width:0">
+          <h2>${esc(t.name)}</h2>
+          <p>${t.first ? 'من ' + fmtDate(t.first) : ''}${t.last ? ' · آخر دورة ' + fmtDate(t.last) : ''}</p>
+        </div>
+        <span class="pill ${t.status === 'نشط' ? 'p-green' : t.status === 'قادم' ? 'p-blue' : 'p-gray'}" style="font-size:13px">${t.status}</span>
+      </div>
+      <div class="tr-kpis">
+        <div><b>${t.count}</b><span>دورة</span></div>
+        <div><b>${t.unique}</b><span>عنوان مختلف</span></div>
+        <div><b>${t.regs}</b><span>مسجل</span></div>
+        <div><b>${t.avg}</b><span>متوسط/دورة</span></div>
+        <div><b>${t.rate}%</b><span>نسبة الحضور</span></div>
+        <div><b>${t.certs}</b><span>شهادة</span></div>
+      </div>
+    </div>
+
+    ${upcoming.length ? `<div class="card"><h3>دورات قادمة <span class="sub">${upcoming.length}</span></h3>${upcoming.map(courseRow).join('')}</div>` : ''}
+
+    <div class="grid2" style="margin-bottom:0">
+      <div class="card"><h3>أبرز دوراته <span class="sub">حسب الحضور</span></h3>
+        ${best.length ? '<ul class="rank">' + best.map((c, i) => `<li><div class="pos">${i + 1}</div>
+          <div class="nm"><b>${esc(c.name)}</b><span>${fmtDate(c.date)}</span></div>
+          <div class="val">${c.attended} <small style="font-weight:500;color:var(--muted);font-size:11px">حاضر</small></div></li>`).join('') + '</ul>'
+          : '<div class="empty">ما فيه حضور مسجّل</div>'}
+      </div>
+      <div class="card"><h3>العناوين اللي يقدمها <span class="sub">${repList.length}</span></h3>
+        <div class="tr-titles">${repList.map(n => `<span>${esc(n)}${rep[n] > 1 ? ` <i>×${rep[n]}</i>` : ''}</span>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="card"><h3>سجل الدورات <span class="sub">${past.length} دورة</span></h3>
+      ${gKeys.length ? gKeys.map(k => `
+        <div class="tl-month"><span>${k === 'بدون تاريخ' ? k : monthLabel(k)}</span><i></i><small>${groups[k].length}</small></div>
+        ${groups[k].map(courseRow).join('')}`).join('') : '<div class="empty">ما قدّم دورات للحين</div>'}
+    </div>`;
+}
 
 /* ===== المهام ===== */
 let TASK_FILTER = 'open';
