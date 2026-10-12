@@ -499,6 +499,10 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg></div>
         <div class="mc-title">مسار اوبريشن</div><div class="mc-desc">لوحة عمليات أكاديمية مسار</div>
       </div>
+      <div class="menu-card" onclick="openSection('trmat')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <div class="mc-title">المواد التدريبية للمدرب</div><div class="mc-desc">عرض مواد المدرب المعتمدة برقم العضوية · إضافة مادة</div>
+      </div>
       <div class="menu-card" onclick="openSection('blocks')">
         <span class="mc-badge" id="badge-blocks" style="display:none">0</span>
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="15" x2="16" y2="15"/></svg></div>
@@ -506,6 +510,21 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       </div>
     </div>
   </div>
+
+  <!-- ===== TRAINER MATERIALS ===== -->
+  <div class="panel" id="p-trmat">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>المواد التدريبية للمدرب</div><div class="sec-desc">ادخل رقم العضوية لعرض مواد المدرب المعتمدة وإضافة مادة جديدة</div></div></div>
+
+    <div class="toolbar">
+      <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="tmMember" placeholder="رقم العضوية — مثال: TM264-89" dir="ltr" style="text-align:right" autocomplete="off"></div>
+      <button class="btn btn-primary" id="tmBtn" onclick="tmSearch()">عرض المواد</button>
+    </div>
+
+    <div id="tmBody"><div class="empty">اكتب رقم عضوية المدرب واضغط «عرض المواد».</div></div>
+  </div>
+
+  <div class="mbr-overlay" id="tmOverlay" onclick="if(event.target===this)tmClose()"><div class="mbr-modal" id="tmModal"></div></div>
 
   <!-- ===== BOOKING BLOCKS ===== -->
   <div class="panel" id="p-blocks">
@@ -1149,7 +1168,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', blocks:'إغلاق مواعيد الحجز', membership:'استعلام وإصدار رقم العضوية'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1166,6 +1185,7 @@ function openSection(id){
   if(id==='mytasks') initMyTasks();
   if(id==='blocks') loadBlocks();
   if(id==='membership') mbrInit();
+  if(id==='trmat') tmInit();
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -3328,6 +3348,150 @@ function mbrDoRenew(){
         '<button class="btn btn-ghost" onclick="mbrClose(); mbrSearch()">تحديث النتائج</button>'+
       '</div>');
   });
+}
+</script>
+<script>
+/* ═══════════════════════════════════════════════
+   المواد التدريبية للمدرب — MaterialsBackend.gs
+   ═══════════════════════════════════════════════ */
+const MAT_URL   = 'https://script.google.com/macros/s/AKfycby2-a3b21sxc0uzDndNC_KC_ICJvOxPry7kAVUoELWmKpQj5MdnPxVGvGx_Cilh-u6v/exec';   // ← رابط /exec بعد نشر MaterialsBackend.gs
+const MAT_TOKEN = 'tmk-mat-2026';                       // ← يطابق MT_TOKEN في السكربت
+
+let TM = { member:'', name:'', rows:[], showAll:false }, TM_READY=false;
+
+function tmReady(){ return MAT_URL && MAT_URL.indexOf('/exec')>-1; }
+async function tmGet(params){
+  const q=Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
+  const r=await fetch(MAT_URL+'?token='+encodeURIComponent(MAT_TOKEN)+'&'+q+'&_='+Date.now());
+  return r.json();
+}
+async function tmPost(body){
+  body.token=MAT_TOKEN;
+  const r=await fetch(MAT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  return r.json();
+}
+function tmNorm(v){
+  let s=String(v||'').replace(/\s/g,'').toUpperCase();
+  if(/^\d+-\d+$/.test(s)) s='TM'+s;
+  return s;
+}
+function tmOpen(html){ document.getElementById('tmModal').innerHTML=html; document.getElementById('tmOverlay').classList.add('on'); }
+function tmClose(){ document.getElementById('tmOverlay').classList.remove('on'); }
+
+function tmInit(){
+  if(TM_READY) return; TM_READY=true;
+  document.getElementById('tmMember').addEventListener('keydown',e=>{ if(e.key==='Enter') tmSearch(); });
+  if(!tmReady()) document.getElementById('tmBody').innerHTML='<div class="empty">رابط سكربت المواد (MaterialsBackend) غير مهيأ بعد.</div>';
+}
+
+async function tmSearch(memberArg){
+  if(!tmReady()){ toast('رابط سكربت المواد غير مهيأ'); return; }
+  const member=tmNorm(memberArg||document.getElementById('tmMember').value);
+  if(!/^TM\d+-\d+$/.test(member)){ toast('اكتب رقم العضوية بصيغة TM264-89'); return; }
+  document.getElementById('tmMember').value=member;
+  const btn=document.getElementById('tmBtn'); btn.disabled=true; btn.textContent='جاري البحث...';
+  if(!memberArg) document.getElementById('tmBody').innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    const res=await tmGet({action:'list',member:member});
+    if(!res.ok) throw new Error(res.error||'خطأ');
+    TM.member=res.member; TM.name=res.name||''; TM.rows=res.rows||[];
+    tmRender();
+  }catch(e){
+    document.getElementById('tmBody').innerHTML='<div class="empty">تعذّر التحميل: '+esc(e.message)+'</div>';
+  }finally{ btn.disabled=false; btn.textContent='عرض المواد'; }
+}
+
+function tmToggleAll(){ TM.showAll=!TM.showAll; tmRender(); }
+
+function tmRender(){
+  const box=document.getElementById('tmBody');
+  const appr=TM.rows.filter(r=>r.approved), pend=TM.rows.filter(r=>!r.approved);
+  const list=TM.showAll?TM.rows:appr;
+  let h='<div class="mbr-card"><div class="mbr-head">'+
+      '<span class="mbr-no">'+esc(TM.member)+'</span>'+
+      '<span class="mbr-name">'+esc(TM.name||'اسم المدرب غير معروف')+'</span></div>'+
+      '<div class="mbr-rows">'+
+        '<div class="mbr-row"><div class="k">مواد معتمدة</div><div class="v">'+appr.length+'</div></div>'+
+        '<div class="mbr-row"><div class="k">غير معتمدة</div><div class="v">'+pend.length+'</div></div>'+
+        '<div class="mbr-row"><div class="k">الإجمالي</div><div class="v">'+TM.rows.length+'</div></div>'+
+      '</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center">'+
+        '<button class="btn btn-primary" onclick="tmAddForm()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>إضافة مادة جديدة</button>'+
+        (pend.length?'<label class="mbr-chk" style="margin-right:auto"><input type="checkbox" '+(TM.showAll?'checked':'')+' onchange="tmToggleAll()">إظهار غير المعتمدة أيضاً</label>':'')+
+      '</div></div>';
+
+  if(!TM.rows.length){
+    h+='<div class="empty">ما في مواد مسجّلة لهذه العضوية — تقدر تضيف أول مادة.</div>';
+  }else if(!list.length){
+    h+='<div class="empty">ما في مواد معتمدة لهذا المدرب. فعّل «إظهار غير المعتمدة» لعرض البقية.</div>';
+  }else{
+    h+='<div class="mbr-tbl"><table><thead><tr><th>رقم المادة</th><th>اسم الدورة</th><th>الساعات</th><th>الملف</th><th>الاعتماد</th><th></th></tr></thead><tbody>';
+    list.forEach(r=>{
+      h+='<tr><td><span class="mbr-mono"><b>'+esc(r.no||'—')+'</b></span></td>'+
+         '<td><b>'+esc(r.course||'—')+'</b></td>'+
+         '<td>'+esc(r.hours||'—')+'</td>'+
+         '<td>'+(r.link?'<a class="act act-link" style="padding:6px 12px" href="'+esc(r.link)+'" target="_blank" rel="noopener">فتح الملف</a>':'<span style="color:var(--muted)">لا يوجد</span>')+'</td>'+
+         '<td><span class="mbr-badge '+(r.approved?'active':'soon')+'">'+(r.approved?'معتمد':'غير معتمد')+'</span></td>'+
+         '<td>'+(r.approved?'':'<button class="act act-approve" style="padding:6px 12px" onclick="tmApprove('+r.row+')">اعتماد</button>')+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+  box.innerHTML=h;
+}
+
+function tmAddForm(){
+  tmOpen('<h3>إضافة مادة تدريبية</h3><p class="sub">رقم المادة يطلع تلقائياً من معادلة الشيت بعد الحفظ.</p>'+
+    '<div class="mbr-info"><div><span class="k">العضوية</span><span class="v mbr-mono">'+esc(TM.member)+'</span></div></div>'+
+    '<div class="mbr-f"><label>اسم المدرب</label><input id="tmName" value="'+esc(TM.name)+'" placeholder="الاسم كما في الشيت"></div>'+
+    '<div class="mbr-f"><label>اسم الدورة</label><input id="tmCourse" placeholder="عنوان المادة التدريبية"></div>'+
+    '<div class="mbr-g2">'+
+      '<div class="mbr-f"><label>عدد الساعات</label><input id="tmHours" type="number" min="0" step="0.5" placeholder="مثال: 6"></div>'+
+      '<div class="mbr-f"><label>رابط ملف المادة (اختياري)</label><input id="tmLink" dir="ltr" placeholder="https://drive.google.com/..."></div>'+
+    '</div>'+
+    '<label class="mbr-chk" style="margin-bottom:14px"><input type="checkbox" id="tmAppr" checked>اعتماد المادة مباشرة</label>'+
+    '<div id="tmMsg" class="mbr-note err" style="display:none"></div>'+
+    '<div class="mbr-acts"><button class="btn btn-primary" id="tmSave" onclick="tmSave(0)">حفظ المادة</button>'+
+    '<button class="btn btn-ghost" onclick="tmClose()">إلغاء</button></div>');
+  setTimeout(()=>{ const el=document.getElementById(TM.name?'tmCourse':'tmName'); if(el) el.focus(); },50);
+}
+
+async function tmSave(force){
+  const v=id=>(document.getElementById(id).value||'').trim();
+  const msg=document.getElementById('tmMsg'); msg.style.display='none';
+  const err=t=>{ msg.textContent=t; msg.style.display=''; };
+  const body={action:'add', member:TM.member, name:v('tmName'), course:v('tmCourse'), hours:v('tmHours'), link:v('tmLink'),
+              approved:document.getElementById('tmAppr').checked, force:force?1:0};
+  if(!body.name) return err('اكتب اسم المدرب');
+  if(!body.course) return err('اكتب اسم الدورة');
+  if(body.link && !/^https?:\/\//i.test(body.link)) return err('الرابط لازم يبدأ بـ https://');
+  const b=document.getElementById('tmSave'); b.disabled=true; b.textContent='جاري الحفظ...';
+  try{
+    const res=await tmPost(body);
+    if(res.duplicate){
+      b.disabled=false; b.textContent='حفظ المادة';
+      msg.className='mbr-note warn'; msg.innerHTML=esc(res.error)+' — <a href="#" onclick="tmSave(1);return false;" style="color:inherit;font-weight:900">أضفها مرة ثانية؟</a>';
+      msg.style.display=''; return;
+    }
+    if(!res.ok) throw new Error(res.error||'تعذّر الحفظ');
+    tmOpen('<h3>تمت إضافة المادة</h3><p class="sub">انحفظت في تبويب «بيانات المواد التدريبية».</p>'+
+      (res.no?'<div class="mbr-big"><small>رقم المادة</small><b>'+esc(res.no)+'</b></div>':'<div class="mbr-note warn">الصف انحفظ بس رقم المادة ما طلع — راجع الصف '+esc(res.row)+' بالشيت.</div>')+
+      '<div class="mbr-info"><div><span class="k">الدورة</span><span class="v">'+esc(res.course)+'</span></div>'+
+      '<div><span class="k">المدرب</span><span class="v">'+esc(res.name)+'</span></div></div>'+
+      '<div class="mbr-acts">'+(res.no?'<button class="btn btn-primary" onclick="mbrCopy(\''+esc(res.no)+'\')">نسخ الرقم</button>':'')+
+      '<button class="btn btn-ghost" onclick="tmClose()">إغلاق</button></div>');
+    if(!body.approved) TM.showAll=true;
+    tmSearch(TM.member);
+  }catch(e){ b.disabled=false; b.textContent='حفظ المادة'; err('خطأ: '+e.message); }
+}
+
+async function tmApprove(row){
+  if(!confirm('اعتماد هذه المادة؟')) return;
+  try{
+    const res=await tmPost({action:'approve', row:row, member:TM.member});
+    if(!res.ok) throw new Error(res.error||'خطأ');
+    toast('تم اعتماد المادة ✓');
+    tmSearch(TM.member);
+  }catch(e){ toast('خطأ: '+e.message); }
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
