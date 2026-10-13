@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>مركز التحكم — تمكين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --crimson:#5C0F0F;--crimson-2:#6B1212;--crimson-soft:#F4E7E5;
+  --cream:#FAF7F2;--cream-2:#F2EDE5;--line:#E7DDD0;--card:#FFFFFF;
+  --text:#1A0808;--muted:#7A6060;--green:#2E7D32;--green-soft:#E6F2E7;
+  --amber:#A15C00;--amber-soft:#FBEFD9;--red:#B3261E;--red-soft:#FBE4E2;
+  --radius:14px;--shadow:0 1px 2px rgba(60,10,10,.06),0 4px 14px rgba(60,10,10,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--text);font-family:'Cairo',system-ui,sans-serif;font-size:15px}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+a{color:var(--crimson)}
+[hidden]{display:none!important}
+
+/* ---------- الدخول ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:32px 26px;width:100%;max-width:380px;text-align:center}
+.logo{width:56px;height:56px;border-radius:16px;background:var(--crimson);color:var(--cream);display:grid;place-items:center;font-weight:800;font-size:24px;margin:0 auto 14px}
+.login-card h1{margin:0 0 4px;font-size:22px}
+.login-card p{margin:0 0 20px;color:var(--muted);font-size:13px}
+.pin-input{width:100%;text-align:center;letter-spacing:10px;font-size:24px;font-weight:700;padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--cream);direction:ltr}
+.pin-input:focus{outline:none;border-color:var(--crimson)}
+.err{color:var(--red);font-size:13px;min-height:20px;margin-top:10px}
+
+/* ---------- أساسيات ---------- */
+.btn{border:0;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;background:var(--crimson);color:var(--cream);transition:.15s}
+.btn:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:transparent;color:var(--crimson);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--cream-2)}
+.btn.sm{padding:5px 10px;font-size:12.5px;border-radius:8px}
+.btn.green{background:var(--green)}
+.btn.block{width:100%;margin-top:14px;padding:12px}
+.icon-btn{background:none;border:0;cursor:pointer;color:var(--muted);padding:4px 6px;border-radius:6px;font-size:13px}
+.icon-btn:hover{background:var(--cream-2);color:var(--crimson)}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12.5px;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea,.inp{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;color:var(--text);width:100%}
+.field textarea{min-height:80px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus,.inp:focus{outline:none;border-color:var(--crimson)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--cream-2);color:var(--muted);white-space:nowrap}
+.b-red{background:var(--red-soft);color:var(--red)}
+.b-amber{background:var(--amber-soft);color:var(--amber)}
+.b-green{background:var(--green-soft);color:var(--green)}
+.b-crimson{background:var(--crimson-soft);color:var(--crimson)}
+.muted{color:var(--muted)}
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:13.5px}
+
+/* ---------- الهيدر ---------- */
+.demo-bar{background:var(--amber-soft);color:var(--amber);text-align:center;font-size:12.5px;font-weight:700;padding:6px 12px}
+header{background:var(--crimson);color:var(--cream);padding:14px 20px}
+.hdr{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hdr .logo{width:40px;height:40px;font-size:18px;margin:0;background:var(--cream);color:var(--crimson);border-radius:12px}
+.hdr h1{margin:0;font-size:18px}
+.hdr small{display:block;opacity:.75;font-size:12px;font-weight:400}
+.hdr .sp{flex:1}
+.hdr .btn.ghost{color:var(--cream);border-color:rgba(250,247,242,.35)}
+.hdr .btn.ghost:hover{background:rgba(250,247,242,.12)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:16px}
+.depts{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:thin}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer;white-space:nowrap;color:var(--text);display:flex;gap:6px;align-items:center}
+.chip .n{background:var(--cream-2);border-radius:999px;padding:0 7px;font-size:12px;color:var(--muted)}
+.chip.on{background:var(--crimson);border-color:var(--crimson);color:var(--cream)}
+.chip.on .n{background:rgba(250,247,242,.2);color:var(--cream)}
+
+.tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tab{background:none;border:0;padding:10px 14px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1.5px;white-space:nowrap}
+.tab.on{color:var(--crimson);border-bottom-color:var(--crimson)}
+.tab .n{font-size:11px;background:var(--crimson);color:var(--cream);border-radius:999px;padding:0 6px;margin-right:4px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.card h3{margin:0 0 12px;font-size:15.5px;display:flex;align-items:center;gap:8px}
+.card h3 .sp{flex:1}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g2{grid-template-columns:1.4fr 1fr}
+.g-dept{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+
+.kpi{padding:14px 16px}
+.kpi .v{font-size:28px;font-weight:800;line-height:1.2}
+.kpi .l{font-size:12.5px;color:var(--muted);font-weight:600}
+.kpi.red .v{color:var(--red)} .kpi.green .v{color:var(--green)} .kpi.crimson .v{color:var(--crimson)}
+
+.dept-card{display:flex;flex-direction:column;gap:10px;cursor:default}
+.dept-card .top{display:flex;align-items:center;gap:8px}
+.dept-card .top b{font-size:16px}
+.dept-card .top .sp{flex:1}
+.mrow{display:flex;flex-wrap:wrap;gap:6px}
+.m{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:6px 10px;min-width:72px}
+.m b{display:block;font-size:17px}
+.m span{font-size:11.5px;color:var(--muted)}
+.topq{font-size:12.5px;background:var(--crimson-soft);color:var(--crimson);border-radius:10px;padding:7px 10px}
+
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center;font-size:13px}
+.bar-label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.bar-label span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:8px;background:var(--cream-2);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;background:var(--crimson);border-radius:99px}
+.bar-row b{text-align:left}
+
+.spark{display:flex;align-items:flex-end;gap:5px;height:110px;padding-top:6px}
+.spark div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.spark i{display:block;width:100%;background:var(--crimson);border-radius:5px 5px 2px 2px;min-height:2px;opacity:.85}
+.spark small{font-size:10px;color:var(--muted)}
+
+/* ---------- المهام ---------- */
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.form-grid .wide{grid-column:span 2}
+.form-grid .full{grid-column:1/-1}
+@media(max-width:800px){.form-grid{grid-template-columns:1fr 1fr}.form-grid .wide{grid-column:1/-1}}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.filters .inp{width:auto;min-width:140px;flex:1}
+.task{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;display:grid;grid-template-columns:1fr auto;gap:8px 12px;margin-bottom:10px}
+.task.over{border-right:4px solid var(--red)}
+.task.done{opacity:.7}
+.task .t-title{font-weight:800;font-size:15px}
+.task .t-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.task .t-details{grid-column:1/-1;font-size:13.5px;color:#4a3030;white-space:pre-wrap}
+.task .t-note{grid-column:1/-1;font-size:13px;background:var(--green-soft);color:#1f4d22;border-radius:8px;padding:7px 10px}
+.task .t-act{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+.task .t-act select{border:1.5px solid var(--line);border-radius:8px;padding:4px 8px;font-weight:700;background:#fff}
+
+/* ---------- الأسئلة ---------- */
+.faq{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;overflow:hidden}
+.faq.pending{border-color:#E9C88E;background:#FFFCF5}
+.faq-h{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.faq-rank{width:30px;height:30px;border-radius:9px;background:var(--crimson-soft);color:var(--crimson);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.faq-q{flex:1;font-weight:700;min-width:0}
+.faq-q small{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;font-weight:600}
+.faq-cnt{text-align:center;flex:none}
+.faq-cnt b{display:block;font-size:20px;color:var(--crimson);line-height:1}
+.faq-cnt span{font-size:10.5px;color:var(--muted)}
+.faq-b{border-top:1px dashed var(--line);padding:12px 14px;background:var(--cream)}
+.faq-a{white-space:pre-wrap;font-size:14px;margin-bottom:10px}
+.faq-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:right;color:var(--muted);font-size:12px;font-weight:700;padding:8px 10px;border-bottom:1.5px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl-wrap{overflow-x:auto}
+
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.lnk{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:var(--cream);border:1px solid var(--line);text-decoration:none;color:var(--text);font-weight:600;font-size:13.5px}
+.lnk:hover{border-color:var(--crimson);color:var(--crimson)}
+
+/* ---------- الحضور والتقارير ---------- */
+.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:9px;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--crimson);color:var(--cream)}
+.team-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.team-bar .sp{flex:1}
+.who{display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--muted)}
+.dot.in{background:var(--green)} .dot.out{background:#9a8a8a} .dot.no{background:var(--red)}
+.time{font-variant-numeric:tabular-nums;direction:ltr;display:inline-block}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--cream)}
+.rep{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;overflow:hidden}
+.rep-h{display:flex;gap:8px;align-items:center;padding:11px 14px;cursor:pointer;flex-wrap:wrap}
+.rep-h b{flex:1;min-width:140px}
+.rep-b{border-top:1px dashed var(--line);padding:12px 14px;background:var(--cream);display:grid;gap:10px}
+.rep-f h5{margin:0 0 4px;font-size:12.5px;color:var(--crimson)}
+.rep-f .v{white-space:pre-wrap;font-size:13.5px}
+.rep-f table{background:#fff;border-radius:8px;font-size:12.5px}
+.rep-f td,.rep-f th{padding:6px 8px}
+.notice{background:var(--amber-soft);color:var(--amber);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600}
+
+/* ---------- الدورات والمدربين ---------- */
+.rank{list-style:none;margin:0;padding:0}
+.rank li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.rank li:last-child{border:0}
+.rank .pos{width:26px;height:26px;border-radius:50%;background:var(--cream-2);color:var(--crimson);display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none}
+.rank li:first-child .pos{background:var(--crimson);color:var(--cream)}
+.rank .nm{flex:1;min-width:0}
+.rank .nm b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank .nm span{font-size:12px;color:var(--muted)}
+.rank .val{font-weight:800;color:var(--crimson);white-space:nowrap}
+.rank .val small{font-weight:600;color:var(--muted);font-size:11px}
+.num{text-align:center}
+.tr-layout{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+.tr-side{position:sticky;top:12px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.tr-list{overflow-y:auto;flex:1;margin:0 -8px;padding:0 8px}
+.tr-item{display:flex;align-items:center;gap:9px;width:100%;background:none;border:0;border-radius:10px;padding:8px;cursor:pointer;text-align:right;color:var(--text)}
+.tr-item:hover{background:var(--cream)}
+.tr-item.on{background:var(--crimson-soft)}
+.tr-av{width:32px;height:32px;border-radius:50%;background:var(--cream-2);color:var(--crimson);display:grid;place-items:center;font-weight:800;flex:none}
+.tr-item.on .tr-av{background:var(--crimson);color:var(--cream)}
+.tr-nm{flex:1;min-width:0}
+.tr-nm b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-nm small{font-size:11px;color:var(--muted)}
+.tr-metric{font-size:12px;font-weight:800;color:var(--crimson);white-space:nowrap}
+.tr-hero{background:var(--crimson);color:var(--cream);border:0}
+.tr-hero h2{margin:0;font-size:20px}
+.tr-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
+.tr-kpis div{background:rgba(250,247,242,.12);border-radius:10px;padding:9px 4px;text-align:center}
+.tr-kpis b{display:block;font-size:20px}
+.tr-kpis span{font-size:11px;opacity:.8}
+.tl-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.tl-row:last-child{border:0}
+.tl-date{width:44px;text-align:center;background:var(--cream);border-radius:9px;padding:4px 0;flex:none}
+.tl-row.up .tl-date{background:var(--green-soft);color:var(--green)}
+.tl-date b{display:block;font-size:17px;line-height:1.1}
+.tl-date small{font-size:10px;color:var(--muted)}
+.tl-body{flex:1;min-width:0;font-size:14px}
+.tl-stats{display:flex;gap:12px;align-items:center;flex:none;font-size:11px;color:var(--muted);text-align:center}
+.tl-stats b{display:block;font-size:14px;color:var(--text)}
+@media(max-width:900px){.tr-layout{grid-template-columns:1fr}.tr-side{position:static;max-height:none}.tr-list{max-height:280px}.tr-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.tl-row{flex-wrap:wrap}.tl-stats{width:100%;padding-right:56px}}
+
+/* ---------- نافذة ---------- */
+#modal{position:fixed;inset:0;background:rgba(26,8,8,.45);display:grid;place-items:center;padding:16px;z-index:50}
+.modal-box{background:#fff;border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow:auto;padding:20px}
+.modal-box h3{margin:0 0 14px}
+.modal-box .grid{grid-template-columns:1fr 1fr}
+.modal-box .full{grid-column:1/-1}
+.modal-foot{display:flex;gap:8px;justify-content:flex-start;margin-top:16px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--cream);padding:10px 18px;border-radius:12px;font-weight:700;font-size:13.5px;opacity:0;pointer-events:none;transition:.2s;z-index:60}
+#toast.show{opacity:1}
+.loading{opacity:.5;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- ======================== الدخول ======================== -->
+<section id="login">
+  <div class="login-card">
+    <div class="logo">ت</div>
+    <h1>مركز التحكم</h1>
+    <p id="loginHint">للمدير فقط — أدخل الرمز السري</p>
+    <form id="loginForm" autocomplete="off">
+      <input id="pin" class="pin-input" type="password" inputmode="numeric" maxlength="12" placeholder="••••••" required>
+      <button class="btn block" id="loginBtn">دخول</button>
+    </form>
+    <div class="err" id="loginErr"></div>
+  </div>
+</section>
+
+<!-- ======================== اللوحة ======================== -->
+<section id="app" hidden>
+  <div class="demo-bar" id="demoBar" hidden>وضع تجريبي — بيانات وهمية للمعاينة (رمز الدخول: 123456)</div>
+  <header>
+    <div class="hdr">
+      <div class="logo">ت</div>
+      <div><h1>مركز التحكم</h1><small id="hdrSub">كل الأقسام في مكان واحد</small></div>
+      <div class="sp"></div>
+      <button class="btn ghost sm" id="refreshBtn">↻ تحديث</button>
+      <button class="btn ghost sm" id="logoutBtn">خروج</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="depts" id="depts"></div>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-tab="overview">نظرة عامة</button>
+      <button class="tab" data-tab="courses">الدورات والمدربين</button>
+      <button class="tab" data-tab="tasks">المهام</button>
+      <button class="tab" data-tab="faq">الأسئلة الشائعة</button>
+      <button class="tab" data-tab="team">الحضور والتقارير</button>
+      <button class="tab" data-tab="staff">الموظفين</button>
+      <button class="tab" data-tab="links">روابط الأقسام</button>
+    </nav>
+    <main id="view"></main>
+  </div>
+</section>
+
+<div id="modal" hidden><div class="modal-box" id="modalBox"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ======================================================
+   الإعدادات — الصق رابط ControlCenter.gs بعد النشر هنا
+   ====================================================== */
+const CONFIG = {
+  API_URL: '',
+  STAFF_PAGE: 'https://tamkeenkuw.com/staff-attendance.html',
+  SITE: 'https://tamkeenkuw.com/',
+  LINKS: {
+    'تمكين': [
+      ['لوحة العمليات','operations.html'],['لوحة المالك','admin.html'],['حضور الموظفين','staff-attendance.html'],
+      ['داش بورد المدربين','trainer-dashboard.html'],['حجز الدورات','booking.html'],['الترشيحات الحكومية','nominations-admin.html'],
+      ['إعداد الاستشارات','consultation-setup.html'],['استشارات الأعضاء','member-consultation.html'],['حضور الجلسات','attendance.html'],
+      ['الصفحة الرئيسية','index.html']
+    ],
+    'مسار': [
+      ['داش بورد مسار','masar-dashboard.html'],['الدورات المجانية','masar-free.html'],['باقة الذكاء الاصطناعي','masar-ai.html'],
+      ['باقة الإدارة','masar-leadership.html'],['الدورات الخاصة','masar-private.html'],['ملف المتدرب','masar-profile.html'],
+      ['تأكيد الحضور','masar-attend.html'],['روابط مسار','bymasar.html']
+    ],
+    'إيديو كلاود': [],
+    'نوت كلاود': [],
+    'عام': [['صفحة الموظفين (حضور، مهام، تقارير)','staff-attendance.html']]
+  }
+};
+
+const DEMO = !CONFIG.API_URL || new URLSearchParams(location.search).has('demo');
+
+/* ======================================================
+   محرك تجريبي (يشتغل بس لما ما فيه رابط سكربت)
+   ====================================================== */
+const Demo = (() => {
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const day = off => { const d = new Date(); d.setDate(d.getDate()+off); return fmt(d); };
+  const now = () => { const d = new Date(); return `${fmt(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  const DEPTS = ['تمكين','مسار','إيديو كلاود','نوت كلاود','عام'];
+  const STATUSES = ['جديد','قيد التنفيذ','منجز'], PRI = ['عاجل','عالي','عادي'], CH = ['واتساب','اتصال','حضوري','انستقرام','أخرى'];
+  let fseq = 9, tseq = 6;
+  const S = {
+    ownerPin:'123456',
+    deptOf:{'مريم الرشيدي':'تمكين','دانه':'تمكين','موظف مسار':'مسار'},
+    sched:{def:{days:[0,1,2,3,4],start:'08:00',end:'14:00',grace:15},staff:{'دانه':{days:[0,1,2,3],start:'09:00',end:'13:00',grace:10}},holidays:[],from:''},
+    staff:[{name:'مريم الرشيدي',role:'منسق عمليات',phone:'55000002'},{name:'دانه',role:'علاقات عامة',phone:'55000001'},{name:'موظف مسار',role:'مبيعات',phone:''},{name:'موظف إيديو كلاود',role:'تنسيق',phone:''}],
+    tasks:[
+      {id:'TSK-1',created:day(-3)+' 10:00',employee:'دانه',title:'تواصل مع ٥ جهات حكومية بخصوص خطة التدريب',desc:'أرسلي ملف الشركة وخطة الدورات وسجلي الرد',priority:'عالي',due:day(2),status:'قيد التنفيذ',note:'',doneAt:'',fileUrl:'#',fileName:'خطة التدريب.pdf'},
+      {id:'TSK-2',created:day(-5)+' 09:00',employee:'مريم الرشيدي',title:'مراجعة حجوزات الدورات المعلقة',desc:'',priority:'عاجل',due:day(-1),status:'جديد',note:'',doneAt:'',fileUrl:'',fileName:''},
+      {id:'TSK-3',created:day(-2)+' 11:00',employee:'موظف مسار',title:'متابعة اللي ما دفعوا رسوم الشهادة',desc:'استخدم قالب الواتساب الجاهز',priority:'عالي',due:day(1),status:'جديد',note:'',doneAt:'',fileUrl:'',fileName:''},
+      {id:'TSK-4',created:day(-8)+' 13:00',employee:'موظف مسار',title:'تجهيز روابط زووم لدورات السبت',desc:'',priority:'عادي',due:day(-4),status:'منجز',note:'تم ✅',doneAt:day(-4)+' 08:00',fileUrl:'',fileName:''},
+      {id:'TSK-5',created:day(-1)+' 16:00',employee:'موظف إيديو كلاود',title:'تحديث جدول الدورات المكثفة',desc:'',priority:'عادي',due:day(5),status:'جديد',note:'',doneAt:'',fileUrl:'',fileName:''}
+    ],
+    faqs:[
+      {id:'F-0001',dept:'تمكين',question:'كم سعر العضوية؟ وشنو الفرق بين الباقات؟',answer:'عندنا ٣ باقات:\n• الأساسية ٧٥ د.ك\n• الدولية ١٠٠ د.ك\n• الممارس ١٤٠ د.ك',category:'أسعار',count:0,lastAsked:'',created:day(-40),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0002',dept:'تمكين',question:'كيف أحجز دورة كمدرب عضو؟',answer:'من صفحة الحجز: tamkeenkuw.com/booking.html وتكتب رقم عضويتك',category:'حجز',count:0,lastAsked:'',created:day(-40),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0003',dept:'تمكين',question:'متى الدفعة الجاية لدورة مدرب معتمد؟',answer:'الدفعات كل أسبوعين بالتناوب حضوري وأونلاين — نرسل لك الموعد القادم',category:'مواعيد',count:0,lastAsked:'',created:day(-30),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0004',dept:'مسار',question:'كم رسوم الشهادة المعتمدة؟',answer:'رسوم الشهادة ١٥ د.ك، أو اشتراك شهري ١٥ د.ك يشمل كل الشهادات',category:'أسعار',count:0,lastAsked:'',created:day(-35),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0005',dept:'مسار',question:'كيف أأكد حضوري للدورة؟',answer:'ادخل tamkeenkuw.com/masar-attend واكتب رقمك',category:'حضور',count:0,lastAsked:'',created:day(-35),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0006',dept:'مسار',question:'هل الشهادة معتمدة من ديوان الخدمة؟',answer:'نعم، معتمدة من معهد تمكين وديوان الخدمة المدنية',category:'اعتماد',count:0,lastAsked:'',created:day(-20),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0007',dept:'إيديو كلاود',question:'متى تبدأ الدورات المكثفة للاختبارات؟',answer:'قبل الاختبارات بثلاث أسابيع — الجدول ينزل على الحساب',category:'مواعيد',count:0,lastAsked:'',created:day(-15),status:'معتمد',addedBy:'المدير'},
+      {id:'F-0008',dept:'نوت كلاود',question:'وين أحصل المذكرات؟ وفيه توصيل؟',answer:'',category:'',count:0,lastAsked:'',created:day(-2),status:'بانتظار رد',addedBy:'المدير'},
+      {id:'F-0009',dept:'مسار',question:'أقدر أقسط باقة الإدارة؟',answer:'إي، دفعة وحدة أو ٤ دفعات',category:'أسعار',count:0,lastAsked:'',created:day(-10),status:'معتمد',addedBy:'المدير'}
+    ],
+    logs:[]
+  };
+  const weight = {'F-0001':34,'F-0002':12,'F-0003':18,'F-0004':41,'F-0005':22,'F-0006':15,'F-0007':9,'F-0008':6,'F-0009':11};
+  let r = 7; const rnd = () => (r = (r*9301+49297)%233280)/233280;
+  S.faqs.forEach(f => { const n = weight[f.id]||3; for(let i=0;i<n;i++){ const ago = Math.floor(rnd()*30); S.logs.push({date:day(-ago)+' 12:00',faqId:f.id,dept:f.dept,by:'المدير',channel:CH[Math.floor(rnd()*4)]}); } f.count = n + 5; f.lastAsked = day(-1)+' 12:00'; });
+
+  const today = () => day(0);
+  const daysAgo = s => { const a = String(s).slice(0,10).split('-').map(Number); const b = today().split('-').map(Number); return Math.round((Date.UTC(b[0],b[1]-1,b[2]) - Date.UTC(a[0],a[1]-1,a[2]))/86400000); };
+  const stats = () => {
+    const byF = {}, byD = {}, daily = {}; let i7=0,i30=0;
+    DEPTS.forEach(d=>byD[d]={d7:0,d30:0});
+    S.logs.forEach(l=>{ const a = daysAgo(l.date); if(a<0||a>29) return; (byF[l.faqId] ||= {d7:0,d30:0}).d30++; i30++; byD[l.dept].d30++; if(a<=6){byF[l.faqId].d7++;byD[l.dept].d7++;i7++;} if(a<=13){ const k=l.date.slice(0,10); daily[k]=(daily[k]||0)+1; } });
+    const days = []; for(let i=13;i>=0;i--){ const k = day(-i); days.push({date:k,n:daily[k]||0}); }
+    return { faqs: S.faqs.map(f=>Object.assign({},f,{count7:(byF[f.id]||{}).d7||0,count30:(byF[f.id]||{}).d30||0})), stats:{inq7:i7,inq30:i30,byDept:byD,daily:days} };
+  };
+  const owner = () => { const s = stats(); return {ok:true,role:'owner',today:today(),depts:DEPTS,statuses:STATUSES,priorities:PRI,channels:CH,
+    staff:S.staff.map(x=>({...x,dept:S.deptOf[x.name]||''})),staffError:'',tasks:S.tasks.map(x=>({...x})),tasksError:'',faqs:s.faqs,stats:s.stats,
+    metrics:{'تمكين':[{label:'الأعضاء',value:108},{label:'طلبات العضوية',value:37},{label:'حجوزات بدون رد',value:4}],'مسار':[{label:'التسجيلات',value:1840},{label:'لم يدفع',value:63},{label:'متابعة العملاء',value:128},{label:'طلبات جديدة',value:9}],updated:now()},
+    sheets:[{dept:'تمكين',label:'شيت تمكين',url:'#'},{dept:'مسار',label:'شيت مسار',url:'#'}]}; };
+  const team = m => {
+    const names = S.staff.map(s=>s.name); const rows=[], todayRows=[], firstSeen={}; let q=11; const rr=()=> (q=(q*9301+49297)%233280)/233280;
+    const nn = n => String(n||'').replace(/\s+/g,' ').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').trim();
+    for(let i=0;i<60;i++){ const d=day(-i); const [Y,M,D]=d.split('-').map(Number); const dw=new Date(Date.UTC(Y,M-1,D)).getUTCDay(); if(dw===5||dw===6) continue;
+      names.forEach((n,k)=>{ if(k===3 && i>45) return; if(i>0 && (i*3+k)%11===4) return; if(i===0 && k===3) return;
+        const sh = S.sched.staff[n] || S.sched.def; const st = +sh.start.slice(0,2)*60 + +sh.start.slice(3);
+        const inM = st - 15 + Math.floor(rr()*25) + ((i+k)%6===2 ? 40 : 0); const en = +sh.end.slice(0,2)*60 + +sh.end.slice(3);
+        const outM = en - (rr()<0.12?40:0) + Math.floor(rr()*30);
+        const done = i>0 || k===0; const outT = done && !(rr()<0.05) ? `${pad(Math.floor(outM/60))}:${pad(outM%60)}` : '';
+        const rec={date:d,name:n,inT:`${pad(Math.floor(inM/60))}:${pad(inM%60)}`,outT,mins:outT?outM-inM:null};
+        firstSeen[nn(n)] = d;
+        if(d.slice(0,7)===m) rows.push(rec); if(i===0) todayRows.push(rec); }); }
+    const reports=[]; for(let i=0;i<20;i++){ const d=day(-i); if(d.slice(0,7)!==m) continue;
+      reports.push({date:d,author:'مريم الرشيدي',type:'عمليات',fields:[{h:'تواصل الأعضاء',v:JSON.stringify([{'الاسم':'عضو '+(i+1),'الموضوع':'تجديد العضوية','النتيجة':'تم التواصل'},{'الاسم':'عضو '+(i+2),'الموضوع':'حجز دورة','النتيجة':'بانتظار رد'}])},{h:'حجوزات الدورات',v:'٣ حجوزات جديدة'},{h:'الملاحظات',v:'كل شي تمام'}]});
+      if(i%2===0 && i>0) reports.push({date:d,author:'دانه',type:'علاقات عامة',fields:[{h:'زيارات الجهات',v:JSON.stringify([{'الجهة':'وزارة '+(i+1),'ردة الفعل':'قيد الدراسة'}])},{h:'الملاحظات',v:'تم تسليم ملف الشركة'}]}); }
+    const nw=new Date();
+    return {ok:true,month:m,today:day(0),now:`${pad(nw.getHours())}:${pad(nw.getMinutes())}`,schedule:JSON.parse(JSON.stringify(S.sched)),staffNames:names,
+      attendance:{found:true,tab:'حضور الموظفين',rows:rows.sort((x,y)=>y.date.localeCompare(x.date)),todayRows,names,firstSeen},reports:{found:true,tab:'التقارير اليومية',reports}};
+  };
+  const coursesDemo = () => {
+    if (S.courses) return S.courses;
+    const trs = ['د. جاسم الجزاع','نوف حسن','عبدالعزيز فياض','نورة الرشيدي','خالد الهلالي','بشار الكندري'];
+    const titles = ['تصميم محتوى Canva AI','إدارة وتقييم المتعلمين بالذكاء الاصطناعي','استراتيجيات الذكاء الاصطناعي في التعليم','التخطيط الإداري وقيادة الفريق','فن التفويض وتوزيع المهام','إعداد الملف الإنجازي','مهارات العرض والإلقاء'];
+    let q = 5; const rr = () => (q = (q*9301+49297)%233280)/233280;
+    const list = [];
+    for (let i = -120; i <= 20; i += 3) {
+      const ti = Math.floor(rr()*titles.length), regs = 15 + Math.floor(rr()*70), up = i > 0;
+      const att = up ? 0 : Math.floor(regs*(0.3+rr()*0.5)), certs = up ? 0 : Math.floor(att*(0.2+rr()*0.5));
+      list.push({ name: titles[ti], trainer: trs[ti % trs.length], date: day(i), time: '5:00 PM', mode: rr()<0.6?'أونلاين':'حضوري', regs, attended: att, certs, wantCert: certs, rate: regs?Math.round(att*100/regs):0 });
+    }
+    return S.courses = list;
+  };
+  const coursesView = ym => {
+    const pub = coursesDemo().filter(c => ym === 'all' || c.date.slice(0,7) === ym).sort((a,b) => a.date.localeCompare(b.date));
+    const tot = { courses: pub.length, regs:0, attended:0, certs:0, online:0, onsite:0 };
+    pub.forEach(c => { tot.regs += c.regs; tot.attended += c.attended; tot.certs += c.certs; c.mode==='أونلاين' ? tot.online++ : tot.onsite++; });
+    tot.rate = tot.regs ? Math.round(tot.attended*100/tot.regs) : 0;
+    const top = f => pub.slice().sort((a,b) => b[f]-a[f]).filter(c => c[f] > 0).slice(0,5);
+    const dm = {}; pub.forEach(c => { const o = dm[c.name] ||= { name:c.name, regs:0, times:0, attended:0 }; o.regs += c.regs; o.times++; o.attended += c.attended; });
+    const months = [...new Set(coursesDemo().map(c => c.date.slice(0,7)))].sort().reverse();
+    return { ok:true, month: ym, totals: tot, courses: pub, diag: { regRows: 900, regMatched: 880, regSkipped: 20, certRows: 300, certMatched: 300, regMissing: [], certMissing: [] },
+      topAttendance: top('attended'), topCerts: top('certs'), demand: Object.values(dm).sort((a,b) => b.regs-a.regs).slice(0,10), months };
+  };
+  const trainersView = () => {
+    const m = {};
+    coursesDemo().forEach(c => { const t = m[c.trainer] ||= { name:c.trainer, courses:[], regs:0, attended:0, certs:0 }; t.courses.push(c); t.regs += c.regs; t.attended += c.attended; t.certs += c.certs; });
+    return { ok:true, trainers: Object.values(m).map(t => { t.courses.sort((a,b) => a.date < b.date ? 1 : -1); t.count = t.courses.length; t.unique = new Set(t.courses.map(c=>c.name)).size; return t; }).sort((a,b) => b.count-a.count) };
+  };
+  const route = b => {
+    const a = b.action, pin = String(b.pin||'');
+    if (a==='login'){ if(pin!==S.ownerPin) throw new Error('الرمز غير صحيح'); return owner(); }
+    if (pin !== S.ownerPin) throw new Error('غير مصرح');
+    if (a==='data') return owner();
+    if (a==='team') return team(String(b.month||day(0).slice(0,7)));
+    if (a==='courses') return coursesView(String(b.month||day(0).slice(0,7)));
+    if (a==='trainers') return trainersView();
+    if (a==='saveSchedule'){ const x=b.schedule||{}; if(!x.def||!x.def.days||!x.def.days.length) throw new Error('الدوام العام: اختر يوم دوام واحد على الأقل');
+      for (const [n,sh] of Object.entries(x.staff||{})) if(!sh.days.length) throw new Error(n+': اختر يوم دوام واحد على الأقل');
+      S.sched=JSON.parse(JSON.stringify(x)); return {ok:true,schedule:S.sched}; }
+    if (a==='addTask'){ const t=b.task||{}; if(!t.employee||!String(t.title||'').trim()) throw new Error('الموظف والعنوان مطلوبين');
+      S.tasks.push({id:'TSK-'+(++tseq),created:now(),employee:t.employee,title:t.title.trim(),desc:t.desc||'',priority:t.priority||'عادي',due:t.due||'',status:'جديد',note:'',doneAt:'',fileUrl:'',fileName:''}); return owner(); }
+    if (a==='setTaskStatus'){ const t=S.tasks.find(x=>x.id===b.id); if(!t) throw new Error('المهمة غير موجودة'); t.status=b.status; t.doneAt=b.status==='منجز'?now():''; return owner(); }
+    if (a==='deleteTask'){ S.tasks=S.tasks.filter(x=>x.id!==b.id); return owner(); }
+    if (a==='setStaffDept'){ if(b.dept) S.deptOf[b.name]=b.dept; else delete S.deptOf[b.name]; return owner(); }
+    if (a==='saveFaq'){ const f=b.faq; if(f.id){ const o=S.faqs.find(x=>x.id===f.id); Object.assign(o,f); o.status = String(o.answer||'').trim()?'معتمد':'بانتظار رد'; } else { if(!String(f.question||'').trim()) throw new Error('نص السؤال مطلوب'); S.faqs.push({id:'F-'+String(++fseq).padStart(4,'0'),dept:f.dept||'عام',question:f.question.trim(),answer:f.answer||'',category:f.category||'',count:0,lastAsked:'',created:now(),status:f.answer?'معتمد':'بانتظار رد',addedBy:'المدير'}); } return owner(); }
+    if (a==='deleteFaq'){ S.faqs=S.faqs.filter(x=>x.id!==b.id); return owner(); }
+    if (a==='logInquiry'){ const f=S.faqs.find(x=>x.id===b.faqId); if(!f) throw new Error('السؤال غير موجود'); f.count++; f.lastAsked=now(); S.logs.push({date:now(),faqId:f.id,dept:f.dept,by:'المدير',channel:b.channel||'أخرى'}); return owner(); }
+    if (a==='changePin'){ if(!/^\d{6,}$/.test(String(b.newPin||''))) throw new Error('الرمز الجديد لازم ٦ أرقام أو أكثر'); S.ownerPin=String(b.newPin); return {ok:true,changed:true}; }
+    throw new Error('إجراء غير معروف');
+  };
+  return { handle: body => new Promise((res,rej)=>setTimeout(()=>{ try{ res(JSON.parse(JSON.stringify(route(body)))); }catch(e){ rej(e); } },120)) };
+})();
+
+/* ======================================================
+   الاتصال
+   ====================================================== */
+const session = { pin: '' };
+try { session.pin = sessionStorage.getItem('cc_pin') || ''; } catch(e) {}
+
+async function api(action, payload = {}) {
+  const body = Object.assign({ action, pin: session.pin }, payload);
+  if (DEMO) return Demo.handle(body);
+  const r = await fetch(CONFIG.API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'صار خطأ');
+  return j;
+}
+
+/* ======================================================
+   الحالة والأدوات
+   ====================================================== */
+const state = { crs:{}, crsMonth:'', crsSeg:'courses', trn:null, trSel:'', trSort:'count', trQ:'', schedDraft:null, team:{}, teamSeg:'today', teamMonth:'', teamWho:'', repWho:'', repType:'', data:null, dept:'الكل', tab:'overview', faqSort:'top', faqQ:'', channel:'واتساب', tf:{staff:'',status:'open',q:''} };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('show'), 2200); };
+const inDept = x => state.dept === 'الكل' || x.dept === state.dept;
+const isOpen = t => t.status !== 'منجز';
+const isOver = t => isOpen(t) && (t.status === 'متأخر' || (t.due && t.due < state.data.today));
+const priBadge = p => (p === 'عاجل' || p === 'عاجلة') ? 'b-red' : (p === 'عالي' || p === 'مهمة') ? 'b-amber' : '';
+const shortDate = s => { if (!s) return ''; const [y,m,d] = s.slice(0,10).split('-'); return `${Number(d)}/${Number(m)}`; };
+const opts = (list, sel) => list.map(v => `<option value="${esc(v)}" ${v===sel?'selected':''}>${esc(v)}</option>`).join('');
+
+async function run(btn, fn) {
+  const el = btn || $('#view');
+  el.classList?.add('loading'); if (btn) btn.disabled = true;
+  try { await fn(); } catch (e) { toast(e.message || 'صار خطأ'); }
+  finally { el.classList?.remove('loading'); if (btn) btn.disabled = false; }
+}
+function setData(d) {
+  const deptOf = {}; (d.staff||[]).forEach(s => { deptOf[s.name] = s.dept; });
+  (d.tasks||[]).forEach(t => { t.dept = deptOf[t.employee] || 'عام'; t.staffName = t.employee; });
+  (d.staff||[]).forEach(s => { s.deptShown = s.dept || 'عام'; });
+  state.data = d; render();
+}
+
+/* ======================================================
+   الدخول
+   ====================================================== */
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pin = $('#pin').value.trim();
+  $('#loginErr').textContent = '';
+  session.pin = pin;
+  const btn = $('#loginBtn'); btn.disabled = true; btn.textContent = 'جاري الدخول...';
+  try {
+    const d = await api('login');
+    try { sessionStorage.setItem('cc_pin', pin); } catch(e) {}
+    enter(d);
+    if (d.firstSetup) toast('تم تعيين رمزك السري ✅ احفظه زين');
+  } catch (err) {
+    $('#loginErr').textContent = err.message;
+    session.pin = '';
+  } finally { btn.disabled = false; btn.textContent = 'دخول'; }
+});
+
+function enter(d) {
+  $('#login').hidden = true; $('#app').hidden = false;
+  $('#demoBar').hidden = !DEMO;
+  setData(d);
+}
+
+$('#logoutBtn').onclick = () => { try { sessionStorage.removeItem('cc_pin'); } catch(e) {} session.pin=''; location.reload(); };
+$('#refreshBtn').onclick = e => run(e.currentTarget, async () => { state.crs = {}; state.trn = null; state.team = {}; state.schedDraft = null; setData(await api('data', { refresh:true })); toast('تم التحديث'); });
+
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('.tab'); if (!b) return;
+  state.tab = b.dataset.tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t === b));
+  renderView();
+});
+
+/* ======================================================
+   الرسم
+   ====================================================== */
+function render() { renderDepts(); renderTabCounts(); renderView(); }
+
+function renderDepts() {
+  const d = state.data;
+  const openBy = dep => d.tasks.filter(t => isOpen(t) && (dep==='الكل' || t.dept===dep)).length;
+  $('#depts').innerHTML = ['الكل', ...d.depts].map(x =>
+    `<button class="chip ${state.dept===x?'on':''}" data-d="${esc(x)}">${esc(x)} <span class="n">${openBy(x)}</span></button>`).join('');
+  $('#depts').onclick = e => { const c = e.target.closest('.chip'); if (!c) return; state.dept = c.dataset.d; render(); };
+  $('#hdrSub').textContent = state.dept === 'الكل' ? 'كل الأقسام في مكان واحد' : `قسم ${state.dept}`;
+}
+
+function renderTabCounts() {
+  const d = state.data;
+  const pend = d.faqs.filter(f => f.status === 'بانتظار رد' && inDept(f)).length;
+  const over = d.tasks.filter(t => isOver(t) && inDept(t)).length;
+  document.querySelector('[data-tab="tasks"]').innerHTML = `المهام${over?` <span class="n">${over}</span>`:''}`;
+  document.querySelector('[data-tab="faq"]').innerHTML = `الأسئلة الشائعة${pend?` <span class="n">${pend}</span>`:''}`;
+}
+
+function renderView() {
+  const v = { overview: vOverview, courses: vCourses, tasks: vTasks, faq: vFaq, team: vTeam, staff: vStaff, links: vLinks }[state.tab];
+  $('#view').innerHTML = v();
+  bind[state.tab]?.();
+}
+
+/* ---------- نظرة عامة ---------- */
+function vOverview() {
+  const d = state.data;
+  const tasks = d.tasks.filter(inDept);
+  const open = tasks.filter(isOpen).length;
+  const over = tasks.filter(isOver);
+  const done7 = tasks.filter(t => t.status==='منجز' && daysAgo(t.doneAt) <= 6).length;
+  const inq7 = state.dept==='الكل' ? d.stats.inq7 : (d.stats.byDept[state.dept]||{}).d7 || 0;
+
+  const depts = (state.dept==='الكل' ? d.depts : [state.dept]).map(dep => {
+    const dt = d.tasks.filter(t => t.dept===dep);
+    const top = d.faqs.filter(f => f.dept===dep).sort((a,b)=>b.count30-a.count30)[0];
+    const ms = (d.metrics[dep]||[]).map(m => `<div class="m"><b>${m.value==null?'—':Number(m.value).toLocaleString('en-US')}</b><span>${esc(m.label)}</span></div>`).join('');
+    return `<div class="card dept-card">
+      <div class="top"><b>${esc(dep)}</b><div class="sp"></div>
+        <button class="btn ghost sm" data-open="${esc(dep)}">افتح القسم</button></div>
+      <div class="mrow">
+        <div class="m"><b>${dt.filter(isOpen).length}</b><span>مهام مفتوحة</span></div>
+        <div class="m"><b style="color:${dt.filter(isOver).length?'var(--red)':'inherit'}">${dt.filter(isOver).length}</b><span>متأخرة</span></div>
+        <div class="m"><b>${(d.stats.byDept[dep]||{}).d30||0}</b><span>استفسار / ٣٠ يوم</span></div>
+        ${ms}
+      </div>
+      ${top && top.count30 ? `<div class="topq">الأكثر تكراراً: ${esc(top.question)} <b>(${top.count30})</b></div>` : ''}
+    </div>`;
+  }).join('');
+
+  const topF = d.faqs.filter(inDept).sort((a,b)=>b.count30-a.count30).slice(0,8);
+  const maxF = Math.max(1, ...topF.map(f=>f.count30));
+  const maxD = Math.max(1, ...d.stats.daily.map(x=>x.n));
+
+  return `
+  <div class="grid g4">
+    <div class="card kpi crimson"><div class="v">${open}</div><div class="l">مهام مفتوحة</div></div>
+    <div class="card kpi red"><div class="v">${over.length}</div><div class="l">مهام متأخرة</div></div>
+    <div class="card kpi green"><div class="v">${done7}</div><div class="l">منجزة آخر ٧ أيام</div></div>
+    <div class="card kpi"><div class="v">${inq7}</div><div class="l">استفسارات آخر ٧ أيام</div></div>
+  </div>
+  <h3 style="margin:22px 2px 10px">الأقسام</h3>
+  <div class="grid g-dept">${depts}</div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>أكثر الاستفسارات تكراراً <span class="badge">آخر ٣٠ يوم</span></h3>
+      ${topF.length ? `<div class="bars">${topF.map(f=>`<div class="bar-row"><div class="bar-label"><span title="${esc(f.question)}">${esc(f.question)} <small class="muted">· ${esc(f.dept)}</small></span><div class="bar-track"><div class="bar-fill" style="width:${f.count30/maxF*100}%"></div></div></div><b>${f.count30}</b></div>`).join('')}</div>` : '<div class="empty">ما فيه استفسارات مسجلة للحين</div>'}
+    </div>
+    <div class="card"><h3>الاستفسارات يومياً <span class="badge">١٤ يوم — كل الأقسام</span></h3>
+      <div class="spark">${d.stats.daily.map(x=>`<div title="${x.date}: ${x.n}"><i style="height:${x.n/maxD*100}%"></i><small>${shortDate(x.date).split('/')[0]}</small></div>`).join('')}</div>
+      <h3 style="margin-top:18px">مهام متأخرة</h3>
+      ${over.length ? over.slice(0,6).map(t=>`<div style="display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px"><span class="badge b-red">${shortDate(t.due)}</span><span style="flex:1">${esc(t.title)}</span><span class="muted">${esc(t.staffName||'غير مسندة')}</span></div>`).join('') : '<div class="empty" style="padding:12px">ما فيه شي متأخر 👌</div>'}
+    </div>
+  </div>
+  ${d.metrics.updated ? `<p class="muted" style="font-size:12px;margin-top:12px">مؤشرات الشيتات محدّثة: ${esc(d.metrics.updated)} — زر "تحديث" يجيب أحدث أرقام</p>` : ''}`;
+}
+function daysAgo(s) { if (!s) return 999; const a = s.slice(0,10).split('-').map(Number), b = state.data.today.split('-').map(Number); return Math.round((Date.UTC(b[0],b[1]-1,b[2]) - Date.UTC(a[0],a[1]-1,a[2]))/86400000); }
+
+/* ---------- المهام ---------- */
+function vTasks() {
+  const d = state.data, f = state.tf;
+  const staff = d.staff;
+  let list = d.tasks.filter(inDept);
+  if (f.staff) list = list.filter(t => t.employee === f.staff);
+  if (f.status === 'open') list = list.filter(isOpen);
+  else if (f.status === 'over') list = list.filter(isOver);
+  else if (f.status) list = list.filter(t => t.status === f.status);
+  if (f.q) list = list.filter(t => (t.title + ' ' + t.desc + ' ' + t.note).includes(f.q));
+  const pr = {'عاجل':0,'عالي':1,'عادي':2};
+  list.sort((a,b) => (isOpen(b)-isOpen(a)) || (isOver(b)-isOver(a)) || ((pr[a.priority]??2)-(pr[b.priority]??2)) || String(a.due||'9').localeCompare(String(b.due||'9')));
+  const staffOpts = staff.filter(s => inDept({dept:s.deptShown})).concat(staff.filter(s => !inDept({dept:s.deptShown})));
+  return `
+  ${d.tasksError ? `<div class="notice" style="margin-bottom:12px">ما قدرت أقرا المهام: ${esc(d.tasksError)}</div>` : ''}
+  ${d.staffError ? `<div class="notice" style="margin-bottom:12px">ما قدرت أجيب قائمة الموظفين: ${esc(d.staffError)}</div>` : ''}
+  <div class="card" style="margin-bottom:16px">
+    <h3>إرسال مهمة جديدة <span class="badge">تطلع للموظف في صفحة الموظفين ← مهامي</span></h3>
+    <form id="taskForm" class="form-grid">
+      <div class="field wide"><label>عنوان المهمة *</label><input name="title" required placeholder="مثال: متابعة طلبات العضوية المعلقة"></div>
+      <div class="field"><label>الموظف *</label><select name="employee" required><option value="">— اختر —</option>${staffOpts.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}${s.role?` · ${esc(s.role)}`:''}</option>`).join('')}</select></div>
+      <div class="field"><label>الأولوية</label><select name="priority">${opts(d.priorities,'عادي')}</select></div>
+      <div class="field full"><label>الوصف</label><textarea name="desc" placeholder="اكتب المطلوب بالضبط..."></textarea></div>
+      <div class="field"><label>تاريخ التسليم</label><input name="due" type="date"></div>
+      <div class="field wide" style="justify-content:flex-end;flex-direction:row;align-items:flex-end;gap:8px;grid-column:span 3">
+        <label style="display:flex;gap:6px;align-items:center;font-weight:600;color:var(--text);font-size:13px;margin-left:auto"><input type="checkbox" name="wa" style="width:auto"> افتح واتساب للموظف بعد الإرسال</label>
+        <button class="btn">إرسال المهمة</button>
+      </div>
+    </form>
+  </div>
+  <div class="filters">
+    <input class="inp" id="tq" placeholder="بحث في المهام..." value="${esc(f.q)}">
+    <select class="inp" id="tstaff"><option value="">كل الموظفين</option>${staff.filter(s=>inDept({dept:s.deptShown})).map(s=>`<option value="${esc(s.name)}" ${f.staff===s.name?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+    <select class="inp" id="tstatus">
+      <option value="open" ${f.status==='open'?'selected':''}>المفتوحة</option>
+      <option value="over" ${f.status==='over'?'selected':''}>المتأخرة</option>
+      ${d.statuses.map(s=>`<option value="${s}" ${f.status===s?'selected':''}>${s}</option>`).join('')}
+      <option value="" ${f.status===''?'selected':''}>الكل</option>
+    </select>
+  </div>
+  <div id="taskList">${list.length ? list.map(taskCard).join('') : '<div class="card empty">ما فيه مهام بهالفلتر</div>'}</div>`;
+}
+
+function taskCard(t) {
+  const d = state.data;
+  const st = d.statuses.includes(t.status) ? t.status : (t.status === 'متأخر' ? 'جديد' : t.status);
+  const phone = (d.staff.find(s => s.name === t.employee) || {}).phone;
+  return `<div class="task ${isOver(t)?'over':''} ${t.status==='منجز'?'done':''}" data-id="${esc(t.id)}">
+    <div>
+      <div class="t-title">${esc(t.title)}</div>
+      <div class="t-meta">
+        <span class="badge">👤 ${esc(t.employee)}</span>
+        <span class="badge">${esc(t.dept)}</span>
+        ${t.priority && !['عادي','عادية'].includes(t.priority)?`<span class="badge ${priBadge(t.priority)}">${esc(t.priority)}</span>`:''}
+        ${t.due?`<span class="badge ${isOver(t)?'b-red':''}">📅 ${shortDate(t.due)}${isOver(t)?' — متأخرة':''}</span>`:''}
+        ${t.status==='منجز' && t.doneAt?`<span class="badge b-green">انتهت ${shortDate(t.doneAt)}</span>`:''}
+        ${t.fileUrl?`<a class="badge" href="${esc(t.fileUrl)}" target="_blank">📎 ${esc(t.fileName||'مرفق')}</a>`:''}
+        <span class="muted" style="font-size:11.5px">أُرسلت ${shortDate(t.created)}</span>
+      </div>
+    </div>
+    <div class="t-act">
+      <select data-act="status">${opts(d.statuses, st)}</select>
+      ${phone?`<button class="icon-btn" data-act="wa" title="أرسل تذكير واتساب">💬</button>`:''}
+      <button class="icon-btn" data-act="del" title="حذف">🗑</button>
+    </div>
+    ${t.desc?`<div class="t-details">${esc(t.desc)}</div>`:''}
+    ${t.note?`<div class="t-note">ملاحظة الموظف: ${esc(t.note)}</div>`:''}
+  </div>`;
+}
+
+function waLink(name, t) {
+  const s = state.data.staff.find(x => x.name === name);
+  if (!s || !s.phone) return null;
+  const msg = `مرحبا ${s.name} 👋\nعندك مهمة: *${t.title}*${t.due?`\nالتسليم: ${t.due}`:''}${t.desc?`\n\n${t.desc}`:''}\n\nتلقاها في صفحة الموظفين ← مهامي: ${CONFIG.STAFF_PAGE}`;
+  return `https://wa.me/965${s.phone}?text=${encodeURIComponent(msg)}`;
+}
+
+/* ---------- الأسئلة الشائعة ---------- */
+function vFaq() {
+  const d = state.data;
+  let list = d.faqs.filter(inDept);
+  if (state.faqQ) list = list.filter(f => (f.question + ' ' + f.answer + ' ' + f.category).includes(state.faqQ));
+  const s = state.faqSort;
+  if (s === 'pending') list = list.filter(f => f.status === 'بانتظار رد');
+  list.sort(s === 'new' ? (a,b)=>String(b.created).localeCompare(a.created) : s === 'all' ? (a,b)=>b.count-a.count : (a,b)=>(b.count30-a.count30)||(b.count-a.count));
+  const pend = d.faqs.filter(f => inDept(f) && f.status==='بانتظار رد').length;
+
+  return `
+  <div class="card" style="margin-bottom:16px">
+    <h3>إضافة سؤال ورد جاهز</h3>
+    <form id="faqForm" class="form-grid">
+      <div class="field wide"><label>السؤال *</label><input name="question" required placeholder="مثال: كم سعر الشهادة؟"></div>
+      <div class="field"><label>القسم</label><select name="dept">${opts(d.depts, state.dept==='الكل'?'تمكين':state.dept)}</select></div>
+      <div class="field"><label>التصنيف</label><input name="category" placeholder="أسعار / مواعيد / تسجيل..."></div>
+      <div class="field full"><label>الرد الجاهز (ينسخه الموظف ويرسله)</label><textarea name="answer" placeholder="اكتب الرد بالصيغة اللي تبي الموظف يرسلها للعميل"></textarea></div>
+      <div class="full"><button class="btn">إضافة السؤال</button></div>
+    </form>
+  </div>
+  <div class="filters">
+    <input class="inp" id="fq" placeholder="ابحث في الأسئلة والردود..." value="${esc(state.faqQ)}">
+    <select class="inp" id="fsort" style="flex:0 1 200px">
+      <option value="top" ${s==='top'?'selected':''}>الأكثر تكراراً (٣٠ يوم)</option>
+      <option value="all" ${s==='all'?'selected':''}>الأكثر تكراراً (الكل)</option>
+      <option value="new" ${s==='new'?'selected':''}>الأحدث</option>
+      <option value="pending" ${s==='pending'?'selected':''}>بانتظار رد (${pend})</option>
+    </select>
+    <select class="inp" id="fch" style="flex:0 1 150px" title="قناة الاستفسار عند تسجيل التكرار">${opts(d.channels, state.channel)}</select>
+  </div>
+  <div id="faqList">${list.length ? list.map((f,i)=>faqItem(f,i)).join('') : '<div class="card empty">ما فيه أسئلة هني للحين</div>'}</div>`;
+}
+
+function faqItem(f, i) {
+  const pending = f.status === 'بانتظار رد';
+  return `<div class="faq ${pending?'pending':''}" data-id="${f.id}">
+    <div class="faq-h" data-act="toggle">
+      <div class="faq-rank">${i+1}</div>
+      <div class="faq-q">${esc(f.question)}
+        <small><span class="badge">${esc(f.dept)}</span>${f.category?`<span class="badge">${esc(f.category)}</span>`:''}${pending?`<span class="badge b-amber">بانتظار رد · أضافه ${esc(f.addedBy)}</span>`:''}<span class="muted">آخر سؤال: ${f.lastAsked?shortDate(f.lastAsked):'—'}</span></small>
+      </div>
+      <div class="faq-cnt"><b>${f.count30}</b><span>٣٠ يوم</span></div>
+      <div class="faq-cnt"><b style="color:var(--muted);font-size:15px">${f.count}</b><span>الكل</span></div>
+    </div>
+    <div class="faq-b" ${pending?'':'hidden'}>
+      ${f.answer ? `<div class="faq-a">${esc(f.answer)}</div>` : `<div class="faq-a muted">ما فيه رد للحين — اضغط "تعديل" واكتب الرد عشان يظهر للموظفين</div>`}
+      <div class="faq-actions">
+        <button class="btn sm" data-act="log">+١ انسأل الحين</button>
+        ${f.answer?`<button class="btn ghost sm" data-act="copy">نسخ الرد</button>`:''}
+        <button class="btn ghost sm" data-act="edit">✏️ تعديل</button>
+        <button class="btn ghost sm" data-act="del">🗑 حذف</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function faqModal(f) {
+  openModal('تعديل السؤال', `
+    <div class="grid">
+      <div class="field full"><label>السؤال</label><input name="question" value="${esc(f.question)}"></div>
+      <div class="field"><label>القسم</label><select name="dept">${opts(state.data.depts,f.dept)}</select></div>
+      <div class="field"><label>التصنيف</label><input name="category" value="${esc(f.category)}"></div>
+      <div class="field full"><label>الرد الجاهز</label><textarea name="answer" style="min-height:140px">${esc(f.answer)}</textarea></div>
+    </div>`, async v => setData(await api('saveFaq', { faq: Object.assign({ id:f.id }, v) })));
+}
+
+
+/* ---------- الحضور والتقارير ---------- */
+const fmtMins = m => m == null ? '—' : `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
+const normName = n => String(n||'').replace(/\s+/g,' ').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').trim();
+const staffDept = name => { const s = state.data.staff.find(x => normName(x.name) === normName(name)); return s ? s.deptShown : 'عام'; };
+const nameInDept = name => state.dept === 'الكل' || staffDept(name) === state.dept;
+
+function vTeam() {
+  if (!state.teamMonth) state.teamMonth = state.data.today.slice(0,7);
+  const t = state.team[state.teamMonth];
+  const seg = state.teamSeg;
+  const bar = `<div class="team-bar">
+    <div class="seg" id="tseg">
+      <button data-s="today" class="${seg==='today'?'on':''}">اليوم</button>
+      <button data-s="month" class="${seg==='month'?'on':''}">الشهر</button>
+      <button data-s="reports" class="${seg==='reports'?'on':''}">التقارير اليومية</button>
+      <button data-s="sched" class="${seg==='sched'?'on':''}">⚙︎ أوقات الدوام</button>
+    </div><div class="sp"></div>
+    ${seg==='month'||seg==='reports'?`<input type="month" class="inp" id="tmonth" value="${state.teamMonth}" style="width:auto;min-width:160px">`:''}
+  </div>`;
+  if (!t) { loadTeam(); return bar + '<div class="card empty">جاري تحميل الحضور والتقارير...</div>'; }
+  const body = seg === 'today' ? teamToday(t) : seg === 'month' ? teamMonth(t) : seg === 'sched' ? teamSched(t) : teamReports(t);
+  const deptNote = state.dept !== 'الكل' && seg !== 'sched' ? `<p class="muted" style="font-size:12px;margin-top:10px">معروض موظفين قسم ${esc(state.dept)} بس (حسب القسم اللي حطيته لكل موظف بتبويب الموظفين). اختر "الكل" عشان تشوف الجميع.</p>` : '';
+  return bar + body + deptNote;
+}
+
+async function loadTeam() {
+  const m = state.teamMonth;
+  if (loadTeam.busy === m) return;
+  loadTeam.busy = m;
+  try { state.team[m] = await api('team', { month: m }); }
+  catch (e) { toast(e.message); state.team[m] = { attendance:{found:false,error:e.message}, reports:{found:false,error:e.message}, today: state.data.today, now:'00:00', schedule:null, staffNames:[] }; }
+  finally { loadTeam.busy = null; }
+  if (state.tab === 'team') renderView();
+}
+
+function attMissing(t) {
+  const a = t.attendance;
+  if (a.found) return '';
+  return `<div class="notice">ما لقيت تبويب "حضور الموظفين" في شيت مسار ولا تمكين${a.error?` (${esc(a.error)})`:''}. تأكد إن اسم التبويب مكتوب بالضبط كذا.</div>`;
+}
+
+/* ---------- حساب الدوام: غياب / تأخير / خروج مبكر ---------- */
+const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const toMin = s => { if (!s) return null; const [h,m] = s.split(':').map(Number); return h*60+m; };
+const dowOf = d => { const [y,m,dd] = d.split('-').map(Number); return new Date(Date.UTC(y,m-1,dd)).getUTCDay(); };
+const DEF_SCHED = { def:{days:[0,1,2,3,4],start:'08:00',end:'14:00',grace:15}, staff:{}, holidays:[], from:'' };
+const schedOf = t => t.schedule || DEF_SCHED;
+function shiftFor(sc, name) {
+  const k = Object.keys(sc.staff||{}).find(n => normName(n) === normName(name));
+  return k ? sc.staff[k] : sc.def;
+}
+const holidayOn = (sc, d) => (sc.holidays||[]).find(h => h.date === d);
+function trackFrom(t, name) {
+  const fs = (t.attendance.firstSeen||{})[normName(name)] || '';
+  const from = schedOf(t).from || '';
+  if (!fs && !from) return '';
+  return fs > from ? fs : from;
+}
+function mergeRecs(rows) {
+  const m = {};
+  rows.forEach(r => {
+    const k = normName(r.name) + '|' + r.date;
+    const o = m[k];
+    if (!o) { m[k] = Object.assign({}, r); return; }
+    if (r.inT && (!o.inT || r.inT < o.inT)) o.inT = r.inT;
+    if (r.outT && (!o.outT || r.outT > o.outT)) o.outT = r.outT;
+    o.mins = (o.mins || 0) + (r.mins || 0) || null;
+  });
+  return m;
+}
+/** حالة موظف في يوم معيّن */
+function dayInfo(t, name, date, rec) {
+  const sc = schedOf(t), sh = shiftFor(sc, name), hol = holidayOn(sc, date);
+  const required = !hol && sh.days.includes(dowOf(date));
+  const lateLimit = toMin(sh.start) + Number(sh.grace||0);
+  if (rec) {
+    const inM = toMin(rec.inT), outM = toMin(rec.outT);
+    const late = required && inM != null && inM > lateLimit;
+    const early = required && outM != null && outM < toMin(sh.end);
+    return { status: required ? 'present' : 'extra', required, rec, sh, hol,
+      late, lateMin: late ? inM - toMin(sh.start) : 0,
+      early, earlyMin: early ? toMin(sh.end) - outM : 0,
+      noOut: !rec.outT && date < t.today };
+  }
+  if (hol) return { status:'holiday', required:false, sh, hol };
+  if (!required) return { status:'off', required:false, sh };
+  const from = trackFrom(t, name);
+  if (!from || date < from) return { status:'na', required:false, sh };
+  if (date > t.today) return { status:'future', required:false, sh };
+  if (date === t.today) return toMin(t.now) > lateLimit ? { status:'absentToday', required:true, sh } : { status:'pending', required:false, sh };
+  return { status:'absent', required:true, sh };
+}
+function trackedNames(t, extra) {
+  const base = (t.staffNames && t.staffNames.length ? t.staffNames : t.attendance.names) || [];
+  const all = {}; base.concat(extra||[]).forEach(n => { if (n && !all[normName(n)]) all[normName(n)] = n; });
+  return Object.values(all).filter(nameInDept);
+}
+const minsTxt = m => m >= 60 ? `${Math.floor(m/60)} س ${m%60} د` : `${m} د`;
+const shiftTxt = sh => `${sh.start} – ${sh.end}`;
+
+function teamToday(t) {
+  const a = t.attendance; if (!a.found) return attMissing(t);
+  const sc = schedOf(t), hol = holidayOn(sc, t.today);
+  const todayReps = (t.reports.reports||[]).filter(r => r.date === t.today);
+  const repBy = new Set(todayReps.map(r => normName(r.author)));
+  const recs = mergeRecs(a.todayRows);
+  const names = trackedNames(t, a.todayRows.map(r => r.name));
+  const list = names.map(n => ({ name:n, info: dayInfo(t, n, t.today, recs[normName(n)+'|'+t.today]) }));
+  const order = { present:0, extra:1, absentToday:2, pending:3, off:4, holiday:5, na:6, future:7 };
+  list.sort((x,y) => order[x.info.status]-order[y.info.status] || x.name.localeCompare(y.name));
+  const inNow = list.filter(x => x.info.rec && !x.info.rec.outT).length;
+  const left = list.filter(x => x.info.rec && x.info.rec.outT).length;
+  const absent = list.filter(x => x.info.status==='absentToday').length;
+  const late = list.filter(x => x.info.late).length;
+  const statusCell = x => {
+    const i = x.info;
+    if (i.rec) return `<td><span class="time">${esc(i.rec.inT||'—')}</span> ${i.late?`<span class="badge b-amber">متأخر ${minsTxt(i.lateMin)}</span>`:''}${i.status==='extra'?' <span class="badge">بيوم عطلته</span>':''}</td>
+        <td><span class="time">${esc(i.rec.outT||'—')}</span> ${i.early?`<span class="badge b-amber">خرج قبل ${minsTxt(i.earlyMin)}</span>`:''}</td>
+        <td><span class="time">${fmtMins(i.rec.mins)}</span></td>`;
+    const lbl = { absentToday:'<span class="badge b-red">غايب — ما سجل حضور</span>', pending:'<span class="badge">لسه ما بدا دوامه</span>',
+      off:'<span class="badge">مو يوم دوامه</span>', holiday:`<span class="badge b-green">عطلة: ${esc((i.hol||{}).name||'')}</span>`, na:'<span class="badge">ما بدا احتساب حضوره</span>' }[i.status] || '';
+    return `<td colspan="3">${lbl}</td>`;
+  };
+  return `
+  ${hol ? `<div class="notice" style="margin-bottom:12px">اليوم عطلة رسمية: ${esc(hol.name||hol.date)} — ما ينحسب غياب ولا تأخير.</div>` : ''}
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi green"><div class="v">${inNow}</div><div class="l">بالدوام الحين</div></div>
+    <div class="card kpi"><div class="v">${left}</div><div class="l">انصرفوا</div></div>
+    <div class="card kpi red"><div class="v">${absent}</div><div class="l">غياب اليوم</div></div>
+    <div class="card kpi crimson"><div class="v">${late}</div><div class="l">متأخرين</div></div>
+  </div>
+  <div class="card">
+    <h3>حضور اليوم <span class="badge">${DAY_NAMES[dowOf(t.today)]} ${esc(t.today)}</span><span class="badge">الساعة ${esc(t.now)}</span></h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>الموظف</th><th>دوامه</th><th>الدخول</th><th>الخروج</th><th>المدة</th><th>التقرير اليومي</th></tr></thead>
+      <tbody>${list.length ? list.map(x => `<tr>
+        <td><div class="who"><span class="dot ${x.info.rec ? (x.info.rec.outT?'out':'in') : (x.info.status==='absentToday'?'no':'')}"></span><b>${esc(x.name)}</b>${x.info.rec && !x.info.rec.outT?'<span class="badge b-green">بالدوام</span>':''}</div></td>
+        <td class="muted"><span class="time">${shiftTxt(x.info.sh)}</span></td>
+        ${statusCell(x)}
+        <td>${x.info.rec || x.info.required ? (repBy.has(normName(x.name)) ? '<span class="badge b-green">سلّم ✓</span>' : '<span class="badge b-red">ما سلّم</span>') : ''}</td>
+      </tr>`).join('') : '<tr><td colspan="6" class="empty">ما فيه موظفين</td></tr>'}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function monthDates(t) {
+  const [y,m] = state.teamMonth.split('-').map(Number);
+  const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const out = [];
+  for (let d = 1; d <= last; d++) { const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; if (ds <= t.today) out.push(ds); }
+  return out;
+}
+
+function monthStats(t) {
+  const a = t.attendance;
+  const recs = mergeRecs(a.rows);
+  const names = trackedNames(t, a.rows.map(r => r.name));
+  const dates = monthDates(t);
+  const afterEnd = n => toMin(t.now) > toMin(shiftFor(schedOf(t), n).end);
+  return names.map(n => {
+    const o = { name:n, required:0, present:0, absent:0, late:0, lateMin:0, early:0, noOut:0, extra:0, mins:0, days:[] };
+    dates.forEach(d => {
+      const i = dayInfo(t, n, d, recs[normName(n)+'|'+d]);
+      if (i.status === 'absentToday' && !afterEnd(n)) i.status = 'absentTodaySoft';
+      o.days.push({ date:d, info:i });
+      if (i.status === 'present') { o.required++; o.present++; }
+      if (i.status === 'absent' || (i.status === 'absentToday')) { o.required++; o.absent++; }
+      if (i.status === 'extra') o.extra++;
+      if (i.late) { o.late++; o.lateMin += i.lateMin; }
+      if (i.early) o.early++;
+      if (i.noOut) o.noOut++;
+      if (i.rec && i.rec.mins) o.mins += i.rec.mins;
+    });
+    o.pct = o.required ? Math.round(o.present / o.required * 100) : null;
+    return o;
+  });
+}
+
+function teamMonth(t) {
+  const a = t.attendance; if (!a.found) return attMissing(t);
+  const list = monthStats(t).filter(o => o.required || o.extra || o.mins).sort((x,y) => y.absent - x.absent || y.late - x.late || x.name.localeCompare(y.name));
+  const who = state.teamWho;
+  const sel = who ? monthStats(t).find(o => normName(o.name) === who) : null;
+  const pctBadge = p => p == null ? '—' : `<span class="badge ${p>=95?'b-green':p>=80?'b-amber':'b-red'}">${p}%</span>`;
+  const stLabel = i => ({ present: i.late||i.early ? '' : '<span class="badge b-green">حضر</span>', extra:'<span class="badge">حضر بيوم عطلته</span>',
+    absent:'<span class="badge b-red">غياب</span>', absentToday:'<span class="badge b-red">غياب</span>', absentTodaySoft:'<span class="badge b-red">ما سجل للحين</span>',
+    pending:'<span class="badge">لسه</span>', holiday:`<span class="badge b-green">عطلة ${esc((i.hol||{}).name||'')}</span>` }[i.status] || '')
+    + (i.late ? ` <span class="badge b-amber">تأخير ${minsTxt(i.lateMin)}</span>` : '')
+    + (i.early ? ` <span class="badge b-amber">خروج مبكر ${minsTxt(i.earlyMin)}</span>` : '')
+    + (i.noOut ? ' <span class="badge b-red">ما سجل خروج</span>' : '');
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <h3>ملخص الشهر <span class="badge">اضغط على أي موظف تشوف أيامه</span></h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>الموظف</th><th>أيام الدوام</th><th>حضر</th><th>غياب</th><th>تأخير</th><th>خروج مبكر</th><th>ما سجل خروج</th><th>نسبة الحضور</th><th>الساعات</th></tr></thead>
+      <tbody>${list.length ? list.map(o => `<tr class="click" data-who="${esc(normName(o.name))}" ${normName(o.name)===who?'style="background:var(--crimson-soft)"':''}>
+        <td><b>${esc(o.name)}</b>${o.extra?` <span class="badge" title="حضر بأيام مو من دوامه">+${o.extra}</span>`:''}</td>
+        <td>${o.required}</td><td>${o.present}</td>
+        <td>${o.absent ? `<span class="badge b-red">${o.absent}</span>` : '0'}</td>
+        <td>${o.late ? `<span class="badge b-amber">${o.late}</span> <small class="muted">${minsTxt(o.lateMin)}</small>` : '0'}</td>
+        <td>${o.early ? `<span class="badge b-amber">${o.early}</span>` : '0'}</td>
+        <td>${o.noOut ? `<span class="badge b-red">${o.noOut}</span>` : '0'}</td>
+        <td>${pctBadge(o.pct)}</td>
+        <td><span class="time">${fmtMins(o.mins)}</span></td>
+      </tr>`).join('') : '<tr><td colspan="9" class="empty">ما فيه بيانات بهالشهر</td></tr>'}</tbody>
+    </table></div>
+    <p class="muted" style="font-size:12px;margin:10px 0 0">الغياب ينحسب من أول يوم سجل فيه الموظف حضور${schedOf(t).from?` أو من ${esc(schedOf(t).from)}`:''}، وبس بأيام دوامه. تقدر تعدّل الأيام والأوقات من "أوقات الدوام".</p>
+  </div>
+  ${sel ? `<div class="card"><h3>${esc(sel.name)} — أيام الشهر <span class="badge">دوامه ${shiftTxt(sel.days[0]?.info.sh || schedOf(t).def)}</span><div class="sp"></div><button class="btn ghost sm" data-who="">إغلاق</button></h3>
+    <div class="tbl-wrap"><table><thead><tr><th>اليوم</th><th>الحالة</th><th>الدخول</th><th>الخروج</th><th>المدة</th></tr></thead>
+    <tbody>${sel.days.slice().reverse().filter(x => !['off','na','future'].includes(x.info.status)).map(x => `<tr ${x.info.status.startsWith('absent')?'style="background:var(--red-soft)"':''}>
+      <td>${DAY_NAMES[dowOf(x.date)]} <span class="muted">${shortDate(x.date)}</span></td>
+      <td>${stLabel(x.info)}</td>
+      <td><span class="time">${esc(x.info.rec?.inT||'—')}</span></td>
+      <td><span class="time">${esc(x.info.rec?.outT||'—')}</span></td>
+      <td><span class="time">${fmtMins(x.info.rec?.mins)}</span></td></tr>`).join('') || '<tr><td colspan="5" class="empty">ما فيه أيام دوام بهالشهر</td></tr>'}</tbody></table></div></div>` : ''}`;
+}
+
+/* ---------- إعدادات الدوام ---------- */
+function teamSched(t) {
+  if (!state.schedDraft) state.schedDraft = JSON.parse(JSON.stringify(schedOf(t)));
+  const sc = state.schedDraft;
+  const names = trackedNames(Object.assign({}, t, {}), []).concat(Object.keys(sc.staff).filter(n => !trackedNames(t,[]).some(x => normName(x)===normName(n))));
+  const chips = (scope, days) => `<div class="links" style="gap:6px">${[0,1,2,3,4,5,6].map(d => `<button type="button" class="chip ${days.includes(d)?'on':''}" data-day="${d}" data-scope="${esc(scope)}" style="padding:4px 11px">${DAY_NAMES[d]}</button>`).join('')}</div>`;
+  const times = (scope, sh) => `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+      <div class="field"><label>يبدأ</label><input type="time" class="inp" data-scope="${esc(scope)}" data-f="start" value="${esc(sh.start)}" style="width:auto"></div>
+      <div class="field"><label>ينتهي</label><input type="time" class="inp" data-scope="${esc(scope)}" data-f="end" value="${esc(sh.end)}" style="width:auto"></div>
+      <div class="field"><label>سماحية التأخير (دقيقة)</label><input type="number" min="0" max="180" class="inp" data-scope="${esc(scope)}" data-f="grace" value="${esc(sh.grace)}" style="width:110px"></div>
+    </div>`;
+  const custom = n => Object.keys(sc.staff).find(k => normName(k) === normName(n));
+  return `
+  <div class="card" style="margin-bottom:14px">
+    <h3>الدوام العام <span class="badge">ينطبق على كل الموظفين إلا اللي لهم دوام خاص</span></h3>
+    <div style="display:grid;gap:12px">
+      <div><div class="muted" style="font-size:12.5px;font-weight:700;margin-bottom:6px">أيام الدوام</div>${chips('__def', sc.def.days)}</div>
+      ${times('__def', sc.def)}
+      <div class="field" style="max-width:260px"><label>احتساب الغياب يبدأ من (اختياري)</label><input type="date" class="inp" id="schFrom" value="${esc(sc.from||'')}"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h3>دوام خاص لموظف <span class="badge">مثلاً دوام جزئي أو أيام مختلفة</span></h3>
+    <div style="display:grid;gap:10px">${names.map(n => { const k = custom(n); const sh = k ? sc.staff[k] : null; return `
+      <div style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:${sh?'var(--cream)':'#fff'}">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <b style="flex:1;min-width:120px">${esc(n)}</b>
+          ${sh ? '' : `<span class="muted" style="font-size:12.5px">نفس الدوام العام</span>`}
+          <button type="button" class="btn ${sh?'ghost':''} sm" data-custom="${esc(n)}">${sh?'رجّعه للدوام العام':'دوام خاص'}</button>
+        </div>
+        ${sh ? `<div style="display:grid;gap:10px;margin-top:10px">${chips(k, sh.days)}${times(k, sh)}</div>` : ''}
+      </div>`; }).join('') || '<div class="muted">ما فيه موظفين</div>'}</div>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <h3>العطل الرسمية <span class="badge">ما ينحسب فيها غياب</span></h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input type="date" class="inp" id="holDate" style="width:auto">
+      <input class="inp" id="holName" placeholder="اسم العطلة (مثلاً: المولد النبوي)" style="flex:1;min-width:180px">
+      <button type="button" class="btn sm" id="holAdd">إضافة</button>
+    </div>
+    ${sc.holidays.length ? `<div class="links">${sc.holidays.map((h,i) => `<span class="badge b-green" style="font-size:13px;padding:5px 10px">${esc(h.date)}${h.name?` · ${esc(h.name)}`:''} <button type="button" class="icon-btn" data-delhol="${i}" style="padding:0 4px">✕</button></span>`).join('')}</div>` : '<div class="muted" style="font-size:13px">ما فيه عطل مضافة</div>'}
+  </div>
+  <div style="position:sticky;bottom:12px;display:flex;gap:8px;justify-content:flex-start">
+    <button type="button" class="btn" id="schSave">حفظ أوقات الدوام</button>
+    <button type="button" class="btn ghost" id="schReset" style="background:#fff">تراجع</button>
+  </div>`;
+}
+
+function repValue(v) {
+  const s = String(v).trim();
+  if (/^[\[{]/.test(s)) {
+    try {
+      const j = JSON.parse(s);
+      const arr = Array.isArray(j) ? j : [j];
+      if (arr.length && arr.every(x => x && typeof x === 'object' && !Array.isArray(x))) {
+        const keys = [...new Set(arr.flatMap(Object.keys))];
+        return `<div class="tbl-wrap"><table><thead><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${arr.map(x=>`<tr>${keys.map(k=>`<td>${esc(typeof x[k]==='object'?JSON.stringify(x[k]):x[k]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      }
+      if (Array.isArray(j)) return `<div class="v">${esc(j.join('\n'))}</div>`;
+    } catch (e) {}
+  }
+  return `<div class="v">${esc(s)}</div>`;
+}
+
+function teamReports(t) {
+  const r = t.reports;
+  if (!r.found) return `<div class="notice">ما لقيت تبويب "التقارير اليومية" في شيت مسار ولا تمكين${r.error?` (${esc(r.error)})`:''}.</div>`;
+  let list = r.reports.filter(x => nameInDept(x.author) || !x.author);
+  const authors = [...new Set(list.map(x => x.author).filter(Boolean))];
+  const types = [...new Set(list.map(x => x.type).filter(Boolean))];
+  if (state.repWho) list = list.filter(x => x.author === state.repWho);
+  if (state.repType) list = list.filter(x => x.type === state.repType);
+  return `
+  <div class="filters">
+    <select class="inp" id="repWho"><option value="">كل الموظفين</option>${authors.map(a=>`<option ${a===state.repWho?'selected':''}>${esc(a)}</option>`).join('')}</select>
+    ${types.length ? `<select class="inp" id="repType"><option value="">كل الأنواع</option>${types.map(a=>`<option ${a===state.repType?'selected':''}>${esc(a)}</option>`).join('')}</select>` : ''}
+    <span class="badge" style="align-self:center">${list.length} تقرير</span>
+  </div>
+  <div id="repList">${list.length ? list.map((x,i) => `<div class="rep">
+    <div class="rep-h" data-rep><span class="badge b-crimson">${shortDate(x.date)}</span><b>${esc(x.author || 'بدون اسم')}</b>${x.type?`<span class="badge">${esc(x.type)}</span>`:''}<span class="muted" style="font-size:12px">${x.fields.length} بند</span></div>
+    <div class="rep-b" ${i===0?'':'hidden'}>${x.fields.map(f => `<div class="rep-f"><h5>${esc(f.h)}</h5>${repValue(f.v)}</div>`).join('') || '<div class="muted">تقرير فاضي</div>'}</div>
+  </div>`).join('') : '<div class="card empty">ما فيه تقارير بهالشهر</div>'}</div>`;
+}
+
+/* ---------- الموظفين ---------- */
+function vStaff() {
+  const d = state.data;
+  const list = d.staff.filter(s => inDept({dept:s.deptShown}));
+  return `
+  ${d.staffError ? `<div class="notice" style="margin-bottom:12px">ما قدرت أجيب قائمة الموظفين: ${esc(d.staffError)}</div>` : ''}
+  <div class="card" style="margin-bottom:16px">
+    <h3>الموظفين <span class="badge">من تبويب "موظفو المبيعات" — نفس قائمة صفحة الموظفين</span></h3>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>الاسم</th><th>المسمى</th><th>القسم</th><th>مهام مفتوحة</th><th></th></tr></thead>
+      <tbody>${list.length ? list.map(s => {
+        const open = d.tasks.filter(t => t.employee===s.name && isOpen(t)).length;
+        const over = d.tasks.filter(t => t.employee===s.name && isOver(t)).length;
+        return `<tr data-name="${esc(s.name)}">
+          <td><b>${esc(s.name)}</b></td><td>${esc(s.role)}</td>
+          <td><select class="inp" data-act="dept" style="width:auto;min-width:130px;padding:5px 8px"><option value="">— بدون —</option>${opts(d.depts.filter(x=>x!=='عام'), s.dept)}</select></td>
+          <td>${open}${over?` <span class="badge b-red">${over} متأخرة</span>`:''}</td>
+          <td><button class="btn ghost sm" data-act="tasks">مهامه</button></td>
+        </tr>`; }).join('') : `<tr><td colspan="5" class="empty">ما فيه موظفين${state.dept!=='الكل'?' بهالقسم':''}</td></tr>`}</tbody>
+    </table></div>
+    <p class="muted" style="font-size:12.5px;margin:12px 0 0">إضافة موظف أو تغيير رمزه يكون من تبويب "موظفو المبيعات" بشيت مسار مثل العادة. القسم هني بس عشان فلتر الأقسام في اللوحة.</p>
+  </div>
+  <div class="card">
+    <h3>تغيير رمز المدير</h3>
+    <form id="pinForm" style="display:flex;gap:8px;flex-wrap:wrap">
+      <input class="inp" name="newPin" type="password" inputmode="numeric" placeholder="الرمز الجديد (٦ أرقام أو أكثر)" style="flex:1;min-width:200px;direction:ltr;text-align:center">
+      <button class="btn">تغيير</button>
+    </form>
+  </div>`;
+}
+
+/* ---------- الدورات والمدربين ---------- */
+const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const monthLabel = ym => ym === 'all' ? 'كل الفترات' : (([y,m]) => `${AR_MONTHS[+m-1]} ${y}`)(ym.split('-'));
+const fmtD = s => { if (!s) return '—'; const [y,m,d] = s.split('-'); return `${+d} ${AR_MONTHS[+m-1]} ${y}`; };
+const rateBadge = r => `<span class="badge ${r>=60?'b-green':r>=30?'b-amber':'b-red'}">${r}%</span>`;
+const modeBadge = m => `<span class="badge ${m==='أونلاين'?'':'b-amber'}">${esc(m)}</span>`;
+
+function vCourses() {
+  if (!state.crsMonth) state.crsMonth = state.data.today.slice(0,7);
+  const seg = state.crsSeg;
+  const d = state.crs[state.crsMonth];
+  const months = (d && d.months) || state.crsMonths || [state.crsMonth];
+  if (d && d.months) state.crsMonths = d.months;
+  const bar = `<div class="team-bar">
+    <div class="seg" id="cseg">
+      <button data-s="courses" class="${seg==='courses'?'on':''}">الدورات</button>
+      <button data-s="demand" class="${seg==='demand'?'on':''}">الأكثر طلباً</button>
+      <button data-s="trainers" class="${seg==='trainers'?'on':''}">المدربين</button>
+    </div><div class="sp"></div>
+    ${seg!=='trainers'?`<select class="inp" id="cmonth" style="width:auto;min-width:170px">${months.map(m=>`<option value="${m}" ${m===state.crsMonth?'selected':''}>${monthLabel(m)}</option>`).join('')}<option value="all" ${state.crsMonth==='all'?'selected':''}>كل الفترات</option></select>`:''}
+  </div>`;
+  if (seg === 'trainers') {
+    if (!state.trn) { loadTrainers(); return bar + '<div class="card empty">جاري تحميل المدربين...</div>'; }
+    return bar + vTrainers();
+  }
+  if (!d) { loadCourses(); return bar + '<div class="card empty">جاري تحميل الدورات...</div>'; }
+  if (d.error) return bar + `<div class="notice">${esc(d.error)}</div>`;
+  return bar + (seg === 'demand' ? vDemand(d) : vCourseList(d)) + `<p class="muted" style="font-size:12px;margin-top:10px">من شيت مسار: الدورات + التسجيلات + إصدار الشهادات.</p>`;
+}
+
+async function loadCourses() {
+  const m = state.crsMonth;
+  if (loadCourses.busy === m) return; loadCourses.busy = m;
+  try { state.crs[m] = await api('courses', { month: m }); }
+  catch (e) { state.crs[m] = { error: e.message }; }
+  finally { loadCourses.busy = null; }
+  if (state.tab === 'courses') renderView();
+}
+async function loadTrainers() {
+  if (loadTrainers.busy) return; loadTrainers.busy = true;
+  try {
+    const d = await api('trainers');
+    const today = state.data.today;
+    d.trainers.forEach(t => {
+      const past = t.courses.filter(c => c.date && c.date <= today), next = t.courses.filter(c => c.date && c.date > today);
+      t.rate = t.regs ? Math.round(t.attended*100/t.regs) : 0;
+      t.avg = t.count ? Math.round(t.regs/t.count) : 0;
+      t.last = past.length ? past.map(c=>c.date).sort().pop() : '';
+      t.first = t.courses.map(c=>c.date).filter(Boolean).sort()[0] || '';
+      t.upcoming = next.length;
+      const days = t.last ? daysAgo(t.last) : 9999;
+      t.status = t.upcoming ? 'قادم' : days <= 60 ? 'نشط' : 'متوقف';
+    });
+    state.trn = d;
+  } catch (e) { state.trn = { trainers: [], error: e.message }; }
+  finally { loadTrainers.busy = false; }
+  if (state.tab === 'courses') renderView();
+}
+
+function rankList(items, field, label, emptyMsg) {
+  if (!items.length) return `<div class="empty">${emptyMsg}</div>`;
+  const max = Math.max(...items.map(x => x[field])) || 1;
+  return '<ul class="rank">' + items.map((c,i) => `<li><div class="pos">${i+1}</div>
+    <div class="nm"><b>${esc(c.name)}</b><span>${esc([c.trainer, c.date?fmtD(c.date):'', c.sub].filter(Boolean).join(' · '))}</span>
+      <div class="bar-track" style="margin-top:5px"><div class="bar-fill" style="width:${Math.round(c[field]*100/max)}%"></div></div></div>
+    <div class="val">${c[field]} <small>${label}</small></div></li>`).join('') + '</ul>';
+}
+
+function vCourseList(d) {
+  const t = d.totals;
+  return `
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi crimson"><div class="v">${t.courses}</div><div class="l">دورة · ${t.online} أونلاين · ${t.onsite} حضوري</div></div>
+    <div class="card kpi"><div class="v">${t.regs}</div><div class="l">تسجيل</div></div>
+    <div class="card kpi green"><div class="v">${t.attended}</div><div class="l">حضروا · نسبة ${t.rate}%</div></div>
+    <div class="card kpi"><div class="v">${t.certs}</div><div class="l">شهادة صادرة</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-bottom:14px">
+    <div class="card"><h3>الأعلى حضوراً <span class="badge">${monthLabel(d.month)}</span></h3>${rankList(d.topAttendance,'attended','حاضر','ما فيه حضور مسجّل')}</div>
+    <div class="card"><h3>الأكثر شهادات <span class="badge">${monthLabel(d.month)}</span></h3>${rankList(d.topCerts,'certs','شهادة','ما صدرت شهادات')}</div>
+  </div>
+  <div class="card"><h3>كل الدورات <span class="badge">${d.courses.length} دورة</span></h3>
+    ${d.courses.length ? `<div class="tbl-wrap"><table><thead><tr><th>الدورة</th><th>المدرب</th><th>التاريخ</th><th>النظام</th><th class="num">مسجلين</th><th class="num">حضروا</th><th class="num">النسبة</th><th class="num">شهادات</th></tr></thead><tbody>
+      ${d.courses.map(c => `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.trainer)}</td><td style="white-space:nowrap">${fmtD(c.date)}</td><td>${modeBadge(c.mode)}</td>
+        <td class="num">${c.regs}</td><td class="num">${c.attended}</td><td class="num">${rateBadge(c.rate)}</td><td class="num">${c.certs}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty">ما فيه دورات بهالفترة</div>'}
+  </div>${diagBox(d)}`;
+}
+
+function diagBox(d) {
+  const g = d.diag; if (!g) return '';
+  const miss = (g.regMissing||[]).length + (g.certMissing||[]).length;
+  if (d.totals.regs > 0 && !miss) return '';
+  const li = arr => arr.map(x => `<span class="badge" style="margin:2px">${esc(x.name)} · ${x.n}</span>`).join('');
+  return `<div class="notice" style="margin-top:14px;line-height:1.9">
+    <b>فحص الربط</b> — التسجيلات: ${g.regRows||0} صف · انربط ${g.regMatched||0} · مستثنى ${g.regSkipped||0} · الشهادات: ${g.certRows||0} صف · انربط ${g.certMatched||0}
+    ${(g.regMissing||[]).length ? `<br>أسماء بالتسجيلات ما لقيت لها دورة: ${li(g.regMissing)}` : ''}
+    ${(g.certMissing||[]).length ? `<br>أسماء بالشهادات ما لقيت لها دورة: ${li(g.certMissing)}` : ''}
+  </div>`;
+}
+
+function vDemand(d) {
+  const list = d.demand.map(c => Object.assign({}, c, { sub: `انطرحت ${c.times} ${c.times>1?'مرات':'مرة'} · حضر ${c.attended} (${c.regs?Math.round(c.attended*100/c.regs):0}%)` }));
+  return `<div class="card"><h3>الدورات الأكثر طلباً <span class="badge">حسب عدد التسجيلات · ${monthLabel(d.month)}</span></h3>
+    ${rankList(list, 'regs', 'تسجيل', 'ما فيه تسجيلات بهالفترة')}</div>`;
+}
+
+function vTrainers() {
+  const D = state.trn;
+  if (D.error) return `<div class="notice">${esc(D.error)}</div>`;
+  const q = normName(state.trQ).toLowerCase();
+  const all = D.trainers;
+  const S = state.trSort;
+  const f = all.filter(t => !q || normName(t.name).toLowerCase().includes(q)).sort((a,b) =>
+    S === 'last' ? (b.last||'').localeCompare(a.last||'') : S === 'rate' ? (b.rate-a.rate)||(b.regs-a.regs) : (b[S]-a[S])||(b.regs-a.regs));
+  if (!state.trSel || !f.some(t => t.name === state.trSel)) state.trSel = f[0] ? f[0].name : '';
+  const metric = t => S==='regs' ? t.regs+' مسجل' : S==='rate' ? t.rate+'%' : S==='last' ? (t.last?fmtD(t.last):'—') : t.count+' دورة';
+  const ini = n => esc(String(n).replace(/^(د|أ|م)\.\s*/,'').trim()[0] || '؟');
+  const t = all.find(x => x.name === state.trSel);
+  return `<div class="tr-layout">
+    <aside class="card tr-side">
+      <input class="inp" id="trQ" placeholder="🔍 ابحث عن مدرب…" value="${esc(state.trQ)}" style="margin-bottom:8px">
+      <div class="seg" id="trSort" style="display:grid;grid-template-columns:1fr 1fr;margin-bottom:8px">
+        ${[['count','الأكثر دورات'],['regs','الأكثر مسجلين'],['rate','أعلى حضور'],['last','الأحدث']].map(([k,l]) => `<button data-k="${k}" class="${S===k?'on':''}" style="font-size:12px;padding:6px 4px">${l}</button>`).join('')}
+      </div>
+      <div class="muted" style="font-size:12px;margin-bottom:6px">${f.length} مدرب${q?` من ${all.length}`:''}</div>
+      <div class="tr-list" id="trList">${f.map((x,i) => `<button class="tr-item ${x.name===state.trSel?'on':''}" data-tr="${all.indexOf(x)}">
+        <span class="tr-av">${ini(x.name)}</span>
+        <span class="tr-nm"><b>${esc(x.name)}</b><small>${x.status==='نشط'?'🟢':x.status==='قادم'?'🔵':'⚪'} ${x.status}</small></span>
+        <span class="tr-metric">${metric(x)}</span></button>`).join('') || '<div class="empty">ما فيه مدرب بهالاسم</div>'}</div>
+    </aside>
+    <section id="trDetail">${t ? trDetail(t) : ''}</section>
+  </div>`;
+}
+
+function courseRow(c) {
+  const up = c.date > state.data.today;
+  return `<div class="tl-row ${up?'up':''}">
+    <div class="tl-date"><b>${c.date ? +c.date.slice(8) : '—'}</b><small>${c.date ? AR_MONTHS[+c.date.slice(5,7)-1] : ''}</small></div>
+    <div class="tl-body"><b>${esc(c.name)}</b><div style="margin-top:3px">${modeBadge(c.mode)} ${up?'<span class="badge b-green">قادمة</span>':''} ${c.time?`<span class="muted" style="font-size:12px">${esc(c.time)}</span>`:''}</div></div>
+    <div class="tl-stats"><span><b>${c.regs}</b>مسجل</span>${up?'':`<span><b>${c.attended}</b>حضر</span><span><b>${c.certs}</b>شهادة</span>${rateBadge(c.rate)}`}</div>
+  </div>`;
+}
+
+function trDetail(t) {
+  const today = state.data.today;
+  const upcoming = t.courses.filter(c => c.date > today).sort((a,b) => a.date.localeCompare(b.date));
+  const past = t.courses.filter(c => !(c.date > today));
+  const best = past.filter(c => c.attended > 0).slice().sort((a,b) => b.attended - a.attended).slice(0,3);
+  const groups = {}; past.forEach(c => { const k = c.date ? c.date.slice(0,7) : 'بدون تاريخ'; (groups[k] ||= []).push(c); });
+  const gKeys = Object.keys(groups).sort().reverse();
+  const rep = {}; t.courses.forEach(c => rep[c.name] = (rep[c.name]||0) + 1);
+  const repList = Object.keys(rep).sort((a,b) => rep[b]-rep[a]);
+  return `
+  <div class="card tr-hero" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:0"><h2>${esc(t.name)}</h2><div style="opacity:.8;font-size:13px">${t.first?'من '+fmtD(t.first):''}${t.last?' · آخر دورة '+fmtD(t.last):''}</div></div>
+      <span class="badge" style="background:rgba(250,247,242,.18);color:var(--cream)">${t.status}</span>
+    </div>
+    <div class="tr-kpis">
+      <div><b>${t.count}</b><span>دورة</span></div><div><b>${t.unique}</b><span>عنوان مختلف</span></div>
+      <div><b>${t.regs}</b><span>مسجل</span></div><div><b>${t.avg}</b><span>متوسط/دورة</span></div>
+      <div><b>${t.rate}%</b><span>نسبة الحضور</span></div><div><b>${t.certs}</b><span>شهادة</span></div>
+    </div>
+  </div>
+  ${upcoming.length ? `<div class="card" style="margin-bottom:14px"><h3>دورات قادمة <span class="badge">${upcoming.length}</span></h3>${upcoming.map(courseRow).join('')}</div>` : ''}
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:14px">
+    <div class="card"><h3>أبرز دوراته <span class="badge">حسب الحضور</span></h3>${rankList(best.map(c=>Object.assign({},c,{trainer:''})),'attended','حاضر','ما فيه حضور مسجّل')}</div>
+    <div class="card"><h3>العناوين اللي يقدمها <span class="badge">${repList.length}</span></h3><div class="links">${repList.map(n => `<span class="badge" style="font-size:12.5px;padding:5px 10px">${esc(n)}${rep[n]>1?` <b style="color:var(--crimson)">×${rep[n]}</b>`:''}</span>`).join('')}</div></div>
+  </div>
+  <div class="card"><h3>سجل الدورات <span class="badge">${past.length} دورة</span></h3>
+    ${gKeys.length ? gKeys.map(k => `<div style="display:flex;align-items:center;gap:8px;margin:12px 0 4px;color:var(--crimson);font-weight:800;font-size:13.5px">${k==='بدون تاريخ'?k:monthLabel(k)}<i style="flex:1;height:1px;background:var(--line)"></i><span class="badge">${groups[k].length}</span></div>${groups[k].map(courseRow).join('')}`).join('') : '<div class="empty">ما قدّم دورات للحين</div>'}
+  </div>`;
+}
+
+/* ---------- الروابط ---------- */
+function vLinks() {
+  const d = state.data;
+  const deps = state.dept==='الكل' ? d.depts : [state.dept];
+  return `<div class="grid g-dept">${deps.map(dep => {
+    const l = (CONFIG.LINKS[dep]||[]).map(([n,u]) => `<a class="lnk" href="${CONFIG.SITE+u}" target="_blank">${esc(n)} ↗</a>`);
+    const sh = (d.sheets||[]).filter(x=>x.dept===dep).map(x => `<a class="lnk" href="${esc(x.url)}" target="_blank">📊 ${esc(x.label)}</a>`);
+    const all = sh.concat(l);
+    return `<div class="card"><h3>${esc(dep)}</h3>${all.length?`<div class="links">${all.join('')}</div>`:'<div class="muted" style="font-size:13px">ما فيه روابط للحين — تنضاف في CONFIG.LINKS داخل الصفحة</div>'}</div>`;
+  }).join('')}</div>`;
+}
+
+/* ======================================================
+   ربط الأحداث
+   ====================================================== */
+const bind = {
+  overview() {
+    $('#view').onclick = e => { const b = e.target.closest('[data-open]'); if (b) { state.dept = b.dataset.open; render(); } };
+  },
+  tasks() {
+    $('#taskForm').onsubmit = e => {
+      e.preventDefault();
+      const fd = Object.fromEntries(new FormData(e.target));
+      const wa = !!fd.wa; delete fd.wa;
+      const link = wa ? waLink(fd.employee, fd) : null;
+      const win = link ? window.open('', '_blank') : null;
+      run(e.submitter, async () => {
+        try { setData(await api('addTask', { task: fd })); }
+        catch (err) { if (win) win.close(); throw err; }
+        toast('تم إرسال المهمة ✅');
+        if (win) win.location = link;
+        else if (wa) toast('ما فيه رقم جوال لهالموظف — المهمة انرسلت بس بدون واتساب');
+      });
+    };
+    $('#tq').oninput = e => { state.tf.q = e.target.value.trim(); clearTimeout(bind._t); bind._t = setTimeout(()=>{ renderView(); const i=$('#tq'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }, 300); };
+    $('#tstaff').onchange = e => { state.tf.staff = e.target.value; renderView(); };
+    $('#tstatus').onchange = e => { state.tf.status = e.target.value; renderView(); };
+    $('#taskList').onchange = e => {
+      if (e.target.dataset.act !== 'status') return;
+      const id = e.target.closest('.task').dataset.id;
+      run(null, async () => { setData(await api('setTaskStatus', { id, status: e.target.value })); toast('تم تحديث الحالة'); });
+    };
+    $('#taskList').onclick = e => {
+      const b = e.target.closest('[data-act]'); if (!b || b.tagName === 'SELECT') return;
+      const id = b.closest('.task').dataset.id;
+      const t = state.data.tasks.find(x => x.id === id);
+      if (b.dataset.act === 'wa') { const l = waLink(t.employee, t); l ? window.open(l, '_blank') : toast('ما فيه رقم جوال للموظف'); }
+      if (b.dataset.act === 'del' && confirm(`حذف المهمة "${t.title}"؟ بتنشال من صفحة الموظف بعد.`)) run(null, async () => { setData(await api('deleteTask', { id })); toast('تم الحذف'); });
+    };
+  },
+  faq() {
+    $('#faqForm').onsubmit = e => {
+      e.preventDefault();
+      const fd = Object.fromEntries(new FormData(e.target));
+      run(e.submitter, async () => { setData(await api('saveFaq', { faq: fd })); toast('تمت الإضافة ✅'); });
+    };
+    $('#fq').oninput = e => { state.faqQ = e.target.value.trim(); clearTimeout(bind._f); bind._f = setTimeout(()=>{ renderView(); const i=$('#fq'); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }, 300); };
+    $('#fsort').onchange = e => { state.faqSort = e.target.value; renderView(); };
+    $('#fch').onchange = e => { state.channel = e.target.value; };
+    $('#faqList').onclick = e => {
+      const b = e.target.closest('[data-act]'); if (!b) return;
+      const box = b.closest('.faq'); const id = box.dataset.id;
+      const f = state.data.faqs.find(x => x.id === id);
+      const act = b.dataset.act;
+      if (act === 'toggle') { const body = box.querySelector('.faq-b'); body.hidden = !body.hidden; return; }
+      if (act === 'copy') { navigator.clipboard?.writeText(f.answer).then(()=>toast('تم نسخ الرد 📋'), ()=>toast('ما قدرت أنسخ')); return; }
+      if (act === 'edit') return faqModal(f);
+      if (act === 'log') return run(b, async () => { setData(await api('logInquiry', { faqId:id, channel: state.channel })); toast('تم تسجيل التكرار +١'); reopen(id); });
+      if (act === 'del' && confirm('حذف هالسؤال؟')) run(null, async () => { setData(await api('deleteFaq', { id })); toast('تم الحذف'); });
+    };
+  },
+  team() {
+    $('#tseg').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; state.teamSeg = b.dataset.s; renderView(); };
+    const tm = $('#tmonth'); if (tm) tm.onchange = e => { if (e.target.value) { state.teamMonth = e.target.value; state.teamWho = ''; renderView(); } };
+    $('#view').onclick = e => {
+      const sc = state.schedDraft;
+      const dy = e.target.closest('[data-day]');
+      if (dy && sc) {
+        const sh = dy.dataset.scope === '__def' ? sc.def : sc.staff[dy.dataset.scope];
+        const d = Number(dy.dataset.day);
+        sh.days = sh.days.includes(d) ? sh.days.filter(x => x !== d) : sh.days.concat(d).sort();
+        dy.classList.toggle('on'); return;
+      }
+      const cu = e.target.closest('[data-custom]');
+      if (cu && sc) {
+        const n = cu.dataset.custom; const k = Object.keys(sc.staff).find(x => normName(x) === normName(n));
+        if (k) delete sc.staff[k]; else sc.staff[n] = JSON.parse(JSON.stringify(sc.def));
+        renderView(); return;
+      }
+      if (e.target.closest('#holAdd') && sc) {
+        const d = $('#holDate').value; if (!d) { toast('اختر التاريخ'); return; }
+        if (!sc.holidays.some(h => h.date === d)) sc.holidays.push({ date:d, name:$('#holName').value.trim() });
+        sc.holidays.sort((a,b) => a.date.localeCompare(b.date)); renderView(); return;
+      }
+      const dh = e.target.closest('[data-delhol]');
+      if (dh && sc) { sc.holidays.splice(Number(dh.dataset.delhol), 1); renderView(); return; }
+      if (e.target.closest('#schReset')) { state.schedDraft = null; renderView(); return; }
+      const sv = e.target.closest('#schSave');
+      if (sv && sc) {
+        run(sv, async () => {
+          const r = await api('saveSchedule', { schedule: sc });
+          state.team = {}; state.schedDraft = null;
+          state.teamSeg = 'month'; renderView(); toast('تم حفظ أوقات الدوام ✅');
+        });
+        return;
+      }
+      const w = e.target.closest('[data-who]'); if (w) { state.teamWho = w.dataset.who === state.teamWho ? '' : w.dataset.who; renderView(); return; }
+      const h = e.target.closest('[data-rep]'); if (h) { const b = h.nextElementSibling; b.hidden = !b.hidden; }
+    };
+    $('#view').oninput = e => {
+      const sc = state.schedDraft; if (!sc) return;
+      const f = e.target.dataset.f;
+      if (f) { const sh = e.target.dataset.scope === '__def' ? sc.def : sc.staff[e.target.dataset.scope]; sh[f] = f === 'grace' ? Number(e.target.value || 0) : e.target.value; }
+      if (e.target.id === 'schFrom') sc.from = e.target.value;
+    };
+    const rw = $('#repWho'); if (rw) rw.onchange = e => { state.repWho = e.target.value; renderView(); };
+    const rt = $('#repType'); if (rt) rt.onchange = e => { state.repType = e.target.value; renderView(); };
+  },
+  staff() {
+    $('#view').onchange = e => {
+      if (e.target.dataset.act !== 'dept') return;
+      const name = e.target.closest('tr').dataset.name;
+      run(null, async () => { setData(await api('setStaffDept', { name, dept: e.target.value })); toast('تم حفظ القسم'); });
+    };
+    $('#view').onclick = e => {
+      const b = e.target.closest('[data-act="tasks"]'); if (!b) return;
+      state.tf = { staff: b.closest('tr').dataset.name, status:'open', q:'' }; state.tab = 'tasks';
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab==='tasks')); renderView();
+    };
+    $('#pinForm').onsubmit = e => {
+      e.preventDefault();
+      const newPin = new FormData(e.target).get('newPin').trim();
+      run(e.submitter, async () => {
+        await api('changePin', { newPin });
+        session.pin = newPin; try { sessionStorage.setItem('cc_pin', newPin); } catch(err) {}
+        e.target.reset(); toast('تم تغيير الرمز ✅');
+      });
+    };
+  },
+  courses() {
+    $('#cseg').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; state.crsSeg = b.dataset.s; renderView(); };
+    const cm = $('#cmonth'); if (cm) cm.onchange = e => { state.crsMonth = e.target.value; renderView(); };
+    const tq = $('#trQ'); if (tq) tq.oninput = e => { state.trQ = e.target.value; clearTimeout(bind._r); bind._r = setTimeout(() => { renderView(); const i = $('#trQ'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
+    const ts = $('#trSort'); if (ts) ts.onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; state.trSort = b.dataset.k; renderView(); };
+    const tl = $('#trList'); if (tl) tl.onclick = e => {
+      const b = e.target.closest('[data-tr]'); if (!b) return;
+      state.trSel = state.trn.trainers[+b.dataset.tr].name;
+      document.querySelectorAll('.tr-item').forEach(x => x.classList.toggle('on', x === b));
+      $('#trDetail').innerHTML = trDetail(state.trn.trainers[+b.dataset.tr]);
+      if (window.innerWidth < 900) $('#trDetail').scrollIntoView({ behavior:'smooth', block:'start' });
+    };
+  },
+  links() {}
+};
+
+function reopen(id) { const b = document.querySelector(`.faq[data-id="${id}"] .faq-b`); if (b) b.hidden = false; }
+
+/* ---------- نافذة عامة ---------- */
+function openModal(title, html, onSave) {
+  $('#modalBox').innerHTML = `<h3>${esc(title)}</h3><form id="mForm">${html}<div class="modal-foot"><button class="btn">حفظ</button><button type="button" class="btn ghost" id="mClose">إلغاء</button></div></form>`;
+  $('#modal').hidden = false;
+  const close = () => { $('#modal').hidden = true; };
+  $('#mClose').onclick = close;
+  $('#modal').onclick = e => { if (e.target.id === 'modal') close(); };
+  $('#mForm').onsubmit = e => {
+    e.preventDefault();
+    const v = Object.fromEntries(new FormData(e.target));
+    run(e.submitter, async () => { await onSave(v); close(); toast('تم الحفظ ✅'); });
+  };
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#modal').hidden = true; });
+
+/* ---------- دخول تلقائي لو الجلسة محفوظة ---------- */
+if (DEMO) $('#loginHint').textContent = 'وضع تجريبي — الرمز: 123456';
+if (session.pin) {
+  api('login').then(enter).catch(() => { session.pin = ''; try { sessionStorage.removeItem('cc_pin'); } catch(e) {} });
+}
+</script>
+</body>
+</html>
