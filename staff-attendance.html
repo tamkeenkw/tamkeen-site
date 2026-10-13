@@ -214,6 +214,36 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .toast.err{background:var(--red)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== النشرات والاستفسارات ===== */
+@media(max-width:560px){.tabs{flex-wrap:wrap}.tabs button{flex:1 1 45%;font-size:13.5px;padding:11px 6px}}
+.nq-alert{display:none;align-items:center;gap:10px;background:#FFF4F4;border:1.6px solid rgba(198,40,40,.35);border-radius:16px;padding:13px 15px;margin-bottom:14px;cursor:pointer;font-weight:800;font-size:13.5px;color:#9B1C1C}
+.nq-alert svg{width:20px;height:20px;flex-shrink:0;stroke:#C62828;fill:none;stroke-width:2.2}
+.nq-h{font-size:15.5px;font-weight:900;color:var(--crimson);margin:6px 2px 10px;display:flex;align-items:center;gap:8px}
+.nq-h .cnt{font-size:11.5px;background:var(--cream-2);color:var(--crimson);border-radius:100px;padding:3px 10px}
+.nq-card{background:#fff;border-radius:20px;padding:19px;box-shadow:0 8px 30px rgba(92,15,15,.08);border:1.5px solid rgba(92,15,15,.06);margin-bottom:14px}
+.nq-card.pend{border-color:rgba(198,40,40,.4);box-shadow:0 8px 30px rgba(198,40,40,.10)}
+.nq-card.unread{border-color:rgba(92,15,15,.35)}
+.nq-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.nq-no{font-size:11.5px;font-weight:900;color:var(--muted);letter-spacing:.02em}
+.nq-title{font-size:16.5px;font-weight:900;line-height:1.55;margin-top:3px}
+.nq-sub{font-size:12px;color:var(--muted);font-weight:700;margin-top:4px}
+.nq-body{font-size:14px;line-height:1.95;font-weight:600;margin-top:12px;white-space:pre-wrap}
+.nq-box{background:var(--cream);border:1.5px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:11px}
+.nq-box .k{font-size:11.5px;font-weight:900;color:var(--crimson);margin-bottom:4px}
+.nq-box .v{font-size:13.5px;line-height:1.85;font-weight:600;white-space:pre-wrap}
+.nq-dead{display:inline-block;font-size:12px;font-weight:900;padding:6px 12px;border-radius:100px;margin-top:11px;background:#FFF8E1;color:#B26A00}
+.nq-dead.over{background:var(--red-bg);color:var(--red)}
+.nq-ta{width:100%;min-height:110px;margin-top:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:13px;font-family:'Tajawal',sans-serif;font-size:14.5px;line-height:1.8;background:var(--cream);outline:none;resize:vertical}
+.nq-ta:focus{border-color:var(--crimson);background:#fff}
+.nq-btn{width:100%;margin-top:10px;padding:13px;border:none;border-radius:13px;background:var(--crimson);color:#fff;font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:900;cursor:pointer}
+.nq-btn:disabled{opacity:.55;cursor:default}
+.nq-btn.ghost{background:#fff;color:var(--crimson);border:1.6px solid var(--crimson)}
+.nq-ok{margin-top:11px;font-size:12.5px;font-weight:800;color:var(--green)}
+.nq-empty{text-align:center;color:var(--muted);font-weight:700;font-size:13.5px;padding:22px 10px;background:#fff;border-radius:18px;margin-bottom:14px}
+.b-imp{background:#FFF8E1;color:#B26A00}
+.b-urg{background:var(--red-bg);color:var(--red)}
+.b-norm{background:var(--cream-2);color:var(--muted)}
 </style>
 </head>
 <body>
@@ -260,6 +290,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       <button class="on" data-t="att" onclick="setTab(this,'att')">الحضور والانصراف</button>
       <button data-t="tasks" onclick="setTab(this,'tasks')">مهامي <span class="pill" id="tkPill">0</span></button>
       <button data-t="report" onclick="setTab(this,'report')">تقريري</button>
+      <button data-t="nq" onclick="setTab(this,'nq')">النشرات والاستفسارات <span class="pill" id="nqPill">0</span></button>
+    </div>
+
+    <div class="nq-alert" id="nqAlert" onclick="nqGo()">
+      <svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span id="nqAlertTxt">عندك استفسار من الإدارة بانتظار ردّك</span>
     </div>
 
     <div id="tabAtt">
@@ -316,6 +352,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <button data-f="all" onclick="setTkF(this,'all')">الكل</button>
       </div>
       <div id="tkList"><div class="tk-empty"><div class="tk-sp"></div>جاري التحميل...</div></div>
+    </div>
+
+    <div id="tabNq" style="display:none">
+      <div id="nqBox"><div class="tk-empty"><div class="tk-sp"></div>جاري التحميل...</div></div>
     </div>
 
     <div id="tabReport" style="display:none">
@@ -474,6 +514,8 @@ function openDash(status, history){
   renderHistory(history || []);
   TK.loaded = false; TK.list = []; tkBadge();
   tkLoad();
+  NQ = { notices:[], inquiries:[], loaded:false, now:'' }; nqBadge();
+  nqLoad(false);
   window.scrollTo(0,0);
 }
 
@@ -487,6 +529,8 @@ function logout(){
   document.getElementById('tabAtt').style.display='';
   document.getElementById('tabTasks').style.display='none';
   document.getElementById('tabReport').style.display='none';
+  document.getElementById('tabNq').style.display='none';
+  NQ = { notices:[], inquiries:[], loaded:false, now:'' }; nqBadge();
   try{ sessionStorage.removeItem('staff_att'); }catch(e){}
   document.getElementById('passInp').value='';
   document.getElementById('dashScreen').style.display='none';
@@ -688,6 +732,140 @@ function setBtn(key, loading){
   document.getElementById(ids[1]).style.opacity = loading ? .5 : 1;
   document.getElementById(ids[2]).style.display = loading ? 'block' : 'none';
 }
+
+/* ================== النشرات والاستفسارات ================== */
+var NOTICES_URL = SCRIPT_URL; // نفس سكربت الحضور (StaffAttendance.gs v3)
+var NQ = { notices:[], inquiries:[], loaded:false, now:'' };
+
+function nqApi(body){
+  body.name = CUR.name; body.pass = CUR.pass;
+  return fetch(NOTICES_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body) })
+    .then(function(r){ return r.text(); })
+    .then(function(t){ var d; try{ d = JSON.parse(t); }catch(e){ throw new Error('رد غير متوقع من الخادم'); }
+      if(!d.ok) throw new Error(d.message || 'تعذّر الطلب'); return d; });
+}
+function nqLoad(render){
+  if(!CUR.name || !CUR.pass) return;
+  var box = document.getElementById('nqBox');
+  if(render && !NQ.loaded) box.innerHTML = '<div class="tk-empty"><div class="tk-sp"></div>جاري التحميل...</div>';
+  nqApi({ action:'staff_feed' }).then(function(d){
+    NQ = { notices:d.notices||[], inquiries:d.inquiries||[], loaded:true, now:d.now||'' };
+    nqBadge();
+    if(document.getElementById('tabNq').style.display !== 'none'){ nqRender(); nqMarkSeen(); }
+  }).catch(function(e){
+    if(render) box.innerHTML = '<div class="tk-empty">'+esc(e.message)+'<div><button class="tk-retry" onclick="nqLoad(true)">إعادة المحاولة</button></div></div>';
+  });
+}
+function nqBadge(){
+  var unread = NQ.notices.filter(function(n){ return !n.readAt; }).length;
+  var pend = NQ.inquiries.filter(function(q){ return q.status==='بانتظار الرد'; }).length;
+  var p = document.getElementById('nqPill');
+  if(p){ p.style.display = (unread+pend)>0 ? 'flex':'none'; p.textContent = unread+pend; }
+  var a = document.getElementById('nqAlert');
+  if(a){
+    var onAtt = document.getElementById('tabAtt').style.display !== 'none';
+    a.style.display = (pend>0 && onAtt) ? 'flex':'none';
+    document.getElementById('nqAlertTxt').textContent = pend===1 ? 'عندك استفسار من الإدارة بانتظار ردّك — اضغط للرد' : 'عندك '+pend+' استفسارات من الإدارة بانتظار ردّك — اضغط للرد';
+  }
+}
+function nqGo(){
+  var b = document.querySelector('#tabs button[data-t="nq"]');
+  if(b) setTab(b,'nq');
+}
+function nqMarkSeen(){
+  var ids = NQ.inquiries.filter(function(q){ return !q.seenAt; }).map(function(q){ return q.id; });
+  if(!ids.length) return;
+  NQ.inquiries.forEach(function(q){ if(!q.seenAt) q.seenAt = NQ.now; });
+  nqApi({ action:'staff_seen', ids:ids }).catch(function(){});
+}
+function nqParse(s){
+  var m = String(s||'').match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
+  return m ? new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5]) : null;
+}
+function nqPretty(s){
+  var d = nqParse(s); if(!d) return String(s||'');
+  var h = d.getHours(), ap = h<12?'ص':'م', h12 = h%12||12, mi = ('0'+d.getMinutes()).slice(-2);
+  return DAYS[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()]+' — '+h12+':'+mi+' '+ap;
+}
+function nqLeft(deadline){
+  var d = nqParse(deadline); if(!d) return '';
+  var ms = d.getTime() - Date.now();
+  if(ms <= 0) return { over:true, txt:'انتهت مهلة الرد ('+nqPretty(deadline)+')' };
+  var h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000);
+  var t = h>=24 ? (Math.floor(h/24)+' يوم و '+(h%24)+' ساعة') : (h>0 ? h+' ساعة و '+m+' دقيقة' : m+' دقيقة');
+  return { over:false, txt:'باقي على مهلة الرد: '+t };
+}
+function nqNo(id){ return String(id||'').replace(/^[^-]+-/,''); }
+function nqPr(p){ return p==='عاجل'?'b-urg':p==='مهم'?'b-imp':'b-norm'; }
+function nqSt(s){ return s==='بانتظار الرد'?'b-late':s==='تم الرد'?'b-prog':'b-done'; }
+
+function nqRender(){
+  var box = document.getElementById('nqBox');
+  var qs = NQ.inquiries.slice().sort(function(a,b){
+    var r = function(x){ return x.status==='بانتظار الرد'?0:1; }; return r(a)-r(b);
+  });
+  var ns = NQ.notices.slice().sort(function(a,b){ return (a.readAt?1:0)-(b.readAt?1:0); });
+  var h = '';
+
+  h += '<div class="nq-h">الاستفسارات <span class="cnt">'+qs.length+'</span></div>';
+  if(!qs.length) h += '<div class="nq-empty">ما عليك أي استفسار ✓</div>';
+  qs.forEach(function(q){
+    var pend = q.status==='بانتظار الرد', left = pend ? nqLeft(q.deadline) : null;
+    h += '<div class="nq-card'+(pend?' pend':'')+'">'
+      + '<div class="nq-top"><div><div class="nq-no">استفسار رقم <bdi dir="ltr">'+esc(nqNo(q.id))+'</bdi></div>'
+      + '<div class="nq-title">استفسار بخصوص: '+esc(q.type)+'</div>'
+      + '<div class="nq-sub">تاريخ الإصدار '+esc(q.date)+'</div></div>'
+      + '<span class="tk-badge '+nqSt(q.status)+'">'+esc(q.status)+'</span></div>'
+      + (q.facts ? '<div class="nq-box"><div class="k">الوقائع</div><div class="v">'+esc(q.facts)+'</div></div>' : '')
+      + (q.details ? '<div class="nq-box"><div class="k">التفاصيل</div><div class="v">'+esc(q.details)+'</div></div>' : '');
+    if(pend){
+      h += (left ? '<span class="nq-dead'+(left.over?' over':'')+'">'+esc(left.txt)+'</span>' : '')
+        + '<textarea class="nq-ta" id="nqr-'+esc(q.id)+'" placeholder="اكتب ردّك ومبرراتك هنا..."></textarea>'
+        + '<button class="nq-btn" id="nqb-'+esc(q.id)+'" onclick="nqReply(\''+esc(q.id)+'\')">إرسال الرد</button>';
+    } else {
+      if(q.reply) h += '<div class="nq-box"><div class="k">ردّك ('+esc(nqPretty(q.repliedAt))+')</div><div class="v">'+esc(q.reply)+'</div></div>';
+      if(q.decision) h += '<div class="nq-box"><div class="k">قرار الإدارة</div><div class="v">'+esc(q.decision)+'</div></div>';
+    }
+    h += '</div>';
+  });
+
+  h += '<div class="nq-h" style="margin-top:20px">النشرات <span class="cnt">'+ns.length+'</span></div>';
+  if(!ns.length) h += '<div class="nq-empty">ما فيه نشرات حالياً</div>';
+  ns.forEach(function(n){
+    h += '<div class="nq-card'+(n.readAt?'':' unread')+'">'
+      + '<div class="nq-top"><div><div class="nq-no">نشرة رقم <bdi dir="ltr">'+esc(nqNo(n.id))+'</bdi></div>'
+      + '<div class="nq-title">'+esc(n.title)+'</div>'
+      + '<div class="nq-sub">'+esc(n.date)+(n.audience!=='الكل'?' · موجّهة لك':'')+'</div></div>'
+      + '<span class="tk-badge '+nqPr(n.priority)+'">'+esc(n.priority)+'</span></div>'
+      + '<div class="nq-body">'+esc(n.body)+'</div>'
+      + (n.readAt
+          ? '<div class="nq-ok">✓ اطّلعت عليها '+esc(nqPretty(n.readAt))+'</div>'
+          : '<button class="nq-btn ghost" id="nqa-'+esc(n.id)+'" onclick="nqAck(\''+esc(n.id)+'\')">اطّلعت على النشرة ✓</button>')
+      + '</div>';
+  });
+  box.innerHTML = h;
+}
+function nqAck(id){
+  var b = document.getElementById('nqa-'+id); if(b) b.disabled = true;
+  nqApi({ action:'staff_ackNotice', id:id }).then(function(){
+    NQ.notices.forEach(function(n){ if(n.id===id) n.readAt = NQ.now || 'الآن'; });
+    nqBadge(); nqRender(); toast('تم ✓');
+  }).catch(function(e){ if(b) b.disabled = false; toast(e.message, true); });
+}
+function nqReply(id){
+  var t = document.getElementById('nqr-'+id), b = document.getElementById('nqb-'+id);
+  var txt = t ? t.value.trim() : '';
+  if(txt.length < 5){ toast('اكتب ردّك أول', true); return; }
+  if(!confirm('إرسال الرد؟ ما تقدر تعدّله بعد الإرسال.')) return;
+  if(b){ b.disabled = true; b.textContent = 'جاري الإرسال...'; }
+  nqApi({ action:'staff_reply', id:id, reply:txt }).then(function(d){
+    toast(d.message || 'تم إرسال ردّك ✓'); nqLoad(true);
+  }).catch(function(e){ if(b){ b.disabled = false; b.textContent = 'إرسال الرد'; } toast(e.message, true); });
+}
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState==='visible' && CUR.name) nqLoad(false);
+});
+
 /* ================== مهامي ================== */
 var TASKS_URL   = 'https://script.google.com/macros/s/AKfycby-o5gkHcrDD0zP-yaTOg86bNCr-7sAQw--TOMe3m8pYit6lTvGDswm_Uppz_vLHfXiqg/exec';
 var TASKS_TOKEN = 'tmk-staff-2026';
@@ -721,7 +899,10 @@ function setTab(el, t){
   document.getElementById('tabAtt').style.display    = (t==='att')?'':'none';
   document.getElementById('tabTasks').style.display  = (t==='tasks')?'':'none';
   document.getElementById('tabReport').style.display = (t==='report')?'':'none';
+  document.getElementById('tabNq').style.display     = (t==='nq')?'':'none';
   window.scrollTo(0,0);
+  if(t==='nq') nqLoad(true);
+  nqBadge();
   if(t==='tasks' && !TK.loaded) tkLoad();
   if(t==='report') rpInit();
 }

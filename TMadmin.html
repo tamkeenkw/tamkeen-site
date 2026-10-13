@@ -126,6 +126,21 @@ th.num{text-align:center}
 .sch-emp-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sch-emp-top b{flex:1}
 .sch-save{position:sticky;bottom:12px;display:flex;gap:8px}
+.per-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px}
+.per-row .per-n{font-size:12px;font-weight:800;color:var(--crimson);min-width:54px;padding-bottom:10px}
+.per-x{background:none;border:0;color:var(--red);font-size:18px;cursor:pointer;padding:0 6px 8px}
+.ses{display:block;white-space:nowrap}
+/* التقارير */
+.rep{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px;overflow:hidden}
+.rep-h{display:flex;gap:8px;align-items:center;padding:12px 14px;cursor:pointer;flex-wrap:wrap}
+.rep-h b{flex:1;min-width:140px}
+.rep-b{border-top:1px dashed var(--line);padding:12px 14px;background:var(--cream);display:grid;gap:12px}
+.rep-f h5{font-size:12.5px;color:var(--crimson);margin-bottom:4px}
+.rep-f .v{white-space:pre-wrap;font-size:14px}
+.rep-f table{background:#fff;border-radius:8px;font-size:13px}
+.rep-f td,.rep-f th{padding:6px 8px}
+.rep-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.rep-filters select{padding:9px 12px;border-radius:10px;border:1.5px solid var(--line);background:#fff;outline:none;min-width:160px}
 
 /* المهام */
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
@@ -227,6 +242,64 @@ th.num{text-align:center}
   .kpi .n{font-size:24px}
   main{padding:14px 12px 50px}
 }
+
+/* ===== النشرات والاستفسارات ===== */
+.nq-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.nq-tabs .chip b{background:var(--red);color:#fff;border-radius:20px;padding:0 7px;font-size:11px;margin-right:6px}
+.nq-tabs .chip.on b{background:rgba(255,255,255,.3)}
+.nq-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:10px;background:#fff;border-right:4px solid var(--red)}
+.nq-card.replied{border-right-color:var(--blue)}
+.nq-card.closed{border-right-color:var(--green)}
+.nq-card.cancel{border-right-color:#C9B8B8;opacity:.7}
+.nq-card.notice{border-right-color:var(--crimson)}
+.nq-card.archived{border-right-color:#C9B8B8;opacity:.7}
+.nq-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.nq-top b{font-size:15px}
+.nq-meta{font-size:12px;color:var(--muted);margin-top:5px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.nq-box{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:9px}
+.nq-box .k{font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:3px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nq-box .v{font-size:14px;white-space:pre-wrap;line-height:1.85}
+.nq-box.reply{background:var(--blue-bg);border-color:rgba(21,101,192,.15)}
+.nq-box.reply .k{color:var(--blue)}
+.nq-box.dec{background:var(--green-bg);border-color:rgba(46,125,50,.15)}
+.nq-box.dec .k{color:var(--green)}
+.nq-act{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.nq-dec{margin-top:10px}
+.nq-dec textarea{width:100%;min-height:60px;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none;resize:vertical}
+.nq-dec textarea:focus{border-color:var(--crimson);background:#fff}
+.nq-quick{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+.nq-quick button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+.nq-quick button:hover{border-color:var(--crimson);color:var(--crimson)}
+.nq-ev{border:1.5px dashed rgba(92,15,15,.2);border-radius:12px;padding:10px 12px;background:#FFFCF8}
+.nq-ev .h{font-size:12px;font-weight:800;color:var(--crimson);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.nq-ev label{display:flex;gap:8px;align-items:center;padding:5px 0;font-size:13.5px;cursor:pointer;border-bottom:1px dashed var(--line)}
+.nq-ev label:last-child{border:0}
+.nq-ev input{width:16px;height:16px;accent-color:var(--crimson);flex-shrink:0}
+.nq-ev .none{font-size:13px;color:var(--muted)}
+.nq-readers{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:16mm 15mm}
+  body{background:#fff}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+}
+.pl{font-family:'Tajawal',sans-serif;color:#1A0808;direction:rtl;font-size:14px;line-height:1.9}
+.pl-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #5C0F0F;padding-bottom:12px;gap:20px}
+.pl-org{font-size:22px;font-weight:900;color:#5C0F0F}
+.pl-sub{font-size:12px;color:#7A6060}
+.pl-ref{font-size:13px;text-align:left;white-space:nowrap}
+.pl-title{text-align:center;font-size:19px;font-weight:900;color:#5C0F0F;margin:22px 0 16px;letter-spacing:.5px}
+.pl-meta{width:100%;border-collapse:collapse;margin-bottom:16px}
+.pl-meta td{border:1px solid #DDD0C4;padding:8px 12px;font-size:13.5px}
+.pl-meta td:first-child{background:#F6EFE9;color:#5C0F0F;font-weight:800;width:140px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pl-sec{margin:12px 0}
+.pl-sec .k{font-weight:900;color:#5C0F0F;margin-bottom:4px}
+.pl-sec .v{white-space:pre-wrap;border:1px solid #DDD0C4;border-radius:8px;padding:10px 12px}
+.pl-sign{display:flex;justify-content:space-between;gap:40px;margin-top:48px}
+.pl-sign div{flex:1;text-align:center;font-weight:800}
+.pl-sign i{display:block;border-top:1.5px solid #999;margin-top:46px;padding-top:4px;font-style:normal;font-weight:500;font-size:12px;color:#7A6060}
+.pl-foot{margin-top:28px;border-top:1px solid #DDD0C4;padding-top:8px;font-size:11px;color:#7A6060;text-align:center}
 </style>
 </head>
 <body>
@@ -255,8 +328,10 @@ th.num{text-align:center}
     <button data-v="courses" class="on">الدورات</button>
     <button data-v="demand">الأكثر طلباً</button>
     <button data-v="staff">الموظفين</button>
+    <button data-v="reports">التقارير</button>
     <button data-v="trainers">المدربين</button>
     <button data-v="tasks">المهام</button>
+    <button data-v="notices">النشرات والاستفسارات</button>
   </nav>
 </header>
 
@@ -264,15 +339,18 @@ th.num{text-align:center}
   <section class="view on" id="v-courses"></section>
   <section class="view" id="v-demand"></section>
   <section class="view" id="v-staff"></section>
+  <section class="view" id="v-reports"></section>
   <section class="view" id="v-trainers"></section>
   <section class="view" id="v-tasks"></section>
+  <section class="view" id="v-notices"></section>
 </main>
 
 <div class="toast" id="toast"></div>
+<div id="printArea"></div>
 
 <script>
 /* ضع رابط نشر TMAdmin.gs هنا */
-const API = 'https://script.google.com/macros/s/AKfycbz-eLL94d6hIhKEVkBSou_w344_bJGpNlQQqvqe5RT2b5T5eL20fAPJZFX2HoL3EDIkEA/exec';
+const API = 'https://script.google.com/macros/s/AKfycbwwFJWxxxGP7d8OAC1a2RB7V3QNrzLdjohNOoBBMtgPfAEcGwBAR0p0DVGexAr1mgLC/exec';
 
 let PIN = '';
 let VIEW = 'courses';
@@ -359,8 +437,8 @@ $('nav').addEventListener('click', e => {
 function show(v){
   VIEW = v;
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
-  $('month').style.visibility = (v === 'trainers' || v === 'tasks') ? 'hidden' : 'visible';
-  ({ courses: loadCourses, demand: loadCourses, staff: loadStaff, trainers: loadTrainers, tasks: loadTasks })[v]();
+  $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices') ? 'hidden' : 'visible';
+  ({ courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
 }
 function onMonth(){ show(VIEW); }
 function refresh(){ Object.keys(CACHE).forEach(k => { if (k !== 'staffList') delete CACHE[k]; }); show(VIEW); }
@@ -459,7 +537,9 @@ function daysTxt(days){
   const run = d.length > 1 && d.every((x, i) => i === 0 || x === d[i - 1] + 1);
   return run ? DAY_SHORT[d[0]] + ' – ' + DAY_SHORT[d[d.length - 1]] : d.map(x => DAY_SHORT[x]).join('، ');
 }
-function shiftTxt(sh){ return `<b>${daysTxt(sh.days)}</b> · <b>${sh.start} – ${sh.end}</b> · سماحية ${sh.grace} د`; }
+const ltr = x => `<span dir="ltr" style="unicode-bidi:isolate">${x}</span>`;
+const perTxt = sh => (sh.periods || []).map(p => ltr(p.start + ' – ' + p.end)).join(' و ');
+function shiftTxt(sh){ return `<b>${daysTxt(sh.days)}</b> · <b>${perTxt(sh)}</b> · سماحية ${sh.grace} د`; }
 
 async function loadStaff(){
   loading('v-staff');
@@ -473,7 +553,8 @@ async function loadStaff(){
 function todayPill(t){
   if (!t) return '';
   return ({
-    present: `<span class="pill p-green">حاضر</span>`,
+    present: `<span class="pill p-green">${t.inside ? 'بالدوام' : 'حاضر'}</span>`,
+    partial: `<span class="pill p-red">غاب فترة</span>`,
     late: `<span class="pill p-yellow">متأخر ${minTxt(t.lateMin)}</span>`,
     absent: `<span class="pill p-red">غايب — ما سجل حضور</span>`,
     pending: `<span class="pill p-gray">لسه ما بدا دوامه</span>`,
@@ -493,8 +574,9 @@ function renderStaff(d){
   if (isCur){
     h += `<div class="card"><h3>حضور اليوم <span class="sub">${DAYS_AR[new Date(d.today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || ''} ${fmtDate(d.today)} · الساعة ${esc(d.now)}</span></h3>` +
       d.staff.map(s => `<div class="today-row"><b>${esc(s.name)}</b>
-        <span class="t">${s.today && s.today.in ? 'دخل ' + esc(s.today.in) : ''}${s.today && s.today.out ? ' · خرج ' + esc(s.today.out) : ''}</span>
-        <span class="t">${s.shift.start} – ${s.shift.end}</span>${todayPill(s.today)}</div>`).join('') + '</div>';
+        <span class="t">${s.today && s.today.sessions ? s.today.sessions.map(x => esc(x.in || '—') + ' ← ' + esc(x.out || '…')).join('<br>') : ''}</span>
+        <span class="t">${perTxt(s.shift)}</span>${todayPill(s.today)}
+        ${s.today && s.today.status !== 'off' && s.today.status !== 'holiday' ? (s.today.reported ? '<span class="pill p-green">سلّم التقرير</span>' : '<span class="pill p-gray">ما سلّم التقرير</span>') : ''}</div>`).join('') + '</div>';
   }
 
   const s = d.staff.find(x => x.name === STAFF_SEL);
@@ -507,6 +589,7 @@ function renderStaff(d){
       <div class="kpi"><div class="n" style="color:var(--red)">${s.absent}</div><div class="l">يوم غياب</div></div>
       <div class="kpi"><div class="n" style="color:var(--yellow)">${s.late}</div><div class="l">يوم تأخير</div><div class="s">${s.lateMins ? 'مجموع ' + minTxt(s.lateMins) : '—'}</div></div>
       <div class="kpi"><div class="n" style="color:var(--yellow)">${s.early}</div><div class="l">خروج مبكر</div></div>
+      ${s.shift.periods.length > 1 ? `<div class="kpi"><div class="n" style="color:var(--red)">${s.missed}</div><div class="l">فترة فايتة</div><div class="s">حضر يوم وغاب فترة</div></div>` : ''}
       <div class="kpi"><div class="n">${s.hours}</div><div class="l">ساعة دوام</div><div class="s">معدل ${s.avgHours} س/يوم</div></div>
       <div class="kpi"><div class="n" style="color:var(--muted)">${s.incomplete}</div><div class="l">يوم ناقص</div><div class="s">بدون تسجيل خروج</div></div>
     </div></div>`;
@@ -515,12 +598,16 @@ function renderStaff(d){
     h += `<div class="card"><h3>أيام الغياب <span class="sub">${s.absentDays.length} يوم</span></h3><div class="absent-list">` +
       s.absentDays.map(a => `<span class="pill p-red">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)}</span>`).join('') + '</div></div>';
   }
+  if (s.missedPeriods && s.missedPeriods.length){
+    h += `<div class="card"><h3>فترات فاتته <span class="sub">حضر اليوم بس ما حضر هالفترة</span></h3><div class="absent-list">` +
+      s.missedPeriods.map(a => `<span class="pill p-red">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · ${ltr(a.period)}</span>`).join('') + '</div></div>';
+  }
   if (s.lateDays.length || s.earlyDays.length){
     h += `<div class="grid2">`;
     if (s.lateDays.length) h += `<div class="card" style="margin:0"><h3>أيام التأخير <span class="sub">${s.lateDays.length} يوم · ${minTxt(s.lateMins)}</span></h3><div class="absent-list">` +
-      s.lateDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · ${minTxt(a.lateMin)}</span>`).join('') + '</div></div>';
+      s.lateDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · ${minTxt(a.lateMin)}${s.shift.periods.length > 1 ? ' · فترة ' + ltr(a.period) : ''}</span>`).join('') + '</div></div>';
     if (s.earlyDays.length) h += `<div class="card" style="margin:0"><h3>خروج قبل الوقت <span class="sub">${s.earlyDays.length} يوم</span></h3><div class="absent-list">` +
-      s.earlyDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · قبل ${minTxt(a.earlyMin)}</span>`).join('') + '</div></div>';
+      s.earlyDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · قبل ${minTxt(a.earlyMin)}${s.shift.periods.length > 1 ? ' · فترة ' + ltr(a.period) : ''}</span>`).join('') + '</div></div>';
     h += `</div>`;
   }
 
@@ -529,10 +616,16 @@ function renderStaff(d){
   else h += `<div class="tbl-wrap"><table><thead><tr><th>اليوم</th><th>التاريخ</th><th>الدخول</th><th>الخروج</th><th class="num">المدة</th><th></th></tr></thead><tbody>` +
     s.days.map(x => {
       const hh = Math.floor(x.mins / 60), mm = x.mins % 60;
-      const bad = !x.out || !x.mins;
-      return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}${x.holiday ? ' <span class="pill p-blue">عطلة</span>' : x.offDay ? ' <span class="pill p-gray">مو يوم دوامه</span>' : ''}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
-        <td>${esc(x.in) || '—'}${x.lateMin ? ` <span class="pill p-yellow">متأخر ${minTxt(x.lateMin)}</span>` : ''}</td>
-        <td>${x.out ? esc(x.out) + (x.earlyMin ? ` <span class="pill p-yellow">قبل ${minTxt(x.earlyMin)}</span>` : '') : '<span class="pill p-yellow">بدون خروج</span>'}</td>
+      const bad = x.sessions.some(z => !z.out) || !x.mins;
+      const per = x.periods || [];
+      const multi = s.shift.periods.length > 1;
+      const inCol = x.sessions.map(z => `<span class="ses">${esc(z.in) || '—'}</span>`).join('') +
+        per.filter(q => q.lateMin).map(q => `<span class="pill p-yellow">متأخر ${minTxt(q.lateMin)}${multi ? ' · ' + ltr(q.label) : ''}</span>`).join(' ');
+      const outCol = x.sessions.map(z => `<span class="ses">${z.out ? esc(z.out) : '<span class="pill p-yellow">بدون خروج</span>'}</span>`).join('') +
+        per.filter(q => q.earlyMin).map(q => `<span class="pill p-yellow">قبل ${minTxt(q.earlyMin)}${multi ? ' · ' + ltr(q.label) : ''}</span>`).join(' ');
+      const missed = per.filter(q => q.missed).map(q => `<span class="pill p-red">غاب فترة ${ltr(q.label)}</span>`).join(' ');
+      return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}${x.holiday ? ' <span class="pill p-blue">عطلة</span>' : x.offDay ? ' <span class="pill p-gray">مو يوم دوامه</span>' : ''}${missed ? '<br>' + missed : ''}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
+        <td>${inCol}</td><td>${outCol}</td>
         <td class="num">${bad ? '—' : hh + ' س ' + String(mm).padStart(2, '0') + ' د'}</td>
         <td>${/^https?:/.test(x.map) ? `<a href="${esc(x.map)}" target="_blank" rel="noopener" style="color:var(--crimson)">الموقع</a>` : ''}</td></tr>`;
     }).join('') + '</tbody></table></div>';
@@ -569,12 +662,24 @@ function schDaysHtml(scope, sh){
 }
 function schTimesHtml(scope, sh){
   const sc = scope === 'def' ? "'def'" : scope;
-  return `<div class="sch-times">
-    <div><label>يبدأ</label><input type="time" value="${sh.start}" onchange="schSet(${sc},'start',this.value)"></div>
-    <div><label>ينتهي</label><input type="time" value="${sh.end}" onchange="schSet(${sc},'end',this.value)"></div>
-    <div><label>سماحية التأخير (دقيقة)</label><input type="number" min="0" max="180" value="${sh.grace}" style="width:120px" onchange="schSet(${sc},'grace',+this.value||0)"></div>
-  </div>`;
+  const names = ['الأولى', 'الثانية', 'الثالثة'];
+  return sh.periods.map((p, i) => `<div class="per-row">
+      <span class="per-n">${sh.periods.length > 1 ? 'الفترة ' + names[i] : 'الدوام'}</span>
+      <div class="sch-times" style="margin:0"><div><label>يبدأ</label><input type="time" value="${p.start}" onchange="schPer(${sc},${i},'start',this.value)"></div>
+      <div><label>ينتهي</label><input type="time" value="${p.end}" onchange="schPer(${sc},${i},'end',this.value)"></div></div>
+      ${sh.periods.length > 1 ? `<button class="per-x" title="حذف الفترة" onclick="schDelPer(${sc},${i})">✕</button>` : ''}
+    </div>`).join('') +
+    `<div class="per-row">${sh.periods.length < 3 ? `<button class="btn ghost sm" onclick="schAddPer(${sc})">+ إضافة فترة</button>` : ''}
+      <div class="sch-times" style="margin:0"><div><label>سماحية التأخير (دقيقة)</label><input type="number" min="0" max="180" value="${sh.grace}" style="width:120px" onchange="schSet(${sc},'grace',+this.value||0)"></div></div></div>`;
 }
+function schPer(scope, i, f, v){ schShift(scope).periods[i][f] = v; }
+function schAddPer(scope){
+  const sh = schShift(scope), last = sh.periods[sh.periods.length - 1];
+  const h = Math.min(22, +last.end.slice(0, 2) + 2);
+  sh.periods.push({ start: String(h).padStart(2, '0') + ':00', end: String(Math.min(23, h + 4)).padStart(2, '0') + ':00' });
+  renderSched();
+}
+function schDelPer(scope, i){ schShift(scope).periods.splice(i, 1); renderSched(); }
 function renderSched(){
   const sc = SCH.sc;
   let h = `<div class="staff-bar"><h2 style="font-size:19px;font-weight:900;color:var(--crimson);flex:1">⚙︎ أوقات الدوام</h2>
@@ -582,6 +687,7 @@ function renderSched(){
     <div class="card"><h3>الدوام العام <span class="sub">ينطبق على كل الموظفين إلا اللي لهم دوام خاص</span></h3>
       <label style="font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px">أيام الدوام</label>
       ${schDaysHtml('def', sc.def)}${schTimesHtml('def', sc.def)}
+      <p class="note-line" style="margin:10px 0 0">لو الدوام فترتين (صباحي ومسائي) اضغط «+ إضافة فترة». الموظف يسجل دخول وخروج لكل فترة، والتأخير والغياب ينحسبون لكل فترة لحالها.</p>
       <div class="sch-times"><div><label>احتساب الغياب يبدأ من (اختياري)</label><input type="date" value="${sc.from || ''}" onchange="SCH.sc.from=this.value"></div></div>
     </div>
     <div class="card"><h3>دوام خاص لموظف <span class="sub">مثلاً دوام جزئي أو أيام مختلفة</span></h3>` +
@@ -624,12 +730,69 @@ function schAddHol(){
 function schDelHol(i){ SCH.sc.holidays.splice(i, 1); renderSched(); }
 async function schSave(){
   if (!SCH.sc.def.days.length) return toast('اختر يوم دوام واحد على الأقل');
+  const shifts = [['الدوام العام', SCH.sc.def]].concat(Object.keys(SCH.sc.staff).map(n => [n, SCH.sc.staff[n]]));
+  for (const [n, sh] of shifts){
+    const ps = sh.periods.slice().sort((a, b) => a.start < b.start ? -1 : 1);
+    for (let i = 0; i < ps.length; i++){
+      if (!ps[i].start || !ps[i].end || ps[i].start >= ps[i].end) return toast(n + ': وقت النهاية لازم بعد البداية');
+      if (i && ps[i].start < ps[i - 1].end) return toast(n + ': الفترات متداخلة');
+    }
+  }
   $('schBtn').disabled = true;
   try{
     await api({ action: 'saveSchedule', data: JSON.stringify(SCH.sc) });
     Object.keys(CACHE).forEach(k => { if (k.indexOf('s_') === 0) delete CACHE[k]; });
     SCH = null; toast('تم حفظ أوقات الدوام ✓'); loadStaff();
   }catch(e){ toast(e.message); $('schBtn').disabled = false; }
+}
+
+/* ===== التقارير ===== */
+let REP_WHO = '', REP_TYPE = '';
+async function loadReports(){
+  loading('v-reports');
+  try{
+    const ym = M() === 'all' ? new Date().toISOString().slice(0, 7) : M();
+    const k = 'r_' + ym;
+    if (!CACHE[k]) CACHE[k] = await api({ action: 'reports', month: ym });
+    renderReports(CACHE[k]);
+  }catch(e){ errBox('v-reports', e.message); }
+}
+function repValue(v){
+  const s = String(v).trim();
+  if (/^[\[{]/.test(s)){
+    try{
+      const j = JSON.parse(s), arr = Array.isArray(j) ? j : [j];
+      if (arr.length && arr.every(x => x && typeof x === 'object' && !Array.isArray(x))){
+        const keys = [...new Set(arr.flatMap(Object.keys))];
+        return `<div class="tbl-wrap"><table><thead><tr>${keys.map(k => `<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${arr.map(x => `<tr>${keys.map(k => `<td>${esc(typeof x[k] === 'object' ? JSON.stringify(x[k]) : (x[k] == null ? '' : x[k]))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      }
+      if (Array.isArray(j)) return `<div class="v">${esc(j.join('\n'))}</div>`;
+    }catch(e){}
+  }
+  return `<div class="v">${esc(s)}</div>`;
+}
+function renderReports(d){
+  if (!d.found){ $('v-reports').innerHTML = '<div class="card"><div class="empty">ما لقيت تبويب «التقارير اليومية» في شيت مسار ولا تمكين</div></div>'; return; }
+  const authors = [...new Set(d.reports.map(r => r.author).filter(Boolean))];
+  const types = [...new Set(d.reports.map(r => r.type).filter(Boolean))];
+  let list = d.reports;
+  if (REP_WHO) list = list.filter(r => r.author === REP_WHO);
+  if (REP_TYPE) list = list.filter(r => r.type === REP_TYPE);
+  const per = {}; d.reports.forEach(r => { const a = r.author || 'بدون اسم'; per[a] = (per[a] || 0) + 1; });
+  let h = (M() === 'all' ? '<p class="note-line">التقارير تُعرض شهر بشهر — معروض الشهر الحالي</p>' : '') +
+    `<div class="kpis">${Object.keys(per).sort((a, b) => per[b] - per[a]).map(a =>
+      `<div class="kpi"><div class="n">${per[a]}</div><div class="l">${esc(a)}</div><div class="s">تقرير · ${monthLabel(d.month)}</div></div>`).join('') || '<div class="kpi"><div class="n">0</div><div class="l">تقرير</div></div>'}</div>
+    <div class="rep-filters">
+      <select onchange="REP_WHO=this.value;renderReports(CACHE['r_${d.month}'])"><option value="">كل الموظفين</option>${authors.map(a => `<option ${a === REP_WHO ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
+      ${types.length ? `<select onchange="REP_TYPE=this.value;renderReports(CACHE['r_${d.month}'])"><option value="">كل الأنواع</option>${types.map(a => `<option ${a === REP_TYPE ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>` : ''}
+      <span class="pill p-gray">${list.length} تقرير</span>
+    </div>`;
+  h += list.length ? list.map((r, i) => `<div class="rep">
+      <div class="rep-h" onclick="const b=this.nextElementSibling;b.hidden=!b.hidden"><span class="pill p-red" style="background:var(--cream-2);color:var(--crimson)">${DAYS_AR[new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || ''} ${fmtDate(r.date)}</span>
+        <b>${esc(r.author || 'بدون اسم')}</b>${r.type ? `<span class="pill p-gray">${esc(r.type)}</span>` : ''}<span style="font-size:12px;color:var(--muted)">${r.fields.length} بند</span></div>
+      <div class="rep-b" ${i === 0 ? '' : 'hidden'}>${r.fields.map(f => `<div class="rep-f"><h5>${esc(f.h)}</h5>${repValue(f.v)}</div>`).join('') || '<div style="color:var(--muted)">تقرير فاضي</div>'}</div>
+    </div>`).join('') : '<div class="card"><div class="empty">ما فيه تقارير بهالشهر</div></div>';
+  $('v-reports').innerHTML = h;
 }
 
 /* ===== المدربين ===== */
@@ -873,6 +1036,334 @@ async function delTask(id){
   if (!confirm('حذف المهمة نهائياً؟')) return;
   try{ await api({ action: 'deleteTask', id }); toast('انحذفت'); loadTasks(true); }
   catch(e){ toast(e.message); }
+}
+
+
+/* ===== النشرات والاستفسارات ===== */
+/* نفس سكربت حضور الموظفين (StaffAttendance.gs v3) — يستخدم رمز دخول اللوحة كمفتاح */
+const STAFF_API = 'https://script.google.com/macros/s/AKfycbxo8IAaZ5dkS-PPmrHqHBVymJRFQKDyuvANhmbeI0wfYcrD4nV6bXA6oUctt2qPauTV/exec';
+const NQ_TYPES = ['تأخير', 'غياب', 'خروج مبكر', 'عدم تسليم مهمة', 'عدم تسجيل خروج', 'أخرى'];
+const NQ_TPL = {
+  'تأخير': 'نود الاستفسار عن أسباب تأخركم عن موعد بداية الدوام في التواريخ المذكورة أعلاه، علماً بأن الالتزام بمواعيد الدوام من أساسيات العمل.',
+  'غياب': 'نود الاستفسار عن أسباب تغيّبكم عن العمل في التواريخ المذكورة أعلاه دون إذن مسبق أو عذر مقبول.',
+  'خروج مبكر': 'نود الاستفسار عن أسباب مغادرتكم العمل قبل نهاية الدوام في التواريخ المذكورة أعلاه دون إذن مسبق.',
+  'عدم تسليم مهمة': 'نود الاستفسار عن أسباب عدم تسليم المهام المذكورة أعلاه في موعدها المحدد.',
+  'عدم تسجيل خروج': 'نود الاستفسار عن أسباب عدم تسجيل الخروج في نظام الحضور في التواريخ المذكورة أعلاه.',
+  'أخرى': ''
+};
+const NQ_DECISIONS = ['حفظ الاستفسار — العذر مقبول', 'تنبيه شفهي', 'لفت نظر', 'إنذار كتابي', 'خصم من الراتب'];
+let NQ_TAB = 'inq', NQ_FILTER = 'pending', NQ_LIST = [], NQ_NLIST = [];
+let NQF = { emp: '', type: '', facts: '', details: '', hours: '48' };
+let NBF = { title: '', body: '', aud: 'الكل', pri: 'عادي' };
+let NQ_EV = { key: '', loading: false, list: [], err: '' };
+
+async function napi(body){
+  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 40000);
+  let r;
+  try{
+    r = await fetch(STAFF_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({}, body, { key: PIN })), signal: ctrl.signal });
+  }catch(e){ throw new Error(e.name === 'AbortError' ? 'انتهت مهلة الاتصال' : 'تعذّر الاتصال بسكربت الحضور'); }
+  finally{ clearTimeout(t); }
+  const txt = await r.text(); let d;
+  try{ d = JSON.parse(txt); }catch(e){ throw new Error('رد غير متوقع من سكربت الحضور — تأكد إنك نشرت نسخة جديدة منه'); }
+  if (d.auth === false) throw new Error('رمز دخول اللوحة مو نفس مفتاح الإدارة بسكربت الحضور (ADMIN_KEY_INITIAL) — حطه نفسه وشغّل setup');
+  if (!d.ok) throw new Error(d.message || 'تعذّر الطلب');
+  return d;
+}
+async function loadNotices(force){
+  if (!CACHE.notices || force) loading('v-notices');
+  try{
+    if (!CACHE.notices || force) CACHE.notices = await napi({ action: 'admin_load' });
+    renderNotices();
+  }catch(e){
+    $('v-notices').innerHTML = '<div class="card"><div class="empty">⚠️ ' + esc(e.message) + '<br><br><button class="btn sm" onclick="loadNotices(true)">إعادة المحاولة</button></div></div>';
+  }
+}
+const nqNo = id => String(id || '').replace(/^[^-]+-/, '');
+const nqN = s => trNorm(String(s || '')).replace(/\s+/g, ' ').trim();
+function nqParse(s){ const m = String(s || '').match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/); return m ? new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null; }
+function nqWhen(s){
+  const d = nqParse(s); if (!d) return esc(s || '—');
+  const h = d.getHours(), ap = h < 12 ? 'ص' : 'م';
+  return DAY_SHORT[d.getDay()] + ' ' + d.getDate() + ' ' + AR_MONTHS[d.getMonth()] + ' · ' + (h % 12 || 12) + ':' + String(d.getMinutes()).padStart(2, '0') + ' ' + ap;
+}
+function nqDay(ymd){ return DAY_SHORT[new Date(ymd + 'T12:00:00').getDay()] + ' ' + fmtDate(ymd); }
+function nqOver(q){ const d = nqParse(q.deadline); return d && d.getTime() < Date.now(); }
+function nqLateReply(q){ const a = nqParse(q.repliedAt), b = nqParse(q.deadline); return a && b && a > b; }
+function nqSave(){
+  if ($('nqFacts')){ NQF.facts = $('nqFacts').value; NQF.details = $('nqDetails').value; NQF.hours = $('nqHours').value; }
+  if ($('nbTitle')){ NBF.title = $('nbTitle').value; NBF.body = $('nbBody').value; NBF.aud = $('nbAud').value; NBF.pri = $('nbPri').value; }
+}
+function nqSetTab(t){ nqSave(); NQ_TAB = t; renderNotices(); }
+function nqSetFilter(f){ nqSave(); NQ_FILTER = f; renderNotices(); }
+
+function renderNotices(){
+  const d = CACHE.notices, inq = d.inquiries || [], nts = d.notices || [];
+  const pend = inq.filter(q => q.status === 'بانتظار الرد').length;
+  const repl = inq.filter(q => q.status === 'تم الرد').length;
+  const over = inq.filter(q => q.status === 'بانتظار الرد' && nqOver(q)).length;
+  const live = nts.filter(n => n.status === 'منشورة').length;
+  let h = `<div class="kpis">
+    <div class="kpi"><div class="n" style="color:var(--red)">${pend}</div><div class="l">بانتظار رد الموظف</div><div class="s">${over ? over + ' انتهت مهلتها' : '—'}</div></div>
+    <div class="kpi"><div class="n" style="color:var(--blue)">${repl}</div><div class="l">ردّوا — بانتظار قرارك</div></div>
+    <div class="kpi"><div class="n">${inq.filter(q => q.status !== 'ملغي').length}</div><div class="l">استفسار صادر</div></div>
+    <div class="kpi"><div class="n">${live}</div><div class="l">نشرة منشورة</div></div>
+  </div>
+  <div class="nq-tabs">
+    <button class="chip ${NQ_TAB === 'inq' ? 'on' : ''}" onclick="nqSetTab('inq')">الاستفسارات${repl ? '<b>' + repl + '</b>' : ''}</button>
+    <button class="chip ${NQ_TAB === 'ntc' ? 'on' : ''}" onclick="nqSetTab('ntc')">النشرات</button>
+    <button class="chip ${NQ_TAB === 'sts' ? 'on' : ''}" onclick="nqSetTab('sts')">سجل الموظفين</button>
+    <button class="chip" onclick="nqSave();loadNotices(true)">↻ تحديث</button>
+  </div>`;
+  h += NQ_TAB === 'inq' ? nqInqHtml(d) : NQ_TAB === 'ntc' ? nqNtcHtml(d) : nqStatsHtml(d);
+  $('v-notices').innerHTML = h;
+  if (NQ_TAB === 'inq') nqRenderEvents();
+}
+
+/* ---------- الاستفسارات ---------- */
+function nqInqHtml(d){
+  const staff = d.staff || [];
+  let h = `<div class="card"><h3>استفسار جديد <span class="sub">يوصل للموظف بصفحته ويرد عليه من هناك</span></h3>
+    <div class="form">
+      <div class="full"><label>الموظف</label><div class="staff-pick">` +
+      staff.map((n, i) => `<button type="button" class="chip ${NQF.emp === n ? 'on' : ''}" onclick="nqPickEmp(${i})">${esc(n)}</button>`).join('') +
+      `</div></div>
+      <div class="full"><label>نوع المخالفة</label><div class="staff-pick">` +
+      NQ_TYPES.map((t, i) => `<button type="button" class="chip ${NQF.type === t ? 'on' : ''}" onclick="nqPickType(${i})">${t}</button>`).join('') +
+      `</div></div>
+      <div class="full" id="nqEvents"></div>
+      <div class="full"><label>الوقائع (التواريخ والتفاصيل)</label><textarea id="nqFacts" placeholder="اختر من السجل فوق أو اكتبها بيدك">${esc(NQF.facts)}</textarea></div>
+      <div class="full"><label>نص الاستفسار</label><textarea id="nqDetails" placeholder="مثال: نود الاستفسار عن أسباب...">${esc(NQF.details)}</textarea></div>
+      <div><label>مهلة الرد</label><select id="nqHours">${[['24', '24 ساعة'], ['48', '48 ساعة'], ['72', '3 أيام'], ['120', '5 أيام']].map(([v, l]) => `<option value="${v}" ${NQF.hours === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div class="full"><button class="btn" id="nqBtn" onclick="nqIssue()">إصدار الاستفسار</button></div>
+    </div></div>`;
+
+  const all = d.inquiries || [];
+  const cnt = f => all.filter(f).length;
+  const F = [['pending', 'بانتظار رد الموظف', q => q.status === 'بانتظار الرد'], ['replied', 'ردّوا', q => q.status === 'تم الرد'],
+             ['closed', 'مغلقة', q => q.status === 'مغلق'], ['all', 'الكل', q => q.status !== 'ملغي']];
+  h += '<div class="chips">' + F.map(([k, l, f]) => `<button class="chip ${NQ_FILTER === k ? 'on' : ''}" onclick="nqSetFilter('${k}')">${l} <small>${cnt(f)}</small></button>`).join('') + '</div>';
+  NQ_LIST = all.filter(F.find(x => x[0] === NQ_FILTER)[2]);
+  if (!NQ_LIST.length) return h + '<div class="card"><div class="empty">ما فيه استفسارات هني</div></div>';
+  return h + NQ_LIST.map(nqInqCard).join('');
+}
+function nqStatusPill(q){
+  if (q.status === 'بانتظار الرد') return '<span class="pill p-red">بانتظار رد الموظف</span>' + (nqOver(q) ? ' <span class="pill p-red">انتهت المهلة</span>' : '');
+  if (q.status === 'تم الرد') return '<span class="pill p-blue">ردّ — بانتظار قرارك</span>';
+  if (q.status === 'مغلق') return '<span class="pill p-green">مغلق</span>';
+  return '<span class="pill p-gray">ملغي</span>';
+}
+function nqInqCard(q, i){
+  const cls = q.status === 'تم الرد' ? 'replied' : q.status === 'مغلق' ? 'closed' : q.status === 'ملغي' ? 'cancel' : '';
+  const open = q.status === 'بانتظار الرد' || q.status === 'تم الرد';
+  return `<div class="nq-card ${cls}">
+    <div class="nq-top"><div><b>${esc(q.emp)} — استفسار بخصوص ${esc(q.type)}</b>
+      <div class="nq-meta"><span>رقم <bdi dir="ltr">${esc(nqNo(q.id))}</bdi></span><span>صدر ${esc(q.date)}</span><span>المهلة: ${nqWhen(q.deadline)}</span>
+        <span>${q.seenAt ? '👁 اطّلع ' + nqWhen(q.seenAt) : '<span class="pill p-gray">ما فتحه للحين</span>'}</span></div></div>
+      <div>${nqStatusPill(q)}</div></div>
+    ${q.facts ? `<div class="nq-box"><div class="k">الوقائع</div><div class="v">${esc(q.facts)}</div></div>` : ''}
+    ${q.details ? `<div class="nq-box"><div class="k">نص الاستفسار</div><div class="v">${esc(q.details)}</div></div>` : ''}
+    ${q.reply ? `<div class="nq-box reply"><div class="k">رد الموظف · ${nqWhen(q.repliedAt)}${nqLateReply(q) ? ' <span class="pill p-red">بعد المهلة</span>' : ''}</div><div class="v">${esc(q.reply)}</div></div>` : ''}
+    ${q.decision ? `<div class="nq-box dec"><div class="k">قرار الإدارة · ${nqWhen(q.closedAt)}</div><div class="v">${esc(q.decision)}</div></div>` : ''}
+    ${open ? `<div class="nq-dec">
+        <div class="nq-quick">${NQ_DECISIONS.map(x => `<button type="button" onclick="nqQuick(${i}, this.textContent)">${x}</button>`).join('')}</div>
+        <textarea id="nqDec-${i}" placeholder="قرار الإدارة (يشوفه الموظف بعد الإغلاق)"></textarea></div>` : ''}
+    <div class="nq-act">
+      ${open ? `<button class="btn sm" onclick="nqClose(${i})">إغلاق بالقرار</button>` : ''}
+      <button class="btn ghost sm" onclick="nqPrintInq(${i})">🖨 طباعة الكتاب</button>
+      ${q.status === 'بانتظار الرد' ? `<button class="btn ghost sm" onclick="nqCancel(${i})">إلغاء</button>` : ''}
+    </div></div>`;
+}
+function nqQuick(i, t){ const el = $('nqDec-' + i); el.value = el.value.trim() ? el.value.trim() + '\n' + t : t; el.focus(); }
+function nqPickEmp(i){ nqSave(); NQF.emp = CACHE.notices.staff[i]; renderNotices(); }
+function nqPickType(i){
+  nqSave();
+  const old = NQF.type; NQF.type = NQ_TYPES[i];
+  if (!NQF.details.trim() || NQF.details === NQ_TPL[old]) NQF.details = NQ_TPL[NQF.type];
+  renderNotices();
+}
+
+/* الوقائع من سجل الحضور والمهام */
+function nqYm(offset){ const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + offset); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+async function nqLoadEvents(){
+  const key = NQF.emp + '|' + NQF.type;
+  NQ_EV = { key, loading: true, list: [], err: '' }; nqRenderEvents();
+  try{
+    const list = [], me = nqN(NQF.emp);
+    if (NQF.type === 'عدم تسليم مهمة'){
+      if (!CACHE.tasks) CACHE.tasks = await api({ action: 'tasks' });
+      (CACHE.tasks.tasks || []).filter(t => t.status !== 'منجز' && nqN(t.staff).split('|').some(x => x.trim() === me) && (t.late || (t.due && t.due < TODAY)))
+        .forEach(t => list.push({ date: t.due || '', text: `مهمة «${t.title}» — موعد التسليم ${t.due ? nqDay(t.due) : '—'} — الحالة: ${t.status}` }));
+    } else if (NQF.type !== 'أخرى'){
+      for (const ym of [nqYm(0), nqYm(-1)]){
+        const k = 's_' + ym;
+        if (!CACHE[k]) CACHE[k] = await api({ action: 'staff', month: ym });
+        const s = (CACHE[k].staff || []).find(x => nqN(x.name) === me);
+        if (!s) continue;
+        const inOf = dt => ((s.days || []).find(x => x.date === dt) || {}).in || '';
+        if (NQF.type === 'تأخير') (s.lateDays || []).forEach(a => list.push({ date: a.date, text: `${nqDay(a.date)} — دخول ${inOf(a.date) || '—'} (تأخير ${minTxt(a.lateMin)})` }));
+        if (NQF.type === 'غياب') (s.absentDays || []).forEach(a => list.push({ date: a.date, text: `${nqDay(a.date)} — غياب بدون تسجيل حضور` }));
+        if (NQF.type === 'خروج مبكر') (s.earlyDays || []).forEach(a => list.push({ date: a.date, text: `${nqDay(a.date)} — خروج قبل نهاية الدوام بـ ${minTxt(a.earlyMin)}` }));
+        if (NQF.type === 'عدم تسجيل خروج') (s.days || []).filter(x => x.in && !x.out && x.date < TODAY).forEach(x => list.push({ date: x.date, text: `${nqDay(x.date)} — دخول ${x.in} بدون تسجيل خروج` }));
+      }
+    }
+    if (NQ_EV.key !== key) return;
+    const seen = {};
+    NQ_EV.list = list.filter(x => !seen[x.text] && (seen[x.text] = 1)).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  }catch(e){ if (NQ_EV.key === key) NQ_EV.err = e.message; }
+  if (NQ_EV.key === key){ NQ_EV.loading = false; nqRenderEvents(); }
+}
+function nqRenderEvents(){
+  const box = $('nqEvents'); if (!box) return;
+  if (!NQF.emp || !NQF.type){ box.innerHTML = ''; return; }
+  if (NQF.type === 'أخرى'){ box.innerHTML = ''; return; }
+  const key = NQF.emp + '|' + NQF.type;
+  if (NQ_EV.key !== key){ nqLoadEvents(); return; }
+  const src = NQF.type === 'عدم تسليم مهمة' ? 'المهام المتأخرة' : 'سجل الحضور — الشهر الحالي والسابق';
+  let h = `<div class="nq-ev"><div class="h"><span>من ${src}</span><span style="color:var(--muted);font-weight:500">اختر اللي تبي تحطه بالوقائع</span></div>`;
+  if (NQ_EV.loading) h += '<div class="none">جاري الجلب…</div>';
+  else if (NQ_EV.err) h += `<div class="none">⚠️ ${esc(NQ_EV.err)}</div>`;
+  else if (!NQ_EV.list.length) h += `<div class="none">ما لقيت ${esc(NQF.type)} مسجّل لـ ${esc(NQF.emp)} — تقدر تكتب الوقائع بيدك</div>`;
+  else {
+    const cur = ($('nqFacts') ? $('nqFacts').value : NQF.facts).split('\n').map(x => x.trim());
+    h += NQ_EV.list.map((e, i) => `<label><input type="checkbox" ${cur.indexOf(e.text) > -1 ? 'checked' : ''} onchange="nqToggleEv(${i}, this.checked)">${esc(e.text)}</label>`).join('');
+  }
+  box.innerHTML = h + '</div>';
+}
+function nqToggleEv(i, on){
+  const ta = $('nqFacts'), line = NQ_EV.list[i].text;
+  let lines = ta.value.split('\n').map(x => x.trim()).filter(Boolean).filter(x => x !== line);
+  if (on) lines.push(line);
+  ta.value = lines.join('\n'); NQF.facts = ta.value;
+}
+async function nqIssue(){
+  nqSave();
+  if (!NQF.emp) return toast('اختر الموظف');
+  if (!NQF.type) return toast('اختر نوع المخالفة');
+  if (!NQF.facts.trim() && !NQF.details.trim()) return toast('اكتب الوقائع أو نص الاستفسار');
+  if (!confirm('إصدار استفسار لـ ' + NQF.emp + ' بخصوص ' + NQF.type + '؟')) return;
+  $('nqBtn').disabled = true;
+  try{
+    const r = await napi({ action: 'admin_createInquiry', emp: NQF.emp, type: NQF.type, facts: NQF.facts.trim(), details: NQF.details.trim(), hours: NQF.hours });
+    toast(r.message || 'تم ✓');
+    NQF = { emp: '', type: '', facts: '', details: '', hours: '48' }; NQ_EV = { key: '', loading: false, list: [], err: '' };
+    NQ_FILTER = 'pending'; loadNotices(true);
+  }catch(e){ toast(e.message); $('nqBtn').disabled = false; }
+}
+async function nqClose(i){
+  const q = NQ_LIST[i], dec = ($('nqDec-' + i).value || '').trim();
+  if (!dec) return toast('اكتب قرار الإدارة أو اختر واحد من فوق');
+  if (q.status === 'بانتظار الرد' && !confirm('الموظف ما ردّ للحين. تبي تغلق الاستفسار؟')) return;
+  nqSave();
+  try{ await napi({ action: 'admin_closeInquiry', id: q.id, decision: dec }); toast('تم إغلاق الاستفسار ✓'); loadNotices(true); }
+  catch(e){ toast(e.message); }
+}
+async function nqCancel(i){
+  const q = NQ_LIST[i];
+  if (!confirm('إلغاء الاستفسار رقم ' + nqNo(q.id) + '؟ بيختفي من صفحة الموظف.')) return;
+  nqSave();
+  try{ await napi({ action: 'admin_cancelInquiry', id: q.id }); toast('تم الإلغاء'); loadNotices(true); }
+  catch(e){ toast(e.message); }
+}
+
+/* ---------- النشرات ---------- */
+function nqNtcHtml(d){
+  const staff = d.staff || [];
+  let h = `<div class="card"><h3>نشرة جديدة <span class="sub">تطلع للموظفين بصفحتهم ويأكدون الاطلاع</span></h3>
+    <div class="form">
+      <div class="full"><label>العنوان</label><input id="nbTitle" value="${esc(NBF.title)}" placeholder="مثال: تعديل مواعيد الدوام خلال فترة المعرض"></div>
+      <div class="full"><label>نص النشرة</label><textarea id="nbBody" style="min-height:110px" placeholder="اكتب النشرة…">${esc(NBF.body)}</textarea></div>
+      <div><label>موجّهة إلى</label><select id="nbAud"><option value="الكل">كل الموظفين</option>${staff.map(n => `<option ${NBF.aud === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
+      <div><label>الأهمية</label><select id="nbPri">${['عادي', 'مهم', 'عاجل'].map(p => `<option ${NBF.pri === p ? 'selected' : ''}>${p}</option>`).join('')}</select></div>
+      <div class="full"><button class="btn" id="nbBtn" onclick="nqPost()">نشر</button></div>
+    </div></div>`;
+  NQ_NLIST = d.notices || [];
+  if (!NQ_NLIST.length) return h + '<div class="card"><div class="empty">ما فيه نشرات للحين</div></div>';
+  return h + NQ_NLIST.map((n, i) => {
+    const targets = n.audience === 'الكل' ? staff : [n.audience];
+    const readMap = {}; (n.readers || []).forEach(r => readMap[nqN(r.name)] = r.at);
+    const done = targets.filter(t => readMap[nqN(t)]);
+    const pri = n.priority === 'عاجل' ? 'p-red' : n.priority === 'مهم' ? 'p-yellow' : 'p-gray';
+    return `<div class="nq-card notice ${n.status !== 'منشورة' ? 'archived' : ''}">
+      <div class="nq-top"><div><b>${esc(n.title)}</b>
+        <div class="nq-meta"><span>رقم <bdi dir="ltr">${esc(nqNo(n.id))}</bdi></span><span>${esc(n.date)}</span><span>${n.audience === 'الكل' ? 'كل الموظفين' : '👤 ' + esc(n.audience)}</span><span class="pill ${pri}">${esc(n.priority)}</span>${n.status !== 'منشورة' ? '<span class="pill p-gray">مؤرشفة</span>' : ''}</div></div>
+        <span class="pill ${done.length === targets.length ? 'p-green' : 'p-yellow'}">اطّلع ${done.length} من ${targets.length}</span></div>
+      <div class="nq-box"><div class="v">${esc(n.body)}</div></div>
+      <div class="nq-readers">${targets.map(t => readMap[nqN(t)]
+          ? `<span class="pill p-green" title="${esc(nqWhen(readMap[nqN(t)]))}">✓ ${esc(t)}</span>`
+          : `<span class="pill p-gray">${esc(t)}</span>`).join('')}</div>
+      <div class="nq-act"><button class="btn ghost sm" onclick="nqPrintNtc(${i})">🖨 طباعة</button>
+        ${n.status === 'منشورة' ? `<button class="btn ghost sm" onclick="nqArchive(${i})">أرشفة</button>` : ''}</div>
+    </div>`;
+  }).join('');
+}
+async function nqPost(){
+  nqSave();
+  if (!NBF.title.trim() || !NBF.body.trim()) return toast('اكتب العنوان والنص');
+  $('nbBtn').disabled = true;
+  try{
+    const r = await napi({ action: 'admin_postNotice', title: NBF.title.trim(), body: NBF.body.trim(), audience: NBF.aud, priority: NBF.pri });
+    toast(r.message || 'تم النشر ✓'); NBF = { title: '', body: '', aud: 'الكل', pri: 'عادي' }; loadNotices(true);
+  }catch(e){ toast(e.message); $('nbBtn').disabled = false; }
+}
+async function nqArchive(i){
+  const n = NQ_NLIST[i];
+  if (!confirm('أرشفة النشرة؟ بتختفي من صفحة الموظفين.')) return;
+  nqSave();
+  try{ await napi({ action: 'admin_archiveNotice', id: n.id }); toast('تمت الأرشفة'); loadNotices(true); }
+  catch(e){ toast(e.message); }
+}
+
+/* ---------- سجل الموظفين ---------- */
+function nqStatsHtml(d){
+  const st = (d.stats || []).slice().sort((a, b) => b.total - a.total);
+  if (!st.length) return '<div class="card"><div class="empty">ما فيه موظفين</div></div>';
+  return `<div class="card"><h3>عدد الاستفسارات لكل موظف <span class="sub">من أول استفسار صدر</span></h3>
+    <div class="tbl-wrap"><table><thead><tr><th>الموظف</th><th class="num">المجموع</th>${NQ_TYPES.map(t => `<th class="num">${t}</th>`).join('')}<th class="num">بانتظار رده</th><th></th></tr></thead><tbody>` +
+    st.map(s => `<tr><td><b>${esc(s.name)}</b></td>
+      <td class="num"><span class="pill ${s.total >= 3 ? 'p-red' : s.total ? 'p-yellow' : 'p-green'}">${s.total}</span></td>
+      ${NQ_TYPES.map(t => `<td class="num">${(s.byType || {})[t] || '—'}</td>`).join('')}
+      <td class="num">${s.pending || '—'}</td>
+      <td><button class="btn ghost sm" onclick="nqNewFor('${esc(s.name).replace(/'/g, "\\'")}')">استفسار جديد</button></td></tr>`).join('') +
+    '</tbody></table></div></div>';
+}
+function nqNewFor(n){ NQF.emp = n; NQ_TAB = 'inq'; renderNotices(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+/* ---------- الطباعة ---------- */
+function nqLetterHead(no, date){
+  return `<div class="pl-head"><div><div class="pl-org">معهد تمكين للتدريب الأهلي</div>
+    <div class="pl-sub">شركة إيديو كلود لخدمات استشارات التعليم · المرقاب — دولة الكويت · سجل تجاري 487977</div></div>
+    <div class="pl-ref">الرقم: <bdi dir="ltr">${esc(nqNo(no))}</bdi><br>التاريخ: ${esc(date)}</div></div>`;
+}
+function nqPrint(html){ $('printArea').innerHTML = '<div class="pl">' + html + '<div class="pl-foot">صادر من نظام الموظفين — معهد تمكين للتدريب الأهلي</div></div>'; window.print(); }
+function nqPrintInq(i){
+  const q = NQ_LIST[i];
+  nqPrint(nqLetterHead(q.id, q.date) + `
+    <div class="pl-title">استفسار إداري</div>
+    <table class="pl-meta">
+      <tr><td>الموظف</td><td>${esc(q.emp)}</td></tr>
+      <tr><td>الموضوع</td><td>استفسار بخصوص ${esc(q.type)}</td></tr>
+      <tr><td>آخر موعد للرد</td><td>${nqWhen(q.deadline)}</td></tr>
+    </table>
+    <p>السيد/ة ${esc(q.emp)} المحترم/ة،</p><p>تحية طيبة وبعد،</p>
+    ${q.facts ? `<div class="pl-sec"><div class="k">الوقائع</div><div class="v">${esc(q.facts)}</div></div>` : ''}
+    ${q.details ? `<div class="pl-sec"><div class="v" style="border:0;padding:0">${esc(q.details)}</div></div>` : ''}
+    <p>يرجى الرد على هذا الاستفسار كتابياً خلال المهلة المحددة عبر نظام الموظفين، وفي حال عدم الرد خلال المهلة ستتخذ الإدارة الإجراء المناسب.</p>
+    ${q.reply ? `<div class="pl-sec"><div class="k">رد الموظف (${nqWhen(q.repliedAt)})</div><div class="v">${esc(q.reply)}</div></div>` : ''}
+    ${q.decision ? `<div class="pl-sec"><div class="k">قرار الإدارة (${nqWhen(q.closedAt)})</div><div class="v">${esc(q.decision)}</div></div>` : ''}
+    <div class="pl-sign"><div>الإدارة<i>التوقيع والختم</i></div><div>الموظف<i>توقيع بالاستلام</i></div></div>`);
+}
+function nqPrintNtc(i){
+  const n = NQ_NLIST[i];
+  nqPrint(nqLetterHead(n.id, n.date) + `
+    <div class="pl-title">نشرة إدارية</div>
+    <table class="pl-meta">
+      <tr><td>موجّهة إلى</td><td>${n.audience === 'الكل' ? 'جميع الموظفين' : esc(n.audience)}</td></tr>
+      <tr><td>الموضوع</td><td>${esc(n.title)}</td></tr>
+    </table>
+    <div class="pl-sec"><div class="v" style="border:0;padding:0">${esc(n.body)}</div></div>
+    <div class="pl-sign"><div></div><div>الإدارة<i>التوقيع والختم</i></div></div>`);
 }
 
 /* ===== البداية ===== */
