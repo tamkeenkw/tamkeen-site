@@ -105,6 +105,27 @@ th.num{text-align:center}
 .emp-head h2{font-size:20px;font-weight:900}
 .emp-head p{color:var(--muted);font-size:13px}
 .absent-list{display:flex;flex-wrap:wrap;gap:6px}
+.staff-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.staff-bar .chips{margin:0;flex:1}
+.shift-line{font-size:13px;color:var(--muted);margin-top:3px}
+.shift-line b{color:var(--crimson)}
+.today-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);flex-wrap:wrap}
+.today-row:last-child{border:0}
+.today-row b{flex:1;min-width:120px}
+.today-row .t{font-size:13px;color:var(--muted);min-width:90px}
+/* إعدادات الدوام */
+.sch-days{display:flex;flex-wrap:wrap;gap:6px}
+.sch-days button{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font-weight:700;cursor:pointer;color:var(--muted)}
+.sch-days button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.sch-times{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.sch-times label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:4px}
+.sch-times input{padding:9px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none}
+.sch-times input:focus{border-color:var(--crimson);background:#fff}
+.sch-emp{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.sch-emp.custom{background:#FFFCF8;border-color:rgba(92,15,15,.2)}
+.sch-emp-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sch-emp-top b{flex:1}
+.sch-save{position:sticky;bottom:12px;display:flex;gap:8px}
 
 /* المهام */
 .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
@@ -431,6 +452,15 @@ function renderDemand(d){
 }
 
 /* ===== الموظفين ===== */
+const DAY_SHORT = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const minTxt = m => m >= 60 ? Math.floor(m / 60) + ' س' + (m % 60 ? ' ' + (m % 60) + ' د' : '') : m + ' د';
+function daysTxt(days){
+  const d = days.slice().sort();
+  const run = d.length > 1 && d.every((x, i) => i === 0 || x === d[i - 1] + 1);
+  return run ? DAY_SHORT[d[0]] + ' – ' + DAY_SHORT[d[d.length - 1]] : d.map(x => DAY_SHORT[x]).join('، ');
+}
+function shiftTxt(sh){ return `<b>${daysTxt(sh.days)}</b> · <b>${sh.start} – ${sh.end}</b> · سماحية ${sh.grace} د`; }
+
 async function loadStaff(){
   loading('v-staff');
   try{
@@ -440,27 +470,58 @@ async function loadStaff(){
     renderStaff(CACHE[k]);
   }catch(e){ errBox('v-staff', e.message); }
 }
+function todayPill(t){
+  if (!t) return '';
+  return ({
+    present: `<span class="pill p-green">حاضر</span>`,
+    late: `<span class="pill p-yellow">متأخر ${minTxt(t.lateMin)}</span>`,
+    absent: `<span class="pill p-red">غايب — ما سجل حضور</span>`,
+    pending: `<span class="pill p-gray">لسه ما بدا دوامه</span>`,
+    off: `<span class="pill p-gray">مو يوم دوامه</span>`,
+    holiday: `<span class="pill p-blue">عطلة: ${esc(t.name || '')}</span>`
+  })[t.status] || '';
+}
 function renderStaff(d){
   if (!d.staff.length){ $('v-staff').innerHTML = '<div class="card"><div class="empty">ما فيه موظفين في تبويب «موظفو المبيعات»</div></div>'; return; }
   if (!STAFF_SEL || !d.staff.some(s => s.name === STAFF_SEL)) STAFF_SEL = d.staff[0].name;
+  const isCur = d.today && d.today.slice(0, 7) === d.month;
   let h = (M() === 'all' ? '<p class="note-line">الحضور يُعرض شهر بشهر — معروض الشهر الحالي</p>' : '') +
-    '<div class="chips">' + d.staff.map(s =>
-      `<button class="chip ${s.name === STAFF_SEL ? 'on' : ''}" onclick="pickStaff('${esc(s.name).replace(/'/g, "\\'")}')">${esc(s.name)}<small>${s.absent ? '· غياب ' + s.absent : ''}</small></button>`).join('') + '</div>';
+    `<div class="staff-bar"><div class="chips">` + d.staff.map(s =>
+      `<button class="chip ${s.name === STAFF_SEL ? 'on' : ''}" onclick="pickStaff('${esc(s.name).replace(/'/g, "\\'")}')">${esc(s.name)}<small>${s.absent ? '· غياب ' + s.absent : ''}${s.late ? ' · تأخير ' + s.late : ''}</small></button>`).join('') +
+    `</div><button class="btn ghost sm" onclick="openSched()">⚙︎ أوقات الدوام</button></div>`;
+
+  if (isCur){
+    h += `<div class="card"><h3>حضور اليوم <span class="sub">${DAYS_AR[new Date(d.today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || ''} ${fmtDate(d.today)} · الساعة ${esc(d.now)}</span></h3>` +
+      d.staff.map(s => `<div class="today-row"><b>${esc(s.name)}</b>
+        <span class="t">${s.today && s.today.in ? 'دخل ' + esc(s.today.in) : ''}${s.today && s.today.out ? ' · خرج ' + esc(s.today.out) : ''}</span>
+        <span class="t">${s.shift.start} – ${s.shift.end}</span>${todayPill(s.today)}</div>`).join('') + '</div>';
+  }
 
   const s = d.staff.find(x => x.name === STAFF_SEL);
   h += `<div class="card">
     <div class="emp-head"><div class="avatar">${esc(s.name.trim()[0] || '؟')}</div>
-      <div><h2>${esc(s.name)}</h2><p>${esc(s.title)} · ${monthLabel(d.month)}</p></div></div>
+      <div><h2>${esc(s.name)}</h2><p>${esc(s.title)} · ${monthLabel(d.month)}</p>
+      <div class="shift-line">دوامه: ${shiftTxt(s.shift)}${s.custom ? ' <span class="pill p-gray">دوام خاص</span>' : ''}</div></div></div>
     <div class="kpis" style="margin-bottom:0">
       <div class="kpi"><div class="n" style="color:var(--green)">${s.present}</div><div class="l">يوم داوم</div><div class="s">من ${s.workDays} يوم دوام</div></div>
       <div class="kpi"><div class="n" style="color:var(--red)">${s.absent}</div><div class="l">يوم غياب</div></div>
+      <div class="kpi"><div class="n" style="color:var(--yellow)">${s.late}</div><div class="l">يوم تأخير</div><div class="s">${s.lateMins ? 'مجموع ' + minTxt(s.lateMins) : '—'}</div></div>
+      <div class="kpi"><div class="n" style="color:var(--yellow)">${s.early}</div><div class="l">خروج مبكر</div></div>
       <div class="kpi"><div class="n">${s.hours}</div><div class="l">ساعة دوام</div><div class="s">معدل ${s.avgHours} س/يوم</div></div>
-      <div class="kpi"><div class="n" style="color:var(--yellow)">${s.incomplete}</div><div class="l">يوم ناقص</div><div class="s">بدون تسجيل خروج</div></div>
+      <div class="kpi"><div class="n" style="color:var(--muted)">${s.incomplete}</div><div class="l">يوم ناقص</div><div class="s">بدون تسجيل خروج</div></div>
     </div></div>`;
 
   if (s.absentDays.length){
     h += `<div class="card"><h3>أيام الغياب <span class="sub">${s.absentDays.length} يوم</span></h3><div class="absent-list">` +
       s.absentDays.map(a => `<span class="pill p-red">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)}</span>`).join('') + '</div></div>';
+  }
+  if (s.lateDays.length || s.earlyDays.length){
+    h += `<div class="grid2">`;
+    if (s.lateDays.length) h += `<div class="card" style="margin:0"><h3>أيام التأخير <span class="sub">${s.lateDays.length} يوم · ${minTxt(s.lateMins)}</span></h3><div class="absent-list">` +
+      s.lateDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · ${minTxt(a.lateMin)}</span>`).join('') + '</div></div>';
+    if (s.earlyDays.length) h += `<div class="card" style="margin:0"><h3>خروج قبل الوقت <span class="sub">${s.earlyDays.length} يوم</span></h3><div class="absent-list">` +
+      s.earlyDays.map(a => `<span class="pill p-yellow">${DAYS_AR[a.dayName] || a.dayName} ${fmtDate(a.date)} · قبل ${minTxt(a.earlyMin)}</span>`).join('') + '</div></div>';
+    h += `</div>`;
   }
 
   h += `<div class="card"><h3>سجل الدوام</h3>`;
@@ -469,15 +530,107 @@ function renderStaff(d){
     s.days.map(x => {
       const hh = Math.floor(x.mins / 60), mm = x.mins % 60;
       const bad = !x.out || !x.mins;
-      return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
-        <td>${esc(x.in) || '—'}</td><td>${x.out ? esc(x.out) : '<span class="pill p-yellow">بدون خروج</span>'}</td>
+      return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}${x.holiday ? ' <span class="pill p-blue">عطلة</span>' : x.offDay ? ' <span class="pill p-gray">مو يوم دوامه</span>' : ''}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
+        <td>${esc(x.in) || '—'}${x.lateMin ? ` <span class="pill p-yellow">متأخر ${minTxt(x.lateMin)}</span>` : ''}</td>
+        <td>${x.out ? esc(x.out) + (x.earlyMin ? ` <span class="pill p-yellow">قبل ${minTxt(x.earlyMin)}</span>` : '') : '<span class="pill p-yellow">بدون خروج</span>'}</td>
         <td class="num">${bad ? '—' : hh + ' س ' + String(mm).padStart(2, '0') + ' د'}</td>
         <td>${/^https?:/.test(x.map) ? `<a href="${esc(x.map)}" target="_blank" rel="noopener" style="color:var(--crimson)">الموقع</a>` : ''}</td></tr>`;
     }).join('') + '</tbody></table></div>';
   h += '</div>';
+  h += `<p class="note-line" style="margin-top:0">الغياب ينحسب بس بأيام دوام الموظف، ومن أول يوم سجل فيه حضور${s.from ? ' (' + fmtDate(s.from) + ')' : ''}. التأخير = الدخول بعد وقت البداية + السماحية.</p>`;
   $('v-staff').innerHTML = h;
 }
 function pickStaff(n){ STAFF_SEL = n; loadStaff(); }
+
+/* ===== إعدادات أوقات الدوام ===== */
+let SCH = null;
+async function openSched(){
+  loading('v-staff');
+  try{
+    const d = await api({ action: 'schedule' });
+    const sc = JSON.parse(JSON.stringify(d.schedule));
+    const names = (d.staff || []).map(s => s.name);
+    /* نربط الدوام الخاص بالأسماء الحالية */
+    const staff = {};
+    Object.keys(sc.staff || {}).forEach(k => {
+      const n = names.find(x => trNorm(x).trim() === trNorm(k).trim()) || k;
+      staff[n] = sc.staff[k];
+      if (names.indexOf(n) < 0) names.push(n);
+    });
+    sc.staff = staff;
+    SCH = { sc, names };
+    renderSched();
+  }catch(e){ errBox('v-staff', e.message); }
+}
+function schShift(scope){ return scope === 'def' ? SCH.sc.def : SCH.sc.staff[SCH.names[scope]]; }
+function schDaysHtml(scope, sh){
+  return '<div class="sch-days">' + [0,1,2,3,4,5,6].map(d =>
+    `<button type="button" class="${sh.days.indexOf(d) > -1 ? 'on' : ''}" onclick="schDay(${scope === 'def' ? "'def'" : scope},${d},this)">${DAY_SHORT[d]}</button>`).join('') + '</div>';
+}
+function schTimesHtml(scope, sh){
+  const sc = scope === 'def' ? "'def'" : scope;
+  return `<div class="sch-times">
+    <div><label>يبدأ</label><input type="time" value="${sh.start}" onchange="schSet(${sc},'start',this.value)"></div>
+    <div><label>ينتهي</label><input type="time" value="${sh.end}" onchange="schSet(${sc},'end',this.value)"></div>
+    <div><label>سماحية التأخير (دقيقة)</label><input type="number" min="0" max="180" value="${sh.grace}" style="width:120px" onchange="schSet(${sc},'grace',+this.value||0)"></div>
+  </div>`;
+}
+function renderSched(){
+  const sc = SCH.sc;
+  let h = `<div class="staff-bar"><h2 style="font-size:19px;font-weight:900;color:var(--crimson);flex:1">⚙︎ أوقات الدوام</h2>
+      <button class="btn ghost sm" onclick="SCH=null;loadStaff()">رجوع</button></div>
+    <div class="card"><h3>الدوام العام <span class="sub">ينطبق على كل الموظفين إلا اللي لهم دوام خاص</span></h3>
+      <label style="font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px">أيام الدوام</label>
+      ${schDaysHtml('def', sc.def)}${schTimesHtml('def', sc.def)}
+      <div class="sch-times"><div><label>احتساب الغياب يبدأ من (اختياري)</label><input type="date" value="${sc.from || ''}" onchange="SCH.sc.from=this.value"></div></div>
+    </div>
+    <div class="card"><h3>دوام خاص لموظف <span class="sub">مثلاً دوام جزئي أو أيام مختلفة</span></h3>` +
+    SCH.names.map((n, i) => {
+      const sh = sc.staff[n];
+      return `<div class="sch-emp ${sh ? 'custom' : ''}"><div class="sch-emp-top"><b>${esc(n)}</b>
+        ${sh ? '' : '<span style="font-size:12px;color:var(--muted)">نفس الدوام العام</span>'}
+        <button class="btn ${sh ? 'ghost ' : ''}sm" onclick="schCustom(${i})">${sh ? 'رجّعه للدوام العام' : 'دوام خاص'}</button></div>
+        ${sh ? '<div style="margin-top:10px">' + schDaysHtml(i, sh) + schTimesHtml(i, sh) + '</div>' : ''}</div>`;
+    }).join('') + `</div>
+    <div class="card"><h3>العطل الرسمية <span class="sub">ما ينحسب فيها غياب</span></h3>
+      <div class="sch-times" style="margin:0 0 12px;align-items:flex-end">
+        <div><label>التاريخ</label><input type="date" id="holDate"></div>
+        <div style="flex:1;min-width:180px"><label>اسم العطلة</label><input id="holName" placeholder="مثلاً: المولد النبوي" style="width:100%"></div>
+        <button class="btn sm" onclick="schAddHol()">إضافة</button>
+      </div>
+      ${sc.holidays.length ? '<div class="absent-list">' + sc.holidays.map((x, i) =>
+        `<span class="pill p-blue">${fmtDate(x.date)}${x.name ? ' · ' + esc(x.name) : ''} <a href="#" onclick="schDelHol(${i});return false" style="color:inherit;margin-right:4px">✕</a></span>`).join('') + '</div>'
+        : '<div style="font-size:13px;color:var(--muted)">ما فيه عطل مضافة</div>'}
+    </div>
+    <div class="sch-save"><button class="btn" id="schBtn" onclick="schSave()">حفظ أوقات الدوام</button><button class="btn ghost" style="background:#fff" onclick="openSched()">تراجع</button></div>`;
+  $('v-staff').innerHTML = h;
+}
+function schDay(scope, d, el){
+  const sh = schShift(scope), i = sh.days.indexOf(d);
+  i > -1 ? sh.days.splice(i, 1) : sh.days.push(d);
+  sh.days.sort(); el.classList.toggle('on');
+}
+function schSet(scope, f, v){ schShift(scope)[f] = v; }
+function schCustom(i){
+  const n = SCH.names[i];
+  if (SCH.sc.staff[n]) delete SCH.sc.staff[n]; else SCH.sc.staff[n] = JSON.parse(JSON.stringify(SCH.sc.def));
+  renderSched();
+}
+function schAddHol(){
+  const d = $('holDate').value; if (!d) return toast('اختر التاريخ');
+  if (!SCH.sc.holidays.some(x => x.date === d)) SCH.sc.holidays.push({ date: d, name: $('holName').value.trim() });
+  SCH.sc.holidays.sort((a, b) => a.date < b.date ? -1 : 1); renderSched();
+}
+function schDelHol(i){ SCH.sc.holidays.splice(i, 1); renderSched(); }
+async function schSave(){
+  if (!SCH.sc.def.days.length) return toast('اختر يوم دوام واحد على الأقل');
+  $('schBtn').disabled = true;
+  try{
+    await api({ action: 'saveSchedule', data: JSON.stringify(SCH.sc) });
+    Object.keys(CACHE).forEach(k => { if (k.indexOf('s_') === 0) delete CACHE[k]; });
+    SCH = null; toast('تم حفظ أوقات الدوام ✓'); loadStaff();
+  }catch(e){ toast(e.message); $('schBtn').disabled = false; }
+}
 
 /* ===== المدربين ===== */
 let TR_SORT = 'count';
