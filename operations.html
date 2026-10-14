@@ -499,6 +499,10 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg></div>
         <div class="mc-title">مسار اوبريشن</div><div class="mc-desc">لوحة عمليات أكاديمية مسار</div>
       </div>
+      <div class="menu-card" onclick="openSection('masaradmin')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M8 14h3v3H8z"/></svg></div>
+        <div class="mc-title">مسار ادمن</div><div class="mc-desc">إدارة دورات وباقات مسار · دورات واستشارات اليوم وباجر</div>
+      </div>
       <div class="menu-card" onclick="openSection('trmat')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <div class="mc-title">المواد التدريبية للمدرب</div><div class="mc-desc">عرض مواد المدرب المعتمدة برقم العضوية · إضافة مادة</div>
@@ -1062,6 +1066,16 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
     </div>
   </div>
 
+  <!-- ===== MASAR ADMIN ===== -->
+  <div class="panel" id="p-masaradmin">
+    <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M8 14h3v3H8z"/></svg>مسار ادمن</div><div class="sec-desc">إدارة دورات وباقات أكاديمية مسار + دورات واستشارات اليوم وباجر</div></div>
+      <button class="btn btn-ghost" onclick="window.open('masar-admin.html','_blank')"><svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>فتح في صفحة مستقلة</button>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(92,15,15,.04);">
+      <iframe id="masarAdminFrame" data-src="masar-admin.html" title="مسار ادمن" style="width:100%;height:calc(100vh - 210px);min-height:820px;border:none;display:block;background:#fff;"></iframe>
+    </div>
+  </div>
+
   <!-- ===== MEMBERSHIP ===== -->
   <div class="panel" id="p-membership">
     <div class="sec-head">
@@ -1168,7 +1182,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1186,6 +1200,7 @@ function openSection(id){
   if(id==='blocks') loadBlocks();
   if(id==='membership') mbrInit();
   if(id==='trmat') tmInit();
+  if(id==='masaradmin'){ const f=document.getElementById('masarAdminFrame'); if(f && !f.getAttribute('src')) f.src=f.dataset.src; }
 }
 function goHome(){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
