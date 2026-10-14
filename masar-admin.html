@@ -203,6 +203,16 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .paybadge.ok{background:var(--green-bg);color:var(--green);}
 .paybadge.no{background:var(--red-bg);color:var(--red);}
 .paybadge.wait{background:var(--yellow-bg);color:var(--yellow);}
+.tppl{width:100%;flex-basis:100%;border-top:1px solid rgba(92,15,15,.07);padding-top:10px;}
+.tppl summary{cursor:pointer;font-size:13px;font-weight:900;color:var(--crimson);list-style:none;display:flex;align-items:center;gap:6px;}
+.tppl summary::-webkit-details-marker{display:none;}
+.tppl summary::before{content:'▸';transition:.2s;}
+.tppl[open] summary::before{transform:rotate(90deg);}
+.tppl ol{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+.tppl li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--cream);border-radius:10px;padding:8px 11px;font-size:13.5px;font-weight:800;}
+.tppl li .n{color:var(--muted);font-size:12px;min-width:20px;}
+.tppl li .nm{flex:1;min-width:140px;}
+.tppl .copy{background:#fff;border:1.5px solid rgba(92,15,15,.12);border-radius:8px;padding:5px 11px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-top:8px;}
 </style>
 </head>
 <body>
@@ -600,7 +610,29 @@ function tdCourseCard(c, withTrainer){
       '</div>' +
     '</div>' +
     '<div class="tcount"><b>' + ar(c.registered || 0) + '</b><span>مسجل بهذي الدفعة</span></div>' +
+    tdPeople(c) +
   '</div>';
+}
+
+let TD_PPL = [];
+function tdPeople(c){
+  const ppl = c.people || [];
+  if(!ppl.length) return '';
+  const idx = TD_PPL.push(ppl) - 1;
+  return '<details class="tppl"><summary>أسماء المسجلين (' + ar(ppl.length) + ')</summary><ol>' +
+    ppl.map(function(p, i){
+      return '<li><span class="n">' + ar(i + 1) + '</span>' +
+        '<span class="nm">' + esc(p.name || '—') + '</span>' +
+        (p.phone ? '<a class="tphone" href="https://wa.me/' + tdWa(p.phone) + '" target="_blank" rel="noopener">' + esc(p.phone) + '</a>' : '') +
+        (p.cert ? '<span class="chip cert">🎓 شهادة</span>' : '') +
+        (p.pay ? tdPay(p.pay, 0) : '') +
+      '</li>';
+    }).join('') +
+    '</ol><button class="copy" onclick="tdCopy(' + idx + ')">نسخ القائمة</button></details>';
+}
+function tdCopy(i){
+  const txt = (TD_PPL[i] || []).map(function(p, k){ return (k + 1) + '. ' + (p.name || '') + (p.phone ? ' — ' + p.phone : ''); }).join('\n');
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){ toast('تم نسخ القائمة'); }, function(){ toast('تعذّر النسخ', true); });
 }
 
 async function loadToday(){
@@ -622,6 +654,7 @@ async function loadToday(){
 }
 
 function renderToday(d){
+  TD_PPL = [];
   const today = d.today || [], tom = d.tomorrow || [], cons = d.consults || [];
   const regs  = today.reduce(function(s,c){ return s + (c.registered || 0); }, 0);
   const money = cons.reduce(function(s,c){ return s + (Number(c.amount) || 0); }, 0);
@@ -648,7 +681,8 @@ function renderToday(d){
     h += '<div class="tbl-wrap"><table><thead><tr><th>الوقت</th><th>عند منو</th><th>العميل</th><th>النوع</th><th>المبلغ</th><th>الدفع</th></tr></thead><tbody>';
     cons.forEach(function(c){
       h += '<tr><td>' + esc(c.time || '—') + '</td>' +
-           '<td><b>' + esc(c.trainer || '—') + '</b></td>' +
+           '<td><b>' + esc(c.trainer || (c.trainerCode ? 'غير معروف' : '—')) + '</b>' +
+             (c.trainerCode ? '<div style="font-size:11px;color:var(--muted);direction:ltr;text-align:right">' + esc(c.trainerCode) + '</div>' : '') + '</td>' +
            '<td>' + esc(c.client || '—') + (c.phone ? '<div><a class="tphone" style="margin-top:4px" href="https://wa.me/' + tdWa(c.phone) + '" target="_blank" rel="noopener">' + esc(c.phone) + '</a></div>' : '') + '</td>' +
            '<td>' + esc(c.type || '—') + '</td>' +
            '<td><b>' + (c.amount ? tdMoney(c.amount) + ' د.ك' : '—') + '</b></td>' +
