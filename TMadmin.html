@@ -326,6 +326,49 @@ th.num{text-align:center}
 .pl-rep th{background:#F6EFE9!important;color:#5C0F0F;border:1px solid #DDD0C4;padding:6px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pl-rep td{border:1px solid #DDD0C4;padding:6px}
 .pl-rep .v{white-space:pre-wrap;font-size:13px}
+
+/* ===== أعمالي ===== */
+.wk-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.wk-hero h2{font-size:22px;font-weight:900;color:var(--crimson)}
+.wk-hero p{color:var(--muted);font-size:13px;margin-top:2px}
+.wk-stats{display:flex;gap:8px;flex-wrap:wrap}
+.wk-stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 14px;text-align:center;min-width:78px}
+.wk-stat b{display:block;font-size:20px;font-weight:900;line-height:1.2}
+.wk-stat span{font-size:11.5px;color:var(--muted);font-weight:700}
+.wk-add{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.wk-add .t{flex:1;min-width:220px;padding:13px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--cream);outline:none;font-size:15px}
+.wk-add .t:focus{border-color:var(--crimson);background:#fff}
+.wk-opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.wk-opts select,.wk-opts input[type=date],.wk-opts input[type=time]{padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none;font-size:13px}
+.wk-q{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:800;color:var(--muted);cursor:pointer}
+.wk-q.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.wk-done-ck{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--green);cursor:pointer}
+.wk-done-ck input{accent-color:var(--green);width:16px;height:16px}
+.wk-notes{width:100%;margin-top:10px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none;min-height:60px;resize:vertical;display:none}
+.wk-grp{margin:18px 0 8px;display:flex;align-items:center;gap:10px;font-weight:900;font-size:15px;color:var(--crimson)}
+.wk-grp i{flex:1;height:1px;background:var(--line)}
+.wk-grp small{background:var(--cream-2);border-radius:20px;padding:1px 9px;font-size:12px}
+.wk-grp.late{color:var(--red)}
+.wk{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.wk.p-urg{border-right:4px solid var(--red)}
+.wk.p-imp{border-right:4px solid var(--yellow)}
+.wk.done{opacity:.7}
+.wk.done .wk-t{text-decoration:line-through;color:var(--muted)}
+.wk-ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--crimson);background:#fff;cursor:pointer;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:900}
+.wk-ck:hover{background:var(--cream-2)}
+.wk.done .wk-ck{background:var(--green);border-color:var(--green)}
+.wk-body{flex:1;min-width:0}
+.wk-t{font-weight:800;font-size:15px;word-break:break-word}
+.wk-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center;font-size:12px;color:var(--muted)}
+.wk-n{font-size:13px;color:var(--text);margin-top:6px;white-space:pre-wrap;opacity:.85}
+.wk-act{display:flex;gap:4px;flex-shrink:0}
+.wk-act button{border:0;background:var(--cream);border-radius:8px;padding:5px 8px;cursor:pointer;font-size:12px;font-weight:800;color:var(--muted)}
+.wk-act button:hover{background:var(--cream-2);color:var(--crimson)}
+.wk-edit{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wk-edit input,.wk-edit select,.wk-edit textarea{width:100%;padding:7px 9px;border-radius:9px;border:1.5px solid var(--line);background:var(--cream);font-size:13px;outline:none}
+.wk-edit .full{grid-column:1/-1}
+nav button .nb{background:#fff;color:var(--crimson);border-radius:20px;padding:0 7px;font-size:11px;font-weight:900;margin-right:5px}
+nav button.on .nb{background:var(--crimson);color:#fff}
 </style>
 </head>
 <body>
@@ -351,7 +394,8 @@ th.num{text-align:center}
     </div>
   </div>
   <nav id="nav">
-    <button data-v="courses" class="on">الدورات</button>
+    <button data-v="mywork" class="on">أعمالي <span class="nb" id="wkBadge" style="display:none"></span></button>
+    <button data-v="courses">الدورات</button>
     <button data-v="demand">الأكثر طلباً</button>
     <button data-v="staff">الموظفين</button>
     <button data-v="reports">التقارير</button>
@@ -362,7 +406,8 @@ th.num{text-align:center}
 </header>
 
 <main>
-  <section class="view on" id="v-courses"></section>
+  <section class="view on" id="v-mywork"></section>
+  <section class="view" id="v-courses"></section>
   <section class="view" id="v-demand"></section>
   <section class="view" id="v-staff"></section>
   <section class="view" id="v-reports"></section>
@@ -379,7 +424,7 @@ th.num{text-align:center}
 const API = 'https://script.google.com/macros/s/AKfycbz-eLL94d6hIhKEVkBSou_w344_bJGpNlQQqvqe5RT2b5T5eL20fAPJZFX2HoL3EDIkEA/exec';
 
 let PIN = '';
-let VIEW = 'courses';
+let VIEW = 'mywork';
 let STAFF_SEL = '';
 let TRAINER_SEL = '';
 const CACHE = {};
@@ -463,11 +508,205 @@ $('nav').addEventListener('click', e => {
 function show(v){
   VIEW = v;
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
-  $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices') ? 'hidden' : 'visible';
-  ({ courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
+  $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices' || v === 'mywork') ? 'hidden' : 'visible';
+  ({ mywork: loadWork, courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
 }
 function onMonth(){ show(VIEW); }
 function refresh(){ Object.keys(CACHE).forEach(k => { if (k !== 'staffList') delete CACHE[k]; }); show(VIEW); }
+
+
+/* ===== أعمالي (قائمة أعمال المالك + الجدولة) — تنحفظ بتبويب «أعمالي» عن طريق سكربت الحضور ===== */
+const WK_CATS = ['تمكين', 'مسار', 'إيديو كلاود', 'حكومي', 'شخصي', 'أخرى'];
+let WK_TAB = 'todo', WK_CAT = '', WK_EDIT = '', WK_SAVING = false;
+let WKF = { title: '', date: '', time: '', priority: 'عادي', cat: '', repeat: 'بدون', notes: '', done: false, quick: 'today' };
+const wkPad = n => String(n).padStart(2, '0');
+const wkYMD = d => d.getFullYear() + '-' + wkPad(d.getMonth() + 1) + '-' + wkPad(d.getDate());
+const wkAdd = (ymd, n) => { const d = new Date(ymd + 'T12:00:00'); d.setDate(d.getDate() + n); return wkYMD(d); };
+function wkDayLbl(ymd, today){
+  if (!ymd) return '';
+  if (ymd === today) return 'اليوم';
+  if (ymd === wkAdd(today, 1)) return 'بكرة';
+  if (ymd === wkAdd(today, -1)) return 'أمس';
+  const d = new Date(ymd + 'T12:00:00');
+  return DAY_SHORT[d.getDay()] + ' ' + d.getDate() + ' ' + AR_MONTHS[d.getMonth()];
+}
+function wkTime(t){ if (!t) return ''; const [h, m] = t.split(':').map(Number); return (h % 12 || 12) + ':' + wkPad(m) + ' ' + (h < 12 ? 'ص' : 'م'); }
+
+async function loadWork(force){
+  if (!CACHE.work || force) { if (!CACHE.work) loading('v-mywork'); }
+  try{
+    if (!CACHE.work || force) CACHE.work = await napi({ action: 'admin_work_list' });
+    renderWork();
+  }catch(e){
+    $('v-mywork').innerHTML = '<div class="card"><div class="empty">⚠️ ' + esc(e.message) + '<br><br><button class="btn sm" onclick="loadWork(true)">إعادة المحاولة</button></div></div>';
+  }
+}
+function wkBadge(){
+  const d = CACHE.work; if (!d) return;
+  const n = d.list.filter(w => !w.done && w.date && w.date <= d.today).length;
+  const b = $('wkBadge'); if (!b) return;
+  b.style.display = n ? 'inline' : 'none'; b.textContent = n;
+}
+function wkSaveForm(){
+  if (!$('wkTitle')) return;
+  WKF.title = $('wkTitle').value; WKF.time = $('wkTimeIn').value; WKF.priority = $('wkPri').value;
+  WKF.cat = $('wkCat').value; WKF.repeat = $('wkRep').value; WKF.notes = $('wkNotes').value; WKF.done = $('wkDone').checked;
+  if (WKF.quick === 'pick') WKF.date = $('wkDateIn').value;
+}
+function wkQuick(q){ wkSaveForm(); WKF.quick = q; renderWork(); if ($('wkTitle')) $('wkTitle').focus(); }
+
+function renderWork(){
+  const d = CACHE.work, today = d.today, all = d.list;
+  wkBadge();
+  const cats = [...new Set(all.map(w => w.cat).filter(Boolean))];
+  const list = all.filter(w => !WK_CAT || w.cat === WK_CAT);
+  const open = list.filter(w => !w.done);
+  const late = open.filter(w => w.date && w.date < today);
+  const tod = open.filter(w => w.date === today);
+  const week = open.filter(w => w.date > today && w.date <= wkAdd(today, 7));
+  const doneToday = list.filter(w => w.done && String(w.doneAt).slice(0, 10) === today);
+
+  let h = `<div class="wk-hero"><div><h2>أعمالي</h2><p>${wkDayLbl(today, '') || ''} ${fmtDate(today)} · الساعة ${esc(d.now)}</p></div>
+    <div class="wk-stats">
+      <div class="wk-stat"><b style="color:var(--red)">${late.length}</b><span>متأخرة</span></div>
+      <div class="wk-stat"><b style="color:var(--crimson)">${tod.length}</b><span>اليوم</span></div>
+      <div class="wk-stat"><b style="color:var(--blue)">${week.length}</b><span>هالأسبوع</span></div>
+      <div class="wk-stat"><b style="color:var(--green)">${doneToday.length}</b><span>أنجزت اليوم</span></div>
+    </div></div>`;
+
+  /* إضافة */
+  const qd = { today: 'اليوم', tomorrow: 'بكرة', week: 'بعد أسبوع', none: 'بدون تاريخ', pick: 'تاريخ ثاني' };
+  h += `<div class="card">
+    <div class="wk-add">
+      <input class="t" id="wkTitle" placeholder="شنو تبي تسوي؟ (مثال: الاتصال بديوان الخدمة المدنية بخصوص المناقصة)" value="${esc(WKF.title)}" onkeydown="if(event.key==='Enter')wkCreate()">
+      <button class="btn" id="wkBtn" onclick="wkCreate()">إضافة</button>
+    </div>
+    <div class="wk-opts">
+      ${Object.keys(qd).map(k => `<button type="button" class="wk-q ${WKF.quick === k ? 'on' : ''}" onclick="wkQuick('${k}')">${qd[k]}</button>`).join('')}
+      <input type="date" id="wkDateIn" value="${esc(WKF.date)}" style="display:${WKF.quick === 'pick' ? 'inline-block' : 'none'}">
+      <input type="time" id="wkTimeIn" value="${esc(WKF.time)}" title="الوقت (اختياري)">
+      <select id="wkPri">${['عادي', 'مهم', 'عاجل'].map(p => `<option ${WKF.priority === p ? 'selected' : ''}>${p}</option>`).join('')}</select>
+      <select id="wkCat"><option value="">بدون قسم</option>${WK_CATS.map(c => `<option ${WKF.cat === c ? 'selected' : ''}>${c}</option>`).join('')}</select>
+      <select id="wkRep" title="التكرار">${['بدون', 'يومي', 'أسبوعي', 'شهري'].map(r => `<option value="${r}" ${WKF.repeat === r ? 'selected' : ''}>${r === 'بدون' ? 'بدون تكرار' : 'يتكرر ' + r}</option>`).join('')}</select>
+      <button type="button" class="wk-q" onclick="const n=$('wkNotes');n.style.display=n.style.display==='block'?'none':'block'">+ تفاصيل</button>
+      <label class="wk-done-ck"><input type="checkbox" id="wkDone" ${WKF.done ? 'checked' : ''}>أنجزته (سجّله بالمنجز)</label>
+    </div>
+    <textarea class="wk-notes" id="wkNotes" placeholder="تفاصيل أو ملاحظات" style="display:${WKF.notes ? 'block' : 'none'}">${esc(WKF.notes)}</textarea>
+  </div>`;
+
+  /* التبويبات + القسم */
+  const doneN = list.filter(w => w.done).length;
+  h += `<div class="chips">
+    <button class="chip ${WK_TAB === 'todo' ? 'on' : ''}" onclick="WK_TAB='todo';wkSaveForm();renderWork()">المطلوب <small>${open.length}</small></button>
+    <button class="chip ${WK_TAB === 'done' ? 'on' : ''}" onclick="WK_TAB='done';wkSaveForm();renderWork()">المنجز <small>${doneN}</small></button>
+    ${cats.length ? '<span style="width:1px;background:var(--line);margin:0 4px"></span>' + ['', ...cats].map(c => `<button class="chip ${WK_CAT === c ? 'on' : ''}" onclick="WK_CAT='${esc(c)}';wkSaveForm();renderWork()">${c ? esc(c) : 'كل الأقسام'}</button>`).join('') : ''}
+    <button class="chip" onclick="wkSaveForm();loadWork(true)">↻</button>
+  </div>`;
+
+  if (WK_TAB === 'todo'){
+    const sortT = (a, b) => (a.date || '9999').localeCompare(b.date || '9999') || (a.time || '99').localeCompare(b.time || '99') || ({ 'عاجل': 0, 'مهم': 1 }[a.priority] ?? 2) - ({ 'عاجل': 0, 'مهم': 1 }[b.priority] ?? 2);
+    const groups = [
+      ['متأخرة', late, 'late'],
+      ['اليوم', tod, ''],
+      ['بكرة', open.filter(w => w.date === wkAdd(today, 1)), ''],
+      ['هالأسبوع', open.filter(w => w.date > wkAdd(today, 1) && w.date <= wkAdd(today, 7)), ''],
+      ['لاحقاً', open.filter(w => w.date > wkAdd(today, 7)), ''],
+      ['بدون تاريخ', open.filter(w => !w.date), '']
+    ];
+    let any = false;
+    groups.forEach(([t, arr, cls]) => {
+      if (!arr.length) return; any = true;
+      h += `<div class="wk-grp ${cls}"><span>${t}</span><i></i><small>${arr.length}</small></div>` + arr.slice().sort(sortT).map(w => wkItem(w, today)).join('');
+    });
+    if (!any) h += '<div class="card"><div class="empty">ما عندك شي مطلوب 👌 — أضف أول عمل من فوق</div></div>';
+  } else {
+    const done = list.filter(w => w.done).sort((a, b) => String(b.doneAt).localeCompare(String(a.doneAt)));
+    if (!done.length) h += '<div class="card"><div class="empty">ما سجّلت إنجازات للحين</div></div>';
+    const byDay = {};
+    done.forEach(w => { const k = String(w.doneAt).slice(0, 10) || w.date || '—'; (byDay[k] = byDay[k] || []).push(w); });
+    Object.keys(byDay).sort().reverse().forEach(k => {
+      h += `<div class="wk-grp"><span>${k === '—' ? 'بدون تاريخ' : wkDayLbl(k, today)}</span><i></i><small>${byDay[k].length} إنجاز</small></div>` + byDay[k].map(w => wkItem(w, today)).join('');
+    });
+  }
+  $('v-mywork').innerHTML = h;
+}
+function wkItem(w, today){
+  const idx = CACHE.work.list.indexOf(w);
+  const pri = w.priority === 'عاجل' ? 'p-urg' : w.priority === 'مهم' ? 'p-imp' : '';
+  const dateLbl = w.date ? wkDayLbl(w.date, today) : '';
+  let h = `<div class="wk ${pri} ${w.done ? 'done' : ''}">
+    <button class="wk-ck" title="${w.done ? 'رجّعه مفتوح' : 'تم'}" onclick="wkToggle(${idx})">${w.done ? '✓' : ''}</button>
+    <div class="wk-body"><div class="wk-t">${esc(w.title)}</div>
+      <div class="wk-meta">
+        ${dateLbl ? `<span class="pill ${!w.done && w.date < today ? 'p-red' : w.date === today ? 'p-yellow' : 'p-gray'}">📅 ${esc(dateLbl)}</span>` : ''}
+        ${w.time ? `<span class="pill p-blue">⏰ ${wkTime(w.time)}</span>` : ''}
+        ${w.priority !== 'عادي' ? `<span class="pill ${w.priority === 'عاجل' ? 'p-red' : 'p-yellow'}">${esc(w.priority)}</span>` : ''}
+        ${w.cat ? `<span class="pill p-gray">${esc(w.cat)}</span>` : ''}
+        ${w.repeat && w.repeat !== 'بدون' ? `<span class="pill p-gray">🔁 ${esc(w.repeat)}</span>` : ''}
+        ${w.done && w.doneAt ? `<span>أُنجز ${esc(String(w.doneAt).slice(11))}</span>` : ''}
+      </div>
+      ${w.notes ? `<div class="wk-n">${esc(w.notes)}</div>` : ''}
+      ${WK_EDIT === w.id ? `<div class="wk-edit">
+        <input class="full" id="we-t" value="${esc(w.title)}">
+        <input type="date" id="we-d" value="${esc(w.date)}"><input type="time" id="we-h" value="${esc(w.time)}">
+        <select id="we-p">${['عادي', 'مهم', 'عاجل'].map(p => `<option ${w.priority === p ? 'selected' : ''}>${p}</option>`).join('')}</select>
+        <select id="we-c"><option value="">بدون قسم</option>${WK_CATS.map(c => `<option ${w.cat === c ? 'selected' : ''}>${c}</option>`).join('')}</select>
+        <select id="we-r" class="full">${['بدون', 'يومي', 'أسبوعي', 'شهري'].map(r => `<option value="${r}" ${w.repeat === r ? 'selected' : ''}>${r === 'بدون' ? 'بدون تكرار' : 'يتكرر ' + r}</option>`).join('')}</select>
+        <textarea class="full" id="we-n" placeholder="تفاصيل">${esc(w.notes)}</textarea>
+        <button class="btn sm" onclick="wkSaveEdit(${idx})">حفظ</button><button class="btn ghost sm" onclick="WK_EDIT='';renderWork()">إلغاء</button>
+      </div>` : ''}
+    </div>
+    <div class="wk-act">
+      ${!w.done ? `<button title="أجّلها لبكرة" onclick="wkPostpone(${idx})">بكرة ⏭</button>` : ''}
+      <button title="تعديل" onclick="wkSaveForm();WK_EDIT='${esc(w.id)}';renderWork()">✎</button>
+      <button title="حذف" onclick="wkDel(${idx})">🗑</button>
+    </div></div>`;
+  return h;
+}
+async function wkCreate(){
+  if (WK_SAVING) return;
+  wkSaveForm();
+  const title = WKF.title.trim();
+  if (!title){ $('wkTitle').focus(); return toast('اكتب العمل'); }
+  const today = CACHE.work.today;
+  const date = WKF.done ? today : WKF.quick === 'today' ? today : WKF.quick === 'tomorrow' ? wkAdd(today, 1) : WKF.quick === 'week' ? wkAdd(today, 7) : WKF.quick === 'pick' ? WKF.date : '';
+  if (WKF.quick === 'pick' && !date) return toast('اختر التاريخ');
+  WK_SAVING = true; $('wkBtn').disabled = true;
+  try{
+    const r = await napi({ action: 'admin_work_add', title, date, time: WKF.time, priority: WKF.priority, cat: WKF.cat, repeat: WKF.repeat, notes: WKF.notes.trim(), done: WKF.done });
+    toast(r.message || 'انضاف ✓');
+    WKF = { title: '', date: '', time: '', priority: 'عادي', cat: '', repeat: 'بدون', notes: '', done: false, quick: 'today' };
+    await loadWork(true);
+    if ($('wkTitle')) $('wkTitle').focus();
+  }catch(e){ toast(e.message); if ($('wkBtn')) $('wkBtn').disabled = false; }
+  WK_SAVING = false;
+}
+async function wkToggle(i){
+  const w = CACHE.work.list[i]; wkSaveForm();
+  w.done = !w.done; renderWork();
+  try{ const r = await napi({ action: 'admin_work_done', id: w.id, done: w.done }); toast(r.message || 'تم'); loadWork(true); }
+  catch(e){ w.done = !w.done; renderWork(); toast(e.message); }
+}
+async function wkPostpone(i){
+  const w = CACHE.work.list[i], today = CACHE.work.today; wkSaveForm();
+  const nd = wkAdd(w.date && w.date > today ? w.date : today, 1);
+  try{ await napi({ action: 'admin_work_update', id: w.id, date: nd }); toast('تأجلت لـ ' + wkDayLbl(nd, today)); loadWork(true); }
+  catch(e){ toast(e.message); }
+}
+async function wkSaveEdit(i){
+  const w = CACHE.work.list[i];
+  const b = { action: 'admin_work_update', id: w.id, title: $('we-t').value, date: $('we-d').value, time: $('we-h').value,
+              priority: $('we-p').value, cat: $('we-c').value, repeat: $('we-r').value, notes: $('we-n').value };
+  try{ await napi(b); WK_EDIT = ''; toast('تم التعديل ✓'); loadWork(true); }
+  catch(e){ toast(e.message); }
+}
+async function wkDel(i){
+  const w = CACHE.work.list[i];
+  if (!confirm('حذف «' + w.title + '»؟')) return;
+  wkSaveForm();
+  try{ await napi({ action: 'admin_work_delete', id: w.id }); toast('انحذف'); loadWork(true); }
+  catch(e){ toast(e.message); }
+}
 
 /* ===== الدورات ===== */
 async function getCourses(){
