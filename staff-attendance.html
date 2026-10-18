@@ -244,6 +244,25 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .b-imp{background:#FFF8E1;color:#B26A00}
 .b-urg{background:var(--red-bg);color:var(--red)}
 .b-norm{background:var(--cream-2);color:var(--muted)}
+
+/* ===== البريك ===== */
+.brk{margin:10px 0 16px}
+.brk-live{display:none;align-items:center;justify-content:space-between;gap:10px;background:#FFF8E1;border:1.6px solid #F1D48A;border-radius:14px;padding:12px 15px;margin-bottom:10px;font-weight:800;color:#8A5300;font-size:14px}
+.brk-live .tm{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+.brk-live.over{background:var(--red-bg);border-color:#f3c9c9;color:var(--red)}
+.btn.brk-btn{background:#fff;color:#8A5300;border:1.6px solid #E0B85A;box-shadow:none}
+.btn.brk-btn:hover:not(:disabled){background:#FFFBF0}
+.btn.brk-btn.on{background:#B26A00;color:#fff;border-color:#B26A00}
+.btn.brk-btn .spinner{border-color:rgba(178,106,0,.25);border-top-color:#B26A00}
+.btn.brk-btn.on .spinner{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+.brk-sum{font-size:12.5px;color:var(--muted);font-weight:700;text-align:center;margin-top:7px}
+.brk-sum.over{color:var(--red)}
+.log-brk{display:block;font-size:10.5px;color:#8A5300;font-weight:800;margin-top:3px}
+
+/* ===== الشفتات ===== */
+.shift-list{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+.shift-list div{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700;color:var(--muted);padding:3px 2px}
+.shift-list b{color:var(--crimson)}
 </style>
 </head>
 <body>
@@ -315,6 +334,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
           <div class="place" id="outPlace"></div>
         </div>
       </div>
+      <div class="shift-list" id="shiftList"></div>
       <div class="dur-pill" id="durPill"></div>
     </div>
 
@@ -328,6 +348,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <button class="btn" id="btnIn" onclick="punch('checkin')">
           <span id="inTxt">تسجيل الدخول الآن</span><div class="spinner" id="inSp"></div>
         </button>
+        <div class="brk" id="brkBox" style="display:none">
+          <div class="brk-live" id="brkLive"><span>☕ بالبريك من <b id="brkSince">—</b></span><span class="tm" id="brkTimer">00:00</span></div>
+          <button class="btn brk-btn" id="btnBrk" onclick="doBreak()">
+            <span id="brkTxt">☕ بدء البريك</span><div class="spinner" id="brkSp"></div>
+          </button>
+          <div class="brk-sum" id="brkSum"></div>
+        </div>
         <button class="btn out" id="btnOut" onclick="punch('checkout')" style="display:none">
           <span id="outTxt">تسجيل الخروج الآن</span><div class="spinner" id="outSp"></div>
         </button>
@@ -579,13 +606,29 @@ function applyStatus(st){
     document.getElementById('outVal').textContent = '—';
   }
   // الأزرار
-  btnIn.style.display  = st.checkedIn ? 'none' : 'flex';
-  btnOut.style.display = (st.checkedIn && !st.checkedOut) ? 'flex' : 'none';
-  done.style.display   = (st.checkedIn && st.checkedOut) ? 'block' : 'none';
+  var hasNew = st.canCheckin !== undefined;
+  var onShift = hasNew ? !!st.onShift : (st.checkedIn && !st.checkedOut);
+  var canIn   = hasNew ? !!st.canCheckin : !st.checkedIn;
+  var nShift  = (st.shifts || []).length;
+  btnIn.style.display  = canIn ? 'flex' : 'none';
+  document.getElementById('inTxt').textContent = (canIn && nShift) ? 'تسجيل دخول الشفت ' + (nShift + 1) : 'تسجيل الدخول الآن';
+  btnOut.style.display = onShift ? 'flex' : 'none';
+  done.style.display   = (!canIn && !onShift && st.checkedIn) ? 'block' : 'none';
+  var sl = document.getElementById('shiftList');
+  if(sl){
+    if(nShift > 1 || (st.multi && nShift && !onShift)){
+      sl.innerHTML = (st.shifts || []).map(function(x, i){
+        return '<div><span><b>الشفت '+(i+1)+'</b> · '+esc(x.inTime||'—')+' ← '+esc(x.outTime||'لسه')+'</span><span>'+esc(x.duration||'')+'</span></div>';
+      }).join('');
+      sl.style.display = 'block';
+    } else { sl.style.display = 'none'; sl.innerHTML = ''; }
+  }
+
+  applyBreak(st);
 
   // المدة
   if(st.checkedOut && st.duration){
-    durPill.textContent = 'مدة الدوام: ' + st.duration;
+    durPill.textContent = ((st.shifts||[]).length > 1 ? 'مجموع الدوام: ' : 'مدة الدوام: ') + st.duration + (st.breakMins ? ' · البريك: ' + brkFmt(st.breakMins) : '');
     durPill.style.display='block';
   } else { durPill.style.display='none'; }
 }
@@ -611,7 +654,7 @@ function renderHistory(list){
           '<div class="log-t '+inCls+'"><div class="k">دخول</div><div class="v">'+esc(r.inTime||'—')+'</div></div>'+
           '<div class="log-t '+outCls+'"><div class="k">خروج</div><div class="v">'+esc(r.outTime||'—')+'</div></div>'+
         '</div>'+
-        '<div class="log-dur">'+esc(r.duration||'')+'</div>'+
+        '<div class="log-dur">'+esc(r.duration||'')+(r.breakTotal?'<span class="log-brk">☕ '+esc(r.breakTotal)+'</span>':'')+(r.shiftCount>1?'<span class="log-brk">'+r.shiftCount+' شفت</span>':'')+'</div>'+
       '</div>';
   }
   box.innerHTML = html;
@@ -713,9 +756,60 @@ function punch(action){
     /* الطلب ممكن يكون وصل للخادم والرد تأخر — نتأكد من الحالة الفعلية */
     refreshStatus(true).then(function(st){
       if(!st){ toast('تعذّر الاتصال بالخادم — حاول مرة ثانية', true); return; }
-      var done = which==='in' ? st.checkedIn : st.checkedOut;
+      var done = st.onShift !== undefined ? (which==='in' ? st.onShift : !st.onShift) : (which==='in' ? st.checkedIn : st.checkedOut);
       if(done) toast('تم تسجيل '+label+' ✓', false);
       else toast((e && e.kind==='timeout' ? 'الخادم تأخر بالرد' : 'تعذّر الاتصال')+' — لم يُسجَّل '+label+'، حاول مرة ثانية', true);
+    });
+  });
+}
+
+
+/* ================== البريك ================== */
+var BRK = { on:false, start:0, limit:30, done:0, timer:null };
+function brkFmt(m){ m = Math.round(m||0); return m < 60 ? m+' د' : Math.floor(m/60)+' س '+('0'+(m%60)).slice(-2)+' د'; }
+function applyBreak(st){
+  var box = document.getElementById('brkBox'); if(!box) return;
+  var working = st.onShift !== undefined ? !!st.onShift : (st.checkedIn && !st.checkedOut);
+  box.style.display = (working && (st.breakAllowed !== false || st.onBreak)) ? 'block' : 'none';
+  BRK.on = !!st.onBreak; BRK.limit = st.breakLimit || 30; BRK.done = st.breakMins || 0;
+  BRK.start = BRK.on ? Date.now() - (st.breakElapsedSec || 0)*1000 : 0;
+  var btn = document.getElementById('btnBrk');
+  btn.classList.toggle('on', BRK.on);
+  document.getElementById('brkTxt').textContent = BRK.on ? 'إنهاء البريك' : '☕ بدء البريك';
+  document.getElementById('brkSince').textContent = st.breakSince || '—';
+  document.getElementById('brkLive').style.display = (working && BRK.on) ? 'flex' : 'none';
+  var sum = document.getElementById('brkSum');
+  if(st.breakCount && (st.breakMins || !BRK.on)){
+    sum.textContent = 'مجموع بريكك اليوم: ' + brkFmt(st.breakMins) + (st.breakMins > BRK.limit ? ' — أكثر من المسموح ('+BRK.limit+' د)' : ' من '+BRK.limit+' د مسموحة');
+    sum.className = 'brk-sum' + (st.breakMins > BRK.limit ? ' over' : '');
+  } else {
+    sum.textContent = 'البريك المسموح باليوم: ' + BRK.limit + ' دقيقة'; sum.className = 'brk-sum';
+  }
+  if(BRK.timer){ clearInterval(BRK.timer); BRK.timer = null; }
+  if(working && BRK.on){ brkTick(); BRK.timer = setInterval(brkTick, 1000); }
+}
+function brkTick(){
+  var sec = Math.max(0, Math.floor((Date.now() - BRK.start)/1000));
+  var h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s2 = sec%60;
+  document.getElementById('brkTimer').textContent = (h ? h+':' : '') + ('0'+m).slice(-2) + ':' + ('0'+s2).slice(-2);
+  document.getElementById('brkLive').classList.toggle('over', (BRK.done*60 + sec) > BRK.limit*60);
+}
+function doBreak(){
+  var action = BRK.on ? 'breakEnd' : 'breakStart';
+  if(action==='breakEnd' && !confirm('إنهاء البريك والرجوع للدوام؟')) return;
+  setBtn('brk', true);
+  api({ action:action, name:CUR.name, pass:CUR.pass }, 30000).then(function(res){
+    setBtn('brk', false);
+    if(res && res.status) applyStatus(res.status);
+    if(res && res.history) renderHistory(res.history);
+    toast((res && res.message) || (res && res.ok ? 'تم ✓' : 'تعذّر الطلب'), !(res && res.ok));
+  }).catch(function(){
+    setBtn('brk', false);
+    toast('جاري التأكد...', false);
+    refreshStatus(true).then(function(st){
+      if(!st){ toast('تعذّر الاتصال بالخادم — حاول مرة ثانية', true); return; }
+      var ok = action==='breakStart' ? st.onBreak : !st.onBreak;
+      toast(ok ? (action==='breakStart' ? 'بدأ البريك ✓' : 'انتهى البريك ✓') : 'ما تسجّل — حاول مرة ثانية', !ok);
     });
   });
 }
@@ -725,7 +819,8 @@ function setBtn(key, loading){
   var map = {
     login:['loginBtn','loginTxt','loginSp'],
     in:['btnIn','inTxt','inSp'],
-    out:['btnOut','outTxt','outSp']
+    out:['btnOut','outTxt','outSp'],
+    brk:['btnBrk','brkTxt','brkSp']
   };
   var ids = map[key]; if(!ids) return;
   document.getElementById(ids[0]).disabled = loading;

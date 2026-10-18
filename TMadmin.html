@@ -300,6 +300,32 @@ th.num{text-align:center}
 .pl-sign div{flex:1;text-align:center;font-weight:800}
 .pl-sign i{display:block;border-top:1.5px solid #999;margin-top:46px;padding-top:4px;font-style:normal;font-weight:500;font-size:12px;color:#7A6060}
 .pl-foot{margin-top:28px;border-top:1px solid #DDD0C4;padding-top:8px;font-size:11px;color:#7A6060;text-align:center}
+
+/* ===== إعدادات البصمة والبريك ===== */
+.set-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.set-row b{flex:1;min-width:120px}
+.set-row .hint{font-size:11.5px;color:var(--muted);font-weight:500;display:block;margin-top:2px}
+.tg{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;cursor:pointer;user-select:none}
+.tg input{display:none}
+.tg i{width:38px;height:22px;border-radius:20px;background:#D9CFCF;position:relative;transition:.15s;flex-shrink:0}
+.tg i:after{content:'';position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.tg input:checked+i{background:var(--crimson)}
+.tg input:checked+i:after{right:19px}
+.set-lim{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-weight:700}
+.set-lim input{width:70px;padding:6px 8px;border-radius:9px;border:1.5px solid var(--line);background:var(--cream);text-align:center;outline:none}
+.set-lim input:disabled{opacity:.4}
+
+/* ===== PDF التقارير ===== */
+.rep-pdf{margin-right:auto;border:1px solid var(--line);background:#fff;color:var(--crimson);border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.rep-pdf:hover{background:var(--crimson);color:#fff}
+.pl-rep{break-inside:avoid-page;margin-bottom:18px}
+.pl-rep + .pl-rep{break-before:page}
+.pl-rep .rep-f{margin:10px 0}
+.pl-rep .rep-f h5{font-size:13.5px;color:#5C0F0F;margin-bottom:4px}
+.pl-rep table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.pl-rep th{background:#F6EFE9!important;color:#5C0F0F;border:1px solid #DDD0C4;padding:6px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pl-rep td{border:1px solid #DDD0C4;padding:6px}
+.pl-rep .v{white-space:pre-wrap;font-size:13px}
 </style>
 </head>
 <body>
@@ -546,7 +572,11 @@ async function loadStaff(){
   try{
     const ym = M() === 'all' ? new Date().toISOString().slice(0, 7) : M();
     const k = 's_' + ym;
-    if (!CACHE[k]) CACHE[k] = await api({ action: 'staff', month: ym });
+    const bk = 'b_' + ym;
+    await Promise.all([
+      CACHE[k] ? null : api({ action: 'staff', month: ym }).then(d => { CACHE[k] = d; }),
+      CACHE[bk] ? null : napi({ action: 'admin_breaks', month: ym }).then(d => { CACHE[bk] = d; }, e => { CACHE[bk] = { ok: false, err: e.message, byEmp: {} }; })
+    ]);
     renderStaff(CACHE[k]);
   }catch(e){ errBox('v-staff', e.message); }
 }
@@ -566,16 +596,23 @@ function renderStaff(d){
   if (!d.staff.length){ $('v-staff').innerHTML = '<div class="card"><div class="empty">ما فيه موظفين في تبويب «موظفو المبيعات»</div></div>'; return; }
   if (!STAFF_SEL || !d.staff.some(s => s.name === STAFF_SEL)) STAFF_SEL = d.staff[0].name;
   const isCur = d.today && d.today.slice(0, 7) === d.month;
+  const BK = CACHE['b_' + d.month] || { byEmp: {} };
+  const bOf = n => (BK.byEmp || {})[nqN(n)] || { total: 0, count: 0, over: 0, days: {}, limit: BK.limit || 30 };
   let h = (M() === 'all' ? '<p class="note-line">الحضور يُعرض شهر بشهر — معروض الشهر الحالي</p>' : '') +
     `<div class="staff-bar"><div class="chips">` + d.staff.map(s =>
       `<button class="chip ${s.name === STAFF_SEL ? 'on' : ''}" onclick="pickStaff('${esc(s.name).replace(/'/g, "\\'")}')">${esc(s.name)}<small>${s.absent ? '· غياب ' + s.absent : ''}${s.late ? ' · تأخير ' + s.late : ''}</small></button>`).join('') +
-    `</div><button class="btn ghost sm" onclick="openSched()">⚙︎ أوقات الدوام</button></div>`;
+    `</div><button class="btn ghost sm" onclick="openSched()">⚙︎ أوقات الدوام</button><button class="btn ghost sm" onclick="openPunchSet()">☕ البصمة والبريك</button></div>`;
 
   if (isCur){
     h += `<div class="card"><h3>حضور اليوم <span class="sub">${DAYS_AR[new Date(d.today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || ''} ${fmtDate(d.today)} · الساعة ${esc(d.now)}</span></h3>` +
       d.staff.map(s => `<div class="today-row"><b>${esc(s.name)}</b>
         <span class="t">${s.today && s.today.sessions ? s.today.sessions.map(x => esc(x.in || '—') + ' ← ' + esc(x.out || '…')).join('<br>') : ''}</span>
-        <span class="t">${perTxt(s.shift)}</span>${todayPill(s.today)}
+        <span class="t">${perTxt(s.shift)}</span>${todayPill(s.today)}${(() => {
+          const t = bOf(s.name).days[d.today];
+          if (!t) return '';
+          if (t.open) return ` <span class="pill p-blue">☕ بالبريك من ${esc(t.since)}</span>`;
+          return ` <span class="pill ${t.mins > bOf(s.name).limit ? 'p-red' : 'p-gray'}">☕ بريك ${minTxt(t.mins)}</span>`;
+        })()}
         ${s.today && s.today.status !== 'off' && s.today.status !== 'holiday' ? (s.today.reported ? '<span class="pill p-green">سلّم التقرير</span>' : '<span class="pill p-gray">ما سلّم التقرير</span>') : ''}</div>`).join('') + '</div>';
   }
 
@@ -592,7 +629,8 @@ function renderStaff(d){
       ${s.shift.periods.length > 1 ? `<div class="kpi"><div class="n" style="color:var(--red)">${s.missed}</div><div class="l">فترة فايتة</div><div class="s">حضر يوم وغاب فترة</div></div>` : ''}
       <div class="kpi"><div class="n">${s.hours}</div><div class="l">ساعة دوام</div><div class="s">معدل ${s.avgHours} س/يوم</div></div>
       <div class="kpi"><div class="n" style="color:var(--muted)">${s.incomplete}</div><div class="l">يوم ناقص</div><div class="s">بدون تسجيل خروج</div></div>
-    </div></div>`;
+      <div class="kpi"><div class="n" style="color:var(--blue)">${minTxt(bOf(s.name).total)}</div><div class="l">مجموع البريك</div><div class="s">${bOf(s.name).count} بريك${bOf(s.name).over ? ' · تجاوز الحد ' + bOf(s.name).over + ' يوم' : ''}</div></div>
+    </div>${BK.ok === false ? `<p class="note-line" style="margin:10px 0 0">⚠️ ما قدرت أجيب البريكات: ${esc(BK.err || '')}</p>` : ''}</div>`;
 
   if (s.absentDays.length){
     h += `<div class="card"><h3>أيام الغياب <span class="sub">${s.absentDays.length} يوم</span></h3><div class="absent-list">` +
@@ -613,7 +651,7 @@ function renderStaff(d){
 
   h += `<div class="card"><h3>سجل الدوام</h3>`;
   if (!s.days.length) h += '<div class="empty">ما فيه تسجيل دوام بهالشهر</div>';
-  else h += `<div class="tbl-wrap"><table><thead><tr><th>اليوم</th><th>التاريخ</th><th>الدخول</th><th>الخروج</th><th class="num">المدة</th><th></th></tr></thead><tbody>` +
+  else h += `<div class="tbl-wrap"><table><thead><tr><th>اليوم</th><th>التاريخ</th><th>الدخول</th><th>الخروج</th><th class="num">البريك</th><th class="num">المدة</th><th></th></tr></thead><tbody>` +
     s.days.map(x => {
       const hh = Math.floor(x.mins / 60), mm = x.mins % 60;
       const bad = x.sessions.some(z => !z.out) || !x.mins;
@@ -626,6 +664,9 @@ function renderStaff(d){
       const missed = per.filter(q => q.missed).map(q => `<span class="pill p-red">غاب فترة ${ltr(q.label)}</span>`).join(' ');
       return `<tr><td>${DAYS_AR[x.dayName] || x.dayName}${x.holiday ? ' <span class="pill p-blue">عطلة</span>' : x.offDay ? ' <span class="pill p-gray">مو يوم دوامه</span>' : ''}${missed ? '<br>' + missed : ''}</td><td style="white-space:nowrap">${fmtDate(x.date)}</td>
         <td>${inCol}</td><td>${outCol}</td>
+        <td class="num">${(() => { const t = bOf(s.name).days[x.date]; if (!t) return '—';
+          const tip = (t.list || []).map(b => b.start + ' ← ' + (b.end || 'مفتوح')).join(' | ');
+          return `<span class="pill ${t.open ? 'p-blue' : t.mins > bOf(s.name).limit ? 'p-red' : 'p-gray'}" title="${esc(tip)}">${t.open ? 'بالبريك' : minTxt(t.mins)}${t.count > 1 ? ' ×' + t.count : ''}</span>`; })()}</td>
         <td class="num">${bad ? '—' : hh + ' س ' + String(mm).padStart(2, '0') + ' د'}</td>
         <td>${/^https?:/.test(x.map) ? `<a href="${esc(x.map)}" target="_blank" rel="noopener" style="color:var(--crimson)">الموقع</a>` : ''}</td></tr>`;
     }).join('') + '</tbody></table></div>';
@@ -634,6 +675,45 @@ function renderStaff(d){
   $('v-staff').innerHTML = h;
 }
 function pickStaff(n){ STAFF_SEL = n; loadStaff(); }
+
+
+/* ===== إعدادات البصمة والبريك (تنحفظ بسكربت الحضور) ===== */
+let PSET = null;
+async function openPunchSet(){
+  loading('v-staff');
+  try{
+    const d = await napi({ action: 'admin_settings' });
+    PSET = { list: d.staff, def: d.defaultLimit || 30 };
+    renderPunchSet();
+  }catch(e){ errBox('v-staff', e.message); }
+}
+function renderPunchSet(){
+  const ym = M() === 'all' ? new Date().toISOString().slice(0, 7) : M();
+  const sv = CACHE['s_' + ym], per = {};
+  ((sv && sv.staff) || []).forEach(x => { per[nqN(x.name)] = x.shift && x.shift.periods ? x.shift.periods.length : 1; });
+  let h = `<div class="staff-bar"><h2 style="font-size:19px;font-weight:900;color:var(--crimson);flex:1">☕ البصمة والبريك</h2>
+      <button class="btn ghost sm" onclick="PSET=null;loadStaff()">رجوع</button></div>
+    <div class="card"><h3>لكل موظف <span class="sub">التغيير يطبق على صفحة الموظف فوراً بعد الحفظ</span></h3>
+      <p class="note-line" style="margin:0 0 12px">«شفتين» = يقدر يسجّل دخول وخروج أكثر من مرة باليوم. الباقين بصمة دخول وحدة وبصمة خروج وحدة.</p>` +
+    PSET.list.map((x, i) => {
+      const p = per[nqN(x.name)] || 1;
+      return `<div class="set-row"><b>${esc(x.name)}${p > 1 ? `<span class="hint">دوامه ${p} فترات${x.multi ? '' : ' — فعّل له الشفتين'}</span>` : ''}</b>
+        <label class="tg"><input type="checkbox" ${x.multi ? 'checked' : ''} onchange="PSET.list[${i}].multi=this.checked"><i></i>شفتين</label>
+        <label class="tg"><input type="checkbox" ${x.breakAllowed ? 'checked' : ''} onchange="PSET.list[${i}].breakAllowed=this.checked;document.getElementById('lim${i}').disabled=!this.checked"><i></i>البريك</label>
+        <span class="set-lim">الحد <input id="lim${i}" type="number" min="1" max="480" value="${x.breakLimit}" ${x.breakAllowed ? '' : 'disabled'} onchange="PSET.list[${i}].breakLimit=+this.value||${PSET.def}"> دقيقة باليوم</span>
+      </div>`;
+    }).join('') + `</div>
+    <div class="sch-save"><button class="btn" id="psBtn" onclick="savePunchSet()">حفظ الإعدادات</button><button class="btn ghost" style="background:#fff" onclick="openPunchSet()">تراجع</button></div>`;
+  $('v-staff').innerHTML = h;
+}
+async function savePunchSet(){
+  $('psBtn').disabled = true;
+  try{
+    await napi({ action: 'admin_saveSettings', list: PSET.list });
+    Object.keys(CACHE).forEach(k => { if (k.indexOf('b_') === 0) delete CACHE[k]; });
+    PSET = null; toast('تم حفظ الإعدادات ✓'); loadStaff();
+  }catch(e){ toast(e.message); $('psBtn').disabled = false; }
+}
 
 /* ===== إعدادات أوقات الدوام ===== */
 let SCH = null;
@@ -757,20 +837,55 @@ async function loadReports(){
     renderReports(CACHE[k]);
   }catch(e){ errBox('v-reports', e.message); }
 }
+/* أسماء أقسام وحقول التقارير بالعربي (من نماذج صفحة الموظف) */
+const REP_SEC = {"inquiries": "الاستفسارات والتواصل", "topics": "أكثر استفسار كان على", "rooms": "التشغيل — القاعات المشغّلة", "staff": "حضور الموظفين", "newsubs": "الاشتراكات الجديدة اليوم", "expiring": "اشتراكات قاربت على الانتهاء", "solved": "مشكلة تم حلها", "urgent": "مشكلة تحتاج حل سريع", "income": "الأهداف — المدخول اليومي", "contacts": "التواصل مع الأعضاء", "bookings": "طلبات حجز الدورات", "tomorrow": "دورات الغد", "certs": "الشهادات قيد الدفع", "inst": "الدورات المؤسسية", "visits": "زيارات ولقاءات الجهات", "requests": "طلبات الجهات", "sales": "بيانات البيع اليوم", "followup": "عملاء المتابعة", "notinterested": "عملاء لم يهتموا", "recommend": "توصيات لتحسين البيع", "problems": "أبرز مشكلات اليوم"};
+const REP_COL = {"total": "إجمالي الاستفسارات", "calls": "عدد الاتصالات", "wa": "رسائل الواتساب", "topic": "نوع الاستفسار", "detail": "تفصيل (اختياري)", "count": "العدد التقريبي", "room": "القاعة أو الشعبة", "stage": "المرحلة / المادة", "teacher": "المعلم", "students": "عدد الطلبة", "present": "الحضور الفعلي", "note": "ملاحظة (اختياري)", "name": "اسم الموظف", "state": "الحالة", "student": "اسم الطالب", "plan": "نوع الاشتراك", "fee": "الرسوم", "pay": "طريقة الدفع", "ends": "تاريخ الانتهاء", "contacted": "تم التواصل؟", "reply": "الرد", "advice": "التوصية", "problem": "المشكلة", "solution": "كيف تم الحل", "need": "المطلوب من الإدارة", "level": "الأولوية", "cash": "كاش", "knet": "كي نت", "link": "لنك", "taly": "تالي", "member": "اسم العضو", "reason": "سبب التواصل", "result": "الوصف النهائي", "trainer": "اسم المدرب", "course": "اسم الدورة", "membership": "حالة العضوية", "date": "تاريخ الدورة", "mode": "نظام الدورة", "ctype": "نوع الدورة", "regs": "عدد المسجلين", "certs": "مستخرجو الشهادة", "remind": "حالة التذكير", "confirm": "التأكيد مع المدرب", "client": "اسم العميل", "contact": "حالة التواصل", "provider": "مقدم الدورة", "org": "اسم الجهة", "entity": "الجهة", "dept": "القسم", "withwho": "مع مَن", "offered": "ما عُرض عليهم", "reaction": "ردة الفعل", "request": "الطلب المحدد", "phone": "رقم التلفون", "before": "حالته قبل الاتصال", "next": "تاريخ التواصل القادم", "service": "اسم الخدمة"};
+const REP_SCOL = {"inquiries": {"total": "إجمالي الاستفسارات", "calls": "عدد الاتصالات", "wa": "رسائل الواتساب"}, "topics": {"topic": "نوع الاستفسار", "detail": "تفصيل (اختياري)", "count": "العدد التقريبي"}, "rooms": {"room": "القاعة أو الشعبة", "stage": "المرحلة / المادة", "teacher": "المعلم", "students": "عدد الطلبة", "present": "الحضور الفعلي", "note": "ملاحظة (اختياري)"}, "staff": {"name": "اسم الموظف", "state": "الحالة", "note": "ملاحظة (اختياري)"}, "newsubs": {"student": "اسم الطالب", "stage": "المرحلة", "plan": "نوع الاشتراك", "fee": "الرسوم", "pay": "طريقة الدفع"}, "expiring": {"student": "اسم الطالب", "ends": "تاريخ الانتهاء", "contacted": "تم التواصل؟", "reply": "الرد", "advice": "التوصية"}, "solved": {"problem": "المشكلة", "solution": "كيف تم الحل"}, "urgent": {"problem": "المشكلة", "need": "المطلوب من الإدارة", "level": "الأولوية"}, "income": {"cash": "كاش", "knet": "كي نت", "link": "لنك", "taly": "تالي", "total": "إجمالي المدخول"}, "contacts": {"member": "اسم العضو", "reason": "سبب التواصل", "result": "الوصف النهائي"}, "bookings": {"trainer": "اسم المدرب", "course": "اسم الدورة", "membership": "حالة العضوية", "date": "تاريخ الدورة", "mode": "نظام الدورة", "ctype": "نوع الدورة"}, "tomorrow": {"course": "اسم الدورة", "regs": "عدد المسجلين", "certs": "مستخرجو الشهادة", "remind": "حالة التذكير", "confirm": "التأكيد مع المدرب", "mode": "نظام الدورة"}, "certs": {"client": "اسم العميل", "course": "اسم الدورة", "contact": "حالة التواصل"}, "inst": {"course": "اسم الدورة", "provider": "مقدم الدورة", "membership": "حالة العضوية", "org": "اسم الجهة"}, "visits": {"entity": "الجهة", "dept": "القسم", "withwho": "مع مَن", "offered": "ما عُرض عليهم", "reaction": "ردة الفعل"}, "requests": {"entity": "الجهة", "request": "الطلب المحدد"}, "sales": {"client": "اسم العميل", "phone": "رقم التلفون", "course": "الدورة المسجّل فيها", "before": "حالته قبل الاتصال"}, "followup": {"client": "اسم العميل", "phone": "رقم التلفون", "next": "تاريخ التواصل القادم"}, "notinterested": {"client": "اسم العميل", "phone": "رقم التلفون", "service": "اسم الخدمة", "reason": "سبب الرفض"}, "recommend": {}, "problems": {"problem": "المشكلة", "solution": "كيف تم الحل"}};
+const REP_TYPES = {"center": "تقرير المركز التعليمي", "operations": "تقرير العمليات", "pr": "تقرير العلاقات العامة", "sales": "تقرير المبيعات"};
+const repType = t => REP_TYPES[t] || t;
+let REP_CUR = '';
+const repLbl = k => (REP_CUR && REP_SCOL[REP_CUR] && REP_SCOL[REP_CUR][k]) || REP_COL[k] || REP_SEC[k] || k;
+function repCell(x){
+  if (x == null) return '';
+  if (typeof x === 'object') return Array.isArray(x) ? x.map(repCell).join('، ') : Object.keys(x).map(k => repLbl(k) + ': ' + repCell(x[k])).join(' · ');
+  return String(x);
+}
+function repTable(arr){
+  arr = arr.filter(x => x && typeof x === 'object' && Object.keys(x).some(k => String(x[k] == null ? '' : x[k]).trim() !== ''));
+  if (!arr.length) return '';
+  const keys = [...new Set(arr.flatMap(Object.keys))].filter(k => arr.some(x => String(x[k] == null ? '' : x[k]).trim() !== ''));
+  return `<div class="tbl-wrap"><table><thead><tr>${keys.map(k => `<th>${esc(repLbl(k))}</th>`).join('')}</tr></thead><tbody>${arr.map(x => `<tr>${keys.map(k => `<td>${esc(repCell(x[k]))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+/* يرجّع '' لو القيمة فاضية (عشان البند ما ينعرض أصلاً) */
 function repValue(v){
   const s = String(v).trim();
+  if (!s) return '';
   if (/^[\[{]/.test(s)){
     try{
-      const j = JSON.parse(s), arr = Array.isArray(j) ? j : [j];
-      if (arr.length && arr.every(x => x && typeof x === 'object' && !Array.isArray(x))){
-        const keys = [...new Set(arr.flatMap(Object.keys))];
-        return `<div class="tbl-wrap"><table><thead><tr>${keys.map(k => `<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${arr.map(x => `<tr>${keys.map(k => `<td>${esc(typeof x[k] === 'object' ? JSON.stringify(x[k]) : (x[k] == null ? '' : x[k]))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+      const j = JSON.parse(s);
+      /* كائن أقسام: { inquiries:[...], topics:[...] } ← كل قسم بعنوانه، والفاضي ينشال */
+      if (j && typeof j === 'object' && !Array.isArray(j)){
+        const parts = Object.keys(j).map(k => {
+          const val = j[k];
+          REP_CUR = k;
+          let body = '';
+          if (Array.isArray(val)) body = val.length && typeof val[0] === 'object' ? repTable(val) : (val.filter(x => String(x).trim()).length ? `<div class="v">${esc(val.join('\n'))}</div>` : '');
+          else if (val && typeof val === 'object') body = repTable([val]);
+          else if (String(val == null ? '' : val).trim()) body = `<div class="v">${esc(val)}</div>`;
+          REP_CUR = '';
+          return body ? `<div style="margin-top:8px"><div style="font-size:12.5px;font-weight:800;color:var(--crimson);margin-bottom:4px">${esc(repLbl(k))}</div>${body}</div>` : '';
+        }).join('');
+        return parts;
       }
-      if (Array.isArray(j)) return `<div class="v">${esc(j.join('\n'))}</div>`;
+      if (Array.isArray(j)){
+        if (j.every(x => x && typeof x === 'object')) return repTable(j);
+        return j.filter(x => String(x).trim()).length ? `<div class="v">${esc(j.join('\n'))}</div>` : '';
+      }
     }catch(e){}
   }
   return `<div class="v">${esc(s)}</div>`;
 }
+const repHead = h => /json/i.test(h) ? 'تفاصيل التقرير' : h;
 function renderReports(d){
   if (!d.found){ $('v-reports').innerHTML = '<div class="card"><div class="empty">ما لقيت تبويب «التقارير اليومية» في شيت مسار ولا تمكين</div></div>'; return; }
   const authors = [...new Set(d.reports.map(r => r.author).filter(Boolean))];
@@ -784,15 +899,37 @@ function renderReports(d){
       `<div class="kpi"><div class="n">${per[a]}</div><div class="l">${esc(a)}</div><div class="s">تقرير · ${monthLabel(d.month)}</div></div>`).join('') || '<div class="kpi"><div class="n">0</div><div class="l">تقرير</div></div>'}</div>
     <div class="rep-filters">
       <select onchange="REP_WHO=this.value;renderReports(CACHE['r_${d.month}'])"><option value="">كل الموظفين</option>${authors.map(a => `<option ${a === REP_WHO ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>
-      ${types.length ? `<select onchange="REP_TYPE=this.value;renderReports(CACHE['r_${d.month}'])"><option value="">كل الأنواع</option>${types.map(a => `<option ${a === REP_TYPE ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>` : ''}
+      ${types.length ? `<select onchange="REP_TYPE=this.value;renderReports(CACHE['r_${d.month}'])"><option value="">كل الأنواع</option>${types.map(a => `<option value="${esc(a)}" ${a === REP_TYPE ? 'selected' : ''}>${esc(repType(a))}</option>`).join('')}</select>` : ''}
       <span class="pill p-gray">${list.length} تقرير</span>
+      ${list.length ? `<button class="btn sm" onclick="repPdf(-1)">⬇ تحميل PDF ${list.length > 1 ? '(' + list.length + ' تقرير)' : ''}</button>` : ''}
     </div>`;
   h += list.length ? list.map((r, i) => `<div class="rep">
       <div class="rep-h" onclick="const b=this.nextElementSibling;b.hidden=!b.hidden"><span class="pill p-red" style="background:var(--cream-2);color:var(--crimson)">${DAYS_AR[new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || ''} ${fmtDate(r.date)}</span>
-        <b>${esc(r.author || 'بدون اسم')}</b>${r.type ? `<span class="pill p-gray">${esc(r.type)}</span>` : ''}<span style="font-size:12px;color:var(--muted)">${r.fields.length} بند</span></div>
-      <div class="rep-b" ${i === 0 ? '' : 'hidden'}>${r.fields.map(f => `<div class="rep-f"><h5>${esc(f.h)}</h5>${repValue(f.v)}</div>`).join('') || '<div style="color:var(--muted)">تقرير فاضي</div>'}</div>
+        <b>${esc(r.author || 'بدون اسم')}</b>${r.type ? `<span class="pill p-gray">${esc(repType(r.type))}</span>` : ''}<span style="font-size:12px;color:var(--muted)">${r.fields.length} بند</span><button class="rep-pdf" onclick="event.stopPropagation();repPdf(${i})">PDF ⬇</button></div>
+      <div class="rep-b" ${i === 0 ? '' : 'hidden'}>${r.fields.map(f => { const v = repValue(f.v); return v ? `<div class="rep-f"><h5>${esc(repHead(f.h))}</h5>${v}</div>` : ''; }).join('') || '<div style="color:var(--muted)">تقرير فاضي</div>'}</div>
     </div>`).join('') : '<div class="card"><div class="empty">ما فيه تقارير بهالشهر</div></div>';
+  REP_LIST = list; REP_MONTH = d.month;
   $('v-reports').innerHTML = h;
+}
+let REP_LIST = [], REP_MONTH = '';
+/* PDF: يفتح نافذة الطباعة — اختار «حفظ كـ PDF» */
+function repPdf(i){
+  const list = i < 0 ? REP_LIST : [REP_LIST[i]];
+  if (!list.length) return;
+  const who = [...new Set(list.map(r => r.author).filter(Boolean))];
+  const title = list.length === 1 ? 'تقرير يومي' : 'التقارير اليومية — ' + monthLabel(REP_MONTH);
+  const one = r => `<div class="pl-rep">
+      <div class="pl-head"><div><div class="pl-org">معهد تمكين للتدريب الأهلي</div>
+        <div class="pl-sub">${esc(title)}${who.length === 1 ? ' · ' + esc(who[0]) : ''}</div></div>
+        <div class="pl-ref">${esc(DAYS_AR[new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long' })] || '')} ${fmtDate(r.date)}</div></div>
+      <table class="pl-meta" style="margin-top:14px"><tr><td>الموظف</td><td>${esc(r.author || '—')}</td></tr>${r.type ? `<tr><td>نوع التقرير</td><td>${esc(repType(r.type))}</td></tr>` : ''}</table>
+      ${r.fields.map(f => { const v = repValue(f.v); return v ? `<div class="rep-f"><h5>${esc(repHead(f.h))}</h5>${v}</div>` : ''; }).join('') || '<p>تقرير فاضي</p>'}
+    </div>`;
+  $('printArea').innerHTML = '<div class="pl">' + list.map(one).join('') + '</div>';
+  const old = document.title;
+  document.title = (who.length === 1 ? who[0] + ' — ' : '') + (list.length === 1 ? 'تقرير ' + list[0].date : 'تقارير ' + REP_MONTH);
+  window.print();
+  setTimeout(() => { document.title = old; }, 1000);
 }
 
 /* ===== المدربين ===== */
