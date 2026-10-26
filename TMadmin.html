@@ -369,6 +369,17 @@ th.num{text-align:center}
 .wk-edit .full{grid-column:1/-1}
 nav button .nb{background:#fff;color:var(--crimson);border-radius:20px;padding:0 7px;font-size:11px;font-weight:900;margin-right:5px}
 nav button.on .nb{background:var(--crimson);color:#fff}
+
+/* ===== إيديو كلاود ===== */
+.edu-tbl tr.click{cursor:pointer}
+.edu-tbl tr.open td{background:#FFFCF8}
+.edu-sub td{background:#FFFCF8!important;padding:0 10px 12px}
+.edu-sub table{font-size:13px}
+.edu-sub th{background:#fff;font-size:12px}
+.edu-money{font-weight:900;color:var(--green);white-space:nowrap}
+.edu-x{opacity:.5;text-decoration:line-through}
+.edu-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.edu-tools .search{margin:0;flex:1;min-width:200px}
 </style>
 </head>
 <body>
@@ -396,6 +407,7 @@ nav button.on .nb{background:var(--crimson);color:#fff}
   <nav id="nav">
     <button data-v="mywork" class="on">أعمالي <span class="nb" id="wkBadge" style="display:none"></span></button>
     <button data-v="courses">الدورات</button>
+    <button data-v="edu">إيديو كلاود</button>
     <button data-v="demand">الأكثر طلباً</button>
     <button data-v="staff">الموظفين</button>
     <button data-v="reports">التقارير</button>
@@ -408,6 +420,7 @@ nav button.on .nb{background:var(--crimson);color:#fff}
 <main>
   <section class="view on" id="v-mywork"></section>
   <section class="view" id="v-courses"></section>
+  <section class="view" id="v-edu"></section>
   <section class="view" id="v-demand"></section>
   <section class="view" id="v-staff"></section>
   <section class="view" id="v-reports"></section>
@@ -509,7 +522,7 @@ function show(v){
   VIEW = v;
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
   $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices' || v === 'mywork') ? 'hidden' : 'visible';
-  ({ mywork: loadWork, courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
+  ({ mywork: loadWork, edu: loadEdu, courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
 }
 function onMonth(){ show(VIEW); }
 function refresh(){ Object.keys(CACHE).forEach(k => { if (k !== 'staffList') delete CACHE[k]; }); show(VIEW); }
@@ -706,6 +719,96 @@ async function wkDel(i){
   wkSaveForm();
   try{ await napi({ action: 'admin_work_delete', id: w.id }); toast('انحذف'); loadWork(true); }
   catch(e){ toast(e.message); }
+}
+
+
+/* ===== إيديو كلاود — الطلاب والمدرسين (قراءة فقط من شيت Educloud) ===== */
+let EDU_TAB = 'teachers', EDU_OPEN = '', EDU_Q = '', EDU_ALL = false;
+const kd = n => (Math.round((+n || 0) * 1000) / 1000).toLocaleString('en-US', { maximumFractionDigits: 3 }) + ' د.ك';
+const hrs = n => (Math.round((+n || 0) * 100) / 100) + ' س';
+async function loadEdu(force){
+  const k = 'edu_' + M();
+  if (!CACHE[k] || force) loading('v-edu');
+  try{
+    if (!CACHE[k] || force) CACHE[k] = await napi({ action: 'admin_edu', month: M() });
+    renderEdu(CACHE[k]);
+  }catch(e){
+    $('v-edu').innerHTML = '<div class="card"><div class="empty">⚠️ ' + esc(e.message) + '<br><br><button class="btn sm" onclick="loadEdu(true)">إعادة المحاولة</button></div></div>';
+  }
+}
+function eduSesRows(list, mode){
+  return `<div class="tbl-wrap"><table><thead><tr><th>التاريخ</th><th>${mode === 't' ? 'الطالب / النشاط' : 'المدرس'}</th><th>النوع</th><th class="num">الساعات</th>${mode === 't' ? '<th class="num">المكافأة</th>' : ''}<th>الحالة</th></tr></thead><tbody>` +
+    list.map(x => `<tr class="${x.done ? '' : 'edu-x'}"><td style="white-space:nowrap">${x.date ? fmtDate(x.date) : '—'}</td>
+      <td>${esc(mode === 't' ? x.student : x.teacher)}</td><td>${esc(x.type)}</td><td class="num">${x.hours}</td>
+      ${mode === 't' ? `<td class="num">${x.done ? kd(x.bonus) : '—'}</td>` : ''}
+      <td><span class="pill ${x.done ? 'p-green' : 'p-gray'}">${esc(x.status)}</span></td></tr>`).join('') + '</tbody></table></div>';
+}
+function renderEdu(d){
+  const t = d.totals, ml = monthLabel(d.month);
+  let h = `<div class="kpis">
+    <div class="kpi"><div class="n">${t.sessions}</div><div class="l">حصة منفّذة</div><div class="s">${t.private} خاصة · ${t.group} شعبة${t.cancelled ? ' · ' + t.cancelled + ' ملغية' : ''}</div></div>
+    <div class="kpi"><div class="n">${hrs(t.hours)}</div><div class="l">ساعات تدريس</div></div>
+    <div class="kpi"><div class="n" style="color:var(--green)">${kd(t.bonus)}</div><div class="l">مكافآت المدرسين</div><div class="s">${ml}</div></div>
+    <div class="kpi"><div class="n">${d.teachers.length}</div><div class="l">مدرس</div><div class="s">${d.students.filter(s => s.sessions).length} طالب خذوا حصص</div></div>
+  </div>
+  <div class="chips">
+    <button class="chip ${EDU_TAB === 'teachers' ? 'on' : ''}" onclick="EDU_TAB='teachers';EDU_OPEN='';renderEdu(CACHE['edu_'+M()])">المدرسين <small>${d.teachers.length}</small></button>
+    <button class="chip ${EDU_TAB === 'students' ? 'on' : ''}" onclick="EDU_TAB='students';EDU_OPEN='';renderEdu(CACHE['edu_'+M()])">الطلاب <small>${d.students.filter(s => s.sessions).length}</small></button>
+    <button class="chip" onclick="loadEdu(true)">↻</button>
+  </div>`;
+
+  if (EDU_TAB === 'teachers'){
+    if (!d.teachers.length) h += '<div class="card"><div class="empty">ما فيه حصص مسجّلة بهالفترة</div></div>';
+    else h += `<div class="card"><h3>المدرسين <span class="sub">اضغط على المدرس عشان تشوف حصصه · ${ml}</span></h3>
+      <div class="tbl-wrap"><table class="edu-tbl"><thead><tr><th>المدرس</th><th class="num">حصص</th><th class="num">خاصة</th><th class="num">شعبة</th><th class="num">ساعات</th><th class="num">طلاب</th><th class="num">ملغية</th><th class="num">المكافأة</th><th></th></tr></thead><tbody>` +
+      d.teachers.map((x, i) => `<tr class="click ${EDU_OPEN === 't' + i ? 'open' : ''}" onclick="EDU_OPEN=EDU_OPEN==='t${i}'?'':'t${i}';renderEdu(CACHE['edu_'+M()])">
+        <td><b>${esc(x.name)}</b>${x.phone ? `<div style="font-size:11.5px;color:var(--muted)">${esc(x.phone)}</div>` : ''}</td>
+        <td class="num">${x.sessions}</td><td class="num">${x.private}</td><td class="num">${x.group}</td><td class="num">${x.hours}</td>
+        <td class="num">${x.studentCount}</td><td class="num">${x.cancelled || '—'}</td><td class="num edu-money">${kd(x.bonus)}</td>
+        <td><button class="btn ghost sm" onclick="event.stopPropagation();eduPrint(${i})">🖨 كشف</button></td></tr>
+        ${EDU_OPEN === 't' + i ? `<tr class="edu-sub"><td colspan="9">${eduSesRows(x.list, 't')}</td></tr>` : ''}`).join('') +
+      `<tr><td><b>المجموع</b></td><td class="num">${t.sessions}</td><td class="num">${t.private}</td><td class="num">${t.group}</td><td class="num">${t.hours}</td><td></td><td class="num">${t.cancelled || '—'}</td><td class="num edu-money">${kd(t.bonus)}</td><td></td></tr>
+      </tbody></table></div></div>`;
+  } else {
+    const q = nqN(EDU_Q);
+    const list = d.students.filter(s => (EDU_ALL || s.sessions || s.cancelled) && (!q || nqN(s.name).indexOf(q) > -1 || String(s.phone).indexOf(EDU_Q.trim()) > -1));
+    h += `<div class="edu-tools"><input class="search" placeholder="🔍 ابحث باسم الطالب أو رقمه…" value="${esc(EDU_Q)}" oninput="EDU_Q=this.value;clearTimeout(window._eq);window._eq=setTimeout(()=>{renderEdu(CACHE['edu_'+M()]);const s=document.querySelector('#v-edu .search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">
+      <label class="wk-done-ck" style="color:var(--muted)"><input type="checkbox" ${EDU_ALL ? 'checked' : ''} onchange="EDU_ALL=this.checked;renderEdu(CACHE['edu_'+M()])">اعرض كل المسجّلين (${d.studentsTotal}) حتى اللي ما خذوا حصص</label></div>`;
+    if (!list.length) h += '<div class="card"><div class="empty">ما فيه طلاب هني</div></div>';
+    else h += `<div class="card"><h3>الطلاب <span class="sub">${list.length} طالب · ${ml}</span></h3>
+      <div class="tbl-wrap"><table class="edu-tbl"><thead><tr><th>الطالب</th><th>الصف</th><th class="num">حصص</th><th class="num">خاصة</th><th class="num">شعبة</th><th class="num">ساعات</th><th>المدرسين</th><th>آخر حصة</th></tr></thead><tbody>` +
+      list.map(x => { const i = d.students.indexOf(x); return `<tr class="click ${EDU_OPEN === 's' + i ? 'open' : ''}" onclick="EDU_OPEN=EDU_OPEN==='s${i}'?'':'s${i}';renderEdu(CACHE['edu_'+M()])">
+        <td><b>${esc(x.name)}</b>${x.registeredRow ? '' : ' <span class="pill p-yellow" title="الاسم بالحصص مو موجود بتسجيلات المركز">مو مسجّل</span>'}${x.phone ? `<div style="font-size:11.5px;color:var(--muted)">${esc(x.phone)}</div>` : ''}</td>
+        <td>${esc([x.stage, x.grade].filter(Boolean).join(' · ') || '—')}</td>
+        <td class="num">${x.sessions}${x.cancelled ? ` <small style="color:var(--muted)">+${x.cancelled} ملغية</small>` : ''}</td><td class="num">${x.private}</td><td class="num">${x.group}</td><td class="num">${x.hours}</td>
+        <td style="font-size:13px">${esc(x.teachers.join('، ') || '—')}</td><td style="white-space:nowrap">${x.last ? fmtDate(x.last) : '—'}</td></tr>
+        ${EDU_OPEN === 's' + i ? `<tr class="edu-sub"><td colspan="8">${x.list.length ? eduSesRows(x.list, 's') : '<div class="empty">ما خذ حصص بهالفترة</div>'}</td></tr>` : ''}`; }).join('') +
+      '</tbody></table></div></div>';
+  }
+  $('v-edu').innerHTML = h;
+}
+/* كشف مكافأة المدرس — طباعة أو حفظ PDF */
+function eduPrint(i){
+  const d = CACHE['edu_' + M()], x = d.teachers[i];
+  const done = x.list.filter(s => s.done);
+  $('printArea').innerHTML = `<div class="pl"><div class="pl-rep">
+    <div class="pl-head"><div><div class="pl-org">إيديو كلاود — معهد تمكين للتدريب الأهلي</div>
+      <div class="pl-sub">كشف حصص ومكافأة المدرس · ${esc(monthLabel(d.month))}</div></div>
+      <div class="pl-ref">${fmtDate(new Date().toISOString().slice(0, 10))}</div></div>
+    <table class="pl-meta" style="margin-top:14px">
+      <tr><td>المدرس</td><td>${esc(x.name)}${x.phone ? ' · ' + esc(x.phone) : ''}</td></tr>
+      <tr><td>الحصص المنفّذة</td><td>${x.sessions} (${x.private} خاصة · ${x.group} شعبة) · ${x.hours} ساعة</td></tr>
+      <tr><td>إجمالي المكافأة</td><td><b>${kd(x.bonus)}</b></td></tr>
+    </table>
+    <table><thead><tr><th>#</th><th>التاريخ</th><th>الطالب / النشاط</th><th>النوع</th><th>الساعات</th><th>المكافأة</th></tr></thead><tbody>
+      ${done.slice().reverse().map((s, n) => `<tr><td>${n + 1}</td><td>${s.date ? fmtDate(s.date) : '—'}</td><td>${esc(s.student)}</td><td>${esc(s.type)}</td><td>${s.hours}</td><td>${kd(s.bonus)}</td></tr>`).join('')}
+      <tr><td colspan="4"><b>المجموع</b></td><td><b>${x.hours}</b></td><td><b>${kd(x.bonus)}</b></td></tr>
+    </tbody></table>
+    ${x.cancelled ? `<p style="font-size:12px;color:#7A6060;margin-top:8px">حصص ملغية ما تنحسب: ${x.cancelled}</p>` : ''}
+    <div class="pl-sign"><div>الإدارة<i>التوقيع والختم</i></div><div>المدرس<i>توقيع بالاستلام</i></div></div>
+  </div></div>`;
+  const old = document.title; document.title = 'كشف مكافأة ' + x.name + ' ' + d.month;
+  window.print(); setTimeout(() => { document.title = old; }, 1000);
 }
 
 /* ===== الدورات ===== */
