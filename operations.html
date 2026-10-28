@@ -1170,10 +1170,11 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <label class="mbr-chk"><input type="checkbox" id="idleActive" checked onchange="mbrIdleRender()">العضويات السارية فقط</label>
         <label class="mbr-chk"><input type="checkbox" id="idleNoUp" checked onchange="mbrIdleRender()">إخفاء من عنده حجز قادم</label>
         <label class="mbr-chk"><input type="checkbox" id="idleNever" checked onchange="mbrIdleRender()">يشمل اللي ما قدّموا أبداً</label>
+        <label class="mbr-chk" title="حجوزات تاريخها مضى بس حالتها ما تحدّثت لـ «تم»"><input type="checkbox" id="idlePend" checked onchange="mbrIdleStats();mbrIdleRender()">احسب الحجوزات الماضية غير المعتمدة</label>
         <button class="btn btn-ghost" onclick="mbrIdleLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
         <button class="btn btn-ghost" onclick="mbrIdleCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
       </div>
-      <div class="mbr-note info" style="font-weight:600">الحساب من تبويب «طلبات الحجز»: الدورة تنحسب «مقدَّمة» إذا حالتها معتمدة وتاريخ بدايتها مضى. الربط برقم تسلسل العضوية (الجزء بعد الشرطة) عشان يشمل الحجوزات قبل التجديد.</div>
+      <div class="mbr-note info" style="font-weight:600">الحساب من تبويب «طلبات الحجز»: الدورة تنحسب «مقدَّمة» إذا تاريخ بدايتها مضى وما انرفضت. الربط برقم تسلسل العضوية + الاسم الكامل + أول اسمين. وعدد الدورات بعمود H بالشيت يُحسب بعد.</div>
       <div id="idleBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
     </div>
   </div>
@@ -3418,7 +3419,7 @@ async function mbrExpLoad(force){
   try{
     if(!TABS.length){ try{ await discoverTabs(); }catch(e){} }
     const tab = TABS.find(t=>t.trim()==='بيانات الاعضاء') || findTab('بيانات الاعضاء','بيانات الأعضاء') || 'بيانات الاعضاء ';
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent("'"+tab+"'")}!A:F?key=${API_KEY}&valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER`;
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent("'"+tab+"'")}!A:H?key=${API_KEY}&valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER`;
     const r=await fetch(url); const d=await r.json();
     if(d.error) throw new Error(d.error.message||'خطأ في قراءة الشيت');
     const vals=(d.values||[]).slice(1);
@@ -3428,7 +3429,7 @@ async function mbrExpLoad(force){
       if(!no && !name) return;
       const sd=mbrSerialToDate(c[4]), ed=mbrSerialToDate(c[5]);
       EXP_ROWS.push({ row:i+2, no:no, name:name, phone:String(c[2]==null?'':c[2]).replace(/\D/g,''),
-        email:String(c[3]==null?'':c[3]).trim(), startD:sd, endD:ed, daysLeft:mbrDaysTo(ed) });
+        email:String(c[3]==null?'':c[3]).trim(), sheetCount:(parseInt(mbrDigits(c[7]),10)||0), startD:sd, endD:ed, daysLeft:mbrDaysTo(ed) });
     });
     mbrExpStats();
     if(document.getElementById('mbr-exp').style.display!=='none') mbrExpRender();
@@ -3535,8 +3536,16 @@ function mbrExpCsv(){
    ═══════════════════════════════════════════════ */
 let IDLE_WIN=30, IDLE_BK_LOADING=false;
 
-function mbrSeq(no){ const m=String(no||'').toUpperCase().replace(/\s/g,'').match(/-(\d+)\s*$/); return m?String(parseInt(m[1],10)):''; }
+function mbrDigits(v){ return String(v==null?'':v).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }
+/* تسلسل العضو = آخر مجموعة أرقام بعد الشرطة (يتحمّل المسافات والأرقام العربية) */
+function mbrSeq(no){
+  const s=mbrDigits(no).toUpperCase().replace(/\s/g,'').replace(/[–—_]/g,'-');
+  let m=s.match(/-(\d+)$/); if(m) return String(parseInt(m[1],10));
+  m=s.match(/^TM\d{3,4}(\d{2})$/); if(m) return String(parseInt(m[1],10)); /* TM25601 بدون شرطة */
+  return '';
+}
 function mbrNameKey(n){ return (typeof normAr==='function'?normAr(n):String(n||'').trim()); }
+function mbrFirst2(n){ return mbrNameKey(n).split(' ').filter(Boolean).slice(0,2).join(' '); }
 
 async function mbrIdleBookings(){
   if(DATA.bookings && DATA.bookings.tab) return true;
@@ -3551,33 +3560,46 @@ async function mbrIdleBookings(){
   }catch(e){ return false; } finally{ IDLE_BK_LOADING=false; }
 }
 
-/* يبني لكل عضو: آخر دورة مقدَّمة، عدد الدورات، أقرب حجز قادم */
+let IDLE_UNLINKED=0;
+/* يبني لكل عضو: آخر دورة مقدَّمة، عدد الدورات، أقرب حجز قادم، والحجوزات المربوطة */
 function mbrIdleCompute(){
   if(!EXP_ROWS || !DATA.bookings || !DATA.bookings.tab) return null;
   const h=DATA.bookings.headers;
+  const countPending=(document.getElementById('idlePend')||{}).checked!==false;
   const t0=new Date(); t0.setHours(0,0,0,0);
-  const bySeq={}, byName={};
+  const bySeq={}, byName={}, byShort={}, all=[];
   DATA.bookings.data.forEach(raw=>{
     const b=mapBooking(h,raw);
     const sc=statusClass(b.status);
     if(sc==='st-reject') return;
-    const d=parseDate(b.start||b.date); if(!d||isNaN(d)) return;
+    const d=parseDate(mbrDigits(b.start||b.date)); if(!d||isNaN(d)) return;
     d.setHours(0,0,0,0);
-    const rec={course:b.course||'', d:d, done:sc==='st-done', past:d<=t0};
-    const k=mbrSeq(b.member);
-    if(k){ (bySeq[k]=bySeq[k]||[]).push(rec); }
-    else if(b.trainer){ const nk=mbrNameKey(b.trainer); (byName[nk]=byName[nk]||[]).push(rec); }
+    const rec={row:raw._row, course:b.course||'', d:d, status:b.status||'بدون حالة', done:sc==='st-done', past:d<=t0, used:false};
+    all.push(rec);
+    const k=mbrSeq(b.member); if(k) (bySeq[k]=bySeq[k]||[]).push(rec);
+    if(b.trainer){
+      const nk=mbrNameKey(b.trainer); (byName[nk]=byName[nk]||[]).push(rec);
+      const sk=mbrFirst2(b.trainer); if(sk.split(' ').length===2) (byShort[sk]=byShort[sk]||[]).push(rec);
+    }
   });
-  return EXP_ROWS.map(m=>{
-    const recs=(bySeq[mbrSeq(m.no)]||[]).concat(byName[mbrNameKey(m.name)]||[]);
+  const shortCnt={}; EXP_ROWS.forEach(m=>{ const k=mbrFirst2(m.name); shortCnt[k]=(shortCnt[k]||0)+1; });
+  const out=EXP_ROWS.map(m=>{
+    const seen={}, recs=[];
+    const add=arr=>(arr||[]).forEach(r=>{ if(!seen[r.row]){ seen[r.row]=1; recs.push(r); r.used=true; } });
+    add(bySeq[mbrSeq(m.no)]); add(byName[mbrNameKey(m.name)]); if(shortCnt[mbrFirst2(m.name)]===1) add(byShort[mbrFirst2(m.name)]); /* أول اسمين فقط إذا ما يتكرر بين الأعضاء */
     let last=null, count=0, next=null;
     recs.forEach(r=>{
-      if(r.done && r.past){ count++; if(!last||r.d>last.d) last=r; }
+      const delivered = r.past && (r.done || countPending);
+      if(delivered){ count++; if(!last||r.d>last.d) last=r; }
       if(!r.past){ if(!next||r.d<next.d) next=r; }
     });
+    const total=Math.max(count, m.sheetCount||0);
     const idleDays = last ? Math.round((t0-last.d)/86400000) : null;
-    return Object.assign({}, m, { lastCourse:last?last.course:'', lastD:last?last.d:null, count:count, idleDays:idleDays, next:next });
+    return Object.assign({}, m, { recs:recs.sort((a,b)=>b.d-a.d), lastCourse:last?last.course:'', lastD:last?last.d:null,
+      count:total, bkCount:count, idleDays:idleDays, next:next, unknownLast:(!last && total>0) });
   });
+  IDLE_UNLINKED=all.filter(r=>!r.used).length;
+  return out;
 }
 
 function mbrIdleStats(){
@@ -3615,7 +3637,7 @@ function mbrIdleList(){
     if(hideUp && m.next) return false;
     if(IDLE_WIN===0){ if(m.count>0) return false; }
     else{
-      if(m.idleDays===null){ if(!inclNever) return false; }
+      if(m.idleDays===null){ if(m.count===0 && !inclNever) return false; }
       else if(m.idleDays<IDLE_WIN) return false;
     }
     if(q){
@@ -3645,7 +3667,7 @@ function mbrIdleRender(){
   let h='<div class="mbr-note warn">'+label+': <b>'+list.length+'</b> مدرب</div>';
   h+='<div class="mbr-tbl"><table><thead><tr><th>رقم العضوية</th><th>الاسم</th><th>الجوال</th><th>آخر دورة</th><th>مدة الخمول</th><th>دورات مقدَّمة</th><th>العضوية</th><th></th></tr></thead><tbody>';
   list.forEach((m,i)=>{
-    const idle = m.idleDays===null ? '<span class="mbr-badge expired">ما قدّم أبداً</span>'
+    const idle = m.idleDays===null ? (m.unknownLast?'<span class="mbr-badge unknown" title="الشيت فيه دورات بس ما لقينا حجز مسجّل بتاريخ">تاريخ آخر دورة غير مسجّل</span>':'<span class="mbr-badge expired">ما قدّم أبداً</span>')
       : '<span class="mbr-badge '+(m.idleDays>=90?'expired':'soon')+'">'+m.idleDays+' يوم</span>';
     const mem = m.daysLeft===null ? '<span class="mbr-badge unknown">—</span>'
       : (m.daysLeft<0?'<span class="mbr-badge expired">منتهية</span>':'<span class="mbr-badge active">سارية'+(m.daysLeft<=30?' · باقي '+m.daysLeft:'')+'</span>');
@@ -3654,13 +3676,23 @@ function mbrIdleRender(){
       '<td><b>'+esc(m.name||'—')+'</b>'+(m.next?'<div style="font-size:11.5px;color:var(--green);font-weight:800">حجز قادم '+mbrDmy(m.next.d)+'</div>':'')+'</td>'+
       '<td><span class="mbr-mono">'+esc(m.phone||'—')+'</span></td>'+
       '<td style="max-width:220px">'+(m.lastD?esc(m.lastCourse||'—')+'<div style="font-size:11.5px;color:var(--muted);font-weight:700" class="mbr-mono">'+mbrDmy(m.lastD)+'</div>':'—')+'</td>'+
-      '<td>'+idle+'</td><td style="text-align:center"><b>'+m.count+'</b></td><td>'+mem+'</td>'+
+      '<td>'+idle+'</td><td style="text-align:center"><b>'+m.count+'</b>'+(m.sheetCount&&m.sheetCount!==m.bkCount?'<div style="font-size:11px;color:var(--muted);font-weight:700">الشيت: '+m.sheetCount+' · الحجوزات: '+m.bkCount+'</div>':'')+'</td><td>'+mem+'</td>'+
       '<td style="white-space:nowrap">'+
         (wa?'<a class="act act-approve" style="padding:6px 11px" target="_blank" rel="noopener" href="https://wa.me/'+wa+'?text='+encodeURIComponent(mbrIdleMsg(m))+'">واتساب</a> ':'')+
-        '<button class="act act-link" style="padding:6px 11px" onclick="mbrIdleCopy('+i+')">نسخ الرسالة</button>'+
+        '<button class="act act-link" style="padding:6px 11px" onclick="mbrIdleCopy('+i+')">نسخ الرسالة</button> '+
+        '<button class="act act-edit" style="padding:6px 11px" onclick="mbrIdleInfo('+i+')">الحجوزات</button>'+
       '</td></tr>';
   });
-  box.innerHTML=h+'</tbody></table></div>';
+  box.innerHTML=h+'</tbody></table></div>'+
+    (IDLE_UNLINKED?'<div class="mbr-note warn" style="margin-top:12px">في '+IDLE_UNLINKED+' حجز ما انربط بأي عضو (رقم العضوية بالحجز غلط أو ناقص والاسم مختلف). راجعها بتبويب طلبات الحجز.</div>':'');
+}
+function mbrIdleInfo(i){
+  const l=mbrIdleList(); const m=l&&l[i]; if(!m) return;
+  let rows=m.recs.length ? '<div class="mbr-tbl"><table style="min-width:0"><thead><tr><th>الدورة</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>'+
+    m.recs.map(r=>'<tr><td>'+esc(r.course||'—')+'</td><td class="mbr-mono">'+mbrDmy(r.d)+'</td><td>'+esc(r.status)+(r.past?'':' · قادمة')+'</td></tr>').join('')+'</tbody></table></div>'
+    : '<div class="mbr-note warn">ما لقينا أي حجز مربوط بهالعضو برقم العضوية أو الاسم.</div>';
+  mbrOpen('<h3>حجوزات '+esc(m.name)+'</h3><p class="sub">'+esc(m.no)+' · عدد الدورات بالشيت (عمود H): '+(m.sheetCount||0)+'</p>'+rows+
+    '<div class="mbr-acts" style="margin-top:14px"><button class="btn btn-ghost" onclick="mbrClose()">إغلاق</button></div>');
 }
 function mbrIdleCopy(i){ const l=mbrIdleList(); if(l&&l[i]) mbrCopy(mbrIdleMsg(l[i])); }
 function mbrIdleCsv(){
