@@ -46,6 +46,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .stat-l{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;}
 
 /* تبويبات */
+.srvwarn{background:#FFEBEE;border:2px solid #EF9A9A;border-radius:14px;padding:14px 16px;margin-bottom:18px;}
+.srvwarn-t{font-size:14px;font-weight:900;color:var(--red);margin-bottom:6px;}
+.srvwarn-s{font-size:12.5px;color:var(--red);font-weight:700;line-height:1.75;}
+.srvwarn-s code{background:#fff;border-radius:5px;padding:1px 6px;font-family:monospace;font-size:11.5px;}
+.srvok{background:var(--green-bg);border-radius:12px;padding:10px 14px;margin-bottom:16px;
+  font-size:12.5px;font-weight:800;color:var(--green);}
+
 .tabs{display:flex;gap:8px;background:#fff;border-radius:14px;padding:6px;margin-bottom:22px;border:1.5px solid rgba(92,15,15,.06);}
 .tab{flex:1;background:transparent;border:none;border-radius:10px;padding:11px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;color:var(--muted);cursor:pointer;transition:.2s;}
 .tab.on{background:var(--crimson);color:#fff;}
@@ -157,9 +164,23 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .drop-t{font-size:13px;font-weight:800;color:var(--text);}
 .drop-s{font-size:11px;color:var(--muted);margin-top:4px;}
 .prev{position:relative;border-radius:14px;overflow:hidden;border:1.5px solid rgba(92,15,15,.1);}
-.prev img{width:100%;display:block;aspect-ratio:1/1;object-fit:cover;background:var(--cream-2);}
+.prev img{width:100%;display:block;max-height:280px;object-fit:contain;background:var(--cream-2);padding:8px;}
 .prev-x{position:absolute;top:8px;left:8px;background:rgba(26,8,8,.75);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;}
 .upbar{background:var(--cream);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800;color:var(--muted);text-align:center;}
+
+.exrow{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.exrow input[type=text]{flex:1;min-width:0;}
+.exrow input[type=number]{width:92px;flex:0 0 92px;}
+.exrow .unit{font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap;}
+.exdel{background:var(--red-bg);color:var(--red);border:none;border-radius:9px;width:34px;height:40px;
+  font-size:15px;cursor:pointer;flex-shrink:0;transition:.15s;}
+.exdel:hover{background:#FFCDD2;}
+.exadd{width:100%;background:#fff;border:2px dashed rgba(92,15,15,.2);border-radius:11px;padding:11px;
+  font-family:'Tajawal',sans-serif;font-size:13px;font-weight:900;color:var(--crimson);cursor:pointer;transition:.18s;}
+.exadd:hover{border-color:var(--crimson);background:var(--cream);}
+.exsum{background:var(--green-bg);color:var(--green);border-radius:9px;padding:8px 11px;
+  font-size:12px;font-weight:800;margin-top:9px;line-height:1.6;}
+.chip.ex{background:#E8EAF6;color:#283593;}
 
 .switch-row{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1.5px solid rgba(92,15,15,.08);}
 .switch-row label{font-size:14px;font-weight:800;cursor:pointer;}
@@ -177,42 +198,6 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:13px 26px;border-radius:100px;font-size:14px;font-weight:800;z-index:200;opacity:0;transition:.3s;pointer-events:none;}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.err{background:var(--red);}
-
-/* ===== اليوم وباجر ===== */
-.tday-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-.tday-date{font-size:13px;font-weight:800;color:var(--muted);}
-.tday-sec{margin-bottom:26px;}
-.tday-h{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:900;color:var(--crimson);margin-bottom:12px;}
-.tday-h i{font-style:normal;background:var(--crimson);color:#fff;border-radius:100px;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 8px;}
-.tday-h small{font-size:12px;color:var(--muted);font-weight:700;}
-.tcard{background:#fff;border-radius:16px;padding:16px 18px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px;}
-.tcard-name{font-size:16px;font-weight:900;line-height:1.45;}
-.tcount{text-align:center;background:var(--yellow-bg);border-radius:14px;padding:10px 16px;min-width:88px;}
-.tcount b{display:block;font-size:26px;font-weight:900;color:var(--yellow);line-height:1.1;}
-.tcount span{font-size:11px;font-weight:800;color:var(--muted);}
-.tphone{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);border-radius:100px;padding:4px 12px;font-size:12.5px;font-weight:900;text-decoration:none;direction:ltr;}
-.tphone.none{background:var(--red-bg);color:var(--red);direction:rtl;}
-.tbl-wrap{background:#fff;border-radius:16px;border:1.5px solid rgba(92,15,15,.06);overflow-x:auto;}
-.tbl-wrap table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px;}
-.tbl-wrap th{background:var(--cream-2);color:var(--muted);font-weight:900;font-size:12px;padding:11px 12px;text-align:right;white-space:nowrap;}
-.tbl-wrap td{padding:11px 12px;border-top:1px solid rgba(92,15,15,.06);font-weight:700;vertical-align:middle;}
-.tbl-wrap tfoot td{background:var(--cream);font-weight:900;color:var(--crimson);}
-.tmini{text-align:center;padding:26px 16px;color:var(--muted);font-weight:700;background:#fff;border-radius:16px;border:1.5px dashed rgba(92,15,15,.12);}
-.terr{background:#FFF3E0;color:#E65100;border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:800;margin-bottom:10px;line-height:1.6;}
-.paybadge{border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:900;white-space:nowrap;}
-.paybadge.ok{background:var(--green-bg);color:var(--green);}
-.paybadge.no{background:var(--red-bg);color:var(--red);}
-.paybadge.wait{background:var(--yellow-bg);color:var(--yellow);}
-.tppl{width:100%;flex-basis:100%;border-top:1px solid rgba(92,15,15,.07);padding-top:10px;}
-.tppl summary{cursor:pointer;font-size:13px;font-weight:900;color:var(--crimson);list-style:none;display:flex;align-items:center;gap:6px;}
-.tppl summary::-webkit-details-marker{display:none;}
-.tppl summary::before{content:'▸';transition:.2s;}
-.tppl[open] summary::before{transform:rotate(90deg);}
-.tppl ol{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
-.tppl li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--cream);border-radius:10px;padding:8px 11px;font-size:13.5px;font-weight:800;}
-.tppl li .n{color:var(--muted);font-size:12px;min-width:20px;}
-.tppl li .nm{flex:1;min-width:140px;}
-.tppl .copy{background:#fff;border:1.5px solid rgba(92,15,15,.12);border-radius:8px;padding:5px 11px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-top:8px;}
 </style>
 </head>
 <body>
@@ -237,7 +222,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="header">
     <div>
       <div class="header-logo-text">إدارة الدورات</div>
-      <div class="header-logo-sub">أكاديمية مسار</div>
+      <div class="header-logo-sub">أكاديمية مسار · v9</div>
     </div>
     <div class="header-actions">
       <button class="hbtn" onclick="loadCourses()">تحديث</button>
@@ -247,25 +232,11 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 
   <div class="main">
 
+    <div id="srvWarn"></div>
+
     <div class="tabs">
-      <button class="tab"    id="tabT" onclick="switchTab('t')">📅 اليوم وباجر</button>
       <button class="tab on" id="tabC" onclick="switchTab('c')">📚 الدورات</button>
       <button class="tab"    id="tabP" onclick="switchTab('p')">📦 الباقات</button>
-    </div>
-
-    <!-- ===== تبويب اليوم وباجر ===== -->
-    <div id="paneT" style="display:none;">
-      <div class="tday-head">
-        <div class="tday-date" id="tdDate">—</div>
-        <button class="btn-add" onclick="loadToday()">تحديث</button>
-      </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-n" id="tdC">٠</div><div class="stat-l">دورات اليوم</div></div>
-        <div class="stat-card"><div class="stat-n" id="tdR" style="color:var(--yellow);">٠</div><div class="stat-l">مسجلين اليوم</div></div>
-        <div class="stat-card"><div class="stat-n" id="tdK" style="color:var(--blue);">٠</div><div class="stat-l">استشارات اليوم</div></div>
-        <div class="stat-card"><div class="stat-n" id="tdM" style="color:var(--green);">٠</div><div class="stat-l">مبالغ الاستشارات (د.ك)</div></div>
-      </div>
-      <div id="tdBody"><div class="loading">جاري التحميل...</div></div>
     </div>
 
     <!-- ===== تبويب الدورات ===== -->
@@ -485,6 +456,15 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <div class="sec">
+      <div class="sec-h">⭐ مميزات إضافية اختيارية</div>
+      <div id="exList"></div>
+      <button type="button" class="exadd" onclick="addExtra()">+ أضف ميزة</button>
+      <div class="hint">كل ميزة لها اسم وسعر — تظهر للعميل في السلة كخيار، وسعرها ينضاف للمجموع.<br>
+        مثال: <b>تسجيل الدورة · ٥ د.ك</b> أو <b>حقيبة تدريبية · ٣ د.ك</b></div>
+      <div id="exSum"></div>
+    </div>
+
+    <div class="sec">
       <div class="sec-h">🖼 صورة الدورة</div>
       <input type="hidden" id="fImage">
       <input type="file" id="fFile" accept="image/*" style="display:none;" onchange="onPickFile(this,'c')">
@@ -501,7 +481,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       </div>
 
       <div id="upBar" class="upbar" style="display:none;margin-top:10px;">جاري رفع الصورة...</div>
-      <div class="hint">اختيارية — تُقصّ تلقائياً مربعة ٥٠٠ × ٥٠٠</div>
+      <div class="hint">اختيارية — ارفع أي مقاس، والموقع يضبطها تلقائياً</div>
     </div>
 
     <div class="f">
@@ -559,148 +539,11 @@ let GAP = 'all';
 
 /* ============ TABS ============ */
 function switchTab(t){
-  ['t','c','p'].forEach(function(k){
-    const K = k.toUpperCase();
-    document.getElementById('tab' + K).className = 'tab' + (k === t ? ' on' : '');
-    document.getElementById('pane' + K).style.display = (k === t) ? 'block' : 'none';
-  });
-  if(t === 't' && !TODAY_LOADED) loadToday();
-}
-
-/* ============ اليوم وباجر — TodayBoard.gs ============ */
-const TODAY_URL = 'https://script.google.com/macros/s/AKfycbzYlaQqwXhgg367uEIxNh9XoAOqVFnqjlcL2SGSNelz4lN4Ow1Ly8tERWK4vIr3ZaOj/exec';   // ← رابط /exec بعد نشر TodayBoard.gs
-let TODAY_LOADED = false;
-
-const DAYS_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-function tdLabel(k){
-  if(!k) return '';
-  const p = k.split('-'), d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
-  return DAYS_AR[d.getDay()] + ' ' + ar(Number(p[2])) + ' ' + MO[Number(p[1])] + ' ' + ar(p[0]);
-}
-function tdMoney(n){
-  n = Number(n) || 0;
-  return ar(n % 1 ? n.toFixed(3).replace(/0+$/,'') : n);
-}
-function tdWa(phone){
-  const d = String(phone || '').replace(/\D/g,'');
-  return d.length === 8 ? '965' + d : d;
-}
-function tdPhoneChip(phone){
-  if(!phone) return '<span class="tphone none">📵 الرقم غير متوفر</span>';
-  return '<a class="tphone" href="https://wa.me/' + tdWa(phone) + '" target="_blank" rel="noopener">📞 ' + esc(phone) + '</a>';
-}
-function tdPay(t, amount){
-  const s = String(t || '');
-  if(/تم|مدفوع|paid|captured/i.test(s)) return '<span class="paybadge ok">' + esc(s) + '</span>';
-  if(/لم|غير|فشل|failed/i.test(s))     return '<span class="paybadge no">' + esc(s) + '</span>';
-  if(s) return '<span class="paybadge wait">' + esc(s) + '</span>';
-  return amount > 0 ? '<span class="paybadge ok">مدفوع</span>' : '—';
-}
-
-function tdCourseCard(c, withTrainer){
-  return '<div class="tcard">' +
-    '<div style="flex:1;min-width:220px;">' +
-      '<div class="tcard-name">' + esc(c.name) + '</div>' +
-      '<div class="ccard-meta">' +
-        '<span class="chip">📅 ' + esc(tdLabel(c.date)) + '</span>' +
-        (c.time ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
-        (c.trainer ? '<span class="chip">👤 ' + esc(c.trainer) + '</span>' : '') +
-        (withTrainer ? tdPhoneChip(c.phone) : '') +
-        (c.wantCert ? '<span class="chip cert">🎓 ' + ar(c.wantCert) + ' يبي شهادة</span>' : '') +
-      '</div>' +
-    '</div>' +
-    '<div class="tcount"><b>' + ar(c.registered || 0) + '</b><span>مسجل بهذي الدفعة</span></div>' +
-    tdPeople(c) +
-  '</div>';
-}
-
-let TD_PPL = [];
-function tdPeople(c){
-  const ppl = c.people || [];
-  if(!ppl.length) return '';
-  const idx = TD_PPL.push(ppl) - 1;
-  return '<details class="tppl"><summary>أسماء المسجلين (' + ar(ppl.length) + ')</summary><ol>' +
-    ppl.map(function(p, i){
-      return '<li><span class="n">' + ar(i + 1) + '</span>' +
-        '<span class="nm">' + esc(p.name || '—') + '</span>' +
-        (p.phone ? '<a class="tphone" href="https://wa.me/' + tdWa(p.phone) + '" target="_blank" rel="noopener">' + esc(p.phone) + '</a>' : '') +
-        (p.cert ? '<span class="chip cert">🎓 شهادة</span>' : '') +
-        (p.pay ? tdPay(p.pay, 0) : '') +
-      '</li>';
-    }).join('') +
-    '</ol><button class="copy" onclick="tdCopy(' + idx + ')">نسخ القائمة</button></details>';
-}
-function tdCopy(i){
-  const txt = (TD_PPL[i] || []).map(function(p, k){ return (k + 1) + '. ' + (p.name || '') + (p.phone ? ' — ' + p.phone : ''); }).join('\n');
-  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){ toast('تم نسخ القائمة'); }, function(){ toast('تعذّر النسخ', true); });
-}
-
-async function loadToday(){
-  const body = document.getElementById('tdBody');
-  if(TODAY_URL.indexOf('/exec') === -1){
-    body.innerHTML = '<div class="tmini">رابط سكربت «اليوم وباجر» (TodayBoard) غير مهيأ بعد.</div>';
-    return;
-  }
-  body.innerHTML = '<div class="loading">جاري التحميل...</div>';
-  try{
-    const res = await fetch(TODAY_URL + '?action=today&pass=' + encodeURIComponent(PASS) + '&_=' + Date.now());
-    const d = await res.json();
-    if(!d.ok) throw new Error(d.error || 'خطأ');
-    TODAY_LOADED = true;
-    renderToday(d);
-  }catch(e){
-    body.innerHTML = '<div class="tmini">تعذّر التحميل: ' + esc(e.message) + '</div>';
-  }
-}
-
-function renderToday(d){
-  TD_PPL = [];
-  const today = d.today || [], tom = d.tomorrow || [], cons = d.consults || [];
-  const regs  = today.reduce(function(s,c){ return s + (c.registered || 0); }, 0);
-  const money = cons.reduce(function(s,c){ return s + (Number(c.amount) || 0); }, 0);
-
-  document.getElementById('tdDate').textContent = 'اليوم: ' + tdLabel(d.todayKey) + (d.generated ? ' — آخر تحديث ' + d.generated : '');
-  document.getElementById('tdC').textContent = ar(today.length);
-  document.getElementById('tdR').textContent = ar(regs);
-  document.getElementById('tdK').textContent = ar(cons.length);
-  document.getElementById('tdM').textContent = tdMoney(money);
-
-  let h = '';
-
-  /* دورات اليوم */
-  h += '<div class="tday-sec"><div class="tday-h">📚 دورات اليوم <i>' + ar(today.length) + '</i></div>';
-  if(d.coursesError) h += '<div class="terr">⚠ ' + esc(d.coursesError) + '</div>';
-  h += today.length ? today.map(function(c){ return tdCourseCard(c, false); }).join('')
-                    : '<div class="tmini">ما في دورات اليوم</div>';
-  h += '</div>';
-
-  /* استشارات اليوم */
-  h += '<div class="tday-sec"><div class="tday-h">💬 استشارات اليوم <i>' + ar(cons.length) + '</i></div>';
-  if(d.consultsError) h += '<div class="terr">⚠ ' + esc(d.consultsError) + '</div>';
-  if(cons.length){
-    h += '<div class="tbl-wrap"><table><thead><tr><th>الوقت</th><th>عند منو</th><th>العميل</th><th>النوع</th><th>المبلغ</th><th>الدفع</th></tr></thead><tbody>';
-    cons.forEach(function(c){
-      h += '<tr><td>' + esc(c.time || '—') + '</td>' +
-           '<td><b>' + esc(c.trainer || (c.trainerCode ? 'غير معروف' : '—')) + '</b>' +
-             (c.trainerCode ? '<div style="font-size:11px;color:var(--muted);direction:ltr;text-align:right">' + esc(c.trainerCode) + '</div>' : '') + '</td>' +
-           '<td>' + esc(c.client || '—') + (c.phone ? '<div><a class="tphone" style="margin-top:4px" href="https://wa.me/' + tdWa(c.phone) + '" target="_blank" rel="noopener">' + esc(c.phone) + '</a></div>' : '') + '</td>' +
-           '<td>' + esc(c.type || '—') + '</td>' +
-           '<td><b>' + (c.amount ? tdMoney(c.amount) + ' د.ك' : '—') + '</b></td>' +
-           '<td>' + tdPay(c.pay, c.amount) + '</td></tr>';
-    });
-    h += '</tbody><tfoot><tr><td colspan="4">الإجمالي</td><td colspan="2">' + tdMoney(money) + ' د.ك</td></tr></tfoot></table></div>';
-  }else if(!d.consultsError){
-    h += '<div class="tmini">ما في استشارات اليوم</div>';
-  }
-  h += '</div>';
-
-  /* دورات باجر */
-  h += '<div class="tday-sec"><div class="tday-h">🗓️ دورات باجر <i>' + ar(tom.length) + '</i><small>' + esc(tdLabel(d.tomorrowKey)) + '</small></div>';
-  h += tom.length ? tom.map(function(c){ return tdCourseCard(c, true); }).join('')
-                  : '<div class="tmini">ما في دورات باجر</div>';
-  h += '</div>';
-
-  document.getElementById('tdBody').innerHTML = h;
+  const isC = (t === 'c');
+  document.getElementById('tabC').className = 'tab' + (isC ? ' on' : '');
+  document.getElementById('tabP').className = 'tab' + (isC ? '' : ' on');
+  document.getElementById('paneC').style.display = isC ? 'block' : 'none';
+  document.getElementById('paneP').style.display = isC ? 'none' : 'block';
 }
 
 /* ============ PACKAGES ============ */
@@ -977,6 +820,7 @@ async function loadCourses(){
     const data = await res.json();
     if(!data.ok){ toast(data.error || 'خطأ في التحميل', true); COURSES = []; PKGS = []; }
     else { COURSES = data.courses || []; PKGS = data.packages || []; }
+    checkServer(data);
     stats();
     buildMonths();
     buildGaps();
@@ -987,6 +831,26 @@ async function loadCourses(){
     toast('تعذّر الاتصال بالسيرفر', true);
   }
   document.getElementById('loadingState').style.display = 'none';
+}
+
+/* يكشف إن كان السكريبت المنشور يدعم المميزات */
+function checkServer(data){
+  const box = document.getElementById('srvWarn');
+  if(!box) return;
+
+  const list = (data && data.courses) || [];
+  if(list.length === 0){ box.innerHTML = ''; return; }
+
+  const ok = Object.prototype.hasOwnProperty.call(list[0], 'extras');
+
+  box.innerHTML = ok ? '' :
+    '<div class="srvwarn"><div class="srvwarn-t">⚠ السكريبت المنشور قديم — المميزات الإضافية لن تُحفظ</div>' +
+    '<div class="srvwarn-s">تقدر تضيفها بالنموذج، لكنها تختفي بعد الحفظ لأن السيرفر ما يعرف العمود بعد.<br><br>' +
+    '<b>الحل:</b><br>' +
+    '١ — الصق <code>masar-courses-v15.gs</code> في Apps Script<br>' +
+    '٢ — شغّل <code>setupColumns</code><br>' +
+    '٣ — <code>Deploy → Manage deployments → ✏️ → New version → Deploy</code><br>' +
+    '٤ — ارجع هنا واضغط تحديث</div></div>';
 }
 
 function stats(){
@@ -1144,6 +1008,8 @@ function render(){
             (c.time    ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
             priceChip + certChip +
             (c.source ? '<span class="chip src">📥 من طلب حجز</span>' : '') +
+            ((c.extras && c.extras.length)
+              ? '<span class="chip ex">⭐ ' + ar(c.extras.length) + ' ميزة إضافية</span>' : '') +
             '<span class="chip reg">' + ar(c.registered || 0) + ' مسجل</span>' +
             seatChip +
           '</div>' +
@@ -1218,6 +1084,9 @@ function openForm(id){
   document.getElementById('fAudience').value = c ? (c.audience || '') : '';
   document.getElementById('fBio').value      = c ? (c.bio || '') : '';
 
+  EXTRAS = c ? (c.extras || []).map(function(e){ return { name:e.name, price:e.price }; }) : [];
+  renderExtras();
+
   setImg(c ? (c.image || '') : '', 'c');
 
   setKind(c ? (c.isFree ? 'free' : 'paid') : 'free');
@@ -1265,17 +1134,19 @@ function onPickFile(input, t){
   reader.onload = function(ev){
     const img = new Image();
     img.onload = function(){
-      const SIDE = 500;
-      const side = Math.min(img.width, img.height);
-      const sx = Math.round((img.width  - side) / 2);
-      const sy = Math.round((img.height - side) / 2);
+      /* نحافظ على نسبة صورتك كما هي — لا قصّ */
+      const MAX = 1000;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width  * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+
       const cv = document.createElement('canvas');
-      cv.width = SIDE; cv.height = SIDE;
+      cv.width = w; cv.height = h;
       const ctx = cv.getContext('2d');
-      ctx.fillStyle = '#FAF7F2';
-      ctx.fillRect(0, 0, SIDE, SIDE);
-      ctx.drawImage(img, sx, sy, side, side, 0, 0, SIDE, SIDE);
-      uploadImg(cv.toDataURL('image/jpeg', 0.88), t);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      uploadImg(cv.toDataURL('image/jpeg', 0.86), t);
     };
     img.onerror = function(){
       document.getElementById(e.bar).style.display = 'none';
@@ -1332,6 +1203,7 @@ async function saveCourse(){
     goals: lines('fGoals'),
     audience: document.getElementById('fAudience').value.trim(),
     bio: document.getElementById('fBio').value.trim(),
+    extras: cleanExtras(),
     published: document.getElementById('fPub').checked
   };
 
@@ -1392,6 +1264,54 @@ function esc(s){
   return String(s || '').replace(/[&<>"]/g, function(c){
     return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
   });
+}
+
+/* ===== المميزات الإضافية ===== */
+let EXTRAS = [];
+
+function renderExtras(){
+  const box = document.getElementById('exList');
+  if(!box) return;
+
+  box.innerHTML = EXTRAS.map(function(e, i){
+    return '<div class="exrow">' +
+      '<input type="text" value="' + esc(e.name) + '" placeholder="اسم الميزة" ' +
+        'oninput="setExtra(' + i + ',\'name\',this.value)">' +
+      '<input type="number" min="0" step="0.5" value="' + (e.price || 0) + '" ' +
+        'oninput="setExtra(' + i + ',\'price\',this.value)">' +
+      '<span class="unit">د.ك</span>' +
+      '<button type="button" class="exdel" onclick="delExtra(' + i + ')" title="حذف">✕</button>' +
+      '</div>';
+  }).join('');
+
+  const sum = document.getElementById('exSum');
+  const valid = EXTRAS.filter(function(e){ return String(e.name).trim() && Number(e.price) > 0; });
+  sum.innerHTML = valid.length
+    ? '✓ ' + ar(valid.length) + ' ميزة — لو اختارها العميل كلها تضيف <b>' +
+      ar(valid.reduce(function(a,b){ return a + Number(b.price || 0); }, 0)) + ' د.ك</b> على سعر الدورة'
+    : '';
+}
+
+function addExtra(){ EXTRAS.push({ name:'', price:5 }); renderExtras(); }
+function delExtra(i){ EXTRAS.splice(i, 1); renderExtras(); }
+
+function setExtra(i, k, v){
+  if(!EXTRAS[i]) return;
+  EXTRAS[i][k] = (k === 'price') ? (Number(v) || 0) : v;
+  if(k === 'price' || k === 'name'){
+    const sum = document.getElementById('exSum');
+    const valid = EXTRAS.filter(function(e){ return String(e.name).trim() && Number(e.price) > 0; });
+    sum.innerHTML = valid.length
+      ? '✓ ' + ar(valid.length) + ' ميزة — لو اختارها العميل كلها تضيف <b>' +
+        ar(valid.reduce(function(a,b){ return a + Number(b.price || 0); }, 0)) + ' د.ك</b> على سعر الدورة'
+      : '';
+  }
+}
+
+function cleanExtras(){
+  return EXTRAS
+    .map(function(e){ return { name:String(e.name || '').trim(), price:Number(e.price) || 0 }; })
+    .filter(function(e){ return e.name && e.price > 0; });
 }
 
 function lines(id){

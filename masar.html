@@ -110,86 +110,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 /* ===== CARDS ===== */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;}
 
-/* ===== الجوال: كرت أفقي مضغوط ===== */
-@media(max-width:700px){
-  .grid{grid-template-columns:1fr;gap:10px;}
 
-  /* الكرت صف أفقي: صورة مصغّرة + محتوى */
-  .card{flex-direction:row;flex-wrap:wrap;align-items:stretch;border-radius:15px;}
-  .card-imgwrap{flex:0 0 106px;width:106px;align-self:stretch;}
-  .card-img{height:100%;min-height:100%;aspect-ratio:auto;object-fit:contain;padding:4px;}
-  .card-noimg{height:100%;min-height:100%;aspect-ratio:auto;}
-  .card-noimg span{font-size:28px;}
-  .card-badge{display:none;}
-  .card-days{top:6px;right:6px;left:auto;font-size:9px;padding:2px 7px;}
-  .img-hint{display:none;}
-
-  .card-body{flex:1;min-width:0;padding:11px 13px;display:flex;flex-direction:column;}
-  .card-title{font-size:15px;line-height:1.45;margin-bottom:7px;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .card-trainer{gap:6px;margin-bottom:7px;}
-  .tr-av{width:21px;height:21px;font-size:10px;}
-  .tr-name{font-size:11.5px;}
-  .tr-role{display:none;}
-  .card-meta{gap:4px;margin-bottom:0;}
-  .card-meta .m{font-size:10px;padding:3px 7px;}
-  .card-meta .m:nth-child(n+3){display:none;}
-
-  .card-foot{margin-top:auto;padding-top:9px;flex-direction:row;
-    align-items:center;justify-content:space-between;gap:8px;}
-  .price{font-size:15px;}
-  .price small{font-size:10px;}
-  .seats{font-size:9.5px;margin-top:1px;}
-  .btn{padding:8px 15px;font-size:12px;white-space:nowrap;}
-  .card-more{width:100%;padding:9px;font-size:11.5px;}
-
-  /* البنر أقصر */
-  .bwrap{height:clamp(250px,62vw,300px);}
-  .s-title{font-size:19px;-webkit-line-clamp:2;}
-  .s-meta{font-size:12px;gap:4px 12px;margin-bottom:10px;}
-  .s-price{font-size:12.5px;margin-bottom:14px;}
-  .s-btn{padding:11px 22px;font-size:13px;}
-  .s-pill{font-size:10.5px;padding:5px 11px;}
-
-  /* الإحصائيات أنحف */
-  .stat{padding:13px 8px;}
-  .stat-n{font-size:18px;}
-  .stat-l{font-size:9.5px;}
-
-  /* الاشتراكات مضغوطة */
-  .subsec{padding:26px 16px;border-radius:20px;}
-  .sub-h{font-size:20px;}
-  .sub-p{font-size:13.5px;margin-bottom:18px;}
-  .sub-ben span{font-size:11.5px;padding:7px 13px;}
-  .sub-cards{gap:10px;}
-  .sub-card{padding:20px 16px;border-radius:16px;}
-  .sub-price{font-size:34px;}
-  .sub-certs{font-size:13px;}
-  .sub-val{padding:10px;margin:12px 0;}
-  .sub-val-a{font-size:11px;}
-  .sub-val-b{font-size:12.5px;}
-  .sub-list li{font-size:12px;padding:5px 20px 5px 0;}
-  .sub-btn{padding:12px;font-size:13.5px;}
-
-  /* الباقات */
-  .pkgs{grid-template-columns:1fr;gap:12px;}
-  .pcard-top{padding:18px;}
-  .pcard-n{font-size:16px;}
-  .pcard-p{font-size:24px;}
-  .pcard-b{padding:15px;}
-  .pcard-d{font-size:12.5px;}
-
-  .wrap{padding:34px 14px 56px;}
-  .sec-title{font-size:21px;}
-  .sec-sub{font-size:13px;margin-bottom:20px;}
-  .fbtn{padding:8px 17px;font-size:13px;}
-}
-
-@media(max-width:380px){
-  .card-imgwrap{flex:0 0 92px;width:92px;}
-  .card-title{font-size:14px;}
-  .btn{padding:7px 12px;font-size:11.5px;}
-}
 .card{background:#fff;border-radius:20px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 3px 16px rgba(92,15,15,.05);display:flex;flex-direction:column;overflow:hidden;transition:.28s;opacity:0;transform:translateY(18px);}
 .card.in{opacity:1;transform:none;}
 .card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(92,15,15,.13);}
@@ -456,6 +377,87 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .wa{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;border-radius:100px;padding:13px;text-decoration:none;font-size:14px;font-weight:900;margin-top:18px;}
 .skel{background:var(--cream-2);border-radius:20px;height:330px;animation:pl 1.4s ease-in-out infinite;}
 @keyframes pl{0%,100%{opacity:.55}50%{opacity:.9}}
+
+/* ===== الجوال: كرت أفقي مضغوط ===== */
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr;gap:10px;}
+
+  /* الكرت صف أفقي: صورة مصغّرة + محتوى */
+  .card{flex-direction:row;flex-wrap:wrap;align-items:stretch;border-radius:15px;}
+  .card-imgwrap{flex:0 0 106px;width:106px;align-self:stretch;}
+  .card-img{height:100%;min-height:100%;aspect-ratio:auto;object-fit:contain;padding:4px;}
+  .card-noimg{height:100%;min-height:100%;aspect-ratio:auto;}
+  .card-noimg span{font-size:28px;}
+  .card-badge{display:none;}
+  .card-days{top:6px;right:6px;left:auto;font-size:9px;padding:2px 7px;}
+  .img-hint{display:none;}
+
+  .card-body{flex:1;min-width:0;padding:11px 13px;display:flex;flex-direction:column;}
+  .card-title{font-size:15px;line-height:1.45;margin-bottom:7px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .card-trainer{gap:6px;margin-bottom:7px;}
+  .tr-av{width:21px;height:21px;font-size:10px;}
+  .tr-name{font-size:11.5px;}
+  .tr-role{display:none;}
+  .card-meta{gap:4px;margin-bottom:0;}
+  .card-meta .m{font-size:10px;padding:3px 7px;}
+  .card-meta .m:nth-child(n+3){display:none;}
+
+  .card-foot{margin-top:auto;padding-top:9px;flex-direction:row;
+    align-items:center;justify-content:space-between;gap:8px;}
+  .price{font-size:15px;}
+  .price small{font-size:10px;}
+  .seats{font-size:9.5px;margin-top:1px;}
+  .btn{padding:8px 15px;font-size:12px;white-space:nowrap;}
+  .card-more{width:100%;padding:9px;font-size:11.5px;}
+
+  /* البنر أقصر */
+  .bwrap{height:clamp(250px,62vw,300px);}
+  .s-title{font-size:19px;-webkit-line-clamp:2;}
+  .s-meta{font-size:12px;gap:4px 12px;margin-bottom:10px;}
+  .s-price{font-size:12.5px;margin-bottom:14px;}
+  .s-btn{padding:11px 22px;font-size:13px;}
+  .s-pill{font-size:10.5px;padding:5px 11px;}
+
+  /* الإحصائيات أنحف */
+  .stat{padding:13px 8px;}
+  .stat-n{font-size:18px;}
+  .stat-l{font-size:9.5px;}
+
+  /* الاشتراكات مضغوطة */
+  .subsec{padding:26px 16px;border-radius:20px;}
+  .sub-h{font-size:20px;}
+  .sub-p{font-size:13.5px;margin-bottom:18px;}
+  .sub-ben span{font-size:11.5px;padding:7px 13px;}
+  .sub-cards{gap:10px;}
+  .sub-card{padding:20px 16px;border-radius:16px;}
+  .sub-price{font-size:34px;}
+  .sub-certs{font-size:13px;}
+  .sub-val{padding:10px;margin:12px 0;}
+  .sub-val-a{font-size:11px;}
+  .sub-val-b{font-size:12.5px;}
+  .sub-list li{font-size:12px;padding:5px 20px 5px 0;}
+  .sub-btn{padding:12px;font-size:13.5px;}
+
+  /* الباقات */
+  .pkgs{grid-template-columns:1fr;gap:12px;}
+  .pcard-top{padding:18px;}
+  .pcard-n{font-size:16px;}
+  .pcard-p{font-size:24px;}
+  .pcard-b{padding:15px;}
+  .pcard-d{font-size:12.5px;}
+
+  .wrap{padding:34px 14px 56px;}
+  .sec-title{font-size:21px;}
+  .sec-sub{font-size:13px;margin-bottom:20px;}
+  .fbtn{padding:8px 17px;font-size:13px;}
+}
+
+@media(max-width:380px){
+  .card-imgwrap{flex:0 0 92px;width:92px;}
+  .card-title{font-size:14px;}
+  .btn{padding:7px 12px;font-size:11.5px;}
+}
 </style>
 </head>
 <body>
