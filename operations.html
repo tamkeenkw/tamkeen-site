@@ -479,8 +479,9 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <div class="mc-title">السيرة الذاتية للمدرب</div><div class="mc-desc">تعبئة بيانات المدرب وإخراج سيرة مرتبة PDF</div>
       </div>
       <div class="menu-card" onclick="openSection('membership')">
+        <span class="mc-badge" id="badge-membership" style="display:none" title="عضويات تنتهي خلال 30 يوم">0</span>
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><line x1="14" y1="10" x2="19" y2="10"/><line x1="14" y1="14" x2="17" y2="14"/></svg></div>
-        <div class="mc-title">استعلام وإصدار رقم العضوية</div><div class="mc-desc">إصدار الأرقام من طلبات الموقع · استعلام · تجديد</div>
+        <div class="mc-title">استعلام وإصدار رقم العضوية</div><div class="mc-desc">إصدار الأرقام · إضافة عضو · استعلام وتجديد · العضويات القريبة من الانتهاء</div>
       </div>
       <div class="menu-card" onclick="openSection('memberconsult')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
@@ -1087,12 +1088,15 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
     <div class="mbr-stats">
       <div class="mbr-stat"><b id="mbrMembers">—</b><small>عضو مسجّل</small></div>
       <div class="mbr-stat"><b id="mbrPending">—</b><small>طلب بانتظار الإصدار</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="mbrGoExp(30)"><b id="mbrExp30" style="color:#A86500">—</b><small>تنتهي خلال 30 يوم</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="mbrGoExp(-60)"><b id="mbrExpired" style="color:#9B1C1C">—</b><small>انتهت آخر 60 يوم</small></div>
     </div>
 
     <div class="seg" id="mbrSeg">
       <button class="on" data-mbr="req" onclick="mbrTab(this,'req')">طلبات العضوية</button>
-      <button data-mbr="man" onclick="mbrTab(this,'man')">إصدار يدوي</button>
+      <button data-mbr="man" onclick="mbrTab(this,'man')">إضافة عضو</button>
       <button data-mbr="qry" onclick="mbrTab(this,'qry')">استعلام وتجديد</button>
+      <button data-mbr="exp" onclick="mbrTab(this,'exp')">تنتهي قريباً</button>
     </div>
 
     <div id="mbr-req">
@@ -1125,6 +1129,27 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <button class="btn btn-ghost" id="mbrQBtn" onclick="mbrSearch()">بحث</button>
       </div>
       <div id="mbrQBody"><div class="empty">ابحث برقم العضوية أو اسم المدرب أو رقم تواصله.</div></div>
+    </div>
+
+    <div id="mbr-exp" style="display:none">
+      <div class="toolbar">
+        <div class="filter" id="expFilter" style="flex-wrap:wrap">
+          <button data-ex="7" onclick="mbrExpSet(this,7)">خلال 7 أيام</button>
+          <button data-ex="15" onclick="mbrExpSet(this,15)">15 يوم</button>
+          <button class="on" data-ex="30" onclick="mbrExpSet(this,30)">30 يوم</button>
+          <button data-ex="60" onclick="mbrExpSet(this,60)">60 يوم</button>
+          <button data-ex="90" onclick="mbrExpSet(this,90)">90 يوم</button>
+          <button data-ex="-60" onclick="mbrExpSet(this,-60)">انتهت آخر 60 يوم</button>
+          <button data-ex="-1" onclick="mbrExpSet(this,-1)">كل المنتهية</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="expQ" placeholder="فلترة بالاسم أو رقم العضوية أو الجوال..." oninput="mbrExpRender()"></div>
+        <button class="btn btn-ghost" onclick="mbrExpLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+        <button class="btn btn-ghost" onclick="mbrExpCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
+      </div>
+      <div id="expBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
     </div>
   </div>
 
@@ -1288,6 +1313,7 @@ async function init(){
   try{ await discoverTabs(); }catch(e){ TABS=[]; }
   refreshAll();
   initPlanRows();
+  try{ mbrExpLoad(true); }catch(e){}
 }
 async function refreshAll(){
   loadBookings(); loadMaterials(); loadAttendance(); loadJoins(); if(document.getElementById('cvList')) loadCVs(); if(document.getElementById('mcList')) loadMemberConsults(); if(document.getElementById('blocksList')) loadBlocks();
@@ -3125,11 +3151,13 @@ function mbrRefresh(){
     document.getElementById('mbrMembers').textContent = r.members;
   });
   mbrLoadReq();
+  mbrExpLoad(true);
 }
 function mbrTab(el,id){
   document.querySelectorAll('#mbrSeg button').forEach(function(b){ b.classList.remove('on'); });
   el.classList.add('on');
-  ['req','man','qry'].forEach(function(x){ document.getElementById('mbr-'+x).style.display = (x===id?'':'none'); });
+  ['req','man','qry','exp'].forEach(function(x){ document.getElementById('mbr-'+x).style.display = (x===id?'':'none'); });
+  if(id==='exp'){ if(!EXP_ROWS) mbrExpLoad(); else mbrExpRender(); }
 }
 
 /* ── طلبات العضوية ── */
@@ -3339,6 +3367,140 @@ function mbrRenew(m){
     '<div class="mbr-acts"><button class="btn" id="mbrRnBtn" style="background:var(--crimson);color:#fff" onclick="mbrDoRenew()">تأكيد التجديد</button>'+
     '<button class="btn btn-ghost" onclick="mbrClose()">إلغاء</button></div>');
 }
+
+/* ═══════════════════════════════════════════════
+   العضويات القريبة من الانتهاء — قراءة مباشرة من
+   تبويب «بيانات الاعضاء » (A=الرقم B=الاسم C=الجوال
+   D=الإيميل E=البداية F=الانتهاء) — قراءة فقط
+   ═══════════════════════════════════════════════ */
+let EXP_ROWS=null, EXP_WIN=30, EXP_LOADING=false;
+
+function mbrSerialToDate(v){
+  if(typeof v==='number' && isFinite(v) && v>20000) return new Date(Math.round((v-25569)*86400000) + new Date().getTimezoneOffset()*60000);
+  if(v===''||v==null) return null;
+  const d=parseDate(String(v)); return (d&&!isNaN(d))?d:null;
+}
+function mbrIso(d){ return d? d.getFullYear()+'-'+mbrP2(d.getMonth()+1)+'-'+mbrP2(d.getDate()) : ''; }
+function mbrDmy(d){ return d? mbrP2(d.getDate())+'/'+mbrP2(d.getMonth()+1)+'/'+d.getFullYear() : '—'; }
+function mbrDaysTo(d){ if(!d) return null; const t=new Date(); t.setHours(0,0,0,0); const x=new Date(d); x.setHours(0,0,0,0); return Math.round((x-t)/86400000); }
+
+async function mbrExpLoad(force){
+  if(EXP_LOADING) return; if(EXP_ROWS && !force){ mbrExpRender(); return; }
+  EXP_LOADING=true;
+  const box=document.getElementById('expBody');
+  if(box && document.getElementById('mbr-exp').style.display!=='none') box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    if(!TABS.length){ try{ await discoverTabs(); }catch(e){} }
+    const tab = TABS.find(t=>t.trim()==='بيانات الاعضاء') || findTab('بيانات الاعضاء','بيانات الأعضاء') || 'بيانات الاعضاء ';
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent("'"+tab+"'")}!A:F?key=${API_KEY}&valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER`;
+    const r=await fetch(url); const d=await r.json();
+    if(d.error) throw new Error(d.error.message||'خطأ في قراءة الشيت');
+    const vals=(d.values||[]).slice(1);
+    EXP_ROWS=[];
+    vals.forEach((c,i)=>{
+      const no=String(c[0]==null?'':c[0]).trim(), name=String(c[1]==null?'':c[1]).trim();
+      if(!no && !name) return;
+      const sd=mbrSerialToDate(c[4]), ed=mbrSerialToDate(c[5]);
+      EXP_ROWS.push({ row:i+2, no:no, name:name, phone:String(c[2]==null?'':c[2]).replace(/\D/g,''),
+        email:String(c[3]==null?'':c[3]).trim(), startD:sd, endD:ed, daysLeft:mbrDaysTo(ed) });
+    });
+    mbrExpStats();
+    if(document.getElementById('mbr-exp').style.display!=='none') mbrExpRender();
+  }catch(e){
+    if(box) box.innerHTML='<div class="empty">تعذّر قراءة بيانات الأعضاء: '+esc(e.message)+'</div>';
+  }finally{ EXP_LOADING=false; }
+}
+
+function mbrExpStats(){
+  if(!EXP_ROWS) return;
+  const soon=EXP_ROWS.filter(m=>m.daysLeft!==null && m.daysLeft>=0 && m.daysLeft<=30).length;
+  const gone=EXP_ROWS.filter(m=>m.daysLeft!==null && m.daysLeft<0 && m.daysLeft>=-60).length;
+  const a=document.getElementById('mbrExp30'); if(a) a.textContent=soon;
+  const b=document.getElementById('mbrExpired'); if(b) b.textContent=gone;
+  updateBadge('membership', soon);
+}
+
+function mbrExpSet(btn,w){
+  document.querySelectorAll('#expFilter button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); EXP_WIN=w; mbrExpRender();
+}
+function mbrGoExp(w){
+  const tb=document.querySelector('#mbrSeg button[data-mbr="exp"]');
+  EXP_WIN=w;
+  document.querySelectorAll('#expFilter button').forEach(b=>b.classList.toggle('on', +b.dataset.ex===w));
+  mbrTab(tb,'exp');
+}
+function mbrAfterRenew(){
+  if(document.getElementById('mbr-exp').style.display!=='none') mbrExpLoad(true);
+  else { mbrSearch(); mbrExpLoad(true); }
+}
+
+function mbrExpList(){
+  if(!EXP_ROWS) return [];
+  const q=(document.getElementById('expQ').value||'').trim(), dg=q.replace(/\D/g,'');
+  return EXP_ROWS.filter(m=>{
+    if(m.daysLeft===null) return false;
+    if(EXP_WIN>0){ if(m.daysLeft<0 || m.daysLeft>EXP_WIN) return false; }
+    else if(EXP_WIN===-1){ if(m.daysLeft>=0) return false; }
+    else { if(m.daysLeft>=0 || m.daysLeft<EXP_WIN) return false; }
+    if(q){
+      const hit=(m.name.indexOf(q)>-1) || (m.no.toUpperCase().indexOf(q.toUpperCase())>-1) || (dg.length>=3 && m.phone.indexOf(dg)>-1);
+      if(!hit) return false;
+    }
+    return true;
+  }).sort((a,b)=> EXP_WIN>0 ? a.daysLeft-b.daysLeft : b.daysLeft-a.daysLeft);
+}
+
+function mbrExpMsg(m){
+  const end=mbrDmy(m.endD);
+  return m.daysLeft>=0
+    ? 'أهلاً '+m.name+'\nنود تذكيرك بأن عضويتك في معهد تمكين للتدريب رقم '+m.no+' تنتهي بتاريخ '+end+
+      (m.daysLeft===0?' (اليوم)':' (باقي '+m.daysLeft+' يوم)')+'.\nللتجديد والاستمرار بمزايا العضوية تواصل معنا على 97999768.\nشاكرين لك.'
+    : 'أهلاً '+m.name+'\nعضويتك في معهد تمكين للتدريب رقم '+m.no+' انتهت بتاريخ '+end+
+      '.\nحاب نجدد لك ونرجعك لمزايا الأعضاء؟ تواصل معنا على 97999768.\nشاكرين لك.';
+}
+function mbrWa(phone){ let p=String(phone||'').replace(/\D/g,''); if(p.indexOf('00965')===0) p=p.slice(5); if(p.indexOf('965')===0 && p.length===11) p=p.slice(3); return p.length===8?'965'+p:p; }
+
+function mbrExpRender(){
+  const box=document.getElementById('expBody'); if(!box) return;
+  if(!EXP_ROWS){ box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>'; return; }
+  const list=mbrExpList();
+  const label = EXP_WIN>0 ? 'تنتهي خلال '+EXP_WIN+' يوم' : (EXP_WIN===-1?'كل العضويات المنتهية':'انتهت خلال آخر '+Math.abs(EXP_WIN)+' يوم');
+  if(!list.length){ box.innerHTML='<div class="empty">لا توجد عضويات — '+label+'.</div>'; return; }
+  let h='<div class="mbr-note info">'+label+': <b>'+list.length+'</b> عضو</div>';
+  h+='<div class="mbr-tbl"><table><thead><tr><th>رقم العضوية</th><th>الاسم</th><th>الجوال</th><th>تاريخ الانتهاء</th><th>المتبقي</th><th></th></tr></thead><tbody>';
+  list.forEach((m,i)=>{
+    const dl=m.daysLeft;
+    const cls= dl<0?'expired':(dl<=7?'expired':'soon');
+    const txt= dl<0?'منتهية من '+Math.abs(dl)+' يوم':(dl===0?'تنتهي اليوم':'باقي '+dl+' يوم');
+    const wa=mbrWa(m.phone);
+    h+='<tr><td><span class="mbr-mono"><b>'+esc(m.no||'—')+'</b></span></td>'+
+       '<td><b>'+esc(m.name||'—')+'</b></td>'+
+       '<td><span class="mbr-mono">'+esc(m.phone||'—')+'</span></td>'+
+       '<td><span class="mbr-mono">'+mbrDmy(m.endD)+'</span></td>'+
+       '<td><span class="mbr-badge '+cls+'">'+txt+'</span></td>'+
+       '<td style="white-space:nowrap">'+
+         (wa?'<a class="act act-approve" style="padding:6px 11px" target="_blank" rel="noopener" href="https://wa.me/'+wa+'?text='+encodeURIComponent(mbrExpMsg(m))+'">واتساب</a> ':'')+
+         '<button class="act act-link" style="padding:6px 11px" onclick="mbrExpCopy('+i+')">نسخ الرسالة</button> '+
+         '<button class="act act-masar" style="padding:6px 11px;margin:0" onclick="mbrExpRenew('+i+')">تجديد</button>'+
+       '</td></tr>';
+  });
+  box.innerHTML=h+'</tbody></table></div>';
+}
+function mbrExpCopy(i){ const m=mbrExpList()[i]; if(m) mbrCopy(mbrExpMsg(m)); }
+function mbrExpRenew(i){
+  const m=mbrExpList()[i]; if(!m) return;
+  mbrRenew({ row:m.row, no:m.no, name:m.name, phone:m.phone,
+    start:mbrDmy(m.startD), end:mbrDmy(m.endD), endISO:mbrIso(m.endD) });
+}
+function mbrExpCsv(){
+  const list=mbrExpList(); if(!list.length){ toast('لا توجد بيانات للتصدير'); return; }
+  const rows=[['رقم العضوية','الاسم','الجوال','الإيميل','تاريخ البدء','تاريخ الانتهاء','الأيام المتبقية']]
+    .concat(list.map(m=>[m.no,m.name,m.phone,m.email,mbrDmy(m.startD),mbrDmy(m.endD),m.daysLeft]));
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='عضويات-'+(EXP_WIN>0?'تنتهي-خلال-'+EXP_WIN+'-يوم':'منتهية')+'.csv'; a.click();
+}
 function mbrSetRn(iso){ document.getElementById('mbrRnStart').value=iso; }
 function mbrDoRenew(){
   var m=MBR_CUR&&MBR_CUR.member; if(!m) return;
@@ -3360,7 +3522,7 @@ function mbrDoRenew(){
       '</div>'+
       '<div class="mbr-acts">'+
         '<button class="btn" style="background:var(--crimson);color:#fff" onclick=\'mbrCopy('+JSON.stringify(msg).replace(/'/g,"&#39;")+')\'>نسخ رسالة العضو</button>'+
-        '<button class="btn btn-ghost" onclick="mbrClose(); mbrSearch()">تحديث النتائج</button>'+
+        '<button class="btn btn-ghost" onclick="mbrClose(); mbrAfterRenew()">تحديث النتائج</button>'+
       '</div>');
   });
 }
