@@ -45,6 +45,19 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .tagb{display:inline-block;background:var(--green-bg);color:var(--green);border-radius:8px;padding:3px 9px;font-size:11px;font-weight:900;margin-top:6px;}
 .rm{background:transparent;border:none;color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;padding:4px 8px;border-radius:8px;}
 .rm:hover{color:var(--red);background:var(--red-bg);}
+.exbox{background:#EEF1FA;border-radius:12px;padding:11px 12px;margin-top:10px;}
+.exbox-h{font-size:12px;font-weight:900;color:#283593;margin-bottom:8px;}
+.exopt{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid transparent;
+  border-radius:9px;padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:.16s;}
+.exopt:last-child{margin-bottom:0;}
+.exopt:hover{border-color:#9FA8DA;}
+.exopt.on{border-color:#3949AB;background:#F5F6FD;}
+.exchk{width:18px;height:18px;border-radius:5px;border:2px solid rgba(40,53,147,.25);background:#fff;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;}
+.exopt.on .exchk{background:#3949AB;border-color:#3949AB;}
+.exnm{flex:1;min-width:0;font-size:13px;font-weight:800;color:var(--text);line-height:1.4;}
+.exprc{font-size:12.5px;font-weight:900;color:#283593;white-space:nowrap;}
+
 .certpick{background:var(--gold-bg);border-radius:12px;padding:12px 13px;margin-top:11px;
   border:1.5px solid transparent;transition:.2s;}
 .certpick.lock{background:#F3E5F5;border-color:#CE93D8;animation:none;}
@@ -355,6 +368,17 @@ function calc(){
       }else{
         was = o.price; amt = r3(o.price * (1 - disc));
       }
+
+      /* المميزات الإضافية المختارة */
+      if(o.extras && o.extras.length){
+        const sel = it.extras || [];
+        for(let e = 0; e < sel.length; e++){
+          const ex = o.extras[Number(sel[e])];
+          if(!ex) continue;
+          was += ex.price;
+          amt += r3(ex.price * (1 - disc));
+        }
+      }
     }
 
     total += amt;
@@ -503,6 +527,7 @@ function paintItems(c){
              (o.date ? ' · 📅 ' + esc(dateAr(o.date)) : '') +
              (o.time ? ' · 🕔 ' + esc(o.time) : '');
       if(o.isFree && o.hasCert) cert = certBox(i, it.cert, 'الشهادة المعتمدة', o.certFee, 'حضور فقط', L.noFree);
+      if(o.extras && o.extras.length) cert += extraBox(i, it.extras || [], o.extras, c.disc);
     }
 
     const priceHtml = (L.amt === 0)
@@ -581,6 +606,30 @@ function paintBnpl(c){
 }
 
 function setPayMode(m){ PAYMODE = m; paint(); }
+
+/* ===== المميزات الإضافية ===== */
+function extraBox(i, picked, list, disc){
+  return '<div class="exbox">' +
+    '<div class="exbox-h">⭐ أضف لتجربتك</div>' +
+    list.map(function(ex, k){
+      const on = picked.indexOf(k) > -1 || picked.indexOf(String(k)) > -1;
+      const p  = r3(ex.price * (1 - (disc || 0)));
+      return '<label class="exopt' + (on ? ' on' : '') + '" onclick="toggleExtra(' + i + ',' + k + ')">' +
+        '<span class="exchk">' + (on ? '✓' : '') + '</span>' +
+        '<span class="exnm">' + esc(ex.name) + '</span>' +
+        '<span class="exprc">+' + ar(p) + ' د.ك</span></label>';
+    }).join('') + '</div>';
+}
+
+function toggleExtra(i, k){
+  if(!CART[i].extras) CART[i].extras = [];
+  const arr = CART[i].extras.map(Number);
+  const at  = arr.indexOf(k);
+  if(at > -1) arr.splice(at, 1); else arr.push(k);
+  CART[i].extras = arr;
+  writeCart(CART);
+  paint();
+}
 
 function certBox(i, val, label, fee, freeLabel, noFree){
   const undecided = (val !== true && val !== false);
@@ -764,7 +813,9 @@ async function checkout(){
       method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
       body: JSON.stringify({ type:'createOrder', name:name, phone:phone, email:email,
         installments: (PAYMODE === 'split'),
-        items: CART.map(function(it){ return { kind:it.kind, id:it.id, cert:(it.cert === true) }; }) })
+        items: CART.map(function(it){
+          return { kind:it.kind, id:it.id, cert:(it.cert === true), extras:(it.extras || []) };
+        }) })
     });
     d = await r.json();
   }catch(e){}
