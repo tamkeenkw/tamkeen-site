@@ -53,6 +53,26 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .srvok{background:var(--green-bg);border-radius:12px;padding:10px 14px;margin-bottom:16px;
   font-size:12.5px;font-weight:800;color:var(--green);}
 
+.stbtn{background:var(--crimson);color:#fff;border:none;border-radius:100px;padding:8px 18px;
+  font-family:'Tajawal',sans-serif;font-size:12.5px;font-weight:900;cursor:pointer;transition:.18s;white-space:nowrap;}
+.stbtn:hover{background:var(--crimson-2);}
+.stbtn.ghost{background:#fff;color:var(--crimson);border:1.5px solid rgba(92,15,15,.15);}
+.stbtn.ghost:hover{background:var(--cream);}
+
+.stmodal{background:#fff;border-radius:22px;padding:24px;max-width:860px;width:100%;margin:auto;position:relative;}
+.sthead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:6px;flex-wrap:wrap;padding-left:36px;}
+.sttitle{font-size:19px;font-weight:900;line-height:1.4;}
+.stsub{font-size:12.5px;color:var(--muted);font-weight:700;margin-top:4px;}
+.stbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px;}
+.stpill{background:var(--cream);border-radius:100px;padding:6px 14px;font-size:12.5px;font-weight:900;color:var(--muted);}
+.stpill b{color:var(--crimson);}
+.stpill.cert{background:var(--gold-bg);color:var(--gold);}
+.stpill.paid{background:var(--green-bg);color:var(--green);}
+.stwa{display:inline-flex;align-items:center;gap:5px;background:var(--green-bg);color:var(--green);
+  border-radius:100px;padding:3px 10px;font-size:12px;font-weight:900;text-decoration:none;direction:ltr;}
+.stmail{font-size:11.5px;color:var(--muted);font-weight:700;direction:ltr;display:block;margin-top:3px;}
+.stempty{text-align:center;padding:40px 16px;color:var(--muted);font-weight:700;}
+
 /* ===== تبويب اليوم وباجر ===== */
 .tday-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
 .tday-date{font-size:13px;font-weight:800;color:var(--muted);}
@@ -248,7 +268,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="header">
     <div>
       <div class="header-logo-text">إدارة الدورات</div>
-      <div class="header-logo-sub">أكاديمية مسار · v11</div>
+      <div class="header-logo-sub">أكاديمية مسار · v12</div>
     </div>
     <div class="header-actions">
       <button class="hbtn" onclick="loadCourses()">تحديث</button>
@@ -323,6 +343,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <!-- ===== MODAL الباقة ===== -->
+<div class="overlay" id="stOverlay">
+  <div class="stmodal">
+    <button class="modal-close" onclick="closeStudents()">✕</button>
+    <div id="stBody"><div class="loading">جاري التحميل...</div></div>
+  </div>
+</div>
+
 <div class="overlay" id="pkgOverlay">
   <div class="modal">
     <button class="modal-close" onclick="closePkgForm()">✕</button>
@@ -589,6 +616,104 @@ function switchTab(t){
   if(t === 't' && !TODAY_LOADED) loadToday();
 }
 
+/* ============ المسجلون — السكريبت الرئيسي ============ */
+const MAIN_URL = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
+
+let ST_ROWS = [];
+
+function openStudents(name, date){
+  document.getElementById('stOverlay').classList.add('on');
+  document.getElementById('stBody').innerHTML =
+    '<div class="loading">جاري تحميل المسجلين...</div>';
+  fetchStudents(name, date);
+}
+
+function closeStudents(){ document.getElementById('stOverlay').classList.remove('on'); }
+
+async function fetchStudents(name, date){
+  let d = null;
+  try{
+    const url = MAIN_URL + '?action=getStudents&course=' + encodeURIComponent(name) +
+                (date ? '&date=' + encodeURIComponent(date) : '') + '&_=' + Date.now();
+    const r = await fetch(url);
+    d = await r.json();
+  }catch(e){}
+
+  const box = document.getElementById('stBody');
+
+  if(!d || d.error){
+    box.innerHTML = '<div class="stempty">تعذّر التحميل' +
+      (d && d.error ? '<br><small>' + esc(d.error) + '</small>' : '') + '</div>';
+    return;
+  }
+
+  ST_ROWS = d.students || [];
+  renderStudents(name, date, d);
+}
+
+function renderStudents(name, date, d){
+  const rows = ST_ROWS;
+  const cert = rows.filter(function(x){ return String(x.cert).trim() === 'نعم'; }).length;
+  const paid = rows.filter(function(x){ return String(x.payment).trim() === 'تم الدفع'; }).length;
+  const att  = rows.filter(function(x){ return String(x.attended).indexOf('نعم') > -1; }).length;
+
+  let h =
+    '<div class="sthead"><div>' +
+      '<div class="sttitle">' + esc(name) + '</div>' +
+      '<div class="stsub">' + (date ? '📅 ' + esc(date) : 'كل الدفعات') +
+        (d.trainer ? ' · 👤 ' + esc(d.trainer) : '') + '</div>' +
+    '</div>' +
+    '<button class="stbtn ghost" onclick="copyPhones()">نسخ الأرقام</button></div>' +
+
+    '<div class="stbar">' +
+      '<span class="stpill">المسجلون <b>' + ar(rows.length) + '</b></span>' +
+      '<span class="stpill cert">🎓 يبي شهادة ' + ar(cert) + '</span>' +
+      '<span class="stpill paid">💰 دفعوا ' + ar(paid) + '</span>' +
+      '<span class="stpill">✅ حضروا ' + ar(att) + '</span>' +
+    '</div>';
+
+  if(rows.length === 0){
+    h += '<div class="stempty">ما في مسجلين بهذي الدفعة</div>';
+    document.getElementById('stBody').innerHTML = h;
+    return;
+  }
+
+  h += '<div class="tbl-wrap"><table><thead><tr>' +
+    '<th>#</th><th>الاسم</th><th>التواصل</th><th>شهادة</th><th>الدفع</th><th>الحضور</th>' +
+    '</tr></thead><tbody>';
+
+  rows.forEach(function(x, i){
+    const wa = String(x.phone || '').replace(/\D/g,'');
+    h += '<tr>' +
+      '<td>' + ar(i + 1) + '</td>' +
+      '<td><b>' + esc(x.name || '—') + '</b></td>' +
+      '<td>' + (x.phone
+        ? '<a class="stwa" href="https://wa.me/' + tdWa(x.phone) + '" target="_blank" rel="noopener">📞 ' + esc(x.phone) + '</a>'
+        : '<span class="tphone none">📵 بلا رقم</span>') +
+        (x.email ? '<span class="stmail">' + esc(x.email) + '</span>' : '') + '</td>' +
+      '<td>' + (String(x.cert).trim() === 'نعم'
+        ? '<span class="paybadge ok">نعم</span>' : '<span class="paybadge">لا</span>') + '</td>' +
+      '<td>' + tdPay(x.payment, 0) + '</td>' +
+      '<td>' + (String(x.attended).indexOf('نعم') > -1
+        ? '<span class="paybadge ok">حضر</span>' : '<span class="paybadge wait">—</span>') + '</td>' +
+      '</tr>';
+  });
+
+  h += '</tbody></table></div>';
+  document.getElementById('stBody').innerHTML = h;
+}
+
+function copyPhones(){
+  const list = ST_ROWS.map(function(x){ return String(x.phone || '').replace(/\D/g,''); })
+                      .filter(Boolean);
+  if(list.length === 0){ toast('ما في أرقام', true); return; }
+  const txt = list.join('\n');
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){
+    toast('نُسخ ' + ar(list.length) + ' رقم');
+  }).catch(function(){ toast('تعذّر النسخ', true); });
+  else toast('تعذّر النسخ', true);
+}
+
 /* ============ اليوم وباجر — TodayBoard.gs ============ */
 const TODAY_URL = 'https://script.google.com/macros/s/AKfycbzYlaQqwXhgg367uEIxNh9XoAOqVFnqjlcL2SGSNelz4lN4Ow1Ly8tERWK4vIr3ZaOj/exec';
 let TODAY_LOADED = false;
@@ -636,7 +761,11 @@ function tdCourseCard(c, withTrainer){
         (c.wantCert ? '<span class="chip cert">🎓 ' + ar(c.wantCert) + ' يبي شهادة</span>' : '') +
       '</div>' +
     '</div>' +
-    '<div class="tcount"><b>' + ar(c.registered || 0) + '</b><span>مسجل بهذي الدفعة</span></div>' +
+    '<div style="display:flex;align-items:center;gap:10px;">' +
+      '<div class="tcount"><b>' + ar(c.registered || 0) + '</b><span>مسجل بهذي الدفعة</span></div>' +
+      '<button class="stbtn" onclick="openStudents(' + JSON.stringify(c.name).replace(/"/g,'&quot;') +
+        ',' + JSON.stringify(c.date || '').replace(/"/g,'&quot;') + ')">عرض المسجلين</button>' +
+    '</div>' +
   '</div>';
 }
 
@@ -1200,6 +1329,8 @@ function render(){
         ? '<div class="miss">⚠ ناقص قبل النشر: ' + missingOf(c).join(' · ') + '</div>' : '') +
       '<div class="ccard-actions">' +
         '<button class="abtn" onclick="openForm(\'' + c.id + '\')">تعديل</button>' +
+        '<button class="abtn" onclick="openStudents(' + JSON.stringify(c.name).replace(/"/g,'&quot;') +
+          ',' + JSON.stringify(c.date || '').replace(/"/g,'&quot;') + ')">👥 المسجلون</button>' +
         '<button class="abtn pub" onclick="togglePub(\'' + c.id + '\')">' +
           (c.published ? 'إيقاف النشر' : 'نشر') + '</button>' +
         '<button class="abtn danger" onclick="delCourse(\'' + c.id + '\')">حذف</button>' +
@@ -1519,6 +1650,10 @@ function toast(msg, isErr){
 
 document.getElementById('formOverlay').addEventListener('click', function(e){
   if(e.target === this) closeForm();
+});
+
+document.getElementById('stOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeStudents();
 });
 
 document.getElementById('pkgOverlay').addEventListener('click', function(e){
