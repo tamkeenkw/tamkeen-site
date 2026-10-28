@@ -222,7 +222,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="header">
     <div>
       <div class="header-logo-text">إدارة الدورات</div>
-      <div class="header-logo-sub">أكاديمية مسار · v9</div>
+      <div class="header-logo-sub">أكاديمية مسار · v10</div>
     </div>
     <div class="header-actions">
       <button class="hbtn" onclick="loadCourses()">تحديث</button>
@@ -818,8 +818,13 @@ async function loadCourses(){
   try{
     const res  = await fetch(SCRIPT_URL + '?action=getAll&pass=' + encodeURIComponent(PASS));
     const data = await res.json();
-    if(!data.ok){ toast(data.error || 'خطأ في التحميل', true); COURSES = []; PKGS = []; }
-    else { COURSES = data.courses || []; PKGS = data.packages || []; }
+    if(!data.ok){
+      showLoadError(data.error || 'خطأ غير معروف');
+      document.getElementById('loadingState').style.display = 'none';
+      return;                       /* لا نمسح القائمة الحالية */
+    }
+    COURSES = data.courses || [];
+    PKGS    = data.packages || [];
     checkServer(data);
     stats();
     buildMonths();
@@ -831,6 +836,22 @@ async function loadCourses(){
     toast('تعذّر الاتصال بالسيرفر', true);
   }
   document.getElementById('loadingState').style.display = 'none';
+}
+
+/* خطأ في القراءة — نشرح السبب بدل عرض صفحة فاضية */
+function showLoadError(msg){
+  const box = document.getElementById('srvWarn');
+  if(!box) return;
+
+  const colIssue = /exceed|limits|range|نطاق/i.test(String(msg));
+
+  box.innerHTML = '<div class="srvwarn">' +
+    '<div class="srvwarn-t">⚠ تعذّرت قراءة الدورات — بياناتك سليمة في الشيت</div>' +
+    '<div class="srvwarn-s">' +
+      (colIssue
+        ? 'السكريبت يطلب أعمدة أكثر مما في الورقة.<br><b>الحل:</b> شغّل <code>setupColumns</code> في Apps Script ثم اضغط تحديث.'
+        : 'رسالة السيرفر: <code>' + esc(msg) + '</code>') +
+    '<br><br>لم يُحذف أي شيء — الصفحة تقرأ فقط.</div></div>';
 }
 
 /* يكشف إن كان السكريبت المنشور يدعم المميزات */
