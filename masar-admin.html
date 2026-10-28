@@ -53,6 +53,32 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .srvok{background:var(--green-bg);border-radius:12px;padding:10px 14px;margin-bottom:16px;
   font-size:12.5px;font-weight:800;color:var(--green);}
 
+/* ===== تبويب اليوم وباجر ===== */
+.tday-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.tday-date{font-size:13px;font-weight:800;color:var(--muted);}
+.tday-sec{margin-bottom:26px;}
+.tday-h{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:900;color:var(--crimson);margin-bottom:12px;}
+.tday-h i{font-style:normal;background:var(--crimson);color:#fff;border-radius:100px;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 8px;}
+.tday-h small{font-size:12px;color:var(--muted);font-weight:700;}
+.tcard{background:#fff;border-radius:16px;padding:16px 18px;border:1.5px solid rgba(92,15,15,.06);box-shadow:0 2px 12px rgba(92,15,15,.04);display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px;}
+.tcard-name{font-size:16px;font-weight:900;line-height:1.45;}
+.tcount{text-align:center;background:var(--yellow-bg);border-radius:14px;padding:10px 16px;min-width:88px;}
+.tcount b{display:block;font-size:26px;font-weight:900;color:var(--yellow);line-height:1.1;}
+.tcount span{font-size:11px;font-weight:800;color:var(--muted);}
+.tphone{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);border-radius:100px;padding:4px 12px;font-size:12.5px;font-weight:900;text-decoration:none;direction:ltr;}
+.tphone.none{background:var(--red-bg);color:var(--red);direction:rtl;}
+.tbl-wrap{background:#fff;border-radius:16px;border:1.5px solid rgba(92,15,15,.06);overflow-x:auto;}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px;}
+.tbl-wrap th{background:var(--cream-2);color:var(--muted);font-weight:900;font-size:12px;padding:11px 12px;text-align:right;white-space:nowrap;}
+.tbl-wrap td{padding:11px 12px;border-top:1px solid rgba(92,15,15,.06);font-weight:700;vertical-align:middle;}
+.tbl-wrap tfoot td{background:var(--cream);font-weight:900;color:var(--crimson);}
+.tmini{text-align:center;padding:26px 16px;color:var(--muted);font-weight:700;background:#fff;border-radius:16px;border:1.5px dashed rgba(92,15,15,.12);}
+.terr{background:#FFF3E0;color:#E65100;border-radius:12px;padding:10px 14px;font-size:12.5px;font-weight:800;margin-bottom:10px;line-height:1.6;}
+.paybadge{border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:900;white-space:nowrap;}
+.paybadge.ok{background:var(--green-bg);color:var(--green);}
+.paybadge.no{background:var(--red-bg);color:var(--red);}
+.paybadge.wait{background:var(--yellow-bg);color:var(--yellow);}
+
 .tabs{display:flex;gap:8px;background:#fff;border-radius:14px;padding:6px;margin-bottom:22px;border:1.5px solid rgba(92,15,15,.06);}
 .tab{flex:1;background:transparent;border:none;border-radius:10px;padding:11px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:900;color:var(--muted);cursor:pointer;transition:.2s;}
 .tab.on{background:var(--crimson);color:#fff;}
@@ -222,7 +248,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
   <div class="header">
     <div>
       <div class="header-logo-text">إدارة الدورات</div>
-      <div class="header-logo-sub">أكاديمية مسار · v10</div>
+      <div class="header-logo-sub">أكاديمية مسار · v11</div>
     </div>
     <div class="header-actions">
       <button class="hbtn" onclick="loadCourses()">تحديث</button>
@@ -235,8 +261,24 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     <div id="srvWarn"></div>
 
     <div class="tabs">
+      <button class="tab"    id="tabT" onclick="switchTab('t')">📅 اليوم وباجر</button>
       <button class="tab on" id="tabC" onclick="switchTab('c')">📚 الدورات</button>
       <button class="tab"    id="tabP" onclick="switchTab('p')">📦 الباقات</button>
+    </div>
+
+    <!-- ===== تبويب اليوم وباجر ===== -->
+    <div id="paneT" style="display:none;">
+      <div class="tday-head">
+        <div class="tday-date" id="tdDate">—</div>
+        <button class="btn-add" onclick="loadToday()">تحديث</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-n" id="tdC">٠</div><div class="stat-l">دورات اليوم</div></div>
+        <div class="stat-card"><div class="stat-n" id="tdR" style="color:var(--yellow);">٠</div><div class="stat-l">مسجلين اليوم</div></div>
+        <div class="stat-card"><div class="stat-n" id="tdK" style="color:var(--blue);">٠</div><div class="stat-l">استشارات اليوم</div></div>
+        <div class="stat-card"><div class="stat-n" id="tdM" style="color:var(--green);">٠</div><div class="stat-l">مبالغ الاستشارات (د.ك)</div></div>
+      </div>
+      <div id="tdBody"><div class="loading">جاري التحميل...</div></div>
     </div>
 
     <!-- ===== تبويب الدورات ===== -->
@@ -539,11 +581,126 @@ let GAP = 'all';
 
 /* ============ TABS ============ */
 function switchTab(t){
-  const isC = (t === 'c');
-  document.getElementById('tabC').className = 'tab' + (isC ? ' on' : '');
-  document.getElementById('tabP').className = 'tab' + (isC ? '' : ' on');
-  document.getElementById('paneC').style.display = isC ? 'block' : 'none';
-  document.getElementById('paneP').style.display = isC ? 'none' : 'block';
+  ['t','c','p'].forEach(function(k){
+    const K = k.toUpperCase();
+    document.getElementById('tab' + K).className = 'tab' + (k === t ? ' on' : '');
+    document.getElementById('pane' + K).style.display = (k === t) ? 'block' : 'none';
+  });
+  if(t === 't' && !TODAY_LOADED) loadToday();
+}
+
+/* ============ اليوم وباجر — TodayBoard.gs ============ */
+const TODAY_URL = 'https://script.google.com/macros/s/AKfycbzYlaQqwXhgg367uEIxNh9XoAOqVFnqjlcL2SGSNelz4lN4Ow1Ly8tERWK4vIr3ZaOj/exec';
+let TODAY_LOADED = false;
+
+const DAYS_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+function tdLabel(k){
+  if(!k) return '';
+  const p = k.split('-'), d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+  return DAYS_AR[d.getDay()] + ' ' + ar(Number(p[2])) + ' ' + MO[Number(p[1])] + ' ' + ar(p[0]);
+}
+
+function tdMoney(n){
+  n = Number(n) || 0;
+  return ar(n % 1 ? n.toFixed(3).replace(/0+$/,'') : n);
+}
+
+function tdWa(phone){
+  const d = String(phone || '').replace(/\D/g,'');
+  return d.length === 8 ? '965' + d : d;
+}
+
+function tdPhoneChip(phone){
+  if(!phone) return '<span class="tphone none">📵 الرقم غير متوفر</span>';
+  return '<a class="tphone" href="https://wa.me/' + tdWa(phone) + '" target="_blank" rel="noopener">📞 ' + esc(phone) + '</a>';
+}
+
+function tdPay(t, amount){
+  const s = String(t || '');
+  if(/تم|مدفوع|paid|captured/i.test(s)) return '<span class="paybadge ok">' + esc(s) + '</span>';
+  if(/لم|غير|فشل|failed/i.test(s))     return '<span class="paybadge no">' + esc(s) + '</span>';
+  if(s) return '<span class="paybadge wait">' + esc(s) + '</span>';
+  return amount > 0 ? '<span class="paybadge ok">مدفوع</span>' : '—';
+}
+
+function tdCourseCard(c, withTrainer){
+  return '<div class="tcard">' +
+    '<div style="flex:1;min-width:220px;">' +
+      '<div class="tcard-name">' + esc(c.name) + '</div>' +
+      '<div class="ccard-meta">' +
+        '<span class="chip">📅 ' + esc(tdLabel(c.date)) + '</span>' +
+        (c.time ? '<span class="chip">🕔 ' + esc(c.time) + '</span>' : '') +
+        (c.trainer ? '<span class="chip">👤 ' + esc(c.trainer) + '</span>' : '') +
+        (withTrainer ? tdPhoneChip(c.phone) : '') +
+        (c.wantCert ? '<span class="chip cert">🎓 ' + ar(c.wantCert) + ' يبي شهادة</span>' : '') +
+      '</div>' +
+    '</div>' +
+    '<div class="tcount"><b>' + ar(c.registered || 0) + '</b><span>مسجل بهذي الدفعة</span></div>' +
+  '</div>';
+}
+
+async function loadToday(){
+  const body = document.getElementById('tdBody');
+  if(TODAY_URL.indexOf('/exec') === -1){
+    body.innerHTML = '<div class="tmini">رابط سكربت «اليوم وباجر» (TodayBoard) غير مهيأ بعد.</div>';
+    return;
+  }
+  body.innerHTML = '<div class="loading">جاري التحميل...</div>';
+  try{
+    const res = await fetch(TODAY_URL + '?action=today&pass=' + encodeURIComponent(PASS) + '&_=' + Date.now());
+    const d = await res.json();
+    if(!d.ok) throw new Error(d.error || 'خطأ');
+    TODAY_LOADED = true;
+    renderToday(d);
+  }catch(e){
+    body.innerHTML = '<div class="tmini">تعذّر التحميل: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderToday(d){
+  const today = d.today || [], tom = d.tomorrow || [], cons = d.consults || [];
+  const regs  = today.reduce(function(s,c){ return s + (c.registered || 0); }, 0);
+  const money = cons.reduce(function(s,c){ return s + (Number(c.amount) || 0); }, 0);
+
+  document.getElementById('tdDate').textContent = 'اليوم: ' + tdLabel(d.todayKey) + (d.generated ? ' — آخر تحديث ' + d.generated : '');
+  document.getElementById('tdC').textContent = ar(today.length);
+  document.getElementById('tdR').textContent = ar(regs);
+  document.getElementById('tdK').textContent = ar(cons.length);
+  document.getElementById('tdM').textContent = tdMoney(money);
+
+  let h = '';
+
+  h += '<div class="tday-sec"><div class="tday-h">📚 دورات اليوم <i>' + ar(today.length) + '</i></div>';
+  if(d.coursesError) h += '<div class="terr">⚠ ' + esc(d.coursesError) + '</div>';
+  h += today.length ? today.map(function(c){ return tdCourseCard(c, false); }).join('')
+                    : '<div class="tmini">ما في دورات اليوم</div>';
+  h += '</div>';
+
+  h += '<div class="tday-sec"><div class="tday-h">💬 استشارات اليوم <i>' + ar(cons.length) + '</i></div>';
+  if(d.consultsError) h += '<div class="terr">⚠ ' + esc(d.consultsError) + '</div>';
+  if(cons.length){
+    h += '<div class="tbl-wrap"><table><thead><tr><th>الوقت</th><th>عند منو</th><th>العميل</th><th>النوع</th><th>المبلغ</th><th>الدفع</th></tr></thead><tbody>';
+    cons.forEach(function(c){
+      h += '<tr><td>' + esc(c.time || '—') + '</td>' +
+           '<td><b>' + esc(c.trainer || '—') + '</b></td>' +
+           '<td>' + esc(c.client || '—') + (c.phone ? '<div><a class="tphone" style="margin-top:4px" href="https://wa.me/' + tdWa(c.phone) + '" target="_blank" rel="noopener">' + esc(c.phone) + '</a></div>' : '') + '</td>' +
+           '<td>' + esc(c.type || '—') + '</td>' +
+           '<td><b>' + (c.amount ? tdMoney(c.amount) + ' د.ك' : '—') + '</b></td>' +
+           '<td>' + tdPay(c.pay, c.amount) + '</td></tr>';
+    });
+    h += '</tbody><tfoot><tr><td colspan="4">الإجمالي</td><td colspan="2">' + tdMoney(money) + ' د.ك</td></tr></tfoot></table></div>';
+  }else if(!d.consultsError){
+    h += '<div class="tmini">ما في استشارات اليوم</div>';
+  }
+  h += '</div>';
+
+  h += '<div class="tday-sec"><div class="tday-h">🗓️ دورات باجر <i>' + ar(tom.length) + '</i><small>' + esc(tdLabel(d.tomorrowKey)) + '</small></div>';
+  h += tom.length ? tom.map(function(c){ return tdCourseCard(c, true); }).join('')
+                  : '<div class="tmini">ما في دورات باجر</div>';
+  h += '</div>';
+
+  document.getElementById('tdBody').innerHTML = h;
 }
 
 /* ============ PACKAGES ============ */
