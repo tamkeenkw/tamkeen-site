@@ -481,7 +481,7 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <div class="menu-card" onclick="openSection('membership')">
         <span class="mc-badge" id="badge-membership" style="display:none" title="عضويات تنتهي خلال 30 يوم">0</span>
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><line x1="14" y1="10" x2="19" y2="10"/><line x1="14" y1="14" x2="17" y2="14"/></svg></div>
-        <div class="mc-title">استعلام وإصدار رقم العضوية</div><div class="mc-desc">إصدار الأرقام · إضافة عضو · استعلام وتجديد · العضويات القريبة من الانتهاء</div>
+        <div class="mc-title">استعلام وإصدار رقم العضوية</div><div class="mc-desc">إصدار الأرقام · إضافة عضو · استعلام وتجديد · قريبة الانتهاء · المدربون الخاملون</div>
       </div>
       <div class="menu-card" onclick="openSection('memberconsult')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
@@ -1090,6 +1090,7 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <div class="mbr-stat"><b id="mbrPending">—</b><small>طلب بانتظار الإصدار</small></div>
       <div class="mbr-stat" style="cursor:pointer" onclick="mbrGoExp(30)"><b id="mbrExp30" style="color:#A86500">—</b><small>تنتهي خلال 30 يوم</small></div>
       <div class="mbr-stat" style="cursor:pointer" onclick="mbrGoExp(-60)"><b id="mbrExpired" style="color:#9B1C1C">—</b><small>انتهت آخر 60 يوم</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="mbrGoIdle()"><b id="mbrIdle30" style="color:#4527A0">—</b><small>مدرب خامل +30 يوم</small></div>
     </div>
 
     <div class="seg" id="mbrSeg">
@@ -1097,6 +1098,7 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <button data-mbr="man" onclick="mbrTab(this,'man')">إضافة عضو</button>
       <button data-mbr="qry" onclick="mbrTab(this,'qry')">استعلام وتجديد</button>
       <button data-mbr="exp" onclick="mbrTab(this,'exp')">تنتهي قريباً</button>
+      <button data-mbr="idle" onclick="mbrTab(this,'idle')">المدربون الخاملون</button>
     </div>
 
     <div id="mbr-req">
@@ -1150,6 +1152,29 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <button class="btn btn-ghost" onclick="mbrExpCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
       </div>
       <div id="expBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+    </div>
+
+    <div id="mbr-idle" style="display:none">
+      <div class="toolbar">
+        <div class="filter" id="idleFilter" style="flex-wrap:wrap">
+          <button class="on" data-id="30" onclick="mbrIdleSet(this,30)">+30 يوم</button>
+          <button data-id="60" onclick="mbrIdleSet(this,60)">+60 يوم</button>
+          <button data-id="90" onclick="mbrIdleSet(this,90)">+90 يوم</button>
+          <button data-id="180" onclick="mbrIdleSet(this,180)">+6 شهور</button>
+          <button data-id="0" onclick="mbrIdleSet(this,0)">ما قدّم أي دورة</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="idleQ" placeholder="فلترة بالاسم أو رقم العضوية أو الجوال..." oninput="mbrIdleRender()"></div>
+        <label class="mbr-chk"><input type="checkbox" id="idleActive" checked onchange="mbrIdleRender()">العضويات السارية فقط</label>
+        <label class="mbr-chk"><input type="checkbox" id="idleNoUp" checked onchange="mbrIdleRender()">إخفاء من عنده حجز قادم</label>
+        <label class="mbr-chk"><input type="checkbox" id="idleNever" checked onchange="mbrIdleRender()">يشمل اللي ما قدّموا أبداً</label>
+        <button class="btn btn-ghost" onclick="mbrIdleLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+        <button class="btn btn-ghost" onclick="mbrIdleCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
+      </div>
+      <div class="mbr-note info" style="font-weight:600">الحساب من تبويب «طلبات الحجز»: الدورة تنحسب «مقدَّمة» إذا حالتها معتمدة وتاريخ بدايتها مضى. الربط برقم تسلسل العضوية (الجزء بعد الشرطة) عشان يشمل الحجوزات قبل التجديد.</div>
+      <div id="idleBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
     </div>
   </div>
 
@@ -3156,8 +3181,9 @@ function mbrRefresh(){
 function mbrTab(el,id){
   document.querySelectorAll('#mbrSeg button').forEach(function(b){ b.classList.remove('on'); });
   el.classList.add('on');
-  ['req','man','qry','exp'].forEach(function(x){ document.getElementById('mbr-'+x).style.display = (x===id?'':'none'); });
+  ['req','man','qry','exp','idle'].forEach(function(x){ document.getElementById('mbr-'+x).style.display = (x===id?'':'none'); });
   if(id==='exp'){ if(!EXP_ROWS) mbrExpLoad(); else mbrExpRender(); }
+  if(id==='idle'){ mbrIdleLoad(); }
 }
 
 /* ── طلبات العضوية ── */
@@ -3418,6 +3444,7 @@ function mbrExpStats(){
   const a=document.getElementById('mbrExp30'); if(a) a.textContent=soon;
   const b=document.getElementById('mbrExpired'); if(b) b.textContent=gone;
   updateBadge('membership', soon);
+  mbrIdleStats();
 }
 
 function mbrExpSet(btn,w){
@@ -3500,6 +3527,149 @@ function mbrExpCsv(){
   const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
   a.download='عضويات-'+(EXP_WIN>0?'تنتهي-خلال-'+EXP_WIN+'-يوم':'منتهية')+'.csv'; a.click();
+}
+
+/* ═══════════════════════════════════════════════
+   المدربون الخاملون — آخر دورة مقدَّمة لكل عضو
+   من «طلبات الحجز» مربوطة بتسلسل العضوية
+   ═══════════════════════════════════════════════ */
+let IDLE_WIN=30, IDLE_BK_LOADING=false;
+
+function mbrSeq(no){ const m=String(no||'').toUpperCase().replace(/\s/g,'').match(/-(\d+)\s*$/); return m?String(parseInt(m[1],10)):''; }
+function mbrNameKey(n){ return (typeof normAr==='function'?normAr(n):String(n||'').trim()); }
+
+async function mbrIdleBookings(){
+  if(DATA.bookings && DATA.bookings.tab) return true;
+  if(IDLE_BK_LOADING) return false;
+  IDLE_BK_LOADING=true;
+  try{
+    if(!TABS.length){ try{ await discoverTabs(); }catch(e){} }
+    const tab=findTab('طلبات الحجز','حجز الدورات','حجز');
+    if(!tab) return false;
+    DATA.bookings=await readTab(tab);
+    return true;
+  }catch(e){ return false; } finally{ IDLE_BK_LOADING=false; }
+}
+
+/* يبني لكل عضو: آخر دورة مقدَّمة، عدد الدورات، أقرب حجز قادم */
+function mbrIdleCompute(){
+  if(!EXP_ROWS || !DATA.bookings || !DATA.bookings.tab) return null;
+  const h=DATA.bookings.headers;
+  const t0=new Date(); t0.setHours(0,0,0,0);
+  const bySeq={}, byName={};
+  DATA.bookings.data.forEach(raw=>{
+    const b=mapBooking(h,raw);
+    const sc=statusClass(b.status);
+    if(sc==='st-reject') return;
+    const d=parseDate(b.start||b.date); if(!d||isNaN(d)) return;
+    d.setHours(0,0,0,0);
+    const rec={course:b.course||'', d:d, done:sc==='st-done', past:d<=t0};
+    const k=mbrSeq(b.member);
+    if(k){ (bySeq[k]=bySeq[k]||[]).push(rec); }
+    else if(b.trainer){ const nk=mbrNameKey(b.trainer); (byName[nk]=byName[nk]||[]).push(rec); }
+  });
+  return EXP_ROWS.map(m=>{
+    const recs=(bySeq[mbrSeq(m.no)]||[]).concat(byName[mbrNameKey(m.name)]||[]);
+    let last=null, count=0, next=null;
+    recs.forEach(r=>{
+      if(r.done && r.past){ count++; if(!last||r.d>last.d) last=r; }
+      if(!r.past){ if(!next||r.d<next.d) next=r; }
+    });
+    const idleDays = last ? Math.round((t0-last.d)/86400000) : null;
+    return Object.assign({}, m, { lastCourse:last?last.course:'', lastD:last?last.d:null, count:count, idleDays:idleDays, next:next });
+  });
+}
+
+function mbrIdleStats(){
+  const el=document.getElementById('mbrIdle30'); if(!el) return;
+  const all=mbrIdleCompute(); if(!all){ el.textContent='—'; return; }
+  el.textContent = all.filter(m=>(m.daysLeft===null||m.daysLeft>=0) && !m.next && (m.idleDays===null || m.idleDays>=30)).length;
+}
+
+async function mbrIdleLoad(force){
+  const box=document.getElementById('idleBody');
+  if(force || !EXP_ROWS || !DATA.bookings){
+    if(box) box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+    if(force && DATA.bookings){ DATA.bookings=null; }
+    await mbrIdleBookings();
+    if(force || !EXP_ROWS) await mbrExpLoad(true);
+  }
+  mbrIdleStats();
+  mbrIdleRender();
+}
+
+function mbrIdleSet(btn,w){
+  document.querySelectorAll('#idleFilter button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); IDLE_WIN=w; mbrIdleRender();
+}
+function mbrGoIdle(){ mbrTab(document.querySelector('#mbrSeg button[data-mbr="idle"]'),'idle'); }
+
+function mbrIdleList(){
+  const all=mbrIdleCompute(); if(!all) return null;
+  const q=(document.getElementById('idleQ').value||'').trim(), dg=q.replace(/\D/g,'');
+  const onlyActive=document.getElementById('idleActive').checked;
+  const hideUp=document.getElementById('idleNoUp').checked;
+  const inclNever=document.getElementById('idleNever').checked;
+  return all.filter(m=>{
+    if(onlyActive && m.daysLeft!==null && m.daysLeft<0) return false;
+    if(hideUp && m.next) return false;
+    if(IDLE_WIN===0){ if(m.count>0) return false; }
+    else{
+      if(m.idleDays===null){ if(!inclNever) return false; }
+      else if(m.idleDays<IDLE_WIN) return false;
+    }
+    if(q){
+      const hit=(m.name.indexOf(q)>-1)||(m.no.toUpperCase().indexOf(q.toUpperCase())>-1)||(dg.length>=3&&m.phone.indexOf(dg)>-1);
+      if(!hit) return false;
+    }
+    return true;
+  }).sort((a,b)=>{
+    const ia=a.idleDays===null?1e9:a.idleDays, ib=b.idleDays===null?1e9:b.idleDays;
+    return ib-ia;
+  });
+}
+
+function mbrIdleMsg(m){
+  return 'أهلاً '+m.name+'\nاشتقنا لدوراتك في معهد تمكين للتدريب 🌟'+
+    (m.lastD?'\nآخر دورة قدّمتها معنا كانت «'+m.lastCourse+'» بتاريخ '+mbrDmy(m.lastD)+'.':'\nللحين ما قدّمت معنا أي دورة، وحابين نشوف أول دورة لك.')+
+    '\nجدولنا مفتوح للحجز — تقدر تحجز موعد دورتك من بوابة المدربين برقم عضويتك '+m.no+
+    '، أو تواصل معنا على 97999768 ونساعدك تختار الموعد والمحاور.\nشاكرين لك.';
+}
+
+function mbrIdleRender(){
+  const box=document.getElementById('idleBody'); if(!box) return;
+  const list=mbrIdleList();
+  if(list===null){ box.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>'; return; }
+  const label = IDLE_WIN===0 ? 'أعضاء ما قدّموا أي دورة' : 'ما قدّموا دورة من '+IDLE_WIN+' يوم أو أكثر';
+  if(!list.length){ box.innerHTML='<div class="empty">لا يوجد — '+label+'.</div>'; return; }
+  let h='<div class="mbr-note warn">'+label+': <b>'+list.length+'</b> مدرب</div>';
+  h+='<div class="mbr-tbl"><table><thead><tr><th>رقم العضوية</th><th>الاسم</th><th>الجوال</th><th>آخر دورة</th><th>مدة الخمول</th><th>دورات مقدَّمة</th><th>العضوية</th><th></th></tr></thead><tbody>';
+  list.forEach((m,i)=>{
+    const idle = m.idleDays===null ? '<span class="mbr-badge expired">ما قدّم أبداً</span>'
+      : '<span class="mbr-badge '+(m.idleDays>=90?'expired':'soon')+'">'+m.idleDays+' يوم</span>';
+    const mem = m.daysLeft===null ? '<span class="mbr-badge unknown">—</span>'
+      : (m.daysLeft<0?'<span class="mbr-badge expired">منتهية</span>':'<span class="mbr-badge active">سارية'+(m.daysLeft<=30?' · باقي '+m.daysLeft:'')+'</span>');
+    const wa=mbrWa(m.phone);
+    h+='<tr><td><span class="mbr-mono"><b>'+esc(m.no||'—')+'</b></span></td>'+
+      '<td><b>'+esc(m.name||'—')+'</b>'+(m.next?'<div style="font-size:11.5px;color:var(--green);font-weight:800">حجز قادم '+mbrDmy(m.next.d)+'</div>':'')+'</td>'+
+      '<td><span class="mbr-mono">'+esc(m.phone||'—')+'</span></td>'+
+      '<td style="max-width:220px">'+(m.lastD?esc(m.lastCourse||'—')+'<div style="font-size:11.5px;color:var(--muted);font-weight:700" class="mbr-mono">'+mbrDmy(m.lastD)+'</div>':'—')+'</td>'+
+      '<td>'+idle+'</td><td style="text-align:center"><b>'+m.count+'</b></td><td>'+mem+'</td>'+
+      '<td style="white-space:nowrap">'+
+        (wa?'<a class="act act-approve" style="padding:6px 11px" target="_blank" rel="noopener" href="https://wa.me/'+wa+'?text='+encodeURIComponent(mbrIdleMsg(m))+'">واتساب</a> ':'')+
+        '<button class="act act-link" style="padding:6px 11px" onclick="mbrIdleCopy('+i+')">نسخ الرسالة</button>'+
+      '</td></tr>';
+  });
+  box.innerHTML=h+'</tbody></table></div>';
+}
+function mbrIdleCopy(i){ const l=mbrIdleList(); if(l&&l[i]) mbrCopy(mbrIdleMsg(l[i])); }
+function mbrIdleCsv(){
+  const list=mbrIdleList(); if(!list||!list.length){ toast('لا توجد بيانات للتصدير'); return; }
+  const rows=[['رقم العضوية','الاسم','الجوال','الإيميل','آخر دورة','تاريخ آخر دورة','أيام الخمول','دورات مقدمة','انتهاء العضوية','حجز قادم']]
+    .concat(list.map(m=>[m.no,m.name,m.phone,m.email,m.lastCourse,m.lastD?mbrDmy(m.lastD):'',m.idleDays===null?'لم يقدم':m.idleDays,m.count,mbrDmy(m.endD),m.next?mbrDmy(m.next.d):'']));
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='مدربون-خاملون-'+(IDLE_WIN||'لم-يقدموا')+'.csv'; a.click();
 }
 function mbrSetRn(iso){ document.getElementById('mbrRnStart').value=iso; }
 function mbrDoRenew(){
