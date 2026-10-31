@@ -293,9 +293,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .dbar-s{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:2px;}
 .dbar-s.low{color:var(--red);}
 .dbar-btns{display:flex;gap:8px;align-items:center;}
-.dshare{background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:100px;width:42px;height:42px;
-  font-size:16px;cursor:pointer;transition:.2s;}
-.dshare:hover{background:var(--cream-2);}
+.dshare{background:var(--cream);border:1.5px solid rgba(92,15,15,.1);border-radius:100px;
+  min-width:42px;height:42px;padding:0 16px;font-family:inherit;font-size:14px;font-weight:700;
+  color:var(--crimson);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;
+  justify-content:center;gap:6px;white-space:nowrap;}
+.dshare:hover{background:var(--cream-2);border-color:rgba(92,15,15,.25);}
+.dshare:active{transform:scale(.96);}
 .dadd{background:var(--crimson);color:#fff;border:none;border-radius:100px;padding:13px 28px;
   font-family:'Tajawal',sans-serif;font-size:14.5px;font-weight:900;cursor:pointer;transition:.2s;}
 .dadd:hover{background:var(--crimson-2);}
@@ -606,11 +609,112 @@ async function load(){
                  broken.map(function(c){ return c.name; }));
   }
 
-  const qs  = new URLSearchParams(location.search);
-  const cid = qs.get('course');
-  const pid = qs.get('package');
+  const qs = new URLSearchParams(location.search);
+  /* الشكل الجديد القصير: ?c=K7M2  /  ?p=K7M2
+     والقديم يظل يشتغل: ?course=C26... / ?package=P26... */
+  const cShort = (qs.get('c') || '').trim();
+  const pShort = (qs.get('p') || '').trim();
+  const cid = qs.get('course')  || (cShort ? idFromCode(ALL,  cShort) : '');
+  const pid = qs.get('package') || (pShort ? idFromCode(PKGS, pShort) : '');
+
   if(cid)      setTimeout(function(){ openDetail(cid); }, 220);
   else if(pid) setTimeout(function(){ openPkg(pid); }, 220);
+  else if(cShort || pShort) setTimeout(badCode, 300);
+}
+
+/* يحوّل الكود القصير لمعرّف الدورة/الباقة — من البيانات المحمّلة، بدون أي طلب إضافي */
+function idFromCode(list, code){
+  if(!list || !code) return '';
+  const want = String(code).trim().toUpperCase();
+  for(let i = 0; i < list.length; i++){
+    const it = list[i];
+    if(String(it.code || '').toUpperCase() === want) return it.id || it._key || '';
+  }
+  return '';
+}
+
+/* الكود موجود بالرابط لكن الدورة انتهت أو اتشالت */
+function badCode(){
+  history.replaceState({}, '', location.pathname);
+  toast('هذي الدورة غير متاحة حالياً — تفضل باقي الدورات 👇', true);
+}
+
+/* ===== المشاركة ===== */
+/* الرابط القصير — يرجع للمعرّف الطويل فقط لو الكود مفقود */
+function shareUrl(kind, item){
+  const base = location.origin + location.pathname;
+  const code = String(item.code || '').trim();
+  if(code) return base + '?' + (kind === 'package' ? 'p' : 'c') + '=' + code;
+  return base + '?' + (kind === 'package' ? 'package' : 'course') +
+         '=' + encodeURIComponent(item.id || '');
+}
+
+/* النص الي يروح مع الرابط — هذا الي يخلي الرسالة تبين موثوقة في واتساب */
+function shareText(kind, item){
+  const L = [];
+  if(kind === 'package'){
+    L.push('📦 ' + item.name + ' — أكاديمية مسار');
+    if(item.count) L.push(ar(item.count) + ' دورات بسعر واحد');
+  } else {
+    L.push('📚 ' + item.name + ' — أكاديمية مسار');
+    const when = [item.date, item.time].filter(Boolean).join(' · ');
+    if(when) L.push('🗓 ' + when);
+    if(item.trainer) L.push('👤 ' + item.trainer);
+    L.push(Number(item.price || 0) <= 0 ? '🎁 مجانية — شهادة معتمدة اختيارية'
+                                        : '💳 ' + ar(item.price) + ' د.ك');
+  }
+  L.push('');
+  L.push('سجّل من هنا:');
+  L.push(shareUrl(kind, item));
+  return L.join('\n');
+}
+
+/* يحاول قائمة المشاركة بالجوال أولاً، وإلا ينسخ النص كامل */
+function doShare(kind, item, btn){
+  const txt = shareText(kind, item);
+  const url = shareUrl(kind, item);
+  const flash = function(sym, label){
+    if(!btn) return;
+    const old = btn.innerHTML;
+    btn.innerHTML = sym;
+    setTimeout(function(){ btn.innerHTML = old; }, 1700);
+    if(label) toast(label);
+  };
+
+  /* بالجوال: قائمة المشاركة الأصلية — يطلع واتساب مباشرة مع اسم الدورة
+     بالكمبيوتر: نسخ، أوضح للموظف */
+  const onPhone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  if(onPhone && navigator.share){
+    navigator.share({ title: item.name + ' — أكاديمية مسار', text: txt })
+      .then(function(){ flash('✓'); })
+      .catch(function(){ copyShare(txt, url, flash); });
+    return;
+  }
+  copyShare(txt, url, flash);
+}
+
+function copyShare(txt, url, flash){
+  const done = function(){ flash('✓', 'تم نسخ الرابط مع تفاصيل الدورة ✅'); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(function(){
+      legacyCopy(txt) ? done() : flash('✓', url);
+    });
+  } else {
+    legacyCopy(txt) ? done() : flash('✓', url);
+  }
+}
+
+function legacyCopy(txt){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.position = 'fixed'; ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
 }
 
 /* ===== BANNER ===== */
@@ -951,7 +1055,7 @@ function openDetail(key){
     '<div class="dbar">' +
       '<div><div class="dbar-p">' + (c.isFree ? 'مجاني' : ar(c.price) + ' <small>د.ك</small>') + '</div>' + seats + '</div>' +
       '<div class="dbar-btns">' +
-        '<button class="dshare" onclick="shareCourse(\'' + c.id + '\')" title="انسخ الرابط">🔗</button>' +
+        '<button class="dshare" onclick="shareCourse(\'' + c._key + '\')" title="شارك الدورة">🔗 شارك</button>' +
         '<button class="dadd' + (added ? ' added' : '') + '" id="dAdd" ' +
           (full ? 'disabled' : 'onclick="addFromDetail(\'' + c.id + '\')"') + '>' +
           (full ? 'المقاعد مكتملة' : (added ? '✓ في السلة — اذهب للسلة' : 'أضف للسلة')) + '</button>' +
@@ -960,7 +1064,7 @@ function openDetail(key){
 
   document.getElementById('dov').classList.add('on');
   document.body.style.overflow = 'hidden';
-  history.replaceState({}, '', location.pathname + '?course=' + encodeURIComponent(c.id));
+  history.replaceState({}, '', shareUrl('course', c));
 }
 
 function closeDetail(){
@@ -977,12 +1081,11 @@ function addFromDetail(id){
   if(btn){ btn.textContent = '✓ في السلة — اذهب للسلة'; btn.classList.add('added'); }
 }
 
-function shareCourse(id){
-  const url = location.origin + location.pathname + '?course=' + encodeURIComponent(id);
-  const btn = event && event.currentTarget;
-  const done = function(){ if(btn){ btn.textContent = '✓'; setTimeout(function(){ btn.textContent = '🔗'; }, 1600); } };
-  if(navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(done);
-  else done();
+function shareCourse(key){
+  const c = ALL.find(function(x){ return x._key === key; })
+         || ALL.find(function(x){ return x.id && x.id === key; });
+  if(!c) return;
+  doShare('course', c, event && event.currentTarget);
 }
 
 document.getElementById('dov').addEventListener('click', function(e){
@@ -1081,7 +1184,7 @@ function openPkg(key){
     '<div class="dbar">' +
       '<div><div class="dbar-p">' + ar(p.price) + ' <small>د.ك</small></div>' + seats + '</div>' +
       '<div class="dbar-btns">' +
-        '<button class="dshare" onclick="sharePkg(\'' + p.id + '\')" title="انسخ الرابط">🔗</button>' +
+        '<button class="dshare" onclick="sharePkg(\'' + p.id + '\')" title="شارك الباقة">🔗 شارك</button>' +
         '<button class="dadd' + (added ? ' added' : '') + '" id="dAdd" ' +
           (full ? 'disabled' : 'onclick="addPkgFromDetail(\'' + p.id + '\')"') + '>' +
           (full ? 'المقاعد مكتملة' : (added ? '✓ في السلة — اذهب للسلة' : 'أضف الباقة للسلة')) + '</button>' +
@@ -1090,7 +1193,7 @@ function openPkg(key){
 
   document.getElementById('dov').classList.add('on');
   document.body.style.overflow = 'hidden';
-  history.replaceState({}, '', location.pathname + '?package=' + encodeURIComponent(p.id));
+  history.replaceState({}, '', shareUrl('package', p));
 }
 
 function togglePk(i){
@@ -1107,11 +1210,9 @@ function addPkgFromDetail(id){
 }
 
 function sharePkg(id){
-  const url = location.origin + location.pathname + '?package=' + encodeURIComponent(id);
-  const btn = event && event.currentTarget;
-  const done = function(){ if(btn){ btn.textContent = '✓'; setTimeout(function(){ btn.textContent = '🔗'; }, 1600); } };
-  if(navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(done);
-  else done();
+  const p = PKGS.find(function(x){ return x.id === id; });
+  if(!p) return;
+  doShare('package', p, event && event.currentTarget);
 }
 
 /* ===== SUBSCRIPTIONS ===== */
