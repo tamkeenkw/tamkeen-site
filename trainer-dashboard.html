@@ -359,6 +359,104 @@ const PAGES = {
 /* صفحة تقييم الدورة العامة (تُبنى منها الروابط المشتركة للحضور) */
 const EVAL_PAGE = 'Taqeem.html';
 
+/* ===== مشاركة رابط الدورة (نفس صيغة صفحة الدورات العامة) ===== */
+/* عنوان صفحة الدورات العامة — عدّله لو كان مختلفاً */
+const COURSE_PAGE_URL   = 'https://tamkeenkuw.com/masar';
+/* نفس سكربت الدورات العامة getPublic المستخدم بصفحة مسار */
+const COURSES_PUBLIC_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
+
+var PUBLIC_COURSES = null;   // قائمة الدورات المنشورة (للحصول على كود المشاركة)
+
+function tkNormName(s) {
+  return String(s || '')
+    .replace(/[ً-ْٰـ]/g, '')
+    .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function fetchPublicCourses() {
+  // كاش ١٠ دقائق بالجلسة
+  var cached = tkCacheGet('tkc_public_courses');
+  if (cached) { PUBLIC_COURSES = cached; return; }
+  fetch(COURSES_PUBLIC_URL + '?action=getPublic')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      PUBLIC_COURSES = (data && data.courses) ? data.courses : [];
+      try { sessionStorage.setItem('tkc_public_courses', JSON.stringify({ t: Date.now(), d: PUBLIC_COURSES })); } catch(e) {}
+    })
+    .catch(function(){ PUBLIC_COURSES = []; });
+}
+
+// يبني رابط المشاركة بنفس صيغة صفحة الدورات
+function buildShareUrl(item) {
+  var code = String(item.code || '').trim();
+  if (code) return COURSE_PAGE_URL + '?c=' + code;
+  return COURSE_PAGE_URL + '?course=' + encodeURIComponent(item.id || '');
+}
+
+// نص المشاركة (نفس أسلوب صفحة مسار)
+function buildShareText(item) {
+  var L = ['📚 ' + item.name + ' — أكاديمية مسار'];
+  var when = [item.date, item.time].filter(Boolean).join(' · ');
+  if (when) L.push('🗓 ' + when);
+  if (item.trainer) L.push('👤 ' + item.trainer);
+  L.push(Number(item.price || 0) <= 0 ? '🎁 مجانية — شهادة معتمدة اختيارية' : '💳 ' + item.price + ' د.ك');
+  L.push('', 'سجّل من هنا:', buildShareUrl(item));
+  return L.join('\n');
+}
+
+function shareMyCourse(btn) {
+  var course = decodeURIComponent(btn.getAttribute('data-course') || '');
+  var date   = decodeURIComponent(btn.getAttribute('data-date') || '');
+  if (!PUBLIC_COURSES) { alert('جاري تحميل روابط الدورات، حاول بعد لحظات.'); fetchPublicCourses(); return; }
+
+  var want = tkNormName(course);
+  var matches = PUBLIC_COURSES.filter(function(c){ return tkNormName(c.name) === want; });
+  var item = null;
+  if (matches.length > 1 && date) {
+    item = matches.filter(function(c){ return String(c.date || '').trim() === String(date).trim(); })[0] || matches[0];
+  } else {
+    item = matches[0];
+  }
+
+  if (!item) { alert('هذي الدورة غير منشورة بصفحة الدورات العامة — انشرها أولاً من لوحة العمليات.'); return; }
+
+  var url = buildShareUrl(item);
+  var txt = buildShareText(item);
+
+  function flash() {
+    var orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم نسخ رابط الدورة ✓';
+    setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = orig; }, 2200);
+  }
+
+  var onPhone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  if (onPhone && navigator.share) {
+    navigator.share({ title: item.name + ' — أكاديمية مسار', text: txt })
+      .then(function(){ /* شورك */ })
+      .catch(function(){ copyToClip(txt, url, flash); });
+    return;
+  }
+  copyToClip(txt, url, flash);
+}
+
+function copyToClip(txt, url, flash) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(flash).catch(function(){ legacyCopyTxt(txt) ? flash() : prompt('انسخ الرابط:', url); });
+  } else {
+    legacyCopyTxt(txt) ? flash() : prompt('انسخ الرابط:', url);
+  }
+}
+function legacyCopyTxt(txt) {
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    var ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
+  } catch(e) { return false; }
+}
+
 /* تمرير رقم العضوية للصفحة المقصودة (إن أرادت قراءته لاحقاً) */
 function goTo(url) {
   var m = sessionStorage.getItem('tk_memberId') || '';
@@ -575,6 +673,8 @@ function loadMyCourses(trainerName) {
   lbl.style.display = 'none';
   if (!trainerName) { box.innerHTML = '<div class="bk-empty">تعذّر تحديد اسم المدرب.</div>'; return; }
 
+  fetchPublicCourses();   // نجهّز أكواد المشاركة بالخلفية
+
   function renderCourses(res) {
     var list = (res && res.courses) ? res.courses : [];
     if (!list.length) {
@@ -596,12 +696,15 @@ function loadMyCourses(trainerName) {
       var stuBtn = '<button class="crs-students-btn" type="button" data-course="' + cE + '" data-date="' + dE + '">' +
                   '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
                   'عرض المسجّلين (' + (c.count || 0) + ')</button>';
+      var shareBtn = '<button class="crs-share-btn crs-eval-btn" type="button" data-course="' + cE + '" data-date="' + dE + '">' +
+                  '<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+                  'شارك رابط الدورة</button>';
       return '<div class="crs-item">' +
                '<div class="crs-card' + (c.past ? ' is-past' : '') + '">' +
                  '<div class="crs-count"><div class="n">' + (c.count || 0) + '</div><div class="t">مسجّل</div></div>' +
                  '<div class="crs-info"><div class="crs-title">' + (c.course || 'دورة') + '</div>' +
                  '<div class="crs-meta">' + meta.join('') + '</div>' +
-                 '<div class="crs-btns">' + evalBtn + stuBtn + '</div></div>' +
+                 '<div class="crs-btns">' + shareBtn + evalBtn + stuBtn + '</div></div>' +
                '</div>' +
                '<div class="crs-students" style="display:none;"></div>' +
              '</div>';
@@ -627,6 +730,10 @@ function loadMyCourses(trainerName) {
     // ربط أزرار "عرض المسجّلين"
     box.querySelectorAll('.crs-students-btn').forEach(function(b) {
       b.addEventListener('click', function(){ loadCourseStudents(this); });
+    });
+    // ربط أزرار "شارك رابط الدورة"
+    box.querySelectorAll('.crs-share-btn').forEach(function(b) {
+      b.addEventListener('click', function(){ shareMyCourse(this); });
     });
   }
 
