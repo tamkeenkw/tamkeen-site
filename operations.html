@@ -483,6 +483,10 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><line x1="14" y1="10" x2="19" y2="10"/><line x1="14" y1="14" x2="17" y2="14"/></svg></div>
         <div class="mc-title">استعلام وإصدار رقم العضوية</div><div class="mc-desc">إصدار الأرقام · إضافة عضو · استعلام وتجديد · قريبة الانتهاء · المدربون الخاملون</div>
       </div>
+      <div class="menu-card" onclick="openSection('certinv')">
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.8 7 22l5-3 5 3-1.5-8.2"/></svg></div>
+        <div class="mc-title">جرد الشهادات الشهري</div><div class="mc-desc">عدد الشهادات الصادرة لكل دورة · مقارنة بالشهر السابق · ملخص السنة</div>
+      </div>
       <div class="menu-card" onclick="openSection('memberconsult')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></div>
         <div class="mc-title">متابعة استشارات الأعضاء</div><div class="mc-desc">الأعضاء المسجّلون في استشارات تمكين</div>
@@ -1078,6 +1082,50 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
   </div>
 
   <!-- ===== MEMBERSHIP ===== -->
+
+  <!-- ═══ جرد الشهادات الشهري ═══ -->
+  <div class="panel" id="p-certinv">
+    <div class="sec-head">
+      <div><div class="sec-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 13.8 7 22l5-3 5 3-1.5-8.2"/></svg>جرد الشهادات الشهري</div>
+      <div class="sec-desc">من سجل «إصدار الشهادات» + «أرشيف» في شيت مسار — الشهر يُحسب من تاريخ الإصدار</div></div>
+      <button class="btn btn-ghost" onclick="ciLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    </div>
+
+    <div class="toolbar" style="align-items:center">
+      <button class="btn btn-ghost" onclick="ciShift(-1)" title="الشهر السابق">→</button>
+      <input id="ciMonth" type="month" onchange="ciRender()" style="padding:10px 12px;border:1.5px solid var(--line);border-radius:11px;font-family:inherit;font-weight:800;color:var(--crimson);background:#fff">
+      <button class="btn btn-ghost" onclick="ciShift(1)" title="الشهر التالي">←</button>
+      <label class="mbr-chk"><input type="checkbox" id="ciArch" checked onchange="ciRender()">يشمل الأرشيف</label>
+      <label class="mbr-chk"><input type="checkbox" id="ciByTr" onchange="ciRender()">فصل الدورة حسب المدرب</label>
+    </div>
+
+    <div class="mbr-stats" id="ciStats">
+      <div class="mbr-stat"><b id="ciTotal">—</b><small>شهادة صادرة هالشهر</small></div>
+      <div class="mbr-stat"><b id="ciCourses">—</b><small>دورة صدرت لها شهادات</small></div>
+      <div class="mbr-stat"><b id="ciDiff">—</b><small id="ciDiffL">مقارنة بالشهر السابق</small></div>
+      <div class="mbr-stat"><b id="ciYear">—</b><small id="ciYearL">إجمالي السنة</small></div>
+    </div>
+
+    <div class="seg" id="ciSeg">
+      <button class="on" onclick="ciTab(this,'month')">جرد الشهر لكل دورة</button>
+      <button onclick="ciTab(this,'year')">ملخص السنة</button>
+    </div>
+
+    <div id="ci-month">
+      <div class="toolbar">
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="ciQ" placeholder="فلترة بالدورة أو المدرب أو رقم الاعتماد..." oninput="ciRender()"></div>
+        <button class="btn btn-ghost" onclick="ciCopy()">نسخ الملخص</button>
+        <button class="btn btn-ghost" onclick="ciCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
+      </div>
+      <div id="ciBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+    </div>
+    <div id="ci-year" style="display:none">
+      <div id="ciYearBody"></div>
+    </div>
+    <div id="ciFoot" class="mbr-note info" style="margin-top:12px;display:none"></div>
+  </div>
+
   <div class="panel" id="p-membership">
     <div class="sec-head">
       <div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2.5"/><line x1="14" y1="10" x2="19" y2="10"/></svg>استعلام وإصدار رقم العضوية</div>
@@ -1233,7 +1281,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية', certinv:'جرد الشهادات الشهري'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1250,6 +1298,7 @@ function openSection(id){
   if(id==='mytasks') initMyTasks();
   if(id==='blocks') loadBlocks();
   if(id==='membership') mbrInit();
+  if(id==='certinv') ciInit();
   if(id==='trmat') tmInit();
   if(id==='masaradmin'){ const f=document.getElementById('masarAdminFrame'); if(f && !f.getAttribute('src')) f.src=f.dataset.src; }
 }
@@ -3875,5 +3924,201 @@ async function tmApprove(row){
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   جرد الشهادات الشهري — CertInventory.gs
+   (احتياطي: قراءة مباشرة من شيت مسار إذا CERT_URL فاضي)
+   ═══════════════════════════════════════════════ */
+const CERT_URL = 'https://script.google.com/macros/s/AKfycbzLoGXPIuqq4VvrY454IbbPbO7QWmv5Ccb8OGpAt9BH_FoYlHatuNX1nqHej_HGBLoHqA/exec';   // ← رابط /exec بعد نشر CertInventory.gs
+const CI_MASAR_SHEET = '142D49yec595Gz-uLdAcY-pEwVAuN6oTab7GPD2NgmEo';
+const CI_AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+let CI_ROWS=null, CI_READY=false, CI_LOADING=false, CI_SRC='', CI_NODATE=0;
+
+function ciP2(n){ return n<10?'0'+n:''+n; }
+function ciDig(v){ return String(v==null?'':v).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }
+function ciNorm(s){ return String(s||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[«»"'()\-–—_.,:]/g,' ').replace(/\s+/g,' ').trim(); }
+function ciMonLabel(ym){ const [y,m]=ym.split('-'); return CI_AR_MONTHS[+m-1]+' '+y; }
+
+/* أي قيمة → 'YYYY-MM' ؛ إذا ما انفهم التاريخ نستخدم تسلسل الشهادة TM02YYMM-n */
+function ciYm(issued, serial){
+  if(typeof issued==='number' && issued>20000){ const d=new Date(Math.round((issued-25569)*86400000)); return d.getUTCFullYear()+'-'+ciP2(d.getUTCMonth()+1); }
+  let s=ciDig(issued).trim(), m;
+  if(s){
+    m=s.match(/(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/); if(m) return m[1]+'-'+ciP2(+m[2]);
+    m=s.match(/(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/);
+    if(m && +m[3]>1600){ let a=+m[1],b=+m[2],mon=b; if(a<=12&&b>12) mon=a; return m[3]+'-'+ciP2(mon); }
+  }
+  m=ciDig(serial).toUpperCase().replace(/\s/g,'').match(/^TM\d{2}(\d{2})(\d{2})-/);
+  if(m && +m[2]>=1 && +m[2]<=12) return '20'+m[1]+'-'+m[2];
+  return '';
+}
+
+async function ciFetchScript(){
+  const r=await fetch(CERT_URL+(CERT_URL.indexOf('?')>-1?'&':'?')+'action=certs&t='+Date.now());
+  const d=await r.json();
+  if(!d.ok) throw new Error(d.message||'خطأ من سكربت الجرد');
+  CI_SRC='سكربت الجرد · '+(d.version||'')+' · '+(d.generated||'');
+  return d.rows.map(r=>({src:r[0],course:r[1],trainer:r[2],accred:r[3],issued:r[4],serial:r[5]}));
+}
+async function ciFetchDirect(){
+  const meta=await (await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CI_MASAR_SHEET}?key=${API_KEY}&fields=sheets.properties(title)`)).json();
+  if(meta.error) throw new Error('شيت مسار مو مفتوح للقراءة من اللوحة — انشر CertInventory.gs وحط رابطه في CERT_URL');
+  const titles=(meta.sheets||[]).map(x=>x.properties.title);
+  const cfg=[ {k:'إصدار الشهادات',src:'current',c:3,t:4,a:5,s:6,i:8,d:-1}, {k:'أرشيف',src:'archive',c:3,t:5,a:4,s:7,i:9,d:6} ];
+  const out=[];
+  for(const g of cfg){
+    const tab=titles.find(t=>t.trim()===g.k); if(!tab) continue;
+    const u=`https://sheets.googleapis.com/v4/spreadsheets/${CI_MASAR_SHEET}/values/${encodeURIComponent("'"+tab+"'")}!A:J?key=${API_KEY}&valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER`;
+    const d=await (await fetch(u)).json(); if(d.error) throw new Error(d.error.message);
+    (d.values||[]).slice(1).forEach(r=>{
+      const course=String(r[g.c]==null?'':r[g.c]).trim(), serial=String(r[g.s]==null?'':r[g.s]).trim();
+      if(!course && !serial) return;
+      let issued=r[g.i]; if((issued===''||issued==null) && g.d>-1) issued=r[g.d];
+      out.push({src:g.src,course:course,trainer:String(r[g.t]==null?'':r[g.t]).trim(),accred:String(r[g.a]==null?'':r[g.a]).trim(),issued:issued,serial:serial});
+    });
+  }
+  CI_SRC='قراءة مباشرة من شيت مسار';
+  return out;
+}
+
+async function ciLoad(force){
+  if(CI_LOADING) return; if(CI_ROWS && !force){ ciRender(); return; }
+  CI_LOADING=true;
+  document.getElementById('ciBody').innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    let rows;
+    if(CERT_URL){ rows=await ciFetchScript(); }
+    else { rows=await ciFetchDirect(); }
+    CI_NODATE=0;
+    CI_ROWS=rows.map(r=>{ const ym=ciYm(r.issued,r.serial); if(!ym) CI_NODATE++; return Object.assign(r,{ym:ym,key:ciNorm(r.course)}); });
+    ciRender();
+  }catch(e){
+    CI_ROWS=null;
+    document.getElementById('ciBody').innerHTML='<div class="mbr-note err">تعذّر جلب سجل الشهادات: '+esc(e.message)+'</div>';
+    ['ciTotal','ciCourses','ciDiff','ciYear'].forEach(id=>document.getElementById(id).textContent='—');
+  }finally{ CI_LOADING=false; }
+}
+
+function ciInit(){
+  if(!CI_READY){
+    CI_READY=true;
+    const d=new Date(); document.getElementById('ciMonth').value=d.getFullYear()+'-'+ciP2(d.getMonth()+1);
+  }
+  ciLoad();
+}
+function ciShift(n){
+  const el=document.getElementById('ciMonth'); let [y,m]=(el.value||'').split('-').map(Number);
+  if(!y){ const d=new Date(); y=d.getFullYear(); m=d.getMonth()+1; }
+  m+=n; if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  el.value=y+'-'+ciP2(m); ciRender();
+}
+function ciTab(btn,id){
+  document.querySelectorAll('#ciSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  document.getElementById('ci-month').style.display=id==='month'?'':'none';
+  document.getElementById('ci-year').style.display=id==='year'?'':'none';
+}
+function ciPool(){ const arch=document.getElementById('ciArch').checked; return (CI_ROWS||[]).filter(r=>arch||r.src!=='archive'); }
+function ciPrevYm(ym){ let [y,m]=ym.split('-').map(Number); m--; if(m<1){m=12;y--;} return y+'-'+ciP2(m); }
+
+/* تجميع شهادات شهر معيّن لكل دورة */
+function ciGroup(ym){
+  const byTr=document.getElementById('ciByTr').checked;
+  const g={};
+  ciPool().forEach(r=>{
+    if(r.ym!==ym) return;
+    const k=r.key+(byTr?'|'+ciNorm(r.trainer):'');
+    const x=g[k]||(g[k]={course:r.course||'(بدون اسم دورة)',trainers:{},accreds:{},count:0,serials:[]});
+    x.count++;
+    if(r.trainer) x.trainers[r.trainer]=1;
+    if(r.accred) x.accreds[r.accred]=1;
+    if(r.serial) x.serials.push(r.serial);
+  });
+  return Object.values(g).map(x=>Object.assign(x,{trainers:Object.keys(x.trainers),accreds:Object.keys(x.accreds)})).sort((a,b)=>b.count-a.count);
+}
+function ciMonthList(){
+  const ym=document.getElementById('ciMonth').value; if(!ym) return {ym:'',list:[]};
+  const q=ciNorm(document.getElementById('ciQ').value);
+  let list=ciGroup(ym);
+  if(q) list=list.filter(x=>ciNorm(x.course+' '+x.trainers.join(' ')+' '+x.accreds.join(' ')).indexOf(q)>-1);
+  return {ym:ym,list:list};
+}
+
+function ciRender(){
+  if(!CI_ROWS){ return; }
+  const ym=document.getElementById('ciMonth').value; if(!ym) return;
+  const all=ciGroup(ym), total=all.reduce((a,x)=>a+x.count,0);
+  const prev=ciGroup(ciPrevYm(ym)).reduce((a,x)=>a+x.count,0);
+  const yr=ym.slice(0,4), yearTotal=ciPool().filter(r=>r.ym && r.ym.slice(0,4)===yr && r.ym<=ym).length;
+  document.getElementById('ciTotal').textContent=total;
+  document.getElementById('ciCourses').textContent=all.length;
+  const diff=total-prev, dEl=document.getElementById('ciDiff');
+  dEl.textContent=(diff>0?'+':'')+diff; dEl.style.color=diff>0?'#1F7A45':(diff<0?'#9B1C1C':'var(--crimson)');
+  document.getElementById('ciDiffL').textContent='مقارنة بـ '+ciMonLabel(ciPrevYm(ym))+' ('+prev+')';
+  document.getElementById('ciYear').textContent=yearTotal;
+  document.getElementById('ciYearL').textContent='إجمالي '+yr+' لين نهاية '+CI_AR_MONTHS[+ym.slice(5)-1];
+
+  const {list}=ciMonthList();
+  const box=document.getElementById('ciBody');
+  if(!list.length){ box.innerHTML='<div class="empty">ما في شهادات صادرة في '+ciMonLabel(ym)+'.</div>'; }
+  else{
+    const max=list[0].count;
+    let h='<div class="mbr-tbl"><table><thead><tr><th>#</th><th>الدورة</th><th>المدرب</th><th>رقم الاعتماد</th><th style="text-align:center">عدد الشهادات</th><th style="min-width:140px">النسبة من الشهر</th><th>التسلسلات</th></tr></thead><tbody>';
+    list.forEach((x,i)=>{
+      const pct=total?Math.round(x.count*100/total):0;
+      const ser=x.serials.slice().sort();
+      h+='<tr><td>'+(i+1)+'</td><td><b>'+esc(x.course)+'</b></td>'+
+        '<td>'+esc(x.trainers.join('، ')||'—')+'</td>'+
+        '<td><span class="mbr-mono">'+esc(x.accreds.join('، ')||'—')+'</span></td>'+
+        '<td style="text-align:center;font-size:17px;font-weight:900;color:var(--crimson)">'+x.count+'</td>'+
+        '<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:var(--cream-2);border-radius:99px;overflow:hidden"><div style="height:100%;width:'+Math.round(x.count*100/max)+'%;background:var(--crimson);border-radius:99px"></div></div><b style="font-size:12px;min-width:34px">'+pct+'%</b></div></td>'+
+        '<td><span class="mbr-mono" style="font-size:12px;color:var(--muted)">'+(ser.length?esc(ser[0])+(ser.length>1?' ← '+esc(ser[ser.length-1]):''):'—')+'</span></td></tr>';
+    });
+    const shown=list.reduce((a,x)=>a+x.count,0);
+    h+='</tbody><tfoot><tr><td></td><td colspan="3"><b>المجموع'+(shown!==total?' (حسب الفلترة)':'')+'</b></td><td style="text-align:center;font-size:17px;font-weight:900;color:var(--crimson)">'+shown+'</td><td colspan="2"></td></tr></tfoot></table></div>';
+    box.innerHTML=h;
+  }
+  ciRenderYear(yr);
+  const f=document.getElementById('ciFoot');
+  f.style.display='';
+  f.innerHTML='المصدر: '+esc(CI_SRC)+' · إجمالي السجل: '+ciPool().length+' شهادة'+
+    (CI_NODATE?' · <b style="color:#9B1C1C">'+CI_NODATE+' شهادة بدون تاريخ إصدار مفهوم ما انحسبت بأي شهر</b>':'');
+}
+
+function ciRenderYear(yr){
+  const pool=ciPool().filter(r=>r.ym && r.ym.slice(0,4)===yr);
+  const box=document.getElementById('ciYearBody');
+  if(!pool.length){ box.innerHTML='<div class="empty">ما في شهادات مسجّلة في '+yr+'.</div>'; return; }
+  const months=[...Array(12)].map((_,i)=>yr+'-'+ciP2(i+1));
+  const courses={};
+  pool.forEach(r=>{ const c=courses[r.key]||(courses[r.key]={name:r.course||'(بدون اسم)',m:{},t:0}); c.m[r.ym]=(c.m[r.ym]||0)+1; c.t++; });
+  const rows=Object.values(courses).sort((a,b)=>b.t-a.t);
+  const mt=months.map(m=>pool.filter(r=>r.ym===m).length);
+  let h='<div class="mbr-tbl"><table style="min-width:1000px"><thead><tr><th>الدورة</th>'+months.map(m=>'<th style="text-align:center">'+CI_AR_MONTHS[+m.slice(5)-1]+'</th>').join('')+'<th style="text-align:center">المجموع</th></tr></thead><tbody>';
+  rows.forEach(c=>{
+    h+='<tr><td><b>'+esc(c.name)+'</b></td>'+months.map(m=>'<td style="text-align:center;'+(c.m[m]?'font-weight:900;color:var(--crimson)':'color:#ccc')+'">'+(c.m[m]||'·')+'</td>').join('')+'<td style="text-align:center;font-weight:900">'+c.t+'</td></tr>';
+  });
+  h+='</tbody><tfoot><tr><td><b>مجموع الشهر</b></td>'+mt.map(n=>'<td style="text-align:center;font-weight:900;color:var(--crimson)">'+(n||'·')+'</td>').join('')+'<td style="text-align:center;font-weight:900;color:var(--crimson)">'+pool.length+'</td></tr></tfoot></table></div>';
+  box.innerHTML='<div class="mbr-note info">ملخص '+yr+': <b>'+pool.length+'</b> شهادة على <b>'+rows.length+'</b> دورة</div>'+h;
+}
+
+function ciCopy(){
+  const {ym,list}=ciMonthList(); if(!list.length){ toast('لا توجد بيانات'); return; }
+  const tot=list.reduce((a,x)=>a+x.count,0);
+  const t='جرد الشهادات الصادرة — '+ciMonLabel(ym)+'\n'+
+    list.map((x,i)=>(i+1)+'. '+x.course+(x.trainers.length?' — '+x.trainers.join('، '):'')+': '+x.count+' شهادة').join('\n')+
+    '\nالمجموع: '+tot+' شهادة على '+list.length+' دورة';
+  mbrCopy(t);
+}
+function ciCsv(){
+  const {ym,list}=ciMonthList(); if(!list.length){ toast('لا توجد بيانات للتصدير'); return; }
+  const rows=[['الشهر','الدورة','المدرب','رقم الاعتماد','عدد الشهادات','أول تسلسل','آخر تسلسل']]
+    .concat(list.map(x=>{ const s=x.serials.slice().sort(); return [ciMonLabel(ym),x.course,x.trainers.join('، '),x.accreds.join('، '),x.count,s[0]||'',s[s.length-1]||'']; }));
+  rows.push(['','المجموع','','',list.reduce((a,x)=>a+x.count,0),'','']);
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='جرد-الشهادات-'+ym+'.csv'; a.click();
+}
+</script>
 </body>
 </html>
