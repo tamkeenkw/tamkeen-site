@@ -35,6 +35,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .btn-line:hover{background:var(--cream);border-color:var(--crimson)}
 .btn-primary{background:var(--crimson);color:#fff}
 .btn-primary:hover{background:var(--crimson-2)}
+.btn:disabled{opacity:.6;cursor:wait}
 
 /* بحث + فلاتر */
 .tools{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
@@ -61,6 +62,10 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .b-ok{background:rgba(28,125,63,.1);color:var(--ok)}
 .b-rej{background:rgba(192,57,43,.1);color:var(--rej)}
 .card .acts{display:flex;gap:8px;flex-wrap:wrap;width:100%;margin-top:4px;justify-content:flex-end}
+.card .cnote{width:100%;background:#f6efe9;border:1px solid var(--line);border-radius:10px;
+  padding:9px 12px;font-size:12.5px;color:var(--ink);font-weight:600;line-height:1.7}
+.card a.btn{text-decoration:none}
+.nofile{font-size:12px;color:var(--muted);font-weight:600;align-self:center;margin-inline-end:auto}
 .empty{background:#fff;border:1px dashed var(--line-2);border-radius:16px;padding:40px 20px;
   text-align:center;color:var(--muted);font-weight:600}
 .spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--crimson);
@@ -81,7 +86,7 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .lock .lg .fb{display:inline-flex;height:46px;padding:0 16px;border-radius:12px;background:var(--crimson);
   color:#fff;font-weight:900;font-size:20px;align-items:center}
 
-/* ===== مستند الطباعة الرسمي (فورمة تمكين) ===== */
+/* ===== مستند الطباعة الرسمي (فورمة تمكين) — نفس الستايل للمعاينة والطباعة ===== */
 #printDoc{display:none}
 .pdoc{font-family:'Cairo',sans-serif;color:#241616;direction:rtl}
 .pdoc-head{display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--crimson);
@@ -109,18 +114,23 @@ body{font-family:'Cairo',sans-serif;background:var(--cream);color:var(--ink);min
 .pdoc-sec{font-size:14.5px;font-weight:900;color:var(--crimson);margin:0 0 12px;
   border-inline-start:4px solid var(--crimson);padding-inline-start:10px;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-.pday{margin-bottom:15px;break-inside:avoid}
+.pday{margin-bottom:15px}
 .pday-h{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:13px;padding:8px 14px;
   border-radius:8px 8px 0 0;border:1px solid var(--line-2);border-bottom:none;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-table.pmh{border-collapse:collapse;width:100%;table-layout:auto}
+table.pmh{border-collapse:collapse;width:100%;table-layout:fixed}
 table.pmh th{background:var(--crimson);color:#fff;font-size:11.5px;font-weight:800;padding:8px 6px;
-  text-align:center;border:1px solid var(--crimson);-webkit-print-color-adjust:exact;print-color-adjust:exact}
-table.pmh th:first-child{width:28px}
+  text-align:center;border:1px solid var(--crimson);line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+/* عرض ثابت للأعمدة عشان الجدول ما يطلع برا الصفحة */
+table.pmh th.c-n{width:30px}
+table.pmh th.c-topic{width:27%}
+table.pmh th.col-dur{width:11%}
+table.pmh th.col-system{width:11%}
+table.pmh th.col-methods{width:20%}
 table.pmh td{border:1px solid var(--line-2);padding:8px 7px;font-size:12px;vertical-align:top;
-  line-height:1.6;word-wrap:break-word}
+  line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
 table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
-.pdoc-foot{margin-top:30px;display:flex;justify-content:space-between;gap:30px;break-inside:avoid}
+.pdoc-foot{margin-top:30px;display:flex;justify-content:space-between;gap:30px;break-inside:avoid;page-break-inside:avoid}
 .pdoc-foot .sign{flex:1;text-align:center;font-size:12.5px;color:#5a4a4a;font-weight:700}
 .pdoc-foot .sign .ln{margin-top:40px;border-top:1.5px solid var(--line-2);padding-top:6px}
 .pdoc-stamp{text-align:center;font-size:11px;color:var(--muted);margin-top:26px;
@@ -144,7 +154,10 @@ table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}
 .ctrl .fld input:focus{border-color:var(--crimson)}
 .ctrl .row{display:flex;gap:8px;margin-top:14px}
 .ctrl .row .btn{flex:1;justify-content:center}
+.ctrl .ptip{font-size:11px;color:var(--muted);font-weight:600;line-height:1.7;margin-top:10px;background:#f6efe9;border-radius:8px;padding:8px 10px}
+/* الورقة بالمعاينة بعرض A4 الحقيقي (210mm ناقص الهوامش) */
 .paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);overflow:auto}
+.paper #printDoc{max-width:186mm;margin:0 auto}
 .ed-hint{font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:700;background:#f6efe9;padding:8px;border-radius:8px}
 .ed{outline:none;border-radius:4px;transition:background .12s}
 .ed:hover{background:rgba(92,15,15,.05)}
@@ -188,15 +201,24 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
 .ed-foot .btn{flex:1;justify-content:center;padding:13px}
 .spin-s{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
 
+/* احتياطي: لو أحد ضغط Cmd/Ctrl+P مباشرة بدل زر الطباعة
+   نخفي كل شي بـ display:none (مو visibility) عشان ما ياخذ مكان ولا يطلع صفحات فاضية */
 @media print{
-  body{background:#fff;padding:0;margin:0}
-  body *{visibility:hidden}
-  .modal{position:static;background:none;padding:0;overflow:visible}
-  .ctrl,.ed-hint,.paper{border:none!important;box-shadow:none!important;padding:0!important;background:none!important}
-  #printDoc,#printDoc *{visibility:visible}
-  #printDoc{display:block;position:absolute;inset:0;width:100%}
+  @page{size:A4 portrait;margin:12mm 12mm 14mm}
+  html,body{background:#fff!important;padding:0!important;margin:0!important;min-height:0!important}
+  body > *{display:none!important}
+  body > #preview.show{display:block!important;position:static!important;background:none!important;padding:0!important;overflow:visible!important}
+  #preview .modal-inner{display:block!important;max-width:none!important;margin:0!important}
+  #preview .ctrl,#preview .ed-hint{display:none!important}
+  #preview .paper{border:none!important;box-shadow:none!important;padding:0!important;border-radius:0!important;overflow:visible!important}
+  #printDoc{display:block!important;position:static!important;max-width:none!important}
   .ed{background:none!important;box-shadow:none!important}
-  @page{size:A4;margin:13mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.pmh thead{display:table-header-group}
+  table.pmh tr,table.pmh td,table.pmh th{break-inside:avoid;page-break-inside:avoid}
+  .pday-h{break-after:avoid;page-break-after:avoid}
+  .pdoc-sec{break-after:avoid;page-break-after:avoid}
+  .pdoc-head,.pdoc-meta,.pdoc-obj{break-inside:avoid;page-break-inside:avoid}
 }
 .hidden{display:none!important}
 </style>
@@ -264,6 +286,7 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
             <option value="مرفوض">مرفوض</option>
           </select>
         </div>
+        <div class="efield"><label>ملاحظة الإدارة على المادة</label><textarea class="einp" id="eNote" placeholder="اكتب ملاحظتك على البرنامج المقدّم (تظهر في اللوحة)"></textarea></div>
 
         <div class="esec">محاور البرنامج</div>
         <div id="eDays"></div>
@@ -306,14 +329,13 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
         <div class="gl">حقول إضافية (اختياري)</div>
         <div class="fld"><label>الجهة المستفيدة</label><input id="fBenef" placeholder="مثال: وزارة التربية" oninput="applyExtras()"></div>
         <div class="fld"><label>رقم مرجعي للمستند</label><input id="fRef" placeholder="مثال: TMK-2026-014" oninput="applyExtras()"></div>
-        <div class="fld"><label>رقم التواصل</label><input id="fPhone" value="97999768" oninput="applyExtras()"></div>
       </div>
 
       <div class="row">
-        <button class="btn btn-primary" onclick="printNow()">🖨️ طباعة</button>
-        <button class="btn btn-primary" onclick="downloadPdf()">⬇️ تحميل PDF</button>
+        <button class="btn btn-primary" id="printBtn" onclick="printNow()">🖨️ طباعة / PDF</button>
         <button class="btn btn-line" onclick="closePreview()">إغلاق</button>
       </div>
+      <div class="ptip">بنافذة الطباعة: الحجم <b>A4</b> · المقياس <b>100%</b> (أو «الافتراضي») · فعّل «رسومات الخلفية» عشان تطلع الألوان.</div>
     </div>
 
     <div class="paper">
@@ -330,9 +352,11 @@ var API_KEY  = 'AIzaSyDlnUaqt9_iSZbjqJ_rTbZ5L-nCjC645s8';
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzCehigMhjfTqti8QlGvjp1U90fxZxPEMrTlDZsKip3fMhSdniWb8hzkiEaCY0X9ZUK/exec';
 var PIN      = '1990'; // غيّره لرقمك الخاص
 var LOGO_SRC = 'Untitled_design__2_.png';
+var PRINT_VERSION = 'print-a4-v2';
 
 var ROWS = [];        // الترشيحات
 var filter = 'all';
+var CUR_IDX = -1;     // الترشيح المفتوح بالمعاينة
 
 var DAY_NAMES = ['الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر',
                  'الحادي عشر','الثاني عشر','الثالث عشر','الرابع عشر','الخامس عشر'];
@@ -363,7 +387,7 @@ function loadData(){
   $('count').textContent='';
   var tab = 'ترشيحات الحكومية';
   var url = 'https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+
-            '/values/'+encodeURIComponent(tab)+'!A:J?key='+API_KEY;
+            '/values/'+encodeURIComponent(tab)+'!A:L?key='+API_KEY;
   fetch(url).then(function(r){ return r.json(); }).then(function(d){
     if(d.error){ $('cards').innerHTML='<div class="empty">تعذّر القراءة: '+esc(d.error.message)+'</div>'; return; }
     var rows = d.values||[];
@@ -380,7 +404,9 @@ function loadData(){
         start:   String(c[6]||'').replace(/^'/,''),
         topics:  c[7]||'',
         status:  c[8]||'جديد',
-        json:    c[9]||''
+        json:    c[9]||'',
+        file:    c[10]||'',
+        note:    c[11]||''
       };
     }).reverse(); // الأحدث أولاً
     render();
@@ -430,7 +456,11 @@ function render(){
         '</div>'+
       '</div>'+
       '<div class="side">'+statusBadge(r.status)+'</div>'+
+      (r.note ? '<div class="cnote">📝 '+esc(r.note)+'</div>' : '')+
       '<div class="acts">'+
+        (r.file && /^https?:\/\//.test(r.file)
+          ? '<a class="btn btn-line" href="'+esc(r.file)+'" target="_blank" rel="noopener">⬇ تحميل ملف البرنامج</a>'
+          : '<span class="nofile">لا يوجد ملف مرفق</span>')+
         '<button class="btn btn-line" onclick="openEditor('+idx+')">✏️ تعديل</button>'+
         '<button class="btn btn-primary" onclick="openPreview('+idx+')">🖨️ طباعة بفورمة تمكين</button>'+
       '</div>'+
@@ -453,6 +483,7 @@ function openEditor(idx){
   $('eStart').value    = /^\d{4}-\d{2}-\d{2}$/.test(r.start) ? r.start : '';
   $('eObjective').value= r.objective || '';
   $('eStatus').value   = ['جديد','مقبول','مرفوض'].indexOf(r.status)>=0 ? r.status : 'جديد';
+  $('eNote').value     = r.note || '';
 
   var days = parseDays(r);
   editDays = days.length ? days.map(function(d){
@@ -558,6 +589,7 @@ function saveEdit(){
   var start    = ($('eStart').value||'').trim();
   var objective= ($('eObjective').value||'').trim();
   var status   = $('eStatus').value;
+  var note     = ($('eNote').value||'').trim();
   var topicsText = buildEditTopicsText();
   var topicsJson = JSON.stringify(editDays.map(function(d){ return { rows:d.rows }; }));
 
@@ -568,7 +600,7 @@ function saveEdit(){
     type:'تحديث ترشيح', rowIndex:r._row,
     memberId:member, trainerName:trainer, programName:program,
     objective:objective, duration:duration, startDate:start,
-    status:status, topicsText:topicsText, topicsJson:topicsJson
+    status:status, topicsText:topicsText, topicsJson:topicsJson, note:note
   };
 
   fetch(SCRIPT_URL, {
@@ -579,7 +611,7 @@ function saveEdit(){
     // تحديث النسخة المحلية فوراً
     r.program=program; r.trainer=trainer; r.memberId=member; r.duration=duration;
     r.start=start; r.objective=objective; r.status=status;
-    r.topics=topicsText; r.json=topicsJson;
+    r.topics=topicsText; r.json=topicsJson; r.note=note;
     btn.disabled=false; sp.style.display='none'; txt.textContent='حفظ التعديلات';
     closeEditor();
     render();
@@ -656,7 +688,7 @@ function printRow(idx){
         '<td class="ed col-criteria" contenteditable="true">'+esc(x.criteria)+'</td></tr>';
     }).join('');
     daysHtml+='<div class="pday"><div class="pday-h ed" contenteditable="true">'+dayLabel(di)+'</div>'+
-      '<table class="pmh"><thead><tr><th>#</th><th>اسم المحور</th><th class="col-dur">مدة المحور</th>'+
+      '<table class="pmh"><thead><tr><th class="c-n">#</th><th class="c-topic">اسم المحور</th><th class="col-dur">مدة المحور</th>'+
       '<th class="col-system">نظام التدريب</th><th class="col-methods">وسائل التدريب المستخدمة</th>'+
       '<th class="col-criteria">معيار التقييم</th></tr></thead>'+
       '<tbody>'+trs+'</tbody></table></div>';
@@ -671,7 +703,7 @@ function printRow(idx){
     '<div class="pdoc">'+
       '<div class="pdoc-head" id="secLogoRow">'+logoHtml(true)+
         '<div class="org"><h1 class="ed" contenteditable="true">معهد تمكين</h1>'+
-        '<p class="ed" contenteditable="true">إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: <span id="vPhone">97999768</span></p></div>'+
+        '<p class="ed" contenteditable="true">إيديو كلاود للتدريب الأهلي · دولة الكويت<br>tamkeenkuw.com · هاتف: 97999768</p></div>'+
       '</div>'+
       '<div class="pdoc-title ed" contenteditable="true">مقترح برنامج تدريبي — ترشيح حكومي بنظام التعاقد</div>'+
       '<div class="pdoc-meta">'+
@@ -705,6 +737,7 @@ function openPreview(idx){
     var el=$(id); if(el) el.checked=true;
   });
   $('fBenef').value=''; $('fRef').value='';
+  CUR_IDX=idx;
   printRow(idx);
   $('preview').classList.add('show');
   document.body.style.overflow='hidden';
@@ -736,33 +769,107 @@ function applyExtras(){
   if($('rowBenef')){ $('rowBenef').style.display = b ? 'flex' : 'none'; $('vBenef').textContent=b; }
   var rf=($('fRef').value||'').trim();
   if($('rowRef')){ $('rowRef').style.display = rf ? 'flex' : 'none'; $('vRef').textContent=rf; }
-  var ph=($('fPhone') && $('fPhone').value.trim()) || '97999768';
-  if($('vPhone')){ $('vPhone').textContent = ph; }
 }
 
-async function downloadPdf(){
-  var src=document.getElementById('printDoc');
-  if(!src || !src.innerHTML.trim()){ alert('لا يوجد مستند لعرضه'); return; }
-  if(typeof html2canvas==='undefined' || !window.jspdf){ alert('مكتبة الـ PDF لم تُحمّل — تأكد من الاتصال بالإنترنت'); return; }
-  var holder=document.createElement('div');
-  holder.style.cssText='position:fixed;left:-99999px;top:0;width:794px;background:#fff;padding:0;';
-  holder.innerHTML='<div style="width:794px;background:#fff;">'+src.innerHTML+'</div>';
-  document.body.appendChild(holder);
-  try{
-    var canvas=await html2canvas(holder.firstChild,{scale:2,backgroundColor:'#ffffff',useCORS:true});
-    var img=canvas.toDataURL('image/png');
-    var pdf=new window.jspdf.jsPDF('p','mm','a4');
-    var pw=210, ph=canvas.height*210/canvas.width, page=297;
-    if(ph<=page){ pdf.addImage(img,'PNG',0,0,pw,ph); }
-    else { var pos=0; while(pos<ph){ pdf.addImage(img,'PNG',0,-pos,pw,ph); pos+=page; if(pos<ph) pdf.addPage(); } }
-    var rf=(document.getElementById('fRef') && document.getElementById('fRef').value.trim()) || 'ترشيح-حكومي';
-    pdf.save(rf+'.pdf');
-  }catch(e){ alert('تعذّر إنشاء الملف: '+(e.message||e)); }
-  document.body.removeChild(holder);
+/* ═══════════════════════════════════════════════
+   الطباعة على A4 — المستند يُطبع من إطار مستقل نظيف
+   (بدون اللوحة ولا المعاينة) عشان:
+   · العرض يكون عرض A4 بالضبط
+   · ما ينقص سطر بين صفحتين
+   · عناوين الجدول تتكرر بأول كل صفحة
+   ═══════════════════════════════════════════════ */
+var PRINT_CSS =
+  ':root{--crimson:#5C0F0F;--line:rgba(92,15,15,.12);--line-2:rgba(92,15,15,.22);--muted:#8a7a7a}'+
+  '@page{size:A4 portrait;margin:12mm 12mm 14mm}'+
+  '*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+  'html,body{background:#fff;width:100%}'+
+  'body{font-family:"Cairo",sans-serif;color:#241616;direction:rtl}'+
+  '.pdoc{width:100%}'+
+  '.pdoc-head{display:flex;align-items:center;gap:14px;border-bottom:2.5px solid var(--crimson);padding-bottom:10px;margin-bottom:4px;break-inside:avoid;page-break-inside:avoid}'+
+  '.pdoc-head .lg img{height:54px;width:auto;display:block}'+
+  '.pdoc-head .lg .fb{height:50px;padding:0 16px;border-radius:12px;background:var(--crimson);color:#fff;display:flex;align-items:center;font-weight:900;font-size:22pt}'+
+  '.pdoc-head .org{flex:1}'+
+  '.pdoc-head .org h1{font-size:17pt;font-weight:900;color:var(--crimson);margin-bottom:2px;line-height:1.3}'+
+  '.pdoc-head .org p{font-size:9pt;color:#5a4a4a;line-height:1.6}'+
+  '.pdoc-title{text-align:center;font-size:12pt;font-weight:900;color:var(--crimson);background:#f6efe9;padding:8px;border-radius:6px;margin:10px 0 12px}'+
+  '.pdoc-meta{border:1px solid var(--line-2);border-radius:8px;overflow:hidden;margin-bottom:12px;break-inside:avoid;page-break-inside:avoid}'+
+  '.pdoc-meta .mrow{display:flex;border-bottom:1px solid var(--line)}'+
+  '.pdoc-meta .mrow:last-child{border-bottom:none}'+
+  '.pdoc-meta .mk{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:9pt;padding:6px 10px;width:32mm;flex:0 0 auto;display:flex;align-items:center;border-inline-start:1px solid var(--line)}'+
+  '.pdoc-meta .mv{padding:6px 10px;font-size:9.5pt;font-weight:600;display:flex;align-items:center;flex:1}'+
+  '.pdoc-obj{margin-bottom:12px;break-inside:avoid;page-break-inside:avoid}'+
+  '.pdoc-obj .lbl{font-size:10pt;font-weight:900;color:var(--crimson);margin-bottom:4px}'+
+  '.pdoc-obj .val{font-size:9.5pt;line-height:1.8;background:#faf7f2;border:1px solid var(--line);border-radius:8px;padding:8px 11px}'+
+  '.pdoc-sec{font-size:11pt;font-weight:900;color:var(--crimson);margin:0 0 8px;border-inline-start:3.5px solid var(--crimson);padding-inline-start:8px;break-after:avoid;page-break-after:avoid}'+
+  '.pday{margin-bottom:10px}'+
+  '.pday-h{background:#f6efe9;color:var(--crimson);font-weight:800;font-size:10pt;padding:5px 11px;border-radius:6px 6px 0 0;border:1px solid var(--line-2);border-bottom:none;break-after:avoid;page-break-after:avoid}'+
+  'table.pmh{border-collapse:collapse;width:100%;table-layout:fixed}'+
+  'table.pmh thead{display:table-header-group}'+
+  'table.pmh tr{break-inside:avoid;page-break-inside:avoid}'+
+  'table.pmh th{background:var(--crimson);color:#fff;font-size:8.5pt;font-weight:800;padding:5px 4px;text-align:center;border:1px solid var(--crimson);line-height:1.45}'+
+  'table.pmh th.c-n{width:7mm}table.pmh th.c-topic{width:27%}table.pmh th.col-dur{width:11%}table.pmh th.col-system{width:11%}table.pmh th.col-methods{width:20%}'+
+  'table.pmh td{border:1px solid var(--line-2);padding:5px 6px;font-size:8.8pt;vertical-align:top;line-height:1.55;overflow-wrap:anywhere;word-break:break-word}'+
+  'table.pmh td.n{text-align:center;font-weight:800;color:var(--muted)}'+
+  '.pdoc-foot{margin-top:18px;display:flex;justify-content:space-between;gap:24px;break-inside:avoid;page-break-inside:avoid}'+
+  '.pdoc-foot .sign{flex:1;text-align:center;font-size:9.5pt;color:#5a4a4a;font-weight:700}'+
+  '.pdoc-foot .sign .ln{margin-top:28px;border-top:1.2px solid var(--line-2);padding-top:5px}'+
+  '.pdoc-stamp{text-align:center;font-size:8pt;color:var(--muted);margin-top:14px;border-top:1px solid var(--line);padding-top:8px;line-height:1.7;break-inside:avoid;page-break-inside:avoid}'+
+  '.empty{border:1px dashed var(--line-2);border-radius:8px;padding:16px;text-align:center;color:var(--muted);font-size:10pt}';
+
+function cleanPrintHtml(){
+  var node=$('printDoc').cloneNode(true);
+  node.removeAttribute('id');
+  node.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); });
+  node.querySelectorAll('.ed').forEach(function(el){ el.classList.remove('ed'); });
+  // نشيل الأقسام والأعمدة المخفية نهائياً عشان ما تأثر على عرض الجدول
+  node.querySelectorAll('[style]').forEach(function(el){ if(el.style.display==='none') el.parentNode.removeChild(el); });
+  // رابط الشعار كامل عشان يشتغل داخل الإطار
+  node.querySelectorAll('img').forEach(function(img){ img.setAttribute('src', img.src); });
+  return node.innerHTML;
 }
-function printNow(){ window.print(); }
+
+function printNow(){
+  if(!$('printDoc').innerHTML.trim()){ window.print(); return; }
+  var btn=$('printBtn'); if(btn){ btn.disabled=true; btn.textContent='جاري التجهيز...'; }
+  var r=ROWS[CUR_IDX]||{};
+  var title=('ترشيح حكومي - '+(r.program||'برنامج')+(r.trainer?' - '+r.trainer:'')).replace(/[\\\/:*?"<>|]/g,' ');
+
+  var old=$('printFrame'); if(old) old.parentNode.removeChild(old);
+  var fr=document.createElement('iframe');
+  fr.id='printFrame';
+  fr.setAttribute('aria-hidden','true');
+  // نفس عرض A4 تقريباً، برا الشاشة (مو 0×0 عشان Safari ما يطبع صفحة فاضية)
+  fr.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0;opacity:0;pointer-events:none';
+  document.body.appendChild(fr);
+
+  var doc=fr.contentWindow.document;
+  doc.open();
+  doc.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">'+
+    '<title>'+esc(title)+'</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">'+
+    '<style>'+PRINT_CSS+'</style></head><body data-v="'+PRINT_VERSION+'">'+cleanPrintHtml()+'</body></html>');
+  doc.close();
+
+  var done=false;
+  function go(){
+    if(done) return; done=true;
+    var oldTitle=document.title; document.title=title; // اسم ملف PDF الافتراضي
+    try{ fr.contentWindow.focus(); fr.contentWindow.print(); }
+    catch(e){ window.print(); }
+    setTimeout(function(){ document.title=oldTitle; if(btn){ btn.disabled=false; btn.textContent='🖨️ طباعة / PDF'; } }, 600);
+    setTimeout(function(){ if(fr.parentNode) fr.parentNode.removeChild(fr); }, 60000);
+  }
+  // ننتظر الخط والشعار قبل الطباعة (بحد أقصى 2.5 ثانية)
+  var waits=[];
+  try{ if(doc.fonts && doc.fonts.ready) waits.push(doc.fonts.ready); }catch(e){}
+  Array.prototype.forEach.call(doc.images,function(img){
+    if(!img.complete) waits.push(new Promise(function(res){ img.onload=img.onerror=res; }));
+  });
+  Promise.race([
+    Promise.all(waits).then(function(){ return new Promise(function(res){ setTimeout(res,250); }); }),
+    new Promise(function(res){ setTimeout(res,2500); })
+  ]).then(go);
+}
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
