@@ -1108,6 +1108,7 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 
     <div class="seg" id="ciSeg">
       <button class="on" onclick="ciTab(this,'month')">جرد الشهر لكل دورة</button>
+      <button onclick="ciTab(this,'trainer')">حسب المدرب</button>
       <button onclick="ciTab(this,'year')">ملخص السنة</button>
     </div>
 
@@ -1119,6 +1120,20 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
         <button class="btn btn-ghost" onclick="ciCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
       </div>
       <div id="ciBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+    </div>
+    <div id="ci-trainer" style="display:none">
+      <div class="toolbar">
+        <div class="filter" id="ciTrScope">
+          <button class="on" data-sc="month" onclick="ciTrSet(this,'month')">الشهر المختار</button>
+          <button data-sc="year" onclick="ciTrSet(this,'year')">السنة كاملة</button>
+          <button data-sc="upto" onclick="ciTrSet(this,'upto')">من البداية لين الشهر المختار</button>
+          <button data-sc="all" onclick="ciTrSet(this,'all')">كل السجل</button>
+        </div>
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="ciTrQ" placeholder="فلترة باسم المدرب..." oninput="ciRenderTrainers()"></div>
+        <button class="btn btn-ghost" onclick="ciTrCsv()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تصدير CSV</button>
+      </div>
+      <div id="ciTrBody"></div>
     </div>
     <div id="ci-year" style="display:none">
       <div id="ciYearBody"></div>
@@ -4017,6 +4032,8 @@ function ciTab(btn,id){
   document.querySelectorAll('#ciSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
   document.getElementById('ci-month').style.display=id==='month'?'':'none';
   document.getElementById('ci-year').style.display=id==='year'?'':'none';
+  document.getElementById('ci-trainer').style.display=id==='trainer'?'':'none';
+  if(id==='trainer') ciRenderTrainers();
 }
 function ciPool(){ const arch=document.getElementById('ciArch').checked; return (CI_ROWS||[]).filter(r=>arch||r.src!=='archive'); }
 function ciPrevYm(ym){ let [y,m]=ym.split('-').map(Number); m--; if(m<1){m=12;y--;} return y+'-'+ciP2(m); }
@@ -4079,6 +4096,7 @@ function ciRender(){
     box.innerHTML=h;
   }
   ciRenderYear(yr);
+  ciRenderTrainers();
   const f=document.getElementById('ciFoot');
   f.style.display='';
   f.innerHTML='المصدر: '+esc(CI_SRC)+' · إجمالي السجل: '+ciPool().length+' شهادة'+
@@ -4102,6 +4120,67 @@ function ciRenderYear(yr){
   box.innerHTML='<div class="mbr-note info">ملخص '+yr+': <b>'+pool.length+'</b> شهادة على <b>'+rows.length+'</b> دورة</div>'+h;
 }
 
+
+/* ── حسب المدرب: كم دورة عطا وكم شهادة صدرت لمتدربينه ── */
+let CI_TR_SCOPE='month';
+function ciTrSet(btn,sc){ document.querySelectorAll('#ciTrScope button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); CI_TR_SCOPE=sc; ciRenderTrainers(); }
+function ciTrScopeLabel(){
+  const ym=document.getElementById('ciMonth').value||'';
+  return CI_TR_SCOPE==='month' ? ciMonLabel(ym) : (CI_TR_SCOPE==='year' ? 'سنة '+ym.slice(0,4) : (CI_TR_SCOPE==='upto' ? 'من البداية لين نهاية '+ciMonLabel(ym) : 'كل السجل'));
+}
+function ciTrList(){
+  if(!CI_ROWS) return [];
+  const ym=document.getElementById('ciMonth').value||'';
+  const pool=ciPool().filter(r=> CI_TR_SCOPE==='month' ? r.ym===ym : (CI_TR_SCOPE==='year' ? (r.ym && r.ym.slice(0,4)===ym.slice(0,4)) : (CI_TR_SCOPE==='upto' ? (r.ym && r.ym<=ym) : true)));
+  /* الإجمالي التراكمي لكل مدرب: كل دوراته من بداية السجل لين نهاية الشهر المختار */
+  const CUM={};
+  ciPool().forEach(r=>{ if(!r.ym || r.ym>ym) return; const tk=ciNorm(r.trainer)||'—'; (CUM[tk]=CUM[tk]||{})[r.key+'|'+r.ym]=1; });
+  const T={};
+  pool.forEach(r=>{
+    const tk=ciNorm(r.trainer)||'—';
+    const t=T[tk]||(T[tk]={tk:tk,name:r.trainer||'(بدون اسم مدرب)',courses:{},certs:0,months:{}});
+    t.certs++;
+    /* الدورة الوحدة = نفس اسم الدورة في نفس الشهر (تكرارها بشهر ثاني ينحسب دورة جديدة) */
+    const ck=r.key+'|'+(r.ym||'?');
+    const c=t.courses[ck]||(t.courses[ck]={name:r.course||'(بدون اسم)',ym:r.ym,count:0});
+    c.count++;
+    if(r.ym) t.months[r.ym]=1;
+  });
+  const q=ciNorm((document.getElementById('ciTrQ')||{}).value||'');
+  return Object.values(T).map(t=>{
+    const cs=Object.values(t.courses).sort((a,b)=>(b.ym||'').localeCompare(a.ym||'')||b.count-a.count);
+    return {name:t.name,courses:cs,nCourses:cs.length,cum:Object.keys(CUM[t.tk]||{}).length,certs:t.certs,avg:cs.length?Math.round(t.certs/cs.length*10)/10:0,
+            last:cs.reduce((m,c)=>c.ym&&c.ym>m?c.ym:m,'')};
+  }).filter(t=>!q||ciNorm(t.name).indexOf(q)>-1).sort((a,b)=>b.nCourses-a.nCourses||b.certs-a.certs);
+}
+function ciRenderTrainers(){
+  const box=document.getElementById('ciTrBody'); if(!box||!CI_ROWS) return;
+  const list=ciTrList(), label=ciTrScopeLabel();
+  if(!list.length){ box.innerHTML='<div class="empty">ما في دورات مسجّلة — '+esc(label)+'.</div>'; return; }
+  const totC=list.reduce((a,t)=>a+t.nCourses,0), totS=list.reduce((a,t)=>a+t.certs,0);
+  let h='<div class="mbr-note info">'+esc(label)+': <b>'+list.length+'</b> مدرب · <b>'+totC+'</b> دورة · <b>'+totS+'</b> شهادة</div>';
+  h+='<div class="mbr-tbl"><table><thead><tr><th>#</th><th>المدرب</th><th style="text-align:center">دورات الفترة</th><th style="text-align:center;background:#5C0F0F;color:#fff">إجمالي دوراته لين '+esc(ciMonLabel(document.getElementById('ciMonth').value||''))+'</th><th style="text-align:center">عدد الشهادات</th><th style="text-align:center">متوسط الشهادات للدورة</th><th>آخر شهر عطا فيه</th><th>الدورات</th></tr></thead><tbody>';
+  list.forEach((t,i)=>{
+    const det=t.courses.map(c=>'<div style="display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed var(--line)"><span>'+esc(c.name)+(CI_TR_SCOPE!=='month'&&c.ym?' <span style="color:var(--muted);font-size:11.5px">· '+ciMonLabel(c.ym)+'</span>':'')+'</span><b style="color:var(--crimson)">'+c.count+'</b></div>').join('');
+    h+='<tr><td>'+(i+1)+'</td><td><b>'+esc(t.name)+'</b></td>'+
+      '<td style="text-align:center;font-size:18px;font-weight:900;color:var(--crimson)">'+t.nCourses+'</td>'+
+      '<td style="text-align:center;font-size:18px;font-weight:900;background:#FBF3EE">'+t.cum+'</td>'+
+      '<td style="text-align:center;font-weight:900">'+t.certs+'</td>'+
+      '<td style="text-align:center">'+t.avg+'</td>'+
+      '<td>'+(t.last?ciMonLabel(t.last):'—')+'</td>'+
+      '<td style="min-width:260px"><details><summary style="cursor:pointer;font-weight:800;color:var(--crimson)">عرض '+t.nCourses+' دورة</summary><div style="margin-top:6px;font-size:13px">'+det+'</div></details></td></tr>';
+  });
+  h+='</tbody><tfoot><tr><td></td><td><b>المجموع</b></td><td style="text-align:center;font-weight:900;color:var(--crimson)">'+totC+'</td><td style="text-align:center;font-weight:900;background:#FBF3EE">'+list.reduce((a,t)=>a+t.cum,0)+'</td><td style="text-align:center;font-weight:900">'+totS+'</td><td colspan="3"></td></tr></tfoot></table></div>';
+  box.innerHTML=h;
+}
+function ciTrCsv(){
+  const list=ciTrList(); if(!list.length){ toast('لا توجد بيانات للتصدير'); return; }
+  const rows=[['الفترة','المدرب','دورات الفترة','إجمالي الدورات لين '+ciMonLabel(document.getElementById('ciMonth').value||''),'عدد الشهادات','متوسط الشهادات للدورة','آخر شهر','الدورات']]
+    .concat(list.map(t=>[ciTrScopeLabel(),t.name,t.nCourses,t.cum,t.certs,t.avg,t.last?ciMonLabel(t.last):'',t.courses.map(c=>c.name+' ('+c.count+')').join(' | ')]));
+  const csv='﻿'+rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='دورات-المدربين-'+ciTrScopeLabel().replace(/\s/g,'-')+'.csv'; a.click();
+}
 function ciCopy(){
   const {ym,list}=ciMonthList(); if(!list.length){ toast('لا توجد بيانات'); return; }
   const tot=list.reduce((a,x)=>a+x.count,0);
