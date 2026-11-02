@@ -332,10 +332,13 @@ table.emh td.act{text-align:center;vertical-align:middle;width:34px}
       </div>
 
       <div class="row">
-        <button class="btn btn-primary" id="printBtn" onclick="printNow()">🖨️ طباعة / PDF</button>
+        <button class="btn btn-primary" id="pdfBtn" onclick="downloadPdf()">⬇ تحميل PDF</button>
+        <button class="btn btn-line" id="printBtn" onclick="printNow()">🖨️ طباعة</button>
+      </div>
+      <div class="row" style="margin-top:8px">
         <button class="btn btn-line" onclick="closePreview()">إغلاق</button>
       </div>
-      <div class="ptip">بنافذة الطباعة: الحجم <b>A4</b> · المقياس <b>100%</b> (أو «الافتراضي») · فعّل «رسومات الخلفية» عشان تطلع الألوان.</div>
+      <div class="ptip"><b>تحميل PDF</b> ينزّل الملف مباشرة بقياس A4 جاهز للإرسال.<br>للطباعة: الحجم <b>A4</b> · المقياس <b>100%</b> · فعّل «رسومات الخلفية».</div>
     </div>
 
     <div class="paper">
@@ -856,7 +859,7 @@ function printNow(){
     var oldTitle=document.title; document.title=title; // اسم ملف PDF الافتراضي
     try{ fr.contentWindow.focus(); fr.contentWindow.print(); }
     catch(e){ window.print(); }
-    setTimeout(function(){ document.title=oldTitle; if(btn){ btn.disabled=false; btn.textContent='🖨️ طباعة / PDF'; } }, 600);
+    setTimeout(function(){ document.title=oldTitle; if(btn){ btn.disabled=false; btn.textContent='🖨️ طباعة'; } }, 600);
     setTimeout(function(){ if(fr.parentNode) fr.parentNode.removeChild(fr); }, 60000);
   }
   // ننتظر الخط والشعار قبل الطباعة (بحد أقصى 2.5 ثانية)
@@ -869,6 +872,154 @@ function printNow(){
     Promise.all(waits).then(function(){ return new Promise(function(res){ setTimeout(res,250); }); }),
     new Promise(function(res){ setTimeout(res,2500); })
   ]).then(go);
+}
+
+/* ═══════════════════════════════════════════════
+   تحميل PDF مباشر — صفحات A4 حقيقية
+   نقسّم المستند على صفحات بأنفسنا (بدون قص أي صف،
+   وعناوين الجدول تتكرر)، وبعدين كل صفحة تتحول صورة
+   وتنضاف لملف PDF بقياس A4.
+   ═══════════════════════════════════════════════ */
+var PDF_LIBS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+];
+function loadScriptOnce(src){
+  return new Promise(function(res,rej){
+    if(document.querySelector('script[data-src="'+src+'"]')) return res();
+    var s=document.createElement('script'); s.src=src; s.async=true; s.setAttribute('data-src',src);
+    s.onload=res; s.onerror=function(){ rej(new Error('تعذّر تحميل مكتبة PDF — تأكد من الإنترنت')); };
+    document.head.appendChild(s);
+  });
+}
+function pdfLibsReady(){
+  if(window.html2canvas && window.jspdf) return Promise.resolve();
+  return PDF_LIBS.reduce(function(p,src){ return p.then(function(){ return loadScriptOnce(src); }); }, Promise.resolve());
+}
+
+/* أبعاد A4 بالبكسل (96dpi): 794×1123 — هوامش 12مم≈45px وتحت 14مم≈53px */
+var PG_W=794, PG_H=1123, PG_PAD_X=45, PG_PAD_T=45, PG_PAD_B=53;
+
+function buildPdfPages(){
+  var host=document.createElement('div');
+  host.id='pdfHost';
+  host.style.cssText='position:fixed;left:-20000px;top:0;width:'+PG_W+'px;z-index:-1;background:#fff';
+  var css=PRINT_CSS.replace(/@page\{[^}]*\}/,'');
+  host.innerHTML='<style>'+css+
+    ' #pdfHost .pg{width:'+PG_W+'px;height:'+PG_H+'px;background:#fff;padding:'+PG_PAD_T+'px '+PG_PAD_X+'px '+PG_PAD_B+'px;overflow:hidden;position:relative;font-family:"Cairo",sans-serif;direction:rtl;color:#241616}'+
+    ' #pdfHost .pg-in{height:100%;overflow:hidden}'+
+    ' #pdfHost .pg-no{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:8pt;color:#8a7a7a}'+
+    '</style>';
+  document.body.appendChild(host);
+
+  var src=document.createElement('div'); src.innerHTML=cleanPrintHtml();
+  var pdoc=src.querySelector('.pdoc')||src;
+  var blocks=Array.prototype.slice.call(pdoc.children);
+  var LIMIT=PG_H-PG_PAD_T-PG_PAD_B;
+
+  var pages=[], cur;
+  function newPage(){
+    var pg=document.createElement('div'); pg.className='pg';
+    var inner=document.createElement('div'); inner.className='pg-in pdoc';
+    pg.appendChild(inner); host.appendChild(pg);
+    cur=inner; pages.push(pg); return inner;
+  }
+  function fits(){ return cur.scrollHeight<=LIMIT+1; }
+  newPage();
+
+  for(var i=0;i<blocks.length;i++){
+    var b=blocks[i];
+    if(b.classList.contains('pday')){
+      var head=b.querySelector('.pday-h');
+      var table=b.querySelector('table');
+      var thead=table?table.querySelector('thead'):null;
+      var rows=table?Array.prototype.slice.call(table.querySelectorAll('tbody tr')):[];
+      var startDay=function(withHead){
+        var d=document.createElement('div'); d.className='pday';
+        if(withHead && head) d.appendChild(head.cloneNode(true));
+        var t=document.createElement('table'); t.className='pmh';
+        if(thead) t.appendChild(thead.cloneNode(true));
+        var tb=document.createElement('tbody'); t.appendChild(tb); d.appendChild(t);
+        cur.appendChild(d); return tb;
+      };
+      var tb=startDay(true);
+      if(!rows.length) continue;
+      rows.forEach(function(tr,ri){
+        var node=tr.cloneNode(true);
+        tb.appendChild(node);
+        if(!fits()){
+          tb.removeChild(node);
+          if(ri===0){
+            // عنوان اليوم ما يبقى لحاله بآخر الصفحة — ينقل مع أول صف
+            var dayDiv=tb.closest('.pday'); dayDiv.parentNode.removeChild(dayDiv);
+            // وعنوان «محاور البرنامج» بعد ما يبقى لحاله
+            var last=cur.lastElementChild, carry=null;
+            if(last && last.classList.contains('pdoc-sec')){ carry=last; cur.removeChild(last); }
+            newPage(); if(carry) cur.appendChild(carry);
+            tb=startDay(true);
+          } else {
+            newPage(); tb=startDay(false);
+          }
+          tb.appendChild(node);
+        }
+      });
+    } else {
+      var el=b.cloneNode(true);
+      cur.appendChild(el);
+      if(!fits() && cur.children.length>1){
+        cur.removeChild(el);
+        newPage(); cur.appendChild(el);
+      }
+    }
+  }
+  // ترقيم الصفحات
+  if(pages.length>1) pages.forEach(function(pg,k){
+    var n=document.createElement('div'); n.className='pg-no'; n.textContent='صفحة '+(k+1)+' من '+pages.length; pg.appendChild(n);
+  });
+  return {host:host,pages:pages};
+}
+
+function downloadPdf(){
+  if(!$('printDoc').innerHTML.trim()) return;
+  var btn=$('pdfBtn'), label=btn.textContent;
+  btn.disabled=true; btn.textContent='جاري تجهيز PDF...';
+  var r=ROWS[CUR_IDX]||{};
+  var fname=('ترشيح حكومي - '+(r.program||'برنامج')+(r.trainer?' - '+r.trainer:'')).replace(/[\\\/:*?"<>|]/g,' ').trim()+'.pdf';
+  var built=null;
+  pdfLibsReady()
+    .then(function(){ return (document.fonts && document.fonts.ready) ? document.fonts.ready : null; })
+    .then(function(){
+      built=buildPdfPages();
+      var imgs=built.host.querySelectorAll('img');
+      return Promise.all(Array.prototype.map.call(imgs,function(im){
+        return im.complete?null:new Promise(function(res){ im.onload=im.onerror=res; });
+      }));
+    })
+    .then(function(){
+      var pdf=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4',compress:true});
+      var chain=Promise.resolve();
+      built.pages.forEach(function(pg,k){
+        chain=chain.then(function(){
+          btn.textContent='صفحة '+(k+1)+' من '+built.pages.length+'...';
+          return window.html2canvas(pg,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false,width:PG_W,height:PG_H,windowWidth:PG_W})
+            .then(function(cv){
+              if(k>0) pdf.addPage('a4','p');
+              pdf.addImage(cv.toDataURL('image/jpeg',0.93),'JPEG',0,0,210,297,undefined,'FAST');
+            });
+        });
+      });
+      return chain.then(function(){
+        var blob=pdf.output('blob'), url=URL.createObjectURL(blob);
+        var a=document.createElement('a'); a.href=url; a.download=fname; a.rel='noopener';
+        document.body.appendChild(a); a.click(); a.parentNode.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+      });
+    })
+    .catch(function(e){ alert('تعذّر تجهيز PDF: '+(e&&e.message||e)+'\nتقدر تستخدم زر الطباعة واختيار «حفظ كـ PDF».'); })
+    .then(function(){
+      if(built && built.host.parentNode) built.host.parentNode.removeChild(built.host);
+      btn.disabled=false; btn.textContent=label;
+    });
 }
 </script>
 </body>
