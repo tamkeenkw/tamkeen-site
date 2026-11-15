@@ -1100,96 +1100,117 @@ var DAILY_URL   = 'https://script.google.com/macros/s/AKfycbxnlqYj3xFMj1LaCoBHCW
 var DAILY_TOKEN = 'tmk-daily-2026';
 
 /* نماذج التقارير حسب نوع القسم */
+var RP_OPT_DONE   = ['تم','لم يتم'];
+var RP_OPT_STATUS = ['تم','بانتظار الرد','يحتاج متابعة','تم التحويل للإدارة'];
+var RP_OPT_PRIO   = ['عاجل اليوم','خلال أسبوع','متابعة'];
+var RP_OPT_ISSUE  = ['تم حلها','تم تحويلها للإدارة'];
+var RP_SEC_NEEDS  = function(n){ return { key:'needs', num:n, title:'الاحتياجات والنواقص', add:'إضافة بند آخر', unit:'بند',
+  cols:[ {k:'item',label:'المطلوب / الناقص'},{k:'level',label:'الأولوية',type:'select',opts:RP_OPT_PRIO} ] }; };
+var RP_SEC_ISSUES = function(n){ return { key:'issues', num:n, title:'المشكلات والشكاوى', add:'إضافة مشكلة أخرى', unit:'مشكلة',
+  cols:[ {k:'client',label:'اسم العميل'},{k:'phone',label:'رقم التلفون',type:'tel'},{k:'problem',label:'المشكلة'},
+         {k:'state',label:'حالة المشكلة',type:'select',opts:RP_OPT_ISSUE} ] }; };
+
 var RP_FORMS = {
+  /* منسق العمليات التعليمية — إيديو كلاود */
   center: {
-    label: 'تقرير المركز التعليمي',
+    label: 'تقرير منسق العمليات التعليمية',
     sections: [
-      { key:'inquiries', num:'١', title:'الاستفسارات والتواصل', fields:true,
-        cols:[ {k:'total',label:'إجمالي الاستفسارات',type:'number'},
-               {k:'calls',label:'عدد الاتصالات',type:'number'},
-               {k:'wa',label:'رسائل الواتساب',type:'number'} ] },
-
-      { key:'topics', num:'٢', title:'أكثر استفسار كان على', add:'إضافة نوع آخر', unit:'نوع',
-        totals:[{k:'count',label:'استفسار'}],
-        cols:[ {k:'topic',label:'نوع الاستفسار',type:'select',
-                opts:['الرسوم والأسعار','المواعيد والجدول','التأسيس','التقوية','الثانوي',
-                      'المواد المتاحة','موقع المركز','النقل','شهادات وتقارير','أخرى']},
-               {k:'detail',label:'تفصيل (اختياري)'},
-               {k:'count',label:'العدد التقريبي',type:'number'} ] },
-
-      { key:'rooms', num:'٣', title:'التشغيل — القاعات المشغّلة', add:'إضافة قاعة أخرى', unit:'قاعة',
+      { key:'contacts', num:'١', title:'التواصل مع أولياء الأمور والطلاب', add:'إضافة تواصل آخر', unit:'تواصل',
+        cols:[ {k:'name',label:'الاسم'},{k:'phone',label:'الرقم',type:'tel'},{k:'reason',label:'السبب'},
+               {k:'status',label:'الحالة',type:'select',opts:RP_OPT_STATUS} ] },
+      { key:'sessToday', num:'٢', title:'حصص اليوم', add:'إضافة حصة أخرى', unit:'حصة',
         totals:[{k:'students',label:'طالب'},{k:'present',label:'حاضر'}],
-        cols:[ {k:'room',label:'القاعة أو الشعبة'},
-               {k:'stage',label:'المرحلة / المادة'},
-               {k:'teacher',label:'المعلم'},
-               {k:'students',label:'عدد الطلبة',type:'number'},
-               {k:'present',label:'الحضور الفعلي',type:'number'},
-               {k:'note',label:'ملاحظة (اختياري)'} ] },
-
-      { key:'staff', num:'٤', title:'حضور الموظفين', add:'إضافة موظف آخر', unit:'موظف',
-        cols:[ {k:'name',label:'اسم الموظف'},
-               {k:'state',label:'الحالة',type:'select',opts:['حاضر','متأخر','غائب','إجازة']},
-               {k:'note',label:'ملاحظة (اختياري)'} ] },
-
-      { key:'newsubs', num:'٥', title:'الاشتراكات الجديدة اليوم', add:'إضافة اشتراك آخر', unit:'اشتراك',
+        cols:[ {k:'teacher',label:'المدرس'},{k:'subject',label:'المادة'},
+               {k:'kind',label:'النوع',type:'select',opts:['خاصة','شعبة']},
+               {k:'students',label:'عدد الطلاب',type:'number'},{k:'present',label:'الحضور',type:'number'},
+               {k:'state',label:'حالة الحصة',type:'select',opts:['تمت','ألغيت','تأجلت']} ] },
+      { key:'sessTomorrow', num:'٣', title:'حصص الغد', add:'إضافة حصة أخرى', unit:'حصة',
+        cols:[ {k:'teacher',label:'المدرس'},{k:'subject',label:'المادة'},
+               {k:'remindTeacher',label:'تذكير المدرس',type:'select',opts:RP_OPT_DONE},
+               {k:'remindStudents',label:'تذكير الطلاب',type:'select',opts:RP_OPT_DONE},
+               {k:'room',label:'القاعة'},
+               {k:'state',label:'حالة الحصة',type:'select',opts:['مؤكدة','بانتظار التأكيد','مؤجلة','ملغية']} ] },
+      { key:'newsubs', num:'٤', title:'الاشتراكات الجديدة', add:'إضافة اشتراك آخر', unit:'اشتراك',
         totals:[{k:'fee',label:'د.ك'}],
         cols:[ {k:'student',label:'اسم الطالب'},
                {k:'stage',label:'المرحلة',type:'select',opts:['ابتدائي','متوسط','ثانوي']},
-               {k:'plan',label:'نوع الاشتراك',type:'select',opts:['شهري','كورس','خاصة','مكثف']},
-               {k:'fee',label:'الرسوم',type:'number'},
+               {k:'plan',label:'الباقة',type:'select',opts:['شهري','كورس','خاصة','مكثف']},
+               {k:'fee',label:'المبلغ',type:'number'},
                {k:'pay',label:'طريقة الدفع',type:'select',opts:['كاش','كي نت','لنك','تالي','آجل']} ] },
-
-      { key:'expiring', num:'٦', title:'اشتراكات قاربت على الانتهاء', add:'إضافة طالب آخر', unit:'طالب',
-        cols:[ {k:'student',label:'اسم الطالب'},
-               {k:'ends',label:'تاريخ الانتهاء',type:'date'},
+      { key:'expiring', num:'٥', title:'اشتراكات قاربت على الانتهاء', add:'إضافة طالب آخر', unit:'طالب',
+        cols:[ {k:'student',label:'اسم الطالب'},{k:'ends',label:'تاريخ الانتهاء',type:'date'},
                {k:'contacted',label:'تم التواصل؟',type:'select',opts:['تم التواصل','لم يتم','لم يرد']},
-               {k:'reply',label:'الرد',type:'select',
-                opts:['سيجدد','يفكر','يبي يغيّر الباقة','لن يجدد','لم يرد']},
-               {k:'advice',label:'التوصية'} ] },
-
-      { key:'solved', num:'٧', title:'مشكلة تم حلها', add:'إضافة مشكلة أخرى', unit:'مشكلة',
-        cols:[ {k:'problem',label:'المشكلة'},{k:'solution',label:'كيف تم الحل'} ] },
-
-      { key:'urgent', num:'٨', title:'مشكلة تحتاج حل سريع', add:'إضافة مشكلة أخرى', unit:'مشكلة',
-        cols:[ {k:'problem',label:'المشكلة'},
-               {k:'need',label:'المطلوب من الإدارة'},
-               {k:'level',label:'الأولوية',type:'select',opts:['عاجل اليوم','خلال أسبوع','متابعة']} ] },
-
-      { key:'income', num:'٩', title:'الأهداف — المدخول اليومي', fields:true,
-        sum:'total', money:true,
-        cols:[ {k:'cash',label:'كاش',type:'number'},
-               {k:'knet',label:'كي نت',type:'number'},
-               {k:'link',label:'لنك',type:'number'},
-               {k:'taly',label:'تالي',type:'number'},
-               {k:'total',label:'إجمالي المدخول',type:'number',readonly:true} ] }
+               {k:'reply',label:'الرد',type:'select',opts:['سيجدد','يفكر','لن يجدد','لم يرد']} ] },
+      RP_SEC_NEEDS('٦'),
+      RP_SEC_ISSUES('٧')
     ]
   },
+
+  /* منسق العمليات التدريبية — تمكين */
   operations: {
-    label: 'تقرير العمليات',
+    label: 'تقرير منسق العمليات التدريبية',
     sections: [
-      { key:'contacts', num:'١', title:'التواصل مع الأعضاء', add:'إضافة عضو آخر', unit:'عضو',
-        cols:[ {k:'member',label:'اسم العضو'},{k:'reason',label:'سبب التواصل'},{k:'result',label:'الوصف النهائي'} ] },
-      { key:'bookings', num:'٢', title:'طلبات حجز الدورات', add:'إضافة دورة أخرى', unit:'طلب',
+      { key:'trainers', num:'١', title:'التواصل مع المدربين', add:'إضافة مدرب آخر', unit:'مدرب',
+        cols:[ {k:'trainer',label:'اسم المدرب'},{k:'reason',label:'السبب'},
+               {k:'status',label:'الحالة',type:'select',opts:RP_OPT_STATUS} ] },
+      { key:'coursesToday', num:'٢', title:'دورات اليوم', add:'إضافة دورة أخرى', unit:'دورة',
+        totals:[{k:'attended',label:'حاضر'},{k:'certs',label:'شهادة'}],
+        cols:[ {k:'course',label:'اسم الدورة'},{k:'trainer',label:'المدرب'},
+               {k:'regs',label:'المسجلين',type:'number'},{k:'attended',label:'الحضور',type:'number'},
+               {k:'certs',label:'الشهادات المستخرجة',type:'number'} ] },
+      { key:'tomorrow', num:'٣', title:'دورات الغد', add:'إضافة دورة أخرى', unit:'دورة',
+        cols:[ {k:'course',label:'اسم الدورة'},{k:'regs',label:'المسجلين',type:'number'},
+               {k:'remindTrainer',label:'تذكير المدرب',type:'select',opts:RP_OPT_DONE},
+               {k:'remindTrainees',label:'تذكير المتدربين',type:'select',opts:RP_OPT_DONE},
+               {k:'room',label:'القاعة التدريبية'},
+               {k:'state',label:'حالة الدورة',type:'select',opts:['مؤكدة','بانتظار التأكيد','مؤجلة','ملغية']} ] },
+      { key:'certsIssued', num:'٤', title:'الشهادات الصادرة', add:'إضافة دورة أخرى', unit:'دورة',
+        totals:[{k:'count',label:'شهادة'}],
+        cols:[ {k:'course',label:'اسم الدورة'},{k:'from',label:'من رقم',type:'number'},{k:'to',label:'إلى رقم',type:'number'},
+               {k:'count',label:'العدد',type:'number',readonly:true,calc:'range'} ] },
+      { key:'bookings', num:'٥', title:'طلبات حجز الدورات', add:'إضافة طلب آخر', unit:'طلب',
         cols:[ {k:'trainer',label:'اسم المدرب'},{k:'course',label:'اسم الدورة'},
                {k:'membership',label:'حالة العضوية',type:'select',opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
-               {k:'date',label:'تاريخ الدورة',type:'date'},
-               {k:'mode',label:'نظام الدورة',type:'select',opts:['حضوري','أونلاين','هجين']},
-               {k:'ctype',label:'نوع الدورة',type:'select',opts:['عامة','مؤسسية','خاصة']} ] },
-      { key:'tomorrow', num:'٣', title:'دورات الغد', add:'إضافة دورة أخرى', unit:'دورة',
-        cols:[ {k:'course',label:'اسم الدورة'},{k:'regs',label:'عدد المسجلين',type:'number'},
-               {k:'certs',label:'مستخرجو الشهادة',type:'number'},
-               {k:'remind',label:'حالة التذكير',type:'select',opts:['تم','لم يتم']},
-               {k:'confirm',label:'التأكيد مع المدرب',type:'select',opts:['مؤكد','بانتظار الرد','معتذر']},
-               {k:'mode',label:'نظام الدورة',type:'select',opts:['حضوري','أونلاين','هجين']} ] },
-      { key:'certs', num:'٤', title:'الشهادات قيد الدفع', add:'إضافة عميل آخر', unit:'شهادة',
+               {k:'date',label:'تاريخ الدورة',type:'date'} ] },
+      { key:'certs', num:'٦', title:'الشهادات قيد الدفع', add:'إضافة عميل آخر', unit:'شهادة',
         cols:[ {k:'client',label:'اسم العميل'},{k:'course',label:'اسم الدورة'},
                {k:'contact',label:'حالة التواصل',type:'select',opts:['تم التواصل','لم يرد','وعد بالدفع','رفض']} ] },
-      { key:'inst', num:'٥', title:'الدورات المؤسسية', add:'إضافة دورة أخرى', unit:'دورة',
-        cols:[ {k:'course',label:'اسم الدورة'},{k:'provider',label:'مقدم الدورة'},
-               {k:'membership',label:'حالة العضوية',type:'select',opts:['عضوية فعالة','عضوية منتهية','غير عضو']},
-               {k:'org',label:'اسم الجهة'} ] }
+      RP_SEC_NEEDS('٧'),
+      RP_SEC_ISSUES('٨')
     ]
   },
+
+  /* خدمة العملاء والاستقبال */
+  reception: {
+    label: 'تقرير خدمة العملاء',
+    sections: [
+      { key:'counts', num:'١', title:'أرقام اليوم', fields:true,
+        cols:[ {k:'visitors',label:'الزوار',type:'number'},{k:'calls',label:'المكالمات',type:'number'},
+               {k:'wa',label:'رسائل الواتساب',type:'number'},{k:'insta',label:'رسائل الإنستقرام',type:'number'} ] },
+      { key:'leads', num:'٢', title:'العملاء المحتملين (تواصلوا معانا)', add:'إضافة عميل آخر', unit:'عميل',
+        counts:[{k:'state',v:'سجّل',label:'سجّل'}],
+        cols:[ {k:'name',label:'الاسم'},{k:'phone',label:'الرقم',type:'tel'},
+               {k:'interest',label:'مهتم بـ',type:'select',opts:['تأسيس','تقوية','مذكرات','دورة تمكين','مسار','أخرى']},
+               {k:'source',label:'من وين سمع عنا',type:'select',opts:['إنستقرام','واتساب','صديق','إعلان','مرّ على المعهد','أخرى']},
+               {k:'state',label:'الحالة',type:'select',opts:['سجّل','يفكر','ما يناسبه']} ] },
+      { key:'marketing', num:'٣', title:'الاتصال بقائمة التسويق', add:'إضافة اتصال آخر', unit:'اتصال',
+        counts:[{k:'result',v:'رد',label:'رد'},{k:'state',v:'سجّل',label:'سجّل'}],
+        cols:[ {k:'list',label:'اسم القائمة / الحملة'},{k:'name',label:'اسم العميل'},{k:'phone',label:'الرقم',type:'tel'},
+               {k:'result',label:'نتيجة الاتصال',type:'select',opts:['رد','ما رد','الرقم غلط','مغلق']},
+               {k:'state',label:'الحالة',type:'select',opts:['سجّل','مهتم ويبي متابعة','حجز موعد','مو مهتم']},
+               {k:'follow',label:'موعد المتابعة',type:'date'},{k:'note',label:'ملاحظة (اختياري)'} ] },
+      { key:'appointments', num:'٤', title:'المواعيد والحجوزات', add:'إضافة موعد آخر', unit:'موعد',
+        cols:[ {k:'name',label:'الاسم'},{k:'phone',label:'الرقم',type:'tel'},{k:'service',label:'الخدمة'},
+               {k:'date',label:'التاريخ',type:'date'},{k:'time',label:'الوقت',type:'time'},
+               {k:'confirmed',label:'تم التأكيد؟',type:'select',opts:['تم','لم يتم']} ] },
+      { key:'followups', num:'٥', title:'المتابعات المطلوبة', add:'إضافة متابعة أخرى', unit:'متابعة',
+        cols:[ {k:'name',label:'الاسم'},{k:'phone',label:'الرقم',type:'tel'},{k:'reason',label:'سبب المتابعة'},
+               {k:'date',label:'موعد المتابعة',type:'date'} ] },
+      RP_SEC_NEEDS('٦'),
+      RP_SEC_ISSUES('٧')
+    ]
+  },
+
   pr: {
     label: 'تقرير العلاقات العامة',
     sections: [
@@ -1222,13 +1243,18 @@ var RP_FORMS = {
   }
 };
 
+/* أسماء أقسام وحقول النماذج القديمة (لعرض التقارير القديمة) */
+var RP_OLD = {"sec": {"inquiries": "الاستفسارات والتواصل", "topics": "أكثر استفسار كان على", "rooms": "التشغيل — القاعات المشغّلة", "staff": "حضور الموظفين", "newsubs": "الاشتراكات الجديدة اليوم", "expiring": "اشتراكات قاربت على الانتهاء", "solved": "مشكلة تم حلها", "urgent": "مشكلة تحتاج حل سريع", "income": "الأهداف — المدخول اليومي", "contacts": "التواصل مع الأعضاء", "bookings": "طلبات حجز الدورات", "tomorrow": "دورات الغد", "certs": "الشهادات قيد الدفع", "inst": "الدورات المؤسسية", "visits": "زيارات ولقاءات الجهات", "requests": "طلبات الجهات", "sales": "بيانات البيع اليوم", "followup": "عملاء المتابعة", "notinterested": "عملاء لم يهتموا", "recommend": "توصيات لتحسين البيع", "problems": "أبرز مشكلات اليوم"}, "col": {"inquiries.total": "إجمالي الاستفسارات", "inquiries.calls": "عدد الاتصالات", "inquiries.wa": "رسائل الواتساب", "topics.topic": "نوع الاستفسار", "topics.detail": "تفصيل (اختياري)", "topics.count": "العدد التقريبي", "rooms.room": "القاعة أو الشعبة", "rooms.stage": "المرحلة / المادة", "rooms.teacher": "المعلم", "rooms.students": "عدد الطلبة", "rooms.present": "الحضور الفعلي", "rooms.note": "ملاحظة (اختياري)", "staff.name": "اسم الموظف", "staff.state": "الحالة", "staff.note": "ملاحظة (اختياري)", "newsubs.student": "اسم الطالب", "newsubs.stage": "المرحلة", "newsubs.plan": "نوع الاشتراك", "newsubs.fee": "الرسوم", "newsubs.pay": "طريقة الدفع", "expiring.student": "اسم الطالب", "expiring.ends": "تاريخ الانتهاء", "expiring.contacted": "تم التواصل؟", "expiring.reply": "الرد", "expiring.advice": "التوصية", "solved.problem": "المشكلة", "solved.solution": "كيف تم الحل", "urgent.problem": "المشكلة", "urgent.need": "المطلوب من الإدارة", "urgent.level": "الأولوية", "income.cash": "كاش", "income.knet": "كي نت", "income.link": "لنك", "income.taly": "تالي", "income.total": "إجمالي المدخول", "contacts.member": "اسم العضو", "contacts.reason": "سبب التواصل", "contacts.result": "الوصف النهائي", "bookings.trainer": "اسم المدرب", "bookings.course": "اسم الدورة", "bookings.membership": "حالة العضوية", "bookings.date": "تاريخ الدورة", "bookings.mode": "نظام الدورة", "bookings.ctype": "نوع الدورة", "tomorrow.course": "اسم الدورة", "tomorrow.regs": "عدد المسجلين", "tomorrow.certs": "مستخرجو الشهادة", "tomorrow.remind": "حالة التذكير", "tomorrow.confirm": "التأكيد مع المدرب", "tomorrow.mode": "نظام الدورة", "certs.client": "اسم العميل", "certs.course": "اسم الدورة", "certs.contact": "حالة التواصل", "inst.course": "اسم الدورة", "inst.provider": "مقدم الدورة", "inst.membership": "حالة العضوية", "inst.org": "اسم الجهة", "visits.entity": "الجهة", "visits.dept": "القسم", "visits.withwho": "مع مَن", "visits.offered": "ما عُرض عليهم", "visits.reaction": "ردة الفعل", "requests.entity": "الجهة", "requests.request": "الطلب المحدد", "sales.client": "اسم العميل", "sales.phone": "رقم التلفون", "sales.course": "الدورة المسجّل فيها", "sales.before": "حالته قبل الاتصال", "followup.client": "اسم العميل", "followup.phone": "رقم التلفون", "followup.next": "تاريخ التواصل القادم", "notinterested.client": "اسم العميل", "notinterested.phone": "رقم التلفون", "notinterested.service": "اسم الخدمة", "notinterested.reason": "سبب الرفض", "problems.problem": "المشكلة", "problems.solution": "كيف تم الحل"}};
+
 /* يحدد نوع التقرير من مسمى الموظف */
 function rpTypeFor(role){
   var r = String(role||'');
+  /* خدمة العملاء / الاستقبال */
+  if (r.indexOf('خدمة') > -1 || r.indexOf('عملاء') > -1 || r.indexOf('استقبال') > -1) return 'reception';
   if (r.indexOf('علاقات') > -1) return 'pr';
   if (r.indexOf('مبيعات') > -1) return 'sales';
   /* مسؤول العمليات التعليمية / المركز → تقرير المركز */
-  if (r.indexOf('تعليمي') > -1 || r.indexOf('المركز') > -1 || r.indexOf('مركز') > -1) return 'center';
+  if (r.indexOf('تعليمي') > -1 || r.indexOf('تدريس') > -1 || r.indexOf('مركز') > -1) return 'center';
   return 'operations';   // الافتراضي: عمليات
 }
 
@@ -1290,9 +1316,9 @@ function rpRowHtml(sec, vals){
       c.opts.forEach(function(o){ h += '<option'+(String(vals[c.k]||'')===o?' selected':'')+'>'+esc(o)+'</option>'; });
       h += '</select>';
     } else {
-      var t = c.type==='date'?'date':(c.type==='number'?'number':'text');
+      var t = c.type==='date'?'date':(c.type==='number'?'number':(c.type==='time'?'time':(c.type==='tel'?'tel':'text')));
       h += '<input type="'+t+'" data-k="'+c.k+'" value="'+esc(vals[c.k]||'')+'"'
-        + (t==='number'?' min="0"':'')
+        + (t==='number'?' min="0" inputmode="numeric"':'') + (t==='tel'?' inputmode="tel" dir="ltr"':'')
         + (c.readonly?' readonly style="background:#F2EDE5;font-weight:900"':'')
         + ' placeholder="'+esc(c.label)+'">';
     }
@@ -1308,11 +1334,21 @@ function rpAddRow(key, vals){
   if(sec.fields && box.children.length) return;        /* قسم حقول: صف واحد فقط */
   var tmp=document.createElement('div'); tmp.innerHTML=rpRowHtml(sec,vals);
   var row=tmp.firstChild;
-  row.addEventListener('input',function(){ rpCount(key); rpSum(key); });
-  row.addEventListener('change',function(){ rpCount(key); rpSum(key); });
+  row.addEventListener('input',function(){ rpCalc(sec,row); rpCount(key); rpSum(key); });
+  row.addEventListener('change',function(){ rpCalc(sec,row); rpCount(key); rpSum(key); });
   box.appendChild(row); rpCount(key); rpSum(key);
 }
 
+/* حقول محسوبة داخل الصف (مثل عدد الشهادات من التسلسل) */
+function rpCalc(sec,row){
+  sec.cols.forEach(function(c){
+    if(c.calc!=='range') return;
+    var f=row.querySelector('[data-k="from"]'), t=row.querySelector('[data-k="to"]'), o=row.querySelector('[data-k="'+c.k+'"]');
+    if(!f||!t||!o) return;
+    var a=parseInt(f.value,10), b=parseInt(t.value,10);
+    o.value = (!isNaN(a) && !isNaN(b) && b>=a) ? (b-a+1) : '';
+  });
+}
 /* يجمع الحقول الرقمية ويكتب الناتج بحقل المجموع */
 function rpSum(key){
   var sec=rpSec(key);
@@ -1338,6 +1374,7 @@ function rpRemoveRow(btn,key){
 }
 function rpReadSection(key){
   var sec=rpSec(key), out=[];
+  if(!sec) return out;
   document.querySelectorAll('#rprows-'+key+' .rp-row').forEach(function(row){
     var o={}, any=false;
     sec.cols.forEach(function(c){
@@ -1363,12 +1400,18 @@ function rpCountTxt(sec, rows){
       if(v) txt += ' · ' + rpAr(v) + ' ' + t.label;
     });
   }
+  if(sec.counts){
+    sec.counts.forEach(function(c){
+      var n = rows.filter(function(o){ return o[c.k]===c.v; }).length;
+      txt += ' · ' + rpAr(n) + ' ' + c.label;
+    });
+  }
   return txt;
 }
 
 function rpCount(key){
   var el=document.getElementById('rpcnt-'+key);
-  if(el){ var sec=rpSec(key); el.textContent=rpCountTxt(sec, rpReadSection(key)); }
+  if(el){ var sec=rpSec(key); if(sec) el.textContent=rpCountTxt(sec, rpReadSection(key)); }
 }
 function rpCollect(){
   var f=rpForm(), data={};
@@ -1478,7 +1521,10 @@ function rpOpen(id){
   var h='<div class="rp-modal-head"><div><div class="rp-modal-title">'+esc(rpPretty(r.date))+'</div>'
     + '<div class="rp-hist-sub">'+esc(f.label)+' · '+esc(r.time||'')+'</div></div>'
     + '<button class="rp-close" onclick="rpCloseView()">إغلاق</button></div>';
+  /* تقرير قديم: نعرض بس الأقسام اللي فيها بيانات */
+  var isOld = f.sections.some(function(x){ return !((r.sections||{}).hasOwnProperty(x.key)); });
   f.sections.forEach(function(sec){
+    if(isOld && !((r.sections||{})[sec.key]||[]).length) return;
     if(sec.freeText){
       var txt=(r.sections||{})[sec.key]||'';
       h += '<div class="rp-view-tt">'+esc(sec.title)+'</div>'
@@ -1497,6 +1543,17 @@ function rpOpen(id){
               sec.totals.forEach(function(x){ if(x.k===c.k) t=x; });
               return '<td>'+(t ? rpAr(rpTotal(rows,c.k))+' '+esc(t.label) : '')+'</td>';
             }).join('') + '</tr>' : '')
+      + '</tbody></table></div>';
+  });
+  /* أقسام من نماذج قديمة (قبل تعديل البنود) — تنعرض بأسمائها القديمة */
+  var known={}; f.sections.forEach(function(x){ known[x.key]=1; });
+  Object.keys(r.sections||{}).forEach(function(k){
+    var rows=r.sections[k]; if(known[k] || !Array.isArray(rows) || !rows.length) return;
+    var keys=[]; rows.forEach(function(o){ Object.keys(o||{}).forEach(function(c){ if(keys.indexOf(c)<0 && String(o[c]||'').trim()) keys.push(c); }); });
+    if(!keys.length) return;
+    h += '<div class="rp-view-tt">'+esc(RP_OLD.sec[k]||k)+' — '+rpAr(rows.length)+'</div><div class="rp-tbwrap"><table class="rp-tb"><thead><tr>'
+      + keys.map(function(c){ return '<th>'+esc(RP_OLD.col[k+'.'+c]||c)+'</th>'; }).join('')+'</tr></thead><tbody>'
+      + rows.map(function(o){ return '<tr>'+keys.map(function(c){ return '<td>'+esc(o[c]||'—')+'</td>'; }).join('')+'</tr>'; }).join('')
       + '</tbody></table></div>';
   });
   h += '<div class="rp-view-tt">الملاحظات</div>'+(r.notes?'<div class="rp-notes-box">'+esc(r.notes)+'</div>':'<div class="rp-hist-sub">لا توجد ملاحظات.</div>');
