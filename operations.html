@@ -1364,7 +1364,7 @@ let materialStatus = {};
 let bkFilter='all', jnFilter='all';
 
 /* ============ دخول ============ */
-if (sessionStorage.getItem('ops_ok')==='1') document.getElementById('gate').style.display='none';
+if (sessionStorage.getItem('ops_ok')==='1'){ document.getElementById('gate').style.display='none'; window.addEventListener('DOMContentLoaded', function(){ init(); }); }
 function checkPin(){
   const v = document.getElementById('pin').value.trim();
   if(v===OPS_PIN){ sessionStorage.setItem('ops_ok','1'); document.getElementById('gate').style.display='none'; init(); }
@@ -1488,6 +1488,7 @@ async function init(){
   try{ mbrExpLoad(true); }catch(e){}
 }
 async function refreshAll(){
+  if(!TABS.length){ try{ await discoverTabs(); }catch(e){} }
   loadBookings(); loadMaterials(); loadAttendance(); loadJoins(); if(document.getElementById('cvList')) loadCVs(); if(document.getElementById('mcList')) loadMemberConsults(); if(document.getElementById('blocksList')) loadBlocks();
 }
 
@@ -2236,9 +2237,12 @@ function schedRows(){
     .sort((a,b)=>{ const da=parseDate(a.start), db=parseDate(b.start); return (da?da.getTime():Infinity)-(db?db.getTime():Infinity); });
 }
 
+let SCH_RETRY=false;
 function renderSchedule(){
   const box=document.getElementById('schedWrap');
-  if(!DATA.bookings||!DATA.bookings.tab){ box.innerHTML='<div class="empty">لا توجد بيانات.</div>'; return; }
+  if(!DATA.bookings||!DATA.bookings.tab){
+    if(!SCH_RETRY){ SCH_RETRY=true; box.innerHTML='<div class="loading"><div class="sp"></div>جاري تحميل الدورات...</div>'; refreshAll(); return; }
+    box.innerHTML='<div class="empty">تعذّر قراءة تبويب «طلبات الحجز» — اضغط «تحديث» فوق، وإذا تكرر تأكد من اتصال الإنترنت.</div>'; return; }
   const h=DATA.bookings.headers;
   buildScheduleMonths();
   const rows=schedRows();
