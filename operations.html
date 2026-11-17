@@ -1721,6 +1721,7 @@ async function loadBookings(){
     DATA.bookings = await readTab(tab);
   }catch(e){ DATA.bookings={tab,headers:[],data:[]}; }
   renderBookings(); renderSchedule(); updateStats(); renderOverview();
+  try{ if(document.getElementById('p-pubplan').classList.contains('on')) ppRender(); else ppStats(); }catch(e){}
 }
 function mapBooking(h,row){
   return {
@@ -4840,18 +4841,122 @@ const PUB_PLAN = {
  ]
 };
 const PP_KEY='tamkeen_pubplan_done_v1';
+const PP_EDIT_KEY='tamkeen_pubplan_edits_v1';
 const PP_DAYS=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-let PP_FILTER='todo';
+const PP_MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const PP_LEAD=14;            // النشر قبل الدورة بـ 14 يوم
+let PP_FILTER='todo', PP_LIST=[];
 
 function ppDone(){ try{ return JSON.parse(localStorage.getItem(PP_KEY)||'{}'); }catch(e){ return {}; } }
 function ppSaveDone(o){ try{ localStorage.setItem(PP_KEY,JSON.stringify(o)); }catch(e){} }
-function ppId(a){ return a.n+'|'+a.title; }
+function ppEdits(){ try{ return JSON.parse(localStorage.getItem(PP_EDIT_KEY)||'{}'); }catch(e){ return {}; } }
+function ppSaveEdits(o){ try{ localStorage.setItem(PP_EDIT_KEY,JSON.stringify(o)); }catch(e){} }
+function ppId(a){ return a.id || (a.n+'|'+a.title); }
 function ppDate(s){ const m=String(s||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+function ppDmy(d){ return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
 function ppToday0(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
+function ppNorm(s){ return String(s||'').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[«»"'()\-–—_.,:؟?!]/g,' ').replace(/\s+/g,' ').trim(); }
+function ppHash(s){ let h=0; s=String(s||''); for(let i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))|0; } return Math.abs(h); }
+
+/* ── سطر التسويق: قوالب حسب مجال الدورة ── */
+const PP_HOOKS=[
+  {k:/ذكاء|اصطناعي|AI|Copilot|تقني|رقمي|إلكتروني|الكتروني|برمج|كانفا|Canva|فيديو|تصميم/i, tag:'#الذكاء_الاصطناعي #التحول_الرقمي',
+   h:['خلّ التقنية تشتغل عنك، ووفّر وقتك وجهدك.','الأدوات الذكية صارت ضرورة، مو رفاهية.']},
+  {k:/معلم|تدريس|حصة|صف|طالب|طلاب|مدرس|تعليم|تربوي|منهج|تحضير/, tag:'#المعلمين #التعليم',
+   h:['المعلم المتميز يصنع الفرق في كل حصة.','طلابك يستاهلون أفضل نسخة منك.']},
+  {k:/قياد|قائد|إدار|ادار|فريق|موظف|مدير|حوكمة|تخطيط|استراتيج/, tag:'#القيادة #الإدارة',
+   h:['القائد الحقيقي يصنع فريق يشتغل بثقة.','الإدارة الناجحة تبدأ من مهارات صح.']},
+  {k:/أسر|اسر|أبناء|ابناء|أطفال|اطفال|زواج|مراهق|والدين|أولياء|اولياء|الطفل/, tag:'#الأسرة #التربية',
+   h:['بيت واعي يبدأ بخطوة صحيحة.','أبناؤنا يستاهلون نفهمهم أكثر.']},
+  {k:/مال|تداول|استثمار|دخل|ميزاني|ادخار/, tag:'#الوعي_المالي #الاستثمار',
+   h:['قراراتك المالية تبدأ من فهم صحيح.','فلوسك تقدر تشتغل لك، إذا عرفت شلون.']},
+  {k:/إنجليز|انجليز|لغة|English/i, tag:'#اللغة_الإنجليزية',
+   h:['اللغة مفتاح فرص ما تنتهي.','تكلّم بثقة، وخل اللغة تفتح لك أبواب جديدة.']},
+  {k:/قانون|حقوق|عمل الكويتي|عقد/, tag:'#القانون #الوعي_القانوني',
+   h:['اعرف حقوقك وواجباتك قبل لا تحتاجها.','الوعي القانوني يحميك ويحمي شغلك.']},
+  {k:/تواصل|إلقاء|القاء|جمهور|عادات|ذات|تحفيز|ذكاء عاطفي|ثقة|ضغوط|وقت/, tag:'#تطوير_الذات #المهارات',
+   h:['مهاراتك هي اللي تفتح لك الأبواب.','التغيير يبدأ بخطوة صغيرة تتكرر كل يوم.']}
+];
+function ppHook(title,topics){
+  const txt=title+' '+topics;
+  const c=PP_HOOKS.find(x=>x.k.test(txt));
+  const list=c?c.h:['دورة عملية تطلع منها بمهارات تطبقها من أول يوم.','استثمر ساعتين وارجع بمهارة تفرق معاك.'];
+  return {line:list[ppHash(title)%list.length], tag:c?c.tag:'#تطوير_الذات'};
+}
+function ppTopics(t){
+  return String(t||'').split(/\n|•|●|▪|،|;|؛|\s-\s|\d+\s*[\-\.\)]\s/).map(x=>x.replace(/^[\s\-–—*✔️✓•\d.)]+/,'').trim())
+    .filter(x=>x.length>2 && x.length<120).slice(0,4);
+}
+function ppTimeTxt(t){
+  t=String(t||'').replace(/\s/g,'');
+  const m=t.match(/(\d{1,2})(?::\d{2})?[-–](\d{1,2})(?::\d{2})?/);
+  return m? m[1]+':00 – '+m[2]+':00 مساءً' : String(t||'');
+}
+function ppTag(s){
+  const stop=/^(في|من|إلى|الى|على|عن|مع|لل|و|أو|او|ب|بين|نحو|حتى)$/;
+  const w=String(s||'').replace(/[«»"'()؟?!.,:،\-–—]/g,' ').trim().split(/\s+/), out=[];
+  for(const x of w){ if(stop.test(x)) break; out.push(x); if(out.length===3) break; }
+  return '#'+(out.length?out:w.slice(0,2)).join('_');
+}
+
+/* ── تحويل حجز معتمد (طلبات الحجز) إلى إعلان بكابشن جاهز ── */
+function ppFromBooking(r){
+  const sd=parseDate(r.start); if(!sd) return null; sd.setHours(0,0,0,0);
+  const ed=parseDate(r.end); if(ed) ed.setHours(0,0,0,0);
+  const pub=new Date(sd); pub.setDate(pub.getDate()-PP_LEAD);
+  const fee=(typeof schFee==='function') ? schFee(r,DATA.bookings.headers,{cells:[]}).txt : (/مجان/.test(r.type)?'مجاني':'');
+  const online=/أونلاين|اونلاين|online/i.test(r.system);
+  const tps=ppTopics(r.topics), hk=ppHook(r.course,r.topics);
+  const dateTxt = PP_DAYS[sd.getDay()]+' '+sd.getDate()+' '+PP_MONTHS[sd.getMonth()]+' '+sd.getFullYear()+
+    (ed && +ed!==+sd ? ' إلى '+PP_DAYS[ed.getDay()]+' '+ed.getDate()+' '+PP_MONTHS[ed.getMonth()] : '');
+  const evening=/7\D*9/.test(String(r.time||''));
+  const L=[];
+  L.push(r.course,'',hk.line);
+  if(tps.length){ L.push('','بتتعلم في الدورة:'); tps.forEach(x=>L.push('✔️ '+x)); }
+  L.push('','تقديم: '+(r.trainer||''),'عضو هيئة تدريب في تمكين','');
+  L.push('📅 التاريخ: '+dateTxt);
+  if(r.time) L.push((evening?'🕖':'🕔')+' الوقت: '+ppTimeTxt(r.time));
+  L.push(online?'💻 المكان: أونلاين':'📍 المكان: مدينة الكويت');
+  if(fee==='مجاني') L.push('🎁 الاشتراك مجاني'); else if(fee) L.push('💰 الرسوم: '+fee);
+  L.push('','المقاعد محدودة، سجّل الحين','للتسجيل: الرابط في البايو','للاستفسار: 97999768','','أكاديمية مسار × تمكين','');
+  L.push(['#أكاديمية_مسار','#تمكين',ppTag(r.course),hk.tag,fee==='مجاني'?'#دورات_مجانية':'',online?'#دورات_أونلاين':'#دورات_الكويت','#الكويت'].filter(Boolean).join(' '));
+  return {
+    id:'bk|'+r._row+'|'+ppNorm(r.course), n:'', auto:true,
+    title:r.course||'دورة', trainer:r.trainer||'', courseDate:PP_DAYS[sd.getDay()]+' '+ppDmy(sd),
+    details:[ppTimeTxt(r.time).replace(' مساءً',''), online?'أونلاين':'مدينة الكويت', fee].filter(Boolean).join(' · '),
+    note:'', pubDate:ppDmy(pub), _sd:sd, status:'', caption:L.join('\n')
+  };
+}
+
+/* القائمة النهائية = الخطة المكتوبة (كابشنات مخصصة) + أي دورة معتمدة جديدة من «طلبات الحجز» */
+function ppBuildList(){
+  const t=ppToday0();
+  // من الخطة المكتوبة: نخفي الإعلانات اللي دورتها خلصت
+  const out=PUB_PLAN.ads.map(a=>Object.assign({},a,{id:a.n+'|'+a.title}))
+    .filter(a=>{ const cd=ppDate(a.courseDate); return !cd || cd>=t; });
+  const have={}; out.forEach(a=>{ have[ppNorm(a.title)]=1; });
+  if(DATA.bookings && DATA.bookings.tab){
+    const h=DATA.bookings.headers;
+    DATA.bookings.data.map(x=>mapBooking(h,x))
+      .filter(r=>statusClass(r.status)==='st-done' && r.start && r.course)
+      .forEach(r=>{
+        if(have[ppNorm(r.course)]) return;               // عندها كابشن مخصص بالخطة
+        const a=ppFromBooking(r); if(!a) return;
+        if(a._sd<t) return;                               // الدورة فاتت
+        if((a._sd-t)/864e5>60) return;                    // أبعد من شهرين — تطلع لاحقاً
+        have[ppNorm(r.course)]=1; out.push(a);
+      });
+  }
+  out.forEach((a,i)=>{ if(a.auto) a.n='+'; a._i=i; });
+  return out;
+}
+function ppCaption(a){ const e=ppEdits()[ppId(a)]; return e!=null?e:a.caption; }
+
 function ppState(a,done){
   if(done[ppId(a)]) return 'done';
   if(/لا تنشر/.test(a.status)||!ppDate(a.pubDate)) return 'stop';
   const d=ppDate(a.pubDate), t=ppToday0();
+  if(a.auto && a._sd && a._sd<t) return 'stop';
   if(d<t) return 'late';
   if(+d===+t) return 'today';
   return 'next';
@@ -4870,19 +4975,22 @@ function ppBadge(st,a){
   return '<span class="pp-b next">بعد '+Math.round((d-t)/864e5)+' يوم</span>';
 }
 function ppStats(){
+  PP_LIST=ppBuildList();
   const done=ppDone(), c={today:0,late:0,next:0,done:0,stop:0};
-  PUB_PLAN.ads.forEach(a=>c[ppState(a,done)]++);
+  PP_LIST.forEach(a=>c[ppState(a,done)]++);
   ['Today','Late','Next','Done','Stop'].forEach(k=>{ const el=document.getElementById('pp'+k); if(el) el.textContent=c[k.toLowerCase()]; });
   updateBadge('pubplan', c.today+c.late);
   return c;
 }
 function ppRender(){
   const box=document.getElementById('ppBody'); if(!box) return;
-  document.getElementById('ppTitle').textContent=PUB_PLAN.title;
-  document.getElementById('ppDesc').textContent=PUB_PLAN.rule+' · آخر تحديث للخطة '+PUB_PLAN.updated;
+  document.getElementById('ppTitle').textContent='خطة نشر إعلانات أكاديمية مسار';
   ppStats();
+  const autoN=PP_LIST.filter(a=>a.auto).length;
+  document.getElementById('ppDesc').textContent='النشر قبل الدورة بـ '+PP_LEAD+' يوم · '+(PP_LIST.length-autoN)+' إعلان بكابشن مكتوب'+
+    ' + '+autoN+' دورة جديدة من طلبات الحجز بكابشن تلقائي'+((!DATA.bookings||!DATA.bookings.tab)?' — جاري تحميل الحجوزات...':'');
   const done=ppDone(), q=(document.getElementById('ppQ').value||'').trim();
-  let list=PUB_PLAN.ads.map(a=>Object.assign({},a,{st:ppState(a,done)})).filter(a=>{
+  let list=PP_LIST.map(a=>Object.assign(a,{st:ppState(a,done)})).filter(a=>{
     if(PP_FILTER==='todo' && !(a.st==='today'||a.st==='late')) return false;
     if(PP_FILTER!=='todo' && PP_FILTER!=='all' && a.st!==PP_FILTER) return false;
     if(q && (a.title+' '+a.trainer).indexOf(q)<0) return false;
@@ -4891,7 +4999,6 @@ function ppRender(){
   if(!list.length){
     box.innerHTML='<div class="empty">'+(PP_FILTER==='todo'?'ما في إعلانات مطلوب نشرها اليوم 👌 — شوف «القادمة».':'ما في إعلانات هني.')+'</div>'; return;
   }
-  // تجميع حسب تاريخ النشر
   const groups={}, order=[];
   list.forEach(a=>{ const k=ppDate(a.pubDate)?a.pubDate:'—'; if(!groups[k]){ groups[k]=[]; order.push(k); } groups[k].push(a); });
   order.sort((x,y)=>{ const a=ppDate(x),b=ppDate(y); if(!a) return 1; if(!b) return -1; return a-b; });
@@ -4906,41 +5013,55 @@ function ppRender(){
   }).join('');
 }
 function ppCard(a){
-  const i=PUB_PLAN.ads.findIndex(x=>x.n===a.n);
-  const sugg=/مقترح/.test(a.status)?'<span class="pp-b sugg">موعد مقترح</span>':(/في الموعد/.test(a.status)?'<span class="pp-b ok">في الموعد</span>':'');
+  const i=a._i, edited=ppEdits()[ppId(a)]!=null;
+  const sugg=a.auto?'<span class="pp-b ok" title="كابشن مولّد من بيانات حجز المدرب">تلقائي من الحجز</span>':
+    (/مقترح/.test(a.status)?'<span class="pp-b sugg">موعد مقترح</span>':(/في الموعد/.test(a.status)?'<span class="pp-b ok">في الموعد</span>':''));
   return '<div class="pp-card'+(a.st==='done'?' done':'')+'">'+
-    '<div class="pp-top"><div class="pp-num">'+a.n+'</div><div style="flex:1">'+
+    '<div class="pp-top"><div class="pp-num">'+esc(String(a.n))+'</div><div style="flex:1">'+
       '<div class="pp-title">'+esc(a.title)+'</div>'+
       '<div class="pp-meta">المدرب: <b>'+esc(a.trainer||'—')+'</b><br>الدورة: <b>'+esc(a.courseDate||'—')+'</b> · '+esc(a.details||'')+'</div>'+
     '</div></div>'+
-    '<div class="pp-badges">'+ppBadge(a.st,a)+sugg+'</div>'+
+    '<div class="pp-badges">'+ppBadge(a.st,a)+sugg+(edited?'<span class="pp-b sugg">معدّل</span>':'')+'</div>'+
     (a.note?'<div class="pp-note'+(a.st==='stop'?' stop':'')+'">⚠️ '+esc(a.note)+'</div>':'')+
-    '<div class="pp-cap" id="ppCap'+i+'">'+esc(a.caption)+'</div>'+
+    '<div class="pp-cap" id="ppCap'+i+'">'+esc(ppCaption(a))+'</div>'+
     '<div class="pp-acts">'+
       '<button class="main" id="ppCp'+i+'" onclick="ppCopy('+i+')">نسخ الكابشن</button>'+
       '<button onclick="ppCopyTags('+i+')">نسخ الهاشتاقات</button>'+
+      '<button id="ppEd'+i+'" onclick="ppEdit('+i+')">✎ تعديل</button>'+
       '<button onclick="ppToggleCap('+i+',this)">عرض كامل</button>'+
       (a.st!=='stop'?'<button class="dn" onclick="ppMark('+i+')">'+(a.st==='done'?'↩ إلغاء «تم»':'✓ تم النشر')+'</button>':'')+
     '</div></div>';
 }
 function ppCopy(i){
-  const a=PUB_PLAN.ads[i]; if(!a) return;
-  mbrCopy(a.caption);
+  const a=PP_LIST[i]; if(!a) return;
+  const el=document.getElementById('ppCap'+i);
+  mbrCopy(el && el.isContentEditable ? el.innerText : ppCaption(a));
   const b=document.getElementById('ppCp'+i);
   if(b){ b.classList.add('copied'); b.textContent='✓ تم النسخ'; setTimeout(()=>{ b.classList.remove('copied'); b.textContent='نسخ الكابشن'; },1800); }
 }
 function ppCopyTags(i){
-  const a=PUB_PLAN.ads[i]; if(!a) return;
-  const tags=(a.caption.match(/#[^\s#]+/g)||[]).join(' ');
+  const a=PP_LIST[i]; if(!a) return;
+  const tags=(ppCaption(a).match(/#[^\s#]+/g)||[]).join(' ');
   if(!tags){ toast('ما في هاشتاقات'); return; }
   mbrCopy(tags);
+}
+function ppEdit(i){
+  const a=PP_LIST[i], el=document.getElementById('ppCap'+i), b=document.getElementById('ppEd'+i); if(!a||!el) return;
+  if(!el.isContentEditable){
+    el.contentEditable='true'; el.classList.add('open'); el.style.background='#fff'; el.style.borderColor='var(--crimson)'; el.focus();
+    b.textContent='💾 حفظ';
+  } else {
+    const txt=el.innerText.replace(/\n{3,}/g,'\n\n').trim(), e=ppEdits();
+    if(txt && txt!==a.caption) e[ppId(a)]=txt; else delete e[ppId(a)];
+    ppSaveEdits(e); toast('تم حفظ الكابشن'); ppRender();
+  }
 }
 function ppToggleCap(i,btn){
   const el=document.getElementById('ppCap'+i); if(!el) return;
   el.classList.toggle('open'); btn.textContent=el.classList.contains('open')?'تصغير':'عرض كامل';
 }
 function ppMark(i){
-  const a=PUB_PLAN.ads[i]; if(!a) return;
+  const a=PP_LIST[i]; if(!a) return;
   const d=ppDone(), id=ppId(a);
   if(d[id]) delete d[id]; else d[id]=new Date().toISOString();
   ppSaveDone(d); ppRender();
