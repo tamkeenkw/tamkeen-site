@@ -253,6 +253,12 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 .pr-high{background:#FFF3E0;color:#E65100;}
 .pr-normal{background:var(--cream-2);color:var(--muted);}
 
+
+/* رسوم الدورة في الجدول */
+.fee-chip{display:inline-block;border-radius:99px;padding:3px 11px;font-size:12.5px;font-weight:900;white-space:nowrap;}
+.fee-chip.paid{background:#5C0F0F;color:#fff;} .fee-chip.free{background:#E8F5E9;color:#2E7D32;}
+.fee-in{width:92px;padding:6px 9px;border:1.5px dashed rgba(92,15,15,.25);border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:800;background:var(--cream);color:var(--text);outline:none;}
+.fee-in:focus{border-style:solid;border-color:var(--crimson);background:#fff;}
 /* PRINT */
 @media print{
   body{background:#fff;}
@@ -536,11 +542,17 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
     <div class="sec-head"><div><div class="sec-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>الجدول التدريبي</div><div class="sec-desc">الدورات المعتمدة مرتّبة زمنياً — جاهزة للاعتماد والتصدير</div></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <select id="sch-month" onchange="renderSchedule()" style="padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;background:#fff;color:var(--text);outline:none;cursor:pointer;"></select>
-        <button class="btn btn-ghost" onclick="window.print()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>تصدير / طباعة PDF</button>
+        <button class="btn btn-ghost" id="schPrintBtn" onclick="schedPrint()"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>طباعة / PDF</button>
         <button class="btn btn-primary" onclick="approveSchedule()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>اعتماد كل القيد مراجعة</button>
       </div>
     </div>
     <div class="banner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div>الجدول مبني تلقائياً من طلبات الحجز. زر «اعتماد كل القيد مراجعة» يعتمد جميع الطلبات المعروضة دفعة واحدة (يحتاج تفعيل دالة الكتابة في السكريبت).</div></div>
+    <div class="toolbar" style="gap:16px;flex-wrap:wrap;align-items:center">
+      <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;cursor:pointer"><input type="checkbox" id="schOnlyOk" onchange="renderSchedule()" style="width:17px;height:17px;accent-color:var(--crimson)">المعتمدة فقط</label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;cursor:pointer"><input type="checkbox" id="schPrStatus" style="width:17px;height:17px;accent-color:var(--crimson)">إظهار الحالة بالطباعة</label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;cursor:pointer"><input type="checkbox" id="schPrTrainer" checked style="width:17px;height:17px;accent-color:var(--crimson)">إظهار المدرب بالطباعة</label>
+      <span id="schFeeHint" style="font-size:12px;color:var(--muted);font-weight:700"></span>
+    </div>
     <div class="sched-wrap" id="schedWrap"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
   </div>
 
@@ -1617,31 +1629,146 @@ function buildScheduleMonths(){
   sel.innerHTML='<option value="">كل الأشهر</option>'+list.map(m=>'<option value="'+m.k+'">'+m.label+'</option>').join('');
   if(cur && list.some(m=>m.k===cur)) sel.value=cur;
 }
+/* ── رسوم الدورة ──
+   1) من عمود بالشيت اسمه فيه: رسوم / سعر / مبلغ / تكلفة
+   2) أو «مجاني» إذا نوع الدورة أو نظامها فيه كلمة مجان
+   3) أو رسوم يكتبها الموظف هني (تنحفظ على نفس الجهاز) */
+const SCH_FEE_KEY='tamkeen_sched_fees_v1';
+function schFees(){ try{ return JSON.parse(localStorage.getItem(SCH_FEE_KEY)||'{}'); }catch(e){ return {}; } }
+function schFeeKey(r){ return String(r.course||'').trim()+'|'+String(r.start||'').trim()+'|'+String(r.trainer||'').trim(); }
+function schFeeFmt(v){
+  v=String(v==null?'':v).trim(); if(!v) return '';
+  if(/مجان|free/i.test(v)) return 'مجاني';
+  const n=v.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/\d+(?:[.,]\d+)?/);
+  if(n && !/[^\d\s.,٠-٩]/.test(v.replace(/د\.?\s*ك|دينار|KD|kwd/ig,''))) return n[0].replace(',','.')+' د.ك';
+  return v;
+}
+function schFee(r,h,raw){
+  const fi=colIdx(h,'رسوم','سعر','مبلغ','تكلفة');
+  const fromSheet=fi>-1?schFeeFmt(cell(raw,fi)):'';
+  if(fromSheet) return {txt:fromSheet,src:'sheet'};
+  if(/مجان/.test(String(r.type||'')+' '+String(r.system||''))) return {txt:'مجاني',src:'type'};
+  const loc=schFees()[schFeeKey(r)];
+  if(loc) return {txt:schFeeFmt(loc),src:'local',raw:loc};
+  return {txt:'',src:'none'};
+}
+function schSetFee(el){
+  const k=el.getAttribute('data-k'), f=schFees(), v=el.value.trim();
+  if(v) f[k]=v; else delete f[k];
+  try{ localStorage.setItem(SCH_FEE_KEY,JSON.stringify(f)); }catch(e){}
+}
+function schFeeChip(t){ return t ? '<span class="fee-chip '+(t==='مجاني'?'free':'paid')+'">'+esc(t)+'</span>' : '<span style="color:var(--muted)">—</span>'; }
+function schDay(v){ const d=parseDate(v); return d? DAYS_AR[d.getDay()]+' '+d.getDate()+' '+MONTHS_AR[d.getMonth()] : String(v||''); }
+
+function schedRows(){
+  if(!DATA.bookings||!DATA.bookings.tab) return [];
+  const h=DATA.bookings.headers;
+  const schMonth=(document.getElementById('sch-month')||{}).value||'';
+  const onlyOk=(document.getElementById('schOnlyOk')||{}).checked;
+  return DATA.bookings.data.map(raw=>{ const r=mapBooking(h,raw); r._fee=schFee(r,h,raw); return r; })
+    .filter(r=>statusClass(r.status)!=='st-reject' && r.start)
+    .filter(r=>!onlyOk || statusClass(r.status)==='st-done')
+    .filter(r=>{ if(!schMonth) return true; const d=parseDate(r.start); return d && monthKey(d)===schMonth; })
+    .sort((a,b)=>{ const da=parseDate(a.start), db=parseDate(b.start); return (da?da.getTime():Infinity)-(db?db.getTime():Infinity); });
+}
+
 function renderSchedule(){
   const box=document.getElementById('schedWrap');
   if(!DATA.bookings||!DATA.bookings.tab){ box.innerHTML='<div class="empty">لا توجد بيانات.</div>'; return; }
   const h=DATA.bookings.headers;
   buildScheduleMonths();
-  const schMonth=(document.getElementById('sch-month')||{}).value||'';
-  let rows=DATA.bookings.data.map(r=>mapBooking(h,r))
-    .filter(r=>statusClass(r.status)!=='st-reject' && r.start)
-    .filter(r=>{ if(!schMonth) return true; const d=parseDate(r.start); return d && monthKey(d)===schMonth; })
-    .sort((a,b)=>{ const da=parseDate(a.start), db=parseDate(b.start); return (da?da.getTime():Infinity)-(db?db.getTime():Infinity); });
+  const rows=schedRows();
+  const hasCol=colIdx(h,'رسوم','سعر','مبلغ','تكلفة')>-1;
+  const hint=document.getElementById('schFeeHint');
+  if(hint) hint.textContent = hasCol ? 'الرسوم مقروءة من عمود «'+h[colIdx(h,'رسوم','سعر','مبلغ','تكلفة')]+'» بالشيت' :
+    'الرسوم: اكتبها بالخانة جنب كل دورة مدفوعة (أو أضف عمود «رسوم الدورة» في طلبات الحجز وتنقرأ تلقائياً)';
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد دورات في الجدول.</div>'; return; }
-  const rowsHtml = rows.map(r=>`<tr>
-      <td>${esc(fmtDate(r.start))}${r.end&&r.end!==r.start?'<br><span style="color:var(--muted);font-size:12px">حتى '+esc(fmtDate(r.end))+'</span>':''}</td>
+  const rowsHtml = rows.map(r=>{
+    const f=r._fee;
+    const feeCell = (f.src==='sheet'||f.src==='type') ? schFeeChip(f.txt)
+      : '<input class="fee-in" data-k="'+esc(schFeeKey(r))+'" value="'+esc(f.raw||'')+'" placeholder="مثال: 75" onchange="schSetFee(this)" title="رسوم الدورة — اكتب «مجاني» للمجانية">';
+    return `<tr>
+      <td>${esc(schDay(r.start))}${r.end&&r.end!==r.start?'<br><span style="color:var(--muted);font-size:12px">حتى '+esc(schDay(r.end))+'</span>':''}</td>
       <td>${esc(r.course||'')}</td>
       <td>${esc(r.trainer||'')}</td>
       <td>${esc(r.system||'')}</td>
       <td>${esc(r.time||'')}</td>
+      <td>${feeCell}</td>
       <td><span class="status ${statusClass(r.status)}">${esc(statusLabel(r.status))}</span></td>
-    </tr>`).join('');
-  const table=`<table class="sched"><thead><tr><th>التاريخ</th><th>الدورة</th><th>المدرب</th><th>النظام</th><th>التوقيت</th><th>الحالة</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
-  box.innerHTML=table;
-  // نسخة الطباعة
+    </tr>`; }).join('');
+  box.innerHTML=`<table class="sched"><thead><tr><th>التاريخ</th><th>الدورة</th><th>المدرب</th><th>النظام</th><th>التوقيت</th><th>الرسوم</th><th>الحالة</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+/* ── طباعة الجدول: مستند A4 مستقل نظيف (ما يتأثر بباقي اللوحة) ── */
+function schedPrint(){
+  const rows=schedRows();
+  if(!rows.length){ toast('ما في دورات للطباعة'); return; }
+  const showSt=(document.getElementById('schPrStatus')||{}).checked;
+  const showTr=(document.getElementById('schPrTrainer')||{}).checked!==false;
+  const sel=document.getElementById('sch-month');
+  const monthLbl = sel && sel.value ? sel.options[sel.selectedIndex].text : 'كل الأشهر';
   const today=new Date();
-  document.getElementById('printArea').innerHTML =
-    `<div class="print-head"><h1>الجدول التدريبي — معهد تمكين</h1><p>تاريخ الإصدار: ${today.getDate()} ${MONTHS_AR[today.getMonth()]} ${today.getFullYear()}</p></div><div class="sched-wrap">${table}</div>`;
+  const issued=today.getDate()+' '+MONTHS_AR[today.getMonth()]+' '+today.getFullYear();
+  const paid=rows.filter(r=>r._fee.txt && r._fee.txt!=='مجاني').length, free=rows.filter(r=>r._fee.txt==='مجاني').length;
+  const head='<tr><th class="c-n">#</th><th class="c-d">التاريخ</th><th class="c-c">الدورة</th>'+(showTr?'<th class="c-t">المدرب</th>':'')+
+    '<th class="c-s">النظام</th><th class="c-tm">التوقيت</th><th class="c-f">الرسوم</th>'+(showSt?'<th class="c-st">الحالة</th>':'')+'</tr>';
+  const body=rows.map((r,i)=>{
+    const f=r._fee.txt;
+    return '<tr><td class="n">'+(i+1)+'</td>'+
+      '<td class="d"><b>'+esc(schDay(r.start))+'</b>'+(r.end&&r.end!==r.start?'<small>حتى '+esc(schDay(r.end))+'</small>':'')+'</td>'+
+      '<td class="c"><b>'+esc(r.course||'')+'</b></td>'+
+      (showTr?'<td>'+esc(r.trainer||'')+'</td>':'')+
+      '<td>'+esc(r.system||'')+'</td><td class="tm">'+esc(r.time||'')+'</td>'+
+      '<td class="f">'+(f?'<span class="'+(f==='مجاني'?'free':'paid')+'">'+esc(f)+'</span>':'—')+'</td>'+
+      (showSt?'<td>'+esc(statusLabel(r.status))+'</td>':'')+'</tr>';
+  }).join('');
+  const css=
+    '@page{size:A4 portrait;margin:11mm 10mm 12mm}'+
+    '*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+    'body{font-family:"Cairo","Tajawal",sans-serif;color:#1A0808;direction:rtl;background:#fff}'+
+    '.hd{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;border-bottom:3px solid #5C0F0F;padding-bottom:9px;margin-bottom:10px}'+
+    '.hd .org{font-size:11pt;font-weight:800;color:#7A6060}'+
+    '.hd h1{font-size:19pt;font-weight:900;color:#5C0F0F;line-height:1.25}'+
+    '.hd .m{font-size:13pt;font-weight:900;color:#1A0808}'+
+    '.hd .meta{text-align:left;font-size:8.5pt;font-weight:700;color:#7A6060;line-height:1.7}'+
+    'table{width:100%;border-collapse:collapse;table-layout:fixed}'+
+    'thead{display:table-header-group}'+
+    'tr{break-inside:avoid;page-break-inside:avoid}'+
+    'th{background:#5C0F0F;color:#fff;font-size:9pt;font-weight:800;padding:7px 5px;text-align:center;border:1px solid #5C0F0F}'+
+    'td{border:1px solid #DCCFC6;padding:7px 6px;font-size:9.5pt;font-weight:600;vertical-align:middle;text-align:center;line-height:1.5;overflow-wrap:anywhere}'+
+    'tbody tr:nth-child(even) td{background:#FAF7F2}'+
+    'td.n{color:#7A6060;font-weight:800;white-space:nowrap;padding:7px 2px}'+
+    'td.c{text-align:right;font-size:10pt}'+
+    'td.d small{display:block;font-size:8pt;color:#7A6060;font-weight:700}'+
+    'td.tm{direction:ltr;unicode-bidi:plaintext}'+
+    'td.f span{display:inline-block;border-radius:99px;padding:2px 9px;font-weight:900;font-size:9pt;white-space:nowrap}'+
+    'td.f .paid{background:#5C0F0F;color:#fff} td.f .free{background:#E8F5E9;color:#2E7D32}'+
+    'th.c-n{width:9mm} th.c-d{width:19%} th.c-t{width:16%} th.c-s{width:10%} th.c-tm{width:13%} th.c-f{width:11%} th.c-st{width:10%}'+
+    '.ft{margin-top:10px;display:flex;justify-content:space-between;font-size:8.5pt;font-weight:700;color:#7A6060;border-top:1px solid #DCCFC6;padding-top:6px}';
+  const html='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>الجدول التدريبي - '+esc(monthLbl)+'</title>'+
+    '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&display=swap" rel="stylesheet">'+
+    '<style>'+css+'</style></head><body>'+
+    '<div class="hd"><div><div class="org">معهد تمكين للتدريب · إيديو كلاود</div><h1>الجدول التدريبي</h1><div class="m">'+esc(monthLbl)+'</div></div>'+
+    '<div class="meta">عدد الدورات: '+rows.length+(paid?' · مدفوعة: '+paid:'')+(free?' · مجانية: '+free:'')+'<br>تاريخ الإصدار: '+issued+'</div></div>'+
+    '<table><thead>'+head+'</thead><tbody>'+body+'</tbody></table>'+
+    '<div class="ft"><span>للتسجيل والاستفسار: 97999768</span><span>tamkeenkuw.com</span></div>'+
+    '</body></html>';
+
+  const old=document.getElementById('schPrintFrame'); if(old) old.remove();
+  const fr=document.createElement('iframe'); fr.id='schPrintFrame';
+  fr.style.cssText='position:fixed;left:-10000px;top:0;width:794px;height:1123px;border:0;opacity:0;pointer-events:none';
+  document.body.appendChild(fr);
+  const doc=fr.contentWindow.document; doc.open(); doc.write(html); doc.close();
+  const btn=document.getElementById('schPrintBtn'); if(btn) btn.disabled=true;
+  let done=false;
+  const go=()=>{ if(done) return; done=true;
+    const ot=document.title; document.title='الجدول التدريبي - '+monthLbl;
+    try{ fr.contentWindow.focus(); fr.contentWindow.print(); }catch(e){ toast('تعذّرت الطباعة'); }
+    setTimeout(()=>{ document.title=ot; if(btn) btn.disabled=false; },600);
+    setTimeout(()=>{ if(fr.parentNode) fr.remove(); },60000);
+  };
+  const waits=[]; try{ if(doc.fonts&&doc.fonts.ready) waits.push(doc.fonts.ready); }catch(e){}
+  Promise.race([Promise.all(waits).then(()=>new Promise(r=>setTimeout(r,250))), new Promise(r=>setTimeout(r,2500))]).then(go);
 }
 async function approveSchedule(){
   if(!DATA.bookings||!DATA.bookings.tab) return;
