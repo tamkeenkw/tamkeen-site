@@ -2212,7 +2212,11 @@ function schFee(r,h,raw){
   const fi=colIdx(h,'رسوم','سعر','مبلغ','تكلفة');
   const fromSheet=fi>-1?schFeeFmt(cell(raw,fi)):'';
   if(fromSheet) return {txt:fromSheet,src:'sheet'};
-  if(/مجان/.test(String(r.type||'')+' '+String(r.system||''))) return {txt:'مجاني',src:'type'};
+  // نموذج الحجز يكتب الرسوم داخل «نوع الدورة»: «وفق الجدول — رسوم: 50 د.ك» أو «… — مجانية»
+  const tp=String(r.type||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const pm=tp.match(/(?:رسوم|سعر)\s*[:：]?\s*(\d+(?:[.,]\d+)?)/);
+  if(pm) return {txt:pm[1].replace(',','.')+' د.ك',src:'type'};
+  if(/مجان/.test(tp+' '+String(r.system||''))) return {txt:'مجاني',src:'type'};
   const loc=schFees()[schFeeKey(r)];
   if(loc) return {txt:schFeeFmt(loc),src:'local',raw:loc};
   return {txt:'',src:'none'};
@@ -2249,7 +2253,7 @@ function renderSchedule(){
   const hasCol=colIdx(h,'رسوم','سعر','مبلغ','تكلفة')>-1;
   const hint=document.getElementById('schFeeHint');
   if(hint) hint.textContent = hasCol ? 'الرسوم مقروءة من عمود «'+h[colIdx(h,'رسوم','سعر','مبلغ','تكلفة')]+'» بالشيت' :
-    'الرسوم: اكتبها بالخانة جنب كل دورة مدفوعة (أو أضف عمود «رسوم الدورة» في طلبات الحجز وتنقرأ تلقائياً)';
+    'الرسوم تنقرأ تلقائياً من حجز المدرب · الخانة تطلع بس للحجوزات القديمة اللي ما فيها سعر';
   if(!rows.length){ box.innerHTML='<div class="empty">لا توجد دورات في الجدول.</div>'; return; }
   const rowsHtml = rows.map(r=>{
     const f=r._fee;
