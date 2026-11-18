@@ -6,7 +6,7 @@
 <title>طلب المذكرات | معهد EDUCLOUD</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--teal:#0D5C48;--teal2:#0A4D3C;--teallt:#15705A;--accent:#1A8F6F;--accentlt:#22B08A;--cream:#F5FAF8;--cream2:#E8F4F0;--text:#0A2620;--muted:#4A7A6E}
+:root{--teal:#0D5C48;--teal2:#0A4D3C;--teallt:#15705A;--accent:#1A8F6F;--accentlt:#22B08A;--cream:#F5FAF8;--cream2:#E8F4F0;--text:#0A2620;--muted:#4A7A6E;--gold:#B8651A;--gold2:#D6781E}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;background:var(--teal);min-height:100vh;padding:40px 20px 70px;position:relative;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(26,143,111,.15) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(10,77,60,.3) 0%,transparent 50%);pointer-events:none;z-index:0}
@@ -18,6 +18,8 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .logo-icon svg{width:22px;height:22px}
 .logo-text{font-size:17px;font-weight:800;color:rgba(255,255,255,.65);letter-spacing:.5px}
 .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:100px;margin-bottom:22px}
+.badge.offer-badge{background:rgba(214,120,30,.22);border-color:rgba(255,196,130,.5);color:#FFD9AE;font-weight:800}
+.badge.offer-badge .badge-dot{background:#FFB45C}
 .badge-dot{width:7px;height:7px;border-radius:50%;background:var(--accentlt);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
 h1{font-size:clamp(30px,8vw,44px);font-weight:900;color:#fff;line-height:1.2;margin-bottom:12px}
@@ -32,6 +34,16 @@ h1 span{color:var(--accentlt)}
 .sec-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;color:var(--teal);letter-spacing:.5px;margin-bottom:16px;margin-top:26px}
 .sec-line{flex:1;height:1px;background:var(--cream2)}
 
+/* شريط العرض */
+.offer{display:none;align-items:center;gap:13px;background:linear-gradient(135deg,rgba(214,120,30,.14),rgba(214,120,30,.05));border:1.5px solid rgba(214,120,30,.32);border-radius:16px;padding:14px 16px;margin-bottom:24px}
+.offer.show{display:flex}
+.offer-ic{width:38px;height:38px;border-radius:12px;background:var(--gold2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 18px rgba(214,120,30,.3)}
+.offer-ic svg{width:19px;height:19px;color:#fff}
+.offer-body{flex:1;min-width:0}
+.offer-t{font-size:14.5px;font-weight:900;color:var(--gold);line-height:1.4}
+.offer-s{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.7;font-weight:600}
+.offer-s b{color:var(--gold);font-weight:900}
+
 /* شاشة التحميل */
 .loader{text-align:center;padding:40px 0}
 .loader-spin{width:34px;height:34px;border:3px solid rgba(13,92,72,.15);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
@@ -44,16 +56,25 @@ h1 span{color:var(--accentlt)}
 
 /* باقات */
 .pkg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.pkg{border:2px solid rgba(13,92,72,.12);border-radius:18px;padding:16px 12px;cursor:pointer;transition:all .25s;background:#fff;position:relative;text-align:center}
+.pkg{border:2px solid rgba(13,92,72,.12);border-radius:18px;padding:18px 12px 16px;cursor:pointer;transition:all .25s;background:#fff;position:relative;text-align:center}
 .pkg:hover{border-color:var(--teal);background:rgba(13,92,72,.03)}
 .pkg.selected{border-color:var(--teal);background:rgba(13,92,72,.05);box-shadow:0 0 0 4px rgba(13,92,72,.08)}
+.pkg.deal{border-color:rgba(214,120,30,.35)}
+.pkg.deal:hover{border-color:var(--gold2)}
+.pkg.deal.selected{border-color:var(--teal)}
 .pkg-check{position:absolute;top:10px;left:10px;width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.6);transition:all .25s}
 .pkg.selected .pkg-check{opacity:1;transform:scale(1)}
 .pkg-check svg{width:11px;height:11px}
 .pkg-name{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
 .pkg-desc{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.pkg-old{font-size:12.5px;font-weight:800;color:var(--muted);text-decoration:line-through;line-height:1;margin-bottom:3px;display:none}
+.pkg-old.show{display:block}
 .pkg-price{font-size:24px;font-weight:900;color:var(--teal);line-height:1}
+.pkg.deal .pkg-price{color:var(--gold)}
+.pkg.deal.selected .pkg-price{color:var(--teal)}
 .pkg-cur{font-size:12px;font-weight:700;color:var(--muted)}
+.pkg-save{position:absolute;top:-9px;right:50%;transform:translateX(50%);background:var(--gold2);color:#fff;font-size:9.5px;font-weight:900;padding:3px 10px;border-radius:100px;white-space:nowrap;display:none;box-shadow:0 3px 10px rgba(214,120,30,.35)}
+.pkg-save.show{display:block}
 .pkg-stock{font-size:10.5px;font-weight:800;margin-top:9px;padding:4px 8px;border-radius:100px;display:none;line-height:1.4}
 .pkg-stock.show{display:block}
 .pkg-stock.left{background:rgba(26,143,111,.12);color:var(--accent)}
@@ -62,6 +83,7 @@ h1 span{color:var(--accentlt)}
 .pkg.hidden{display:none}
 .pkg.soldout{opacity:.45;cursor:not-allowed;pointer-events:none;filter:grayscale(.6)}
 .pkg.soldout .pkg-price{text-decoration:line-through;color:var(--muted)}
+.pkg.soldout .pkg-save{display:none}
 
 /* مواد */
 .subjects-wrap{display:none;margin-top:4px}
@@ -82,6 +104,9 @@ h1 span{color:var(--accentlt)}
 /* ملخص السعر */
 .price-summary{margin-top:14px;background:rgba(13,92,72,.06);border-radius:14px;padding:14px 18px;display:none}
 .price-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);padding:4px 0}
+.price-row.save{color:var(--gold);font-weight:800;display:none}
+.price-row.save.show{display:flex}
+.price-row.save s{color:var(--muted);font-weight:700;text-decoration:line-through}
 .price-row.total{font-size:16px;font-weight:900;color:var(--teal);border-top:1px solid rgba(13,92,72,.12);margin-top:6px;padding-top:10px}
 .price-note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.7;text-align:center;display:none}
 .price-note.show{display:block}
@@ -161,7 +186,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       </div>
       <div class="logo-text">EDUCLOUD</div>
     </div>
-    <div class="badge"><div class="badge-dot"></div><span id="badgeTxt">جاري التحميل...</span></div>
+    <div class="badge" id="topBadge"><div class="badge-dot"></div><span id="badgeTxt">جاري التحميل...</span></div>
     <h1 id="pageTitle">مذكرات <span>الامتحانات</span></h1>
     <p class="sub" id="pageSub">مذكرات مختصرة وشاملة</p>
   </div>
@@ -193,6 +218,17 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
 
     <div id="formWrap" style="display:none">
 
+      <!-- شريط العرض -->
+      <div class="offer" id="offerBox">
+        <div class="offer-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        </div>
+        <div class="offer-body">
+          <div class="offer-t" id="offerTitle">خصم لفترة محدودة</div>
+          <div class="offer-s" id="offerSub"></div>
+        </div>
+      </div>
+
       <!-- تنبيه الطلب المسبق -->
       <div class="notice" id="preNotice">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -211,26 +247,32 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
 
       <div class="pkg-grid">
         <div class="pkg" id="pkg1" onclick="selectPkg(1)">
+          <div class="pkg-save" id="save1"></div>
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">مادة واحدة</div>
           <div class="pkg-desc">مذكرة مادة تختارها</div>
-          <div class="pkg-price" id="price1">١٠</div>
+          <div class="pkg-old" id="old1"></div>
+          <div class="pkg-price" id="price1">٧</div>
           <div class="pkg-cur">د.ك</div>
           <div class="pkg-stock" id="stock1"></div>
         </div>
         <div class="pkg" id="pkg2" onclick="selectPkg(2)">
+          <div class="pkg-save" id="save2"></div>
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">٣ مواد</div>
           <div class="pkg-desc">اختر أي ٣ مواد</div>
-          <div class="pkg-price" id="price2">١٧</div>
+          <div class="pkg-old" id="old2"></div>
+          <div class="pkg-price" id="price2">١٥</div>
           <div class="pkg-cur">د.ك</div>
           <div class="pkg-stock" id="stock2"></div>
         </div>
         <div class="pkg" id="pkg3" onclick="selectPkg(3)">
+          <div class="pkg-save" id="save3"></div>
           <div class="pkg-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
           <div class="pkg-name">كل المواد</div>
           <div class="pkg-desc">جميع المواد كاملة</div>
-          <div class="pkg-price" id="price3">٢٥</div>
+          <div class="pkg-old" id="old3"></div>
+          <div class="pkg-price" id="price3">٢٠</div>
           <div class="pkg-cur">د.ك</div>
           <div class="pkg-stock" id="stock3"></div>
         </div>
@@ -269,6 +311,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
       <!-- ملخص السعر -->
       <div class="price-summary" id="priceSummary">
         <div class="price-row"><span>سعر الباقة</span><span id="sumPkg">—</span></div>
+        <div class="price-row save" id="saveRow"><span>خصم العرض</span><span id="sumSave">—</span></div>
         <div class="price-row"><span>رسوم التوصيل</span><span id="sumDelivery">٣ د.ك</span></div>
         <div class="price-row total"><span id="sumTotalLabel">الإجمالي</span><span id="sumTotal">—</span></div>
         <div class="price-note" id="priceNote">السعر للعلم فقط — ما يتم أي دفع الآن</div>
@@ -373,8 +416,7 @@ footer a{color:rgba(255,255,255,.35);text-decoration:none}
 /* السكربت القديم — حفظ الطلبات بالشيت (لا تغيّره) */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybVJla9hADzNrbWDr35wLt902X1faZGsJg75N3TsvfYEiosskEdHvIrXMjZNQedAws/exec';
 
-/* ⬇⬇⬇ السكربت الجديد — قراءة وضع الصفحة من الشيت ⬇⬇⬇
-   الصق هنا رابط الـ Deploy مال المشروع الجديد (ينتهي بـ /exec) */
+/* السكربت الجديد — قراءة وضع الصفحة من الشيت */
 const MODE_URL   = 'https://script.google.com/macros/s/AKfycbzQxPvtRJtWmRzETFMSTkL-nY8eBlfsu96GsAWRA6C6Rpee4ubmBWLFqSqw2dW54mpc1g/exec';
 
 /* سلة الدفع الموجودة — نفس اللي تستخدمها صفحات المواد */
@@ -392,28 +434,102 @@ const WHATSAPP   = '96597999768';
 const FORCE_MODE   = 'دفع';
 const DEFAULT_MODE = 'دفع';
 
+/* ════════════════════════════════════════════════
+   ★★★  عرض الخصم  ★★★
+   ────────────────────────────────────────────────
+   LIST    = السعر الأصلي (يطلع مشطوب)
+   PRICES  = سعر العرض الحالي
+   لإيقاف العرض: خلّ PRICES = نفس LIST  →  كل شي يختفي تلقائياً
+   OFFER_LOCK = true  →  يتجاهل أسعار الشيت ويثبّت العرض
+   OFFER_ENDS = '2026-11-30'  →  يطلع عدّاد الأيام · '' = بدون عدّاد
+   ════════════════════════════════════════════════ */
+const LIST       = {1:10, 2:17, 3:25};
+let   PRICES     = {1:7,  2:15, 3:20};
+const OFFER_LOCK = true;
+const OFFER_ENDS = '';
+const OFFER_TEXT = 'خصم لفترة محدودة';
+
+let DELIVERY = 3;
+
 const SUBJECTS = {
   11: ['التاريخ','الجغرافيا','علم النفس','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية'],
   12: ['التاريخ','الجغرافيا','الفلسفة','اللغة العربية','اللغة الفرنسية','اللغة الإنجليزية','التربية الإسلامية']
 };
-/* الأسعار الافتراضية — تُستبدل بالأسعار الجاية من الشيت */
-let PRICES   = {1:10, 2:17, 3:25};
-let DELIVERY = 3;
 
 /* تحويل الأرقام لعربية-هندية للعرض */
 function ar(n){ return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
 
+/* ═══ عرض الخصم ═══ */
+function offerOn(){ return [1,2,3].some(n => PRICES[n] < LIST[n]); }
+
+function daysLeft(){
+  if(!OFFER_ENDS) return null;
+  const end = new Date(OFFER_ENDS + 'T23:59:59');
+  if(isNaN(end)) return null;
+  const d = Math.ceil((end - new Date()) / 86400000);
+  return d > 0 ? d : 0;
+}
+
+function paintOffer(){
+  const on = offerOn();
+  let best = 0;
+
+  for(const n of [1,2,3]){
+    const card = document.getElementById('pkg'+n);
+    const old  = document.getElementById('old'+n);
+    const save = document.getElementById('save'+n);
+    const diff = LIST[n] - PRICES[n];
+
+    document.getElementById('price'+n).textContent = ar(PRICES[n]);
+
+    if(diff > 0){
+      card.classList.add('deal');
+      old.textContent = ar(LIST[n]) + ' د.ك';
+      old.classList.add('show');
+      save.textContent = 'وفّر ' + ar(diff) + ' د.ك';
+      save.classList.add('show');
+      if(diff > best) best = diff;
+    } else {
+      card.classList.remove('deal');
+      old.classList.remove('show');
+      save.classList.remove('show');
+    }
+  }
+
+  const box   = document.getElementById('offerBox');
+  const badge = document.getElementById('topBadge');
+  box.classList.toggle('show', on);
+
+  if(!on){
+    // العرض متوقف → ارجع لبادج الوضع العادي
+    badge.classList.remove('offer-badge');
+    if(CFG && CFG.badge) document.getElementById('badgeTxt').textContent = CFG.badge;
+    return;
+  }
+
+  const d = daysLeft();
+  document.getElementById('offerTitle').textContent = OFFER_TEXT;
+  document.getElementById('offerSub').innerHTML =
+    'الأسعار منزّلة على كل الباقات — وفّر لين <b>' + ar(best) + ' د.ك</b>' +
+    (d === null ? ' · العرض ينتهي قريباً'
+                : (d === 0 ? ' · <b>آخر يوم بالعرض</b>'
+                           : ' · باقي <b>' + ar(d) + (d === 1 ? ' يوم' : ' أيام') + '</b>'));
+
+  // البادج فوق يصير عرض
+  badge.classList.add('offer-badge');
+  document.getElementById('badgeTxt').textContent = OFFER_TEXT;
+}
+
 function applyPrices(p){
   if(!p) return;
-  if(p.single>0)      PRICES[1] = Number(p.single);
-  if(p.three>0)       PRICES[2] = Number(p.three);
-  if(p.all>0)         PRICES[3] = Number(p.all);
-  if(p.delivery>=0)   DELIVERY  = Number(p.delivery);
-
-  document.getElementById('price1').textContent = ar(PRICES[1]);
-  document.getElementById('price2').textContent = ar(PRICES[2]);
-  document.getElementById('price3').textContent = ar(PRICES[3]);
+  if(p.delivery >= 0) DELIVERY = Number(p.delivery);
+  if(!OFFER_LOCK){
+    if(p.single > 0) PRICES[1] = Number(p.single);
+    if(p.three  > 0) PRICES[2] = Number(p.three);
+    if(p.all    > 0) PRICES[3] = Number(p.all);
+  }
   document.getElementById('sumDelivery').textContent = ar(DELIVERY)+' د.ك';
+  paintOffer();
   updateSummary();
 }
 
@@ -502,19 +618,16 @@ let MODE = DEFAULT_MODE;
 let CFG  = MODES[DEFAULT_MODE] || MODES['دفع'];
 let selPkg=0, selGrade=0, selSubjects=[];
 
-/* ===== جلب الوضع من الشيت عبر JSONP ===== */
+/* ===== جلب الوضع والأسعار من الشيت عبر JSONP ===== */
 function loadMode(){
-  // وضع مثبّت يدوياً → لا نسأل الشيت أصلاً
-  if(FORCE_MODE){ applyMode(FORCE_MODE); return; }
-
   // الرابط مو محطوط → الافتراضي
   if(!MODE_URL || MODE_URL.indexOf('script.google.com')===-1){
-    applyMode(DEFAULT_MODE); return;
+    applyMode(FORCE_MODE || DEFAULT_MODE); return;
   }
 
   let done=false;
   const cb='__mode_'+Date.now();
-  const t=setTimeout(()=>{ if(!done){done=true; cleanup(); applyMode(DEFAULT_MODE);} },7000);
+  const t=setTimeout(()=>{ if(!done){done=true; cleanup(); applyMode(FORCE_MODE || DEFAULT_MODE);} },7000);
 
   function cleanup(){ try{delete window[cb];}catch(e){} const s=document.getElementById(cb); if(s)s.remove(); clearTimeout(t); }
 
@@ -523,13 +636,14 @@ function loadMode(){
     if(res && res.prices) applyPrices(res.prices);
     const anyLeft = res && res.stock ? applyStock(res.stock) : true;
     let m = (res && res.mode || '').toString().trim();
-    applyMode(anyLeft===false ? 'مغلق' : m);
+    // FORCE_MODE يغلب الشيت — بس الأسعار والكميات تنقرأ عادي
+    applyMode(anyLeft===false ? 'مغلق' : (FORCE_MODE || m));
   };
 
   const s=document.createElement('script');
   s.id=cb;
   s.src=MODE_URL+'?callback='+cb+'&t='+Date.now();
-  s.onerror=()=>{ if(!done){done=true; cleanup(); applyMode(DEFAULT_MODE);} };
+  s.onerror=()=>{ if(!done){done=true; cleanup(); applyMode(FORCE_MODE || DEFAULT_MODE);} };
   document.head.appendChild(s);
 }
 
@@ -566,6 +680,7 @@ function applyMode(raw){
   document.getElementById('addressSection').classList.toggle('show', CFG.needAddress);
   document.getElementById('paySection').classList.toggle('show', CFG.showPay);
   document.getElementById('formWrap').style.display='block';
+  paintOffer();          // ← يغلب بادج الوضع لو فيه عرض
   validate();
 }
 
@@ -637,9 +752,22 @@ function updateSummary(){
   const sum=document.getElementById('priceSummary');
   if(!selPkg){sum.style.display='none';return;}
   sum.style.display='block';
-  const p=PRICES[selPkg];
-  document.getElementById('sumPkg').textContent=ar(p)+' د.ك';
-  document.getElementById('sumTotal').textContent=ar(p+DELIVERY)+' د.ك';
+
+  const now  = PRICES[selPkg];
+  const list = LIST[selPkg];
+  const diff = list - now;
+  const row  = document.getElementById('saveRow');
+
+  if(diff > 0){
+    document.getElementById('sumPkg').innerHTML = '<s style="color:var(--muted)">'+ar(list)+'</s> د.ك';
+    document.getElementById('sumSave').textContent = '− '+ar(diff)+' د.ك';
+    row.classList.add('show');
+  } else {
+    document.getElementById('sumPkg').textContent = ar(now)+' د.ك';
+    row.classList.remove('show');
+  }
+
+  document.getElementById('sumTotal').textContent = ar(now+DELIVERY)+' د.ك';
 }
 
 function validPhone(v){
@@ -719,6 +847,7 @@ async function submitForm(){
   document.getElementById('btnIcon').style.display='none';
 
   const total = PRICES[selPkg]+DELIVERY;
+  const saved = Math.max(0, LIST[selPkg]-PRICES[selPkg]);
   const data={
     type:'notebooks',
     sheet:'مذكرات',
@@ -730,7 +859,8 @@ async function submitForm(){
     address:document.getElementById('address').value.trim()||'—',
     payment:CFG.payment,
     status:CFG.status,
-    total:total+' د.ك'
+    total:total+' د.ك',
+    offer: saved>0 ? ('خصم '+saved+' د.ك') : '—'
   };
 
   /* ─── وضع الدفع: احفظ الطلب ثم روح للسلة ─── */
@@ -747,13 +877,14 @@ async function submitForm(){
     try{
       sessionStorage.setItem('nc_order', JSON.stringify({
         name:data.name, phone:data.phone, pkg:data.package,
-        subjects:data.subjects, grade:data.grade, total:total
+        subjects:data.subjects, grade:data.grade, total:total, saved:saved
       }));
     }catch(e){}
 
     // 3) نحوّله لسلتك الموجودة
     const label = 'مذكرات — ' + data.package + ' · ' + data.grade;
-    const desc  = (data.subjects==='جميع المواد' ? 'جميع المواد' : data.subjects) + ' — شامل التوصيل';
+    const desc  = (data.subjects==='جميع المواد' ? 'جميع المواد' : data.subjects)
+                + ' — شامل التوصيل' + (saved>0 ? (' · سعر العرض (وفّرت '+saved+' د.ك)') : '');
     const q = new URLSearchParams({
       course: label,
       fee:    String(total),
@@ -815,6 +946,7 @@ function payResult(paid, tapId, phone){
   history.replaceState({},'',location.pathname);
 
   if(paid){
+    document.getElementById('topBadge').classList.remove('offer-badge');
     document.getElementById('badgeTxt').textContent='تم الدفع بنجاح';
     document.getElementById('pageTitle').innerHTML='تم <span>استلام</span> طلبك';
     document.getElementById('pageSub').innerHTML='شكراً لك — بنتواصل وياك قريباً';
@@ -824,8 +956,9 @@ function payResult(paid, tapId, phone){
     document.getElementById('succTitle').textContent='تم الدفع بنجاح';
     document.getElementById('succDesc').textContent=
       (o.name?('شكراً '+o.name+'! '):'')+'تم استلام طلبك ودفعتك بنجاح'+
-      (o.pkg?(' — '+o.pkg):'')+'. بنتواصل وياك على الواتساب '+(o.phone||phone)+
-      ' لتأكيد موعد التوصيل.';
+      (o.pkg?(' — '+o.pkg):'')+
+      (o.saved>0?(' · وفّرت '+ar(o.saved)+' د.ك بالعرض'):'')+
+      '. بنتواصل وياك على الواتساب '+(o.phone||phone)+' لتأكيد موعد التوصيل.';
     const msg='مرحباً، دفعت طلب مذكرات'+(o.name?(' باسم '+o.name):'')+(o.pkg?(' — '+o.pkg):'');
     document.getElementById('waLink').href='https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg);
     try{ sessionStorage.removeItem('nc_order'); }catch(e){}
@@ -853,6 +986,7 @@ function showSuccess(data){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+paintOffer();
 if(!checkReturn()) loadMode();
 </script>
 </body>
