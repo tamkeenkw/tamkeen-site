@@ -164,6 +164,36 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
  padding:11px 15px;font-family:'Cairo',sans-serif;font-size:14px;color:#fff;outline:none}
 .sel:focus{border-color:var(--accentlt)}
 .sel option{background:#0b1d16}
+/* تنقّل الأشهر */
+.mnav{display:flex;align-items:center;gap:6px}
+.mnav button{background:rgba(255,255,255,.07);border:1.5px solid var(--bd);color:#fff;
+ width:38px;height:38px;border-radius:12px;cursor:pointer;font-family:'Cairo',sans-serif;
+ display:flex;align-items:center;justify-content:center;transition:.2s}
+.mnav button:hover:not(:disabled){background:rgba(34,176,138,.16);border-color:var(--accentlt)}
+.mnav button:disabled{opacity:.3;cursor:default}
+.mnav button svg{width:16px;height:16px}
+.mtag{font-size:10px;font-weight:800;border-radius:100px;padding:4px 10px;white-space:nowrap}
+.mtag.live{background:rgba(34,176,138,.16);color:var(--accentlt)}
+.mtag.done{background:rgba(255,255,255,.09);color:var(--muted2)}
+.dbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:rgba(255,255,255,.04);
+ border:1px solid var(--bd);border-radius:14px;padding:11px 14px;margin-bottom:14px;
+ font-size:12.5px;font-weight:700;color:var(--muted2)}
+.dbar b{font-weight:900}
+.dbar .up{color:#7FE0C0}
+.dbar .dn{color:#E8A66A}
+.dbar .same{color:var(--muted2)}
+/* ملخّص السنة */
+.ytbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.ytbl th{background:rgba(255,255,255,.05);color:var(--muted2);font-size:11px;font-weight:800;
+ padding:11px 10px;text-align:right;white-space:nowrap;border-bottom:1.5px solid var(--bd)}
+.ytbl td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.055);font-weight:700}
+.ytbl tr.zero td{opacity:.42}
+.ytbl tr.cur td{background:rgba(34,176,138,.07)}
+.ytbl tr.pick:hover td{background:rgba(34,176,138,.1);cursor:pointer}
+.ytbl td.n{direction:ltr;text-align:right;font-weight:900}
+.ytbl td.p{color:var(--accentlt);font-weight:900;direction:ltr;text-align:right}
+.ytbl tfoot td{background:rgba(13,92,72,.3);font-weight:900;border-bottom:none}
+.ywrap{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden}
 .secpill{display:inline-flex;align-items:center;gap:7px;background:rgba(34,176,138,.1);
  border:1.5px solid rgba(34,176,138,.26);border-radius:11px;padding:8px 12px;
  font-size:11.5px;font-weight:800;margin:0 0 6px 6px}
@@ -304,13 +334,38 @@ td.note{color:var(--muted2);font-weight:600;max-width:220px;font-size:11.5px}
     <div id="viewPay" class="hide">
       <div class="mbar">
         <div class="mt"><b id="mTitle">—</b><span id="mSub">—</span></div>
-        <select class="sel" id="mPick" onchange="loadPay()"></select>
+        <div class="mnav">
+          <button onclick="goMo(-1)" title="الشهر السابق">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <select class="sel" id="mPick" onchange="loadPay()"></select>
+          <button id="moNext" onclick="goMo(1)" title="الشهر التالي">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <button class="btn sm gh" onclick="thisMo()">هذا الشهر</button>
+        <button class="btn sm gh hide" id="yrBtn" onclick="openYear()">ملخّص السنة</button>
         <button class="btn sm gh" onclick="printPay()">طباعة الكشف</button>
         <button class="btn sm gh" onclick="exportPay()">تصدير</button>
       </div>
+      <div class="dbar hide" id="mDiff"></div>
       <div class="stats" id="mStats"></div>
       <div class="loading hide" id="mLoading"><div class="s"></div><p>جاري الحساب...</p></div>
       <div class="list" id="payList"></div>
+    </div>
+
+    <!-- ── ملخّص السنة (أدمن) ── -->
+    <div id="viewYear" class="hide">
+      <div class="mbar">
+        <div class="mt"><b id="yTitle">ملخّص السنة</b>
+          <span>أتعاب المعلمين شهر بشهر — اضغط أي شهر لفتح كشفه</span></div>
+        <select class="sel" id="yPick" onchange="loadYear()"></select>
+        <button class="btn sm gh" onclick="printYear()">طباعة</button>
+        <button class="btn sm gh" onclick="go('pay')">رجوع للكشف</button>
+      </div>
+      <div class="stats" id="yStats"></div>
+      <div class="loading hide" id="yLoading"><div class="s"></div><p>جاري الحساب...</p></div>
+      <div class="ywrap"><table class="ytbl" id="yTbl"></table></div>
     </div>
 
     <!-- ── عرض النموذج ── -->
@@ -410,7 +465,7 @@ const SUBJECTS = ['التاريخ','الجغرافيا','الفلسفة','علم
 const LIVE = STAFF_URL.indexOf('script.google.com') > -1;
 
 /* ══════════ الحالة ══════════ */
-let KEY='', USER='', LIST=[], STATES=['مفعّل','قيد المراجعة','موقوف'];
+let KEY='', USER='', PERMS=[], LIST=[], STATES=['مفعّل','قيد المراجعة','موقوف'];
 let filter='الكل', view='cards', EDIT=null, openRows=new Set();
 
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -513,6 +568,8 @@ async function login(){
     const r=await call({action:'ping'});
     if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'كود غير صحيح');
     USER=r.user||'موظف';
+    PERMS=r.perms||[];
+    document.getElementById('yrBtn').classList.toggle('hide', PERMS.indexOf('admin')===-1);
     document.getElementById('whoTxt').textContent=USER+(LIVE?'':' · وضع تجريبي');
     try{ sessionStorage.setItem('staff_key',KEY); }catch(e){}
     document.getElementById('gate').style.display='none';
@@ -823,24 +880,58 @@ function table(data){
 function go(v){
   const map={list:['viewList','tabList'],form:['viewForm','tabForm'],pay:['viewPay','tabPay']};
   for(const k in map){
-    document.getElementById(map[k][0]).classList.toggle('hide', k!==v);
-    document.getElementById(map[k][1]).classList.toggle('on', k===v);
+    document.getElementById(map[k][0]).classList.toggle('hide', k!==v && !(v==='year'&&k==='pay'));
+    document.getElementById(map[k][1]).classList.toggle('on', k===v || (v==='year'&&k==='pay'));
   }
+  document.getElementById('viewYear').classList.toggle('hide', v!=='year');
+  document.getElementById('viewPay').classList.toggle('hide', v!=='pay');
   if(v==='pay') loadPay();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ══════════ كشف الشهر ══════════ */
+/* نقل الشهر خطوة للأمام أو للخلف */
+function moShift(mo,step){
+  const x=String(mo||'').match(/^(\d{4})-(\d{2})$/);
+  if(!x) return mo;
+  let y=+x[1], n=+x[2]+step;
+  while(n<1){ n+=12; y--; }
+  while(n>12){ n-=12; y++; }
+  return y+'-'+String(n).padStart(2,'0');
+}
+const NOW_MO = () => (new Date()).toISOString().slice(0,7);
+
+/* آخر ٢٤ شهر + أي شهر فيه حصص + الشهر المعروض */
+function moOptions(){
+  const set=new Set(), now=NOW_MO();
+  let m=now;
+  for(let i=0;i<24;i++){ set.add(m); m=moShift(m,-1); }
+  (MONTHS||[]).forEach(x=>{ if(x) set.add(x); });
+  if(MONTH) set.add(MONTH);
+  return [...set].sort().reverse();
+}
+
 function monthSel(){
   const el=document.getElementById('mPick');
-  const list=MONTHS.length?MONTHS:[MONTH];
-  el.innerHTML=list.map(m=>'<option value="'+m+'" '+(m===MONTH?'selected':'')+'>'+
-    esc(moLabel(m))+'</option>').join('');
+  const has=new Set(MONTHS||[]);
+  el.innerHTML=moOptions().map(m=>'<option value="'+m+'" '+(m===MONTH?'selected':'')+'>'+
+    (has.size&&has.has(m)?'• ':'')+esc(moLabel(m))+'</option>').join('');
+  const nx=document.getElementById('moNext');
+  if(nx) nx.disabled = MONTH >= NOW_MO();
 }
+
+/* أزرار السابق / التالي / هذا الشهر */
+function goMo(step){
+  const t=moShift(MONTH,step);
+  if(step>0 && t>NOW_MO()) return;
+  MONTH=t; monthSel(); loadPay();
+}
+function thisMo(){ MONTH=NOW_MO(); monthSel(); loadPay(); }
 
 async function loadPay(){
   monthSel();
   const m=document.getElementById('mPick').value||MONTH;
+  MONTH=m;
   document.getElementById('mLoading').classList.remove('hide');
   document.getElementById('payList').innerHTML='';
   try{
@@ -856,9 +947,33 @@ async function loadPay(){
 function paintPay(){
   if(!PAY) return;
   const T=PAY.totals||{};
-  document.getElementById('mTitle').textContent='كشف '+moLabel(PAY.month);
-  document.getElementById('mSub').textContent=
-    'يتحدّث تلقائياً من الحصص المسجّلة والخدمات المنفّذة';
+  const done=!!PAY.closed;
+  document.getElementById('mTitle').innerHTML='كشف '+esc(moLabel(PAY.month))+
+    ' <span class="mtag '+(done?'done':'live')+'">'+(done?'شهر منتهي':'الشهر الجاري')+'</span>';
+  document.getElementById('mSub').textContent = done
+    ? 'كشف مغلق — المبالغ محفوظة بالقيمة اللي احتُسبت وقت تسجيل الحصة'
+    : 'يتحدّث تلقائياً من الحصص المسجّلة والخدمات المنفّذة';
+
+  /* الفرق عن الشهر السابق */
+  const D=PAY.diff||{}, P=PAY.prev||{};
+  const dv=document.getElementById('mDiff');
+  if(P.sessions||P.pay){
+    const dir = (D.pay||0)>0 ? 'up' : ((D.pay||0)<0 ? 'dn' : 'same');
+    const sign= (D.pay||0)>0 ? '+' : '';
+    dv.innerHTML='مقارنة بـ <b>'+esc(moLabel(PAY.prevMonth))+'</b>'+
+      '<span class="'+dir+'">المستحق '+sign+esc(kd(D.pay||0))+
+        (D.pct?' ('+sign+arN(Math.abs(D.pct))+'٪'+((D.pay||0)<0?' نقص':' زيادة')+')':'')+'</span>'+
+      '<span>الحصص '+((D.sessions||0)>0?'+':'')+arN(D.sessions||0)+'</span>'+
+      '<span>الساعات '+((D.hours||0)>0?'+':'')+arN(D.hours||0)+'</span>'+
+      '<span style="color:var(--muted)">('+esc(moLabel(PAY.prevMonth))+': '+
+        esc(kd(P.pay||0))+' · '+arN(P.sessions||0)+' حصة)</span>'+
+      '<div style="flex:1"></div>'+
+      '<button class="btn sm gh" onclick="goMo(-1)">افتح '+esc(moLabel(PAY.prevMonth))+'</button>';
+    dv.classList.remove('hide');
+  } else {
+    dv.innerHTML='ما في حصص مسجّلة بـ '+esc(moLabel(PAY.prevMonth))+' للمقارنة';
+    dv.classList.remove('hide');
+  }
   document.getElementById('mStats').innerHTML=
     st(arN(T.teachers||0),'معلم له حصص')+
     st(arN(T.sessions||0),'حصة منفّذة')+
@@ -868,7 +983,9 @@ function paintPay(){
   const rows=PAY.rows||[];
   const L=document.getElementById('payList');
   if(!rows.length){
-    L.innerHTML='<div class="empty">ما في حصص مسجّلة بهذا الشهر</div>'; return;
+    L.innerHTML='<div class="empty">ما في حصص مسجّلة بـ '+esc(moLabel(PAY.month))+
+      '<br><br><button class="btn sm gh" onclick="goMo(-1)">شوف '+
+      esc(moLabel(PAY.prevMonth||moShift(PAY.month,-1)))+'</button></div>'; return;
   }
   L.innerHTML=rows.map((o,i)=>{
     const det=(PAY.sessions||[]).filter(x=>x.teacher===o.teacher&&x.status==='تم التنفيذ');
@@ -884,7 +1001,11 @@ function paintPay(){
       '<div class="rbody"><dl class="kv">'+
         '<dt>المعرف</dt><dd class="ltr">'+esc(o.id||'—')+'</dd>'+
         '<dt>الرقم</dt><dd class="ltr">'+esc(o.phone||'—')+'</dd>'+
-        '<dt>تكلفة الساعة</dt><dd>'+kd(o.rate)+'</dd>'+
+        '<dt>متوسط الساعة</dt><dd>'+(o.eff?kd(o.eff)+
+          ' <span style="color:var(--muted)">فعلياً بهذا الشهر</span>':'—')+'</dd>'+
+        '<dt>مكافآت ثابتة</dt><dd>'+(o.flat?kd(o.flat)+
+          ' <span style="color:var(--muted)">('+arN(o.nFlat)+')</span>':'—')+'</dd>'+
+        '<dt>سعر السجل</dt><dd>'+(o.gone?'<span style="color:var(--muted)">ما عاد بسجل الهيئة</span>':kd(o.rate))+'</dd>'+
         '<dt>مصدر الحصص</dt><dd>'+arN(o.manual)+' مسجّلة يدوياً · '+arN(o.svc)+' من الخدمات</dd>'+
       '</dl>'+
       '<div class="sesslog">'+det.map(x=>'<div class="sl1">'+
@@ -966,7 +1087,9 @@ function printSheet(rows, one){
       '<div class="meta">'+esc(moLabel(PAY.month))+'<br>'+
       '<span style="font-weight:600">طُبع '+new Date().toLocaleDateString('en-GB')+'</span></div></div>'+
     '<div class="ttl">'+(one?('كشف مستحقات — '+esc(one)):'كشف مستحقات المعلمين')+'</div>'+
-    '<div class="sub">عن شهر '+esc(moLabel(PAY.month))+' · أعدّه '+esc(USER)+'</div>'+
+    '<div class="sub">عن شهر '+esc(moLabel(PAY.month))+
+      (PAY.closed?' (شهر منتهي)':' (الشهر الجاري — قابل للزيادة)')+
+      ' · أعدّه '+esc(USER)+'</div>'+
     '<div class="boxes">'+
       '<div class="bx"><b>'+arN(rows.length)+'</b><span>معلم</span></div>'+
       '<div class="bx"><b>'+arN(tot.s)+'</b><span>حصة</span></div>'+
@@ -996,11 +1119,139 @@ function printSheet(rows, one){
   w.document.open(); w.document.write(html); w.document.close();
 }
 
+/* ══════════ ملخّص السنة — أدمن ══════════ */
+let YR=null, YEAR=(new Date()).getFullYear()+'';
+
+function openYear(){
+  if(PERMS.indexOf('admin')===-1) return toast('ملخّص السنة للأدمن فقط',true);
+  go('year');
+  if(!YR) loadYear();
+}
+
+function yearSel(){
+  const el=document.getElementById('yPick');
+  const now=(new Date()).getFullYear();
+  const set=new Set((YR&&YR.years)||[]);
+  for(let y=now;y>=now-4;y--) set.add(String(y));
+  set.add(YEAR);
+  el.innerHTML=[...set].sort().reverse()
+    .map(y=>'<option value="'+y+'" '+(y===YEAR?'selected':'')+'>'+esc(arN(y))+'</option>').join('');
+}
+
+async function loadYear(){
+  yearSel();
+  YEAR=document.getElementById('yPick').value||YEAR;
+  document.getElementById('yLoading').classList.remove('hide');
+  try{
+    const r=await call({action:'payroll-year', year:YEAR});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر الحساب');
+    YR=r; YEAR=r.year||YEAR;
+    yearSel(); paintYear();
+  }catch(e){ toast(e.message,true); }
+  document.getElementById('yLoading').classList.add('hide');
+}
+
+function paintYear(){
+  if(!YR) return;
+  const T=YR.totals||{}, now=NOW_MO();
+  document.getElementById('yTitle').textContent='أتعاب المعلمين — '+arN(YR.year);
+  document.getElementById('yStats').innerHTML=
+    st(arN(T.teachers||0),'معلم بالسنة')+
+    st(arN(T.sessions||0),'حصة منفّذة')+
+    st(arN(T.hours||0)+' س','مجموع الساعات')+
+    st(kd(T.pay||0),'إجمالي السنة','acc');
+
+  const rows=(YR.months||[]).map(m=>{
+    const cls=[m.future?'zero':'', m.month===now?'cur':'', m.sessions?'pick':''].filter(Boolean).join(' ');
+    return '<tr class="'+cls+'" '+(m.sessions?'onclick="pickMo(\''+m.month+'\')"':'')+'>'+
+      '<td>'+esc(moLabel(m.month))+(m.month===now?' <span class="mtag live">الجاري</span>':'')+'</td>'+
+      '<td class="n">'+arN(m.teachers)+'</td>'+
+      '<td class="n">'+arN(m.sessions)+'</td>'+
+      '<td class="n">'+arN(m.hours)+'</td>'+
+      '<td class="p">'+(m.pay?kd(m.pay):'—')+'</td>'+
+    '</tr>';
+  }).join('');
+
+  document.getElementById('yTbl').innerHTML=
+    '<thead><tr><th>الشهر</th><th>المعلمين</th><th>الحصص</th><th>الساعات</th><th>المستحق</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody>'+
+    '<tfoot><tr><td>الإجمالي</td><td class="n">'+arN(T.teachers||0)+'</td>'+
+      '<td class="n">'+arN(T.sessions||0)+'</td><td class="n">'+arN(T.hours||0)+'</td>'+
+      '<td class="p">'+kd(T.pay||0)+'</td></tr></tfoot>';
+}
+
+/* فتح كشف شهر من جدول السنة */
+function pickMo(m){
+  MONTH=m; go('pay');          /* go('pay') يستدعي loadPay تلقائياً */
+}
+
+function printYear(){
+  if(!YR) return toast('ما في بيانات',true);
+  const T=YR.totals||{};
+  const w=window.open('','_blank');
+  if(!w) return toast('المتصفح منع النافذة — اسمح بالنوافذ المنبثقة',true);
+  const rows=(YR.months||[]).map(m=>
+    '<tr'+(m.pay?'':' class="z"')+'><td>'+esc(moLabel(m.month))+'</td>'+
+    '<td class="n">'+(m.teachers||'—')+'</td><td class="n">'+(m.sessions||'—')+'</td>'+
+    '<td class="n">'+(m.hours||'—')+'</td><td class="n">'+(m.pay?kd(m.pay):'—')+'</td></tr>').join('');
+
+  w.document.open();
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">'+
+  '<title>أتعاب المعلمين '+esc(YR.year)+'</title>'+
+  '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">'+
+  '<style>*{margin:0;padding:0;box-sizing:border-box}'+
+  'body{font-family:Cairo,sans-serif;background:#eef2f0;color:#0A2620;padding:16px}'+
+  '.tb{background:#0D5C48;color:#fff;padding:12px 16px;border-radius:12px;display:flex;'+
+    'align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}'+
+  '.pb{background:#fff;color:#0D5C48;border:none;font-family:Cairo,sans-serif;font-size:14px;'+
+    'font-weight:900;padding:11px 26px;border-radius:100px;cursor:pointer}'+
+  '.sheet{background:#fff;width:210mm;margin:0 auto;padding:14mm;box-shadow:0 3px 16px rgba(0,0,0,.12)}'+
+  '.hd{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:10px;'+
+    'border-bottom:2.5px solid #0D5C48;margin-bottom:14px}'+
+  '.brand{font-size:23px;font-weight:900;color:#0D5C48;letter-spacing:2px}'+
+  '.org{font-size:11px;color:#4A7A6E;font-weight:700;margin-top:2px}'+
+  '.meta{text-align:left;font-size:11px;color:#4A7A6E;font-weight:700;line-height:1.8}'+
+  '.ttl{text-align:center;font-size:16px;font-weight:900;margin-bottom:4px}'+
+  '.sub{text-align:center;font-size:10.5px;color:#4A7A6E;font-weight:700;margin-bottom:14px}'+
+  'table{width:100%;border-collapse:collapse;font-size:12px}'+
+  'th{background:#F5FAF8;color:#0D5C48;font-size:11px;font-weight:900;padding:9px 8px;'+
+    'text-align:right;border-bottom:1.5px solid #CFE0DA}'+
+  'td{padding:9px 8px;border-bottom:1px solid #E6EFEC;font-weight:700}'+
+  'td.n{direction:ltr;text-align:right;font-weight:800}'+
+  'tr.z td{color:#9BB3AC}'+
+  'tfoot td{background:#F5FAF8;font-weight:900;border-top:2px solid #0D5C48}'+
+  '.sg{display:flex;gap:40px;margin-top:26px;font-size:11.5px;font-weight:800;color:#4A7A6E}'+
+  '.sg div{flex:1;border-top:1px dotted #9BB3AC;padding-top:6px;text-align:center}'+
+  '@media print{.tb{display:none}body{background:#fff;padding:0}'+
+    '.sheet{width:auto;box-shadow:none;padding:0}}'+
+  '</style></head><body>'+
+  '<div class="tb"><p>ملخّص سنة '+esc(YR.year)+'</p>'+
+    '<button class="pb" onclick="window.print()">طباعة</button></div>'+
+  '<div class="sheet">'+
+    '<div class="hd"><div><div class="brand">'+esc(BRAND_NAME)+'</div>'+
+      '<div class="org">'+esc(CENTER.name||BRAND_ORG)+'</div></div>'+
+      '<div class="meta">سنة '+esc(YR.year)+'<br>'+
+        esc((new Date()).toLocaleDateString('en-GB'))+'</div></div>'+
+    '<div class="ttl">ملخّص أتعاب المعلمين</div>'+
+    '<div class="sub">شهر بشهر عن سنة '+esc(YR.year)+' · أعدّه '+esc(USER)+'</div>'+
+    '<table><thead><tr><th>الشهر</th><th>المعلمين</th><th>الحصص</th>'+
+      '<th>الساعات</th><th>المستحق</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody>'+
+      '<tfoot><tr><td>الإجمالي</td><td class="n">'+(T.teachers||0)+'</td>'+
+        '<td class="n">'+(T.sessions||0)+'</td><td class="n">'+(T.hours||0)+'</td>'+
+        '<td class="n">'+kd(T.pay||0)+'</td></tr></tfoot></table>'+
+    '<div class="sg"><div>المحاسب</div><div>مدير الفرع</div><div>الإدارة</div></div>'+
+  '</div></body></html>');
+  w.document.close();
+}
+
 function exportPay(){
   if(!PAY||!(PAY.rows||[]).length) return toast('ما في بيانات',true);
-  const head=['المعلم','المعرف','الرقم','التخصص','عدد الحصص','الساعات','تكلفة الساعة','المستحق','آخر حصة'];
+  const head=['الشهر','المعلم','المعرف','الرقم','التخصص','عدد الحصص','الساعات',
+              'متوسط الساعة','سعر السجل','المستحق','آخر حصة'];
   const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-  const rows=PAY.rows.map(o=>[o.teacher,o.id,o.phone,o.subj,o.sessions,o.hours,o.rate,o.pay,o.last].map(q).join(','));
+  const rows=PAY.rows.map(o=>[PAY.month,o.teacher,o.id,o.phone,o.subj,o.sessions,o.hours,
+    o.eff,o.rate,o.pay,o.last].map(q).join(','));
   const csv='\uFEFF'+head.map(q).join(',')+'\n'+rows.join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
