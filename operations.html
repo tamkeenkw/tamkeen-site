@@ -297,6 +297,33 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 .fee-chip.paid{background:#5C0F0F;color:#fff;} .fee-chip.free{background:#E8F5E9;color:#2E7D32;}
 .fee-in{width:92px;padding:6px 9px;border:1.5px dashed rgba(92,15,15,.25);border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:800;background:var(--cream);color:var(--text);outline:none;}
 .fee-in:focus{border-style:solid;border-color:var(--crimson);background:#fff;}
+
+/* ===== طلبات الاسترجاع ===== */
+.rf-wrap{max-width:760px;}
+.rf-f{margin-bottom:14px;}
+.rf-f label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;color:var(--text);}
+.rf-f label .req{color:var(--crimson);}
+.rf-f input,.rf-f select,.rf-f textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:#fff;color:var(--text);outline:none;}
+.rf-f textarea{min-height:90px;resize:vertical;line-height:1.8;}
+.rf-f input:focus,.rf-f select:focus,.rf-f textarea:focus{border-color:var(--crimson);}
+.rf-g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;} @media(max-width:620px){.rf-g2{grid-template-columns:1fr;}}
+.rf-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.rf-m{border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;background:#fff;text-align:center;font-weight:900;color:var(--muted);transition:.15s;}
+.rf-m small{display:block;font-weight:700;font-size:11.5px;margin-top:3px;}
+.rf-m.on{border-color:var(--crimson);background:var(--crimson);color:#fff;}
+.rf-box{background:var(--cream);border:1.5px dashed var(--line);border-radius:14px;padding:14px;margin-top:10px;}
+.rf-list{display:grid;gap:12px;}
+.rf-card{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;}
+.rf-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.rf-card .id{font-family:monospace;font-weight:900;color:var(--crimson);font-size:13px;}
+.rf-card .nm{font-weight:900;font-size:15.5px;margin-top:2px;}
+.rf-card .meta{font-size:12.5px;color:var(--muted);font-weight:700;line-height:1.9;margin-top:6px;}
+.rf-card .meta b{color:var(--text);}
+.rf-card .rsn{background:var(--cream);border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.8;margin-top:8px;white-space:pre-wrap;}
+.rf-st{font-size:12px;font-weight:900;border-radius:99px;padding:5px 13px;white-space:nowrap;}
+.rf-st.p{background:#FFF8E1;color:#B26A00;} .rf-st.a{background:#E6F4EC;color:#1F7A45;} .rf-st.r{background:#FBE9E9;color:#9B1C1C;}
+.rf-adm{margin-top:9px;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;line-height:1.7;}
+.rf-adm.a{background:#E6F4EC;color:#1F5F3A;} .rf-adm.r{background:#FBE9E9;color:#8B1A1A;}
 /* PRINT */
 @media print{
   body{background:#fff;}
@@ -470,6 +497,11 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <div class="menu-card" onclick="openSection('overview')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
         <div class="mc-title">نظرة عامة</div><div class="mc-desc">ملخص لحظي لكل ما يحتاج متابعتك</div>
+      </div>
+      <div class="menu-card" onclick="openSection('refunds')">
+        <span class="mc-badge" id="badge-refunds" style="display:none" title="طلبات استرجاع قيد المراجعة">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="mc-title">طلبات الاسترجاع</div><div class="mc-desc">رفع طلب إلغاء واسترجاع للعميل · متابعة قرار الإدارة</div>
       </div>
       <div class="menu-card" onclick="openSection('pubplan')">
         <span class="mc-badge" id="badge-pubplan" style="display:none" title="إعلانات مطلوب نشرها اليوم">0</span>
@@ -1134,6 +1166,69 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 
   <!-- ===== MEMBERSHIP ===== -->
 
+  <!-- ═══ طلبات الاسترجاع ═══ -->
+  <div class="panel" id="p-refunds">
+    <div class="sec-head">
+      <div><div class="sec-title"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>طلبات الاسترجاع</div>
+      <div class="sec-desc">الموظف يرفع الطلب — الإدارة تقبل أو ترفض من لوحة TMadmin — والحالة تتحدث هني</div></div>
+      <button class="btn btn-ghost" onclick="rfLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    </div>
+    <div class="mbr-stats">
+      <div class="mbr-stat" style="cursor:pointer" onclick="rfGo('قيد المراجعة')"><b id="rfP" style="color:#B26A00">—</b><small>قيد المراجعة</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="rfGo('مقبول')"><b id="rfA" style="color:#1F7A45">—</b><small>مقبول</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="rfGo('مرفوض')"><b id="rfR" style="color:#9B1C1C">—</b><small>مرفوض</small></div>
+    </div>
+    <div class="seg" id="rfSeg">
+      <button class="on" data-rf="new" onclick="rfTab(this,'new')">طلب استرجاع جديد</button>
+      <button data-rf="list" onclick="rfTab(this,'list')">الطلبات وحالتها</button>
+    </div>
+
+    <div id="rf-new" class="rf-wrap">
+      <div class="rf-f"><label>اسم الموظف <span class="req">*</span></label><input id="rfStaff" placeholder="اسمك (ينحفظ لهالجهاز)"></div>
+      <div class="rf-g2">
+        <div class="rf-f"><label>اسم العميل <span class="req">*</span></label><input id="rfName" placeholder="الاسم الثلاثي"></div>
+        <div class="rf-f"><label>رقم العميل <span class="req">*</span></label><input id="rfPhone" inputmode="numeric" dir="ltr" placeholder="9xxxxxxx"></div>
+      </div>
+      <div class="rf-g2">
+        <div class="rf-f"><label>موضوع الطلب <span class="req">*</span></label><input id="rfSubject" placeholder="الدورة / الاشتراك / الخدمة"></div>
+        <div class="rf-f"><label>المبلغ المطلوب استرجاعه (د.ك)</label><input id="rfAmount" inputmode="decimal" dir="ltr" placeholder="مثال: 75"></div>
+      </div>
+      <div class="rf-f"><label>سبب الإلغاء والاسترجاع <span class="req">*</span></label><textarea id="rfReason" placeholder="اكتب السبب بالتفصيل كما ذكره العميل"></textarea></div>
+      <div class="rf-f"><label>طريقة الاسترجاع <span class="req">*</span></label>
+        <div class="rf-methods">
+          <div class="rf-m" data-m="رابط" onclick="rfMethod('رابط')">🔗 رابط<small>يرجع المبلغ على نفس بطاقة الدفع</small></div>
+          <div class="rf-m" data-m="آيبان" onclick="rfMethod('آيبان')">🏦 آيبان<small>تحويل بنكي لحساب العميل</small></div>
+        </div>
+        <div class="rf-box" id="rfIbanBox" style="display:none">
+          <div class="rf-f"><label>رقم الآيبان <span class="req">*</span></label><input id="rfIban" dir="ltr" maxlength="40" placeholder="KW00 XXXX 0000 0000 0000 0000 0000 00" oninput="rfIbanFmt(this)"></div>
+          <div class="rf-g2">
+            <div class="rf-f"><label>اسم صاحب الحساب <span class="req">*</span></label><input id="rfHolder" placeholder="كما هو بالبنك"></div>
+            <div class="rf-f"><label>البنك</label><select id="rfBank"><option value="">— اختر —</option><option>بنك الكويت الوطني</option><option>بيت التمويل الكويتي</option><option>بنك بوبيان</option><option>البنك التجاري الكويتي</option><option>بنك الخليج</option><option>البنك الأهلي الكويتي</option><option>بنك برقان</option><option>بنك وربة</option><option>البنك الأهلي المتحد</option><option>بنك الكويت الدولي</option><option>أخرى</option></select></div>
+          </div>
+        </div>
+        <div class="rf-box" id="rfLinkBox" style="display:none">
+          <div class="rf-f" style="margin:0"><label>رقم عملية الدفع / ملاحظة (اختياري)</label><input id="rfLink" placeholder="مثال: رقم عملية Tap أو تاريخ الدفع"></div>
+        </div>
+      </div>
+      <div id="rfMsg" class="mbr-note err" style="display:none"></div>
+      <button class="btn btn-primary" id="rfBtn" onclick="rfSubmit()" style="background:var(--crimson);color:#fff;width:100%;justify-content:center;padding:14px">إرسال الطلب للمراجعة</button>
+    </div>
+
+    <div id="rf-list" style="display:none">
+      <div class="toolbar">
+        <div class="filter" id="rfFilter" style="flex-wrap:wrap">
+          <button class="on" data-f="" onclick="rfSetF(this,'')">الكل</button>
+          <button data-f="قيد المراجعة" onclick="rfSetF(this,'قيد المراجعة')">قيد المراجعة</button>
+          <button data-f="مقبول" onclick="rfSetF(this,'مقبول')">مقبول</button>
+          <button data-f="مرفوض" onclick="rfSetF(this,'مرفوض')">مرفوض</button>
+        </div>
+        <div class="search-box"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="rfQ" placeholder="بحث بالاسم أو الرقم أو رقم الطلب..." oninput="rfRender()"></div>
+      </div>
+      <div id="rfBody"><div class="loading"><div class="sp"></div>جاري التحميل...</div></div>
+    </div>
+  </div>
+
   <!-- ═══ خطة النشر ═══ -->
   <div class="panel" id="p-pubplan">
     <div class="sec-head">
@@ -1377,7 +1472,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية', certinv:'جرد الشهادات الشهري', pubplan:'خطة النشر'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية', certinv:'جرد الشهادات الشهري', pubplan:'خطة النشر', refunds:'طلبات الاسترجاع'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1396,6 +1491,7 @@ function openSection(id){
   if(id==='membership') mbrInit();
   if(id==='certinv') ciInit();
   if(id==='pubplan') ppRender();
+  if(id==='refunds') rfInit();
   if(id==='trmat') tmInit();
   if(id==='masaradmin'){ const f=document.getElementById('masarAdminFrame'); if(f && !f.getAttribute('src')) f.src=f.dataset.src; }
 }
@@ -5068,6 +5164,126 @@ function ppMark(i){
   toast(d[id]?'تم تسجيله كمنشور':'رجع لقائمة النشر');
 }
 try{ ppStats(); }catch(e){}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   طلبات الاسترجاع — Refunds.gs
+   ═══════════════════════════════════════════════ */
+const RF_URL = 'https://script.google.com/macros/s/AKfycbwrTyB-bF_rWo8GaFSHTuS0wFj2kwAAEFtnQhFnNxJOnyA3rLk78FYFXwXQ1YKpnQsWWQ/exec';   // ← رابط /exec بعد نشر Refunds.gs
+const RF_KEY = OPS_PIN;
+let RF_ROWS=null, RF_F='', RF_METHOD='', RF_READY=false;
+
+function rfInit(){
+  if(!RF_READY){
+    RF_READY=true;
+    try{ document.getElementById('rfStaff').value=localStorage.getItem('rf_staff')||''; }catch(e){}
+  }
+  rfLoad();
+}
+function rfTab(btn,id){
+  document.querySelectorAll('#rfSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
+  document.getElementById('rf-new').style.display=id==='new'?'':'none';
+  document.getElementById('rf-list').style.display=id==='list'?'':'none';
+  if(id==='list') rfRender();
+}
+function rfGo(st){
+  rfTab(document.querySelector('#rfSeg [data-rf="list"]'),'list');
+  rfSetF(document.querySelector('#rfFilter [data-f="'+st+'"]'),st);
+}
+function rfSetF(btn,f){ RF_F=f; document.querySelectorAll('#rfFilter button').forEach(b=>b.classList.toggle('on',b===btn)); rfRender(); }
+function rfMethod(m){
+  RF_METHOD=m;
+  document.querySelectorAll('.rf-m').forEach(x=>x.classList.toggle('on',x.dataset.m===m));
+  document.getElementById('rfIbanBox').style.display=m==='آيبان'?'':'none';
+  document.getElementById('rfLinkBox').style.display=m==='رابط'?'':'none';
+}
+function rfIbanFmt(el){
+  const v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,30);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function rfErr(t){ const e=document.getElementById('rfMsg'); e.textContent=t; e.style.display=t?'':'none'; }
+
+async function rfLoad(force){
+  const body=document.getElementById('rfBody');
+  if(!RF_URL){
+    if(body) body.innerHTML='<div class="mbr-note warn">ميزة الاسترجاع تحتاج تفعيل: انشر سكربت Refunds.gs وحط رابطه في RF_URL.</div>';
+    return;
+  }
+  if(RF_ROWS && !force){ rfRender(); return; }
+  if(body) body.innerHTML='<div class="loading"><div class="sp"></div>جاري التحميل...</div>';
+  try{
+    const r=await fetch(RF_URL+'?action=list&key='+encodeURIComponent(RF_KEY)+'&t='+Date.now());
+    const d=await r.json();
+    if(!d.ok) throw new Error(d.message||'خطأ');
+    RF_ROWS=d.rows||[];
+    rfRender();
+  }catch(e){
+    if(body) body.innerHTML='<div class="mbr-note err">تعذّر جلب الطلبات: '+esc(e.message)+'</div>';
+  }
+}
+function rfCls(st){ return st==='مقبول'?'a':(st==='مرفوض'?'r':'p'); }
+function rfRender(){
+  const rows=RF_ROWS||[];
+  const c={p:0,a:0,r:0}; rows.forEach(x=>c[rfCls(x.status)]++);
+  document.getElementById('rfP').textContent=RF_ROWS?c.p:'—';
+  document.getElementById('rfA').textContent=RF_ROWS?c.a:'—';
+  document.getElementById('rfR').textContent=RF_ROWS?c.r:'—';
+  updateBadge('refunds',c.p);
+  const body=document.getElementById('rfBody'); if(!body||!RF_ROWS) return;
+  const q=(document.getElementById('rfQ').value||'').trim();
+  const list=rows.filter(x=>(!RF_F||x.status===RF_F) && (!q || (x.name+' '+x.phone+' '+x.id+' '+x.subject).indexOf(q)>-1));
+  if(!list.length){ body.innerHTML='<div class="empty">ما في طلبات'+(RF_F?' «'+RF_F+'»':'')+'.</div>'; return; }
+  body.innerHTML='<div class="rf-list">'+list.map((x,i)=>{
+    const k=rfCls(x.status);
+    return '<div class="rf-card"><div class="top"><div><div class="id">'+esc(x.id)+'</div><div class="nm">'+esc(x.name)+'</div></div>'+
+      '<span class="rf-st '+k+'">'+esc(x.status)+'</span></div>'+
+      '<div class="meta">الرقم: <b dir="ltr">'+esc(x.phone)+'</b> · الموضوع: <b>'+esc(x.subject)+'</b>'+(x.amount?' · المبلغ: <b>'+esc(x.amount)+' د.ك</b>':'')+
+      '<br>الطريقة: <b>'+esc(x.method)+'</b>'+(x.method==='آيبان'?' · <b dir="ltr">'+esc(x.account)+'</b>'+(x.holder?' · '+esc(x.holder):''):(x.account?' · '+esc(x.account):''))+
+      '<br>رفعه: <b>'+esc(x.staff||'—')+'</b> · '+esc(x.date)+'</div>'+
+      '<div class="rsn">'+esc(x.reason)+'</div>'+
+      (k!=='p'?'<div class="rf-adm '+k+'">'+(k==='a'?'✓ تم قبول الطلب':'✕ تم رفض الطلب')+(x.decided?' بتاريخ '+esc(x.decided):'')+(x.note?'<br>ملاحظة الإدارة: '+esc(x.note):'')+'</div>'+
+        '<div style="margin-top:9px"><button class="act act-link" style="padding:7px 13px" onclick="rfClientMsg(\''+esc(x.id)+'\')">نسخ رسالة للعميل</button></div>':'')+
+      '</div>';
+  }).join('')+'</div>';
+}
+function rfClientMsg(id){
+  const x=(RF_ROWS||[]).find(r=>r.id===id); if(!x) return;
+  const t = x.status==='مقبول'
+    ? 'أهلاً '+x.name+'\nتمت الموافقة على طلب الاسترجاع رقم '+x.id+' الخاص بـ «'+x.subject+'»'+(x.amount?' بمبلغ '+x.amount+' د.ك':'')+'.\n'+
+      (x.method==='آيبان'?'راح يتحول المبلغ على حسابك البنكي خلال أيام العمل القادمة.':'راح يرجع المبلغ على نفس وسيلة الدفع خلال أيام العمل القادمة.')+'\nشاكرين تفهمك — معهد تمكين.'
+    : 'أهلاً '+x.name+'\nنعتذر، ما تمت الموافقة على طلب الاسترجاع رقم '+x.id+' الخاص بـ «'+x.subject+'».'+(x.note?'\nالسبب: '+x.note:'')+'\nلأي استفسار تواصل معنا على 97999768.\nمعهد تمكين.';
+  mbrCopy(t);
+}
+async function rfSubmit(){
+  rfErr('');
+  const v=id=>(document.getElementById(id).value||'').trim();
+  const staff=v('rfStaff'), name=v('rfName'), phone=v('rfPhone'), subject=v('rfSubject'), reason=v('rfReason');
+  if(!staff||!name||!phone||!subject||!reason) return rfErr('عبّ كل الخانات اللي عليها *');
+  if(phone.replace(/\D/g,'').length<8) return rfErr('رقم العميل غير صحيح');
+  if(!RF_METHOD) return rfErr('اختر طريقة الاسترجاع: رابط أو آيبان');
+  let account='', holder='', bank='';
+  if(RF_METHOD==='آيبان'){
+    account=v('rfIban').replace(/\s/g,''); holder=v('rfHolder'); bank=v('rfBank');
+    if(!/^KW\d{2}[A-Z]{4}[A-Z0-9]{22}$/.test(account)) return rfErr('الآيبان غير صحيح — يبدأ بـ KW ويكون 30 خانة');
+    if(!holder) return rfErr('اكتب اسم صاحب الحساب');
+  } else account=v('rfLink');
+  if(!RF_URL) return rfErr('الميزة مو مفعّلة للحين — لازم رابط سكربت Refunds.gs');
+  try{ localStorage.setItem('rf_staff',staff); }catch(e){}
+  const btn=document.getElementById('rfBtn'); btn.disabled=true; btn.textContent='جاري الإرسال...';
+  try{
+    const r=await fetch(RF_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'submit',key:RF_KEY,staff,name,phone,subject,amount:v('rfAmount'),reason,method:RF_METHOD,account,holder,bank})});
+    const d=await r.json();
+    if(!d.ok) throw new Error(d.message||'تعذّر الإرسال');
+    toast('تم رفع الطلب '+d.id+' ✓');
+    ['rfName','rfPhone','rfSubject','rfAmount','rfReason','rfIban','rfHolder','rfLink'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rfBank').value=''; rfMethod(''); RF_METHOD='';
+    await rfLoad(true);
+    rfTab(document.querySelector('#rfSeg [data-rf="list"]'),'list');
+  }catch(e){ rfErr(e.message); }
+  finally{ btn.disabled=false; btn.textContent='إرسال الطلب للمراجعة'; }
+}
 </script>
 </body>
 </html>
