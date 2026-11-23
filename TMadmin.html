@@ -370,6 +370,24 @@ th.num{text-align:center}
 nav button .nb{background:#fff;color:var(--crimson);border-radius:20px;padding:0 7px;font-size:11px;font-weight:900;margin-right:5px}
 nav button.on .nb{background:var(--crimson);color:#fff}
 
+
+/* ===== طلبات الاسترجاع ===== */
+.rf-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:10px;background:#fff;border-right:4px solid var(--yellow)}
+.rf-card.ok{border-right-color:var(--green)}
+.rf-card.no{border-right-color:var(--red);opacity:.85}
+.rf-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.rf-top b{font-size:16px}
+.rf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:10px}
+.rf-grid div{background:var(--cream);border-radius:10px;padding:8px 11px}
+.rf-grid small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
+.rf-grid b{font-size:14px;word-break:break-word}
+.rf-iban{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--blue-bg);border:1px solid rgba(21,101,192,.15);border-radius:10px;padding:9px 12px;margin-top:9px}
+.rf-iban code{font-size:15px;font-weight:800;letter-spacing:1px;direction:ltr;unicode-bidi:isolate;flex:1;min-width:220px;color:var(--blue)}
+.rf-dec{margin-top:10px}
+.rf-dec textarea{width:100%;min-height:56px;padding:9px 11px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);outline:none;resize:vertical}
+.rf-dec textarea:focus{border-color:var(--crimson);background:#fff}
+.btn.ok{background:var(--green)} .btn.ok:hover{background:#1F6A24}
+.btn.no{background:var(--red)} .btn.no:hover{background:#A51F1F}
 /* ===== إيديو كلاود ===== */
 .edu-tbl tr.click{cursor:pointer}
 .edu-tbl tr.open td{background:#FFFCF8}
@@ -414,6 +432,7 @@ nav button.on .nb{background:var(--crimson);color:#fff}
     <button data-v="trainers">المدربين</button>
     <button data-v="tasks">المهام</button>
     <button data-v="notices">النشرات والاستفسارات</button>
+    <button data-v="refunds">طلبات الاسترجاع <span class="nb" id="rfBadge" style="display:none"></span></button>
   </nav>
 </header>
 
@@ -427,6 +446,7 @@ nav button.on .nb{background:var(--crimson);color:#fff}
   <section class="view" id="v-trainers"></section>
   <section class="view" id="v-tasks"></section>
   <section class="view" id="v-notices"></section>
+  <section class="view" id="v-refunds"></section>
 </main>
 
 <div class="toast" id="toast"></div>
@@ -490,6 +510,7 @@ async function login(){
     fillMonths(d.months || []);
     $('gate').style.display = 'none';
     show(VIEW);
+    if (VIEW !== 'refunds') loadRefunds(true, true);   // عداد الطلبات بالقائمة
   }catch(e){
     PIN = '';
     $('pinErr').textContent = e.message;
@@ -521,8 +542,8 @@ $('nav').addEventListener('click', e => {
 function show(v){
   VIEW = v;
   document.querySelectorAll('.view').forEach(x => x.classList.toggle('on', x.id === 'v-' + v));
-  $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices' || v === 'mywork') ? 'hidden' : 'visible';
-  ({ mywork: loadWork, edu: loadEdu, courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices })[v]();
+  $('month').style.visibility = (v === 'trainers' || v === 'tasks' || v === 'notices' || v === 'mywork' || v === 'refunds') ? 'hidden' : 'visible';
+  ({ mywork: loadWork, edu: loadEdu, courses: loadCourses, demand: loadCourses, staff: loadStaff, reports: loadReports, trainers: loadTrainers, tasks: loadTasks, notices: loadNotices, refunds: loadRefunds })[v]();
 }
 function onMonth(){ show(VIEW); }
 function refresh(){ Object.keys(CACHE).forEach(k => { if (k !== 'staffList') delete CACHE[k]; }); show(VIEW); }
@@ -1848,6 +1869,107 @@ function nqPrintNtc(i){
     </table>
     <div class="pl-sec"><div class="v" style="border:0;padding:0">${esc(n.body)}</div></div>
     <div class="pl-sign"><div></div><div>الإدارة<i>التوقيع والختم</i></div></div>`);
+}
+
+/* ===== طلبات الاسترجاع — Refunds.gs (مستقل) ===== */
+/* الموظف يرفع الطلب من operations.html — هني القبول والرفض. المفتاح = رمز دخول اللوحة */
+const RF_API = 'https://script.google.com/macros/s/AKfycbwrTyB-bF_rWo8GaFSHTuS0wFj2kwAAEFtnQhFnNxJOnyA3rLk78FYFXwXQ1YKpnQsWWQ/exec';
+const RF_QUICK_NO = ['تجاوز مدة الاسترجاع المسموحة', 'تم استخدام الخدمة / حضور الدورة', 'الاشتراك غير قابل للاسترجاع حسب الشروط', 'بيانات التحويل غير صحيحة'];
+let RF_F = 'pending', RF_Q = '', RF_LIST = [];
+
+async function loadRefunds(force, silent){
+  if ((!CACHE.refunds || force) && !silent) loading('v-refunds');
+  try{
+    if (!CACHE.refunds || force){
+      const r = await fetch(RF_API + '?action=list&key=' + encodeURIComponent(PIN) + '&t=' + Date.now());
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.message === 'غير مصرّح' ? 'رمز اللوحة مو نفس RF_ADMIN_KEY بسكربت Refunds.gs' : (d.message || 'تعذّر الجلب'));
+      CACHE.refunds = d.rows || [];
+    }
+    rfBadgeUp();
+    if (VIEW === 'refunds') renderRefunds();
+  }catch(e){
+    if (!silent) $('v-refunds').innerHTML = '<div class="card"><div class="empty">⚠️ ' + esc(e.message) + '<br><br><button class="btn sm" onclick="loadRefunds(true)">إعادة المحاولة</button></div></div>';
+  }
+}
+function rfBadgeUp(){
+  const n = (CACHE.refunds || []).filter(x => x.status === 'قيد المراجعة').length, b = $('rfBadge');
+  if (b){ b.style.display = n ? 'inline' : 'none'; b.textContent = n; }
+}
+const rfAmt = v => { const n = parseFloat(String(v || '').replace(/[^\d.]/g, '')); return isNaN(n) ? 0 : n; };
+function renderRefunds(){
+  const all = CACHE.refunds || [];
+  const pend = all.filter(x => x.status === 'قيد المراجعة'), ok = all.filter(x => x.status === 'مقبول'), no = all.filter(x => x.status === 'مرفوض');
+  const sum = arr => Math.round(arr.reduce((a, x) => a + rfAmt(x.amount), 0) * 1000) / 1000;
+  let h = `<div class="kpis">
+    <div class="kpi"><div class="n" style="color:var(--yellow)">${pend.length}</div><div class="l">بانتظار قرارك</div><div class="s">${sum(pend) ? sum(pend) + ' د.ك' : '—'}</div></div>
+    <div class="kpi"><div class="n" style="color:var(--green)">${ok.length}</div><div class="l">مقبول</div><div class="s">${sum(ok) ? 'مجموع ' + sum(ok) + ' د.ك' : '—'}</div></div>
+    <div class="kpi"><div class="n" style="color:var(--red)">${no.length}</div><div class="l">مرفوض</div></div>
+    <div class="kpi"><div class="n">${all.length}</div><div class="l">كل الطلبات</div></div>
+  </div>
+  <div class="chips">
+    ${[['pending', 'بانتظار القرار', pend.length], ['ok', 'مقبول', ok.length], ['no', 'مرفوض', no.length], ['all', 'الكل', all.length]].map(([k, l, n]) =>
+      `<button class="chip ${RF_F === k ? 'on' : ''}" onclick="RF_F='${k}';renderRefunds()">${l} <small>${n}</small></button>`).join('')}
+    <button class="chip" onclick="loadRefunds(true)">↻</button>
+  </div>
+  <input class="search" placeholder="🔍 ابحث بالاسم أو الرقم أو رقم الطلب أو الموضوع…" value="${esc(RF_Q)}" oninput="RF_Q=this.value;clearTimeout(window._rq);window._rq=setTimeout(()=>{renderRefunds();const s=document.querySelector('#v-refunds .search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)">`;
+  const q = nqN(RF_Q);
+  RF_LIST = all.filter(x => (RF_F === 'all' || (RF_F === 'pending' && x.status === 'قيد المراجعة') || (RF_F === 'ok' && x.status === 'مقبول') || (RF_F === 'no' && x.status === 'مرفوض'))
+    && (!q || nqN(x.name + ' ' + x.phone + ' ' + x.id + ' ' + x.subject + ' ' + x.staff).indexOf(q) > -1));
+  if (!RF_LIST.length) h += `<div class="card"><div class="empty">${RF_F === 'pending' && !q ? 'ما فيه طلبات تنتظر قرارك 👌' : 'ما فيه طلبات هني'}</div></div>`;
+  else h += RF_LIST.map(rfCard).join('');
+  $('v-refunds').innerHTML = h;
+}
+function rfCard(x, i){
+  const cls = x.status === 'مقبول' ? 'ok' : x.status === 'مرفوض' ? 'no' : '';
+  const pill = x.status === 'مقبول' ? 'p-green' : x.status === 'مرفوض' ? 'p-red' : 'p-yellow';
+  const wa = String(x.phone || '').replace(/\D/g, '');
+  return `<div class="rf-card ${cls}">
+    <div class="rf-top"><div><b>${esc(x.name)}</b>
+      <div class="nq-meta"><span>رقم <bdi dir="ltr">${esc(x.id)}</bdi></span><span>${esc(x.date)}</span><span>رفعه: ${esc(x.staff || '—')}</span></div></div>
+      <span class="pill ${pill}" style="font-size:13px">${esc(x.status)}</span></div>
+    <div class="rf-grid">
+      <div><small>رقم العميل</small><b dir="ltr">${esc(x.phone)}</b>${wa.length >= 8 ? ` · <a href="https://wa.me/${wa.length === 8 ? '965' + wa : wa}" target="_blank" rel="noopener" style="color:var(--green);font-size:12px;font-weight:800">واتساب</a>` : ''}</div>
+      <div><small>موضوع الطلب</small><b>${esc(x.subject)}</b></div>
+      <div><small>المبلغ</small><b>${x.amount ? esc(x.amount) + ' د.ك' : '—'}</b></div>
+      <div><small>طريقة الاسترجاع</small><b>${x.method === 'آيبان' ? '🏦 آيبان' : '🔗 رابط'}</b></div>
+    </div>
+    <div class="nq-box"><div class="k">سبب الإلغاء والاسترجاع</div><div class="v">${esc(x.reason)}</div></div>
+    ${x.method === 'آيبان' ? `<div class="rf-iban"><code>${esc(String(x.account).replace(/(.{4})/g, '$1 ').trim())}</code>
+        <span style="font-size:13px">${esc(x.holder || '')}${x.bank ? ' · ' + esc(x.bank) : ''}</span>
+        <button class="btn ghost sm" onclick="rfCopy('${esc(x.account)}')">نسخ الآيبان</button></div>`
+      : (x.account ? `<div class="nq-box"><div class="k">رقم العملية / ملاحظة</div><div class="v">${esc(x.account)}</div></div>` : '')}
+    ${x.status !== 'قيد المراجعة' ? `<div class="nq-box ${x.status === 'مقبول' ? 'dec' : ''}" ${x.status === 'مرفوض' ? 'style="background:var(--red-bg)"' : ''}><div class="k" ${x.status === 'مرفوض' ? 'style="color:var(--red)"' : ''}>قرارك · ${esc(x.decided || '')}</div><div class="v">${esc(x.status)}${x.note ? ' — ' + esc(x.note) : ''}</div></div>
+        <div class="nq-act"><button class="btn ghost sm" onclick="rfDecide(${i},'قيد المراجعة')">↩ رجّعه قيد المراجعة</button></div>`
+      : `<div class="rf-dec">
+        <div class="nq-quick">${RF_QUICK_NO.map(t => `<button type="button" onclick="const e=$('rfNote-${i}');e.value=this.textContent;e.focus()">${t}</button>`).join('')}</div>
+        <textarea id="rfNote-${i}" placeholder="ملاحظة للموظف (إجبارية مع الرفض — مثال: سبب الرفض، أو موعد التحويل مع القبول)"></textarea>
+        <div class="nq-act"><button class="btn ok sm" id="rfOk-${i}" onclick="rfDecide(${i},'مقبول')">✓ قبول الاسترجاع</button>
+          <button class="btn no sm" id="rfNo-${i}" onclick="rfDecide(${i},'مرفوض')">✕ رفض</button></div></div>`}
+  </div>`;
+}
+function rfCopy(t){
+  const done = () => toast('تم نسخ الآيبان');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => rfCopyFB(t));
+  else rfCopyFB(t);
+}
+function rfCopyFB(t){ const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try{ document.execCommand('copy'); toast('تم نسخ الآيبان'); }catch(e){} a.remove(); }
+async function rfDecide(i, decision){
+  const x = RF_LIST[i]; if (!x) return;
+  const el = $('rfNote-' + i), note = el ? el.value.trim() : '';
+  if (decision === 'مرفوض' && !note){ toast('اكتب سبب الرفض أو اختر واحد من فوق'); if (el) el.focus(); return; }
+  const msg = decision === 'مقبول' ? 'قبول استرجاع ' + (x.amount ? x.amount + ' د.ك ' : '') + 'لـ ' + x.name + '؟'
+            : decision === 'مرفوض' ? 'رفض طلب ' + x.name + '؟' : 'ترجيع الطلب لقيد المراجعة؟';
+  if (!confirm(msg)) return;
+  document.querySelectorAll('#rfOk-' + i + ',#rfNo-' + i).forEach(b => b.disabled = true);
+  try{
+    const r = await fetch(RF_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'decide', key: PIN, id: x.id, decision, note: decision === 'قيد المراجعة' ? '' : note }) });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.message || 'تعذّر الحفظ');
+    toast(decision === 'مقبول' ? 'تم القبول ✓ — يبين للموظف الحين' : decision === 'مرفوض' ? 'تم الرفض — يبين للموظف الحين' : 'رجع قيد المراجعة');
+    loadRefunds(true);
+  }catch(e){ toast(e.message); document.querySelectorAll('#rfOk-' + i + ',#rfNo-' + i).forEach(b => b.disabled = false); }
 }
 
 /* ===== البداية ===== */
