@@ -216,6 +216,88 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
 .loading p{font-size:13px;color:var(--muted);font-weight:700}
 #app{display:none}
 .hide{display:none!important}
+
+/* ══ ملفات العملاء ══ */
+.cnote{background:rgba(34,176,138,.07);border:1px solid rgba(34,176,138,.2);border-radius:14px;
+  padding:12px 14px;font-size:12px;color:var(--muted2);font-weight:700;line-height:1.9;margin-bottom:13px}
+.cnote b{color:var(--accentlt)}
+.cf{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.cfh{display:flex;align-items:center;gap:11px;padding:14px;cursor:pointer}
+.cfb{display:none;padding:0 14px 14px;border-top:1px dashed rgba(255,255,255,.07);margin-top:2px}
+.cf.open .cfb{display:block}
+.code{font-size:10px;font-weight:800;color:var(--muted);background:rgba(255,255,255,.07);
+  border-radius:100px;padding:3px 9px;direction:ltr;display:inline-block}
+.slog{display:flex;flex-direction:column;gap:7px;margin:13px 0 4px}
+.sline{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.035);
+  border:1px solid var(--bd);border-radius:13px;padding:11px 12px;flex-wrap:wrap}
+.sline.dead{opacity:.52}
+.sline .sno{width:24px;height:24px;border-radius:8px;background:rgba(34,176,138,.14);
+  color:var(--accentlt);font-size:11.5px;font-weight:900;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0}
+.sline .sbd{flex:1;min-width:150px}
+.sline .sbd b{display:block;font-size:13px;font-weight:900;line-height:1.5}
+.sline .sbd span{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:3px;line-height:1.7}
+.sline .sfe{font-size:12.5px;font-weight:900;color:var(--accentlt);white-space:nowrap}
+.kt{font-size:9.5px;font-weight:800;border-radius:100px;padding:3px 8px;white-space:nowrap}
+.kt.k0{background:rgba(255,255,255,.08);color:var(--muted2)}
+.kt.k1{background:rgba(26,143,111,.2);color:#7FE0C0}
+.kt.k2{background:rgba(34,176,138,.14);color:var(--accentlt)}
+.sacts2{display:flex;gap:6px;flex-wrap:wrap;width:100%;padding-top:4px}
+.nsb{display:none;margin-top:13px;background:rgba(34,176,138,.06);
+  border:1px solid rgba(34,176,138,.22);border-radius:16px;padding:15px}
+.nsb.on{display:block}
+.nsb .nsh{font-size:12px;font-weight:900;color:var(--accentlt);margin-bottom:12px}
+.nsb .nsl{font-size:11.5px;font-weight:800;color:var(--muted2);margin:0 0 7px}
+.nsb .nsr{margin-bottom:13px}
+.nsb input,.nsb textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bd);
+  border-radius:12px;padding:11px 13px;color:var(--ink);font-family:'Cairo',sans-serif;
+  font-size:13.5px;font-weight:700;outline:none}
+.nsb input:focus,.nsb textarea:focus{border-color:var(--accentlt)}
+.nsb textarea{min-height:54px;resize:vertical}
+.nsb input.ltr{direction:ltr;text-align:right}
+.nsn{font-size:11px;color:var(--muted);font-weight:700;line-height:1.85;margin-top:11px}
+.ivl2{margin-top:10px;background:rgba(0,0,0,.25);border:1px solid var(--bd);border-radius:11px;
+  padding:10px 12px;font-size:11.5px;font-weight:700;direction:ltr;word-break:break-all;color:var(--accentlt)}
+@media(max-width:560px){ .nsb .grid3{grid-template-columns:1fr 1fr} }
+
+/* ══ طلبات الاسترجاع ══ */
+.rfseg{display:flex;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--bd);
+  border-radius:14px;padding:5px;margin-bottom:14px}
+.rfseg button{flex:1;background:none;border:none;color:var(--muted2);font-family:'Cairo',sans-serif;
+  font-size:13px;font-weight:800;padding:11px;border-radius:10px;cursor:pointer;transition:.2s}
+.rfseg button.on{background:var(--teal);color:#fff}
+.rfm{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rfm .m{background:rgba(255,255,255,.04);border:1.5px solid var(--bd);border-radius:14px;
+  padding:13px;cursor:pointer;transition:.2s}
+.rfm .m.on{border-color:var(--accentlt);background:rgba(34,176,138,.08)}
+.rfm .m b{display:block;font-size:13.5px;font-weight:900}
+.rfm .m small{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:4px;line-height:1.7}
+.rfbox{background:rgba(0,0,0,.18);border:1px solid var(--bd);border-radius:14px;
+  padding:14px;margin-top:11px}
+.rfc{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+.rfc .top{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.rfc .rid{font-size:11px;color:var(--muted);font-weight:800;direction:ltr}
+.rfc .rnm{font-size:14.5px;font-weight:900;margin-top:2px}
+.rfc .rmt{font-size:11.5px;color:var(--muted2);font-weight:700;line-height:1.95;margin-top:9px}
+.rfc .rmt b{color:var(--ink);font-weight:800}
+.rfc .rsn{background:rgba(255,255,255,.04);border-radius:11px;padding:10px 12px;
+  font-size:12px;font-weight:700;line-height:1.8;margin-top:10px}
+.rfst{font-size:10px;font-weight:800;border-radius:100px;padding:5px 11px;white-space:nowrap}
+.rfst.p{background:var(--warnbg);color:var(--warn)}
+.rfst.a{background:rgba(26,143,111,.22);color:#7FE0C0}
+.rfst.r{background:rgba(214,84,84,.13);color:#E08A8A}
+.rfdec{margin-top:11px;padding:11px 13px;border-radius:12px;font-size:12px;font-weight:800;line-height:1.85}
+.rfdec.a{background:rgba(26,143,111,.12);border:1px solid rgba(26,143,111,.3);color:#7FE0C0}
+.rfdec.r{background:rgba(214,84,84,.1);border:1px solid rgba(214,84,84,.26);color:#E08A8A}
+.rfadm{margin-top:11px;padding-top:11px;border-top:1px dashed rgba(255,255,255,.1)}
+.rfadm .lb{font-size:11.5px;font-weight:800;color:var(--accentlt);margin-bottom:8px}
+.rfadm input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid var(--bd);
+  border-radius:12px;padding:10px 13px;color:var(--ink);font-family:'Cairo',sans-serif;
+  font-size:13px;font-weight:700;outline:none;margin-bottom:9px}
+.rfadm input:focus{border-color:var(--accentlt)}
+.btn.dg{background:rgba(214,84,84,.14);border:1.5px solid rgba(214,84,84,.34);color:#E08A8A}
+.btn.dg:hover{background:rgba(214,84,84,.2)}
+@media(max-width:560px){ .rfm{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -256,6 +338,8 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
     <div class="tabs">
       <div class="tab" id="tabA" onclick="go('a')">الطلاب المسجّلون</div>
       <div class="tab on" id="tabB" onclick="go('b')">+ تسجيل جديد</div>
+      <div class="tab" id="tabC" onclick="go('c')">ملفات العملاء</div>
+      <div class="tab" id="tabD" onclick="go('d')">الاسترجاع<span id="rfDot"></span></div>
     </div>
 
     <!-- ══ القائمة ══ -->
@@ -266,6 +350,91 @@ input[type=date]{color-scheme:dark;direction:ltr;text-align:right}
       </div>
       <div class="loading" id="loading"><div class="s"></div><p>جاري التحميل...</p></div>
       <div class="list" id="list"></div>
+    </div>
+
+    <!-- ══ طلبات الاسترجاع ══ -->
+    <div id="viewD" class="hide">
+      <div class="cnote">
+        الموظف يرفع طلب الإلغاء والاسترجاع — <b>الأدمن يقبل أو يرفض</b> وما يقدر الموظف يقرّر بنفسه.
+        وبعد القرار تطلع رسالة جاهزة ترسلها للعميل بالواتساب.
+      </div>
+      <div class="stats" id="rfStats"></div>
+      <div class="rfseg">
+        <button class="on" id="rfT1" onclick="rfTab('new')">طلب استرجاع جديد</button>
+        <button id="rfT2" onclick="rfTab('list')">الطلبات وحالتها</button>
+      </div>
+
+      <div id="rfNew">
+        <div class="box">
+          <div class="sec"><div class="n">١</div>بيانات العميل<div class="ln"></div></div>
+          <div class="grid2">
+            <div class="field"><label>اسم العميل <i>*</i></label>
+              <input id="xName" placeholder="الاسم الثلاثي"></div>
+            <div class="field"><label>رقم العميل <i>*</i></label>
+              <input id="xPhone" class="ltr" inputmode="numeric" maxlength="15" placeholder="9XXXXXXX"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>موضوع الطلب <i>*</i></label>
+              <input id="xSubject" placeholder="الاشتراك · الدورة · الخدمة"></div>
+            <div class="field"><label>المبلغ المطلوب استرجاعه (د.ك)</label>
+              <input id="xAmount" type="number" step="0.5" min="0" class="ltr" placeholder="0"></div>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>سبب الإلغاء والاسترجاع <i>*</i></label>
+            <textarea id="xReason" placeholder="اكتب السبب بالتفصيل كما ذكره العميل"></textarea></div>
+          <input type="hidden" id="xSid">
+        </div>
+
+        <div class="box">
+          <div class="sec"><div class="n">٢</div>طريقة الاسترجاع<div class="ln"></div></div>
+          <div class="rfm" id="xMethods"></div>
+
+          <div class="rfbox" id="xIbanBox" style="display:none">
+            <div class="field"><label>رقم الآيبان <i>*</i></label>
+              <input id="xIban" class="ltr" maxlength="40"
+                     placeholder="KW00 XXXX 0000 0000 0000 0000 0000 00" oninput="ibanFmt(this)"></div>
+            <div class="grid2">
+              <div class="field" style="margin-bottom:0"><label>اسم صاحب الحساب <i>*</i></label>
+                <input id="xHolder" placeholder="كما هو بالبنك"></div>
+              <div class="field" style="margin-bottom:0"><label>البنك</label>
+                <select id="xBank"></select></div>
+            </div>
+          </div>
+
+          <div class="rfbox" id="xRefBox" style="display:none">
+            <div class="field" style="margin-bottom:0"><label>مرجع الدفع أو ملاحظة (اختياري)</label>
+              <input id="xRef" placeholder="رقم عملية Tap · كود الفاتورة · تاريخ الدفع"></div>
+          </div>
+        </div>
+
+        <div class="ferr" id="xErr"></div>
+        <button class="btn" id="xBtn" onclick="rfSubmit(0)" style="width:100%">
+          <span id="xBtnTxt">إرسال الطلب للمراجعة</span><div class="spin" id="xSpin"></div></button>
+      </div>
+
+      <div id="rfList" class="hide">
+        <div class="tools">
+          <div class="chips" id="rfChips"></div>
+          <input class="search" id="rfQ" placeholder="بحث بالاسم أو الرقم أو رقم الطلب..." oninput="rfPaint()">
+        </div>
+        <div class="loading" id="rfLoad" style="display:none"><div class="s"></div><p>جاري التحميل...</p></div>
+        <div class="list" id="rfBody"></div>
+      </div>
+    </div>
+
+    <!-- ══ ملفات العملاء ══ -->
+    <div id="viewC" class="hide">
+      <div class="cnote">
+        العميل المسجّل <b>ما يحتاج تسجيل من جديد</b> — افتح ملفه وأضف له اشتراك أو خدمة.
+        بياناته الشخصية وموافقة ولي الأمر والتوقيع تُنسخ تلقائياً،
+        و<b>كل اشتراك يُحفظ بسطر منفصل</b> بورقة «تسجيلات المركز» مع رقم ملف العميل.
+      </div>
+      <div class="tools">
+        <input class="search" id="cq" style="flex:1;min-width:200px"
+               placeholder="ابحث باسم الطالب أو رقم التواصل أو ولي الأمر..." oninput="cqType()">
+        <button class="btn sm gh" onclick="loadCusts()">تحديث</button>
+      </div>
+      <div class="loading" id="cload" style="display:none"><div class="s"></div><p>جاري التحميل...</p></div>
+      <div class="list" id="clist"></div>
     </div>
 
     <!-- ══ النموذج ══ -->
@@ -447,7 +616,7 @@ const J   = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 
 /* ══════════ الاتصال ══════════ */
 /* القراءة بـ JSONP · الكتابة بـ POST (بلا حد لطول البيانات) */
-const READ_ACTIONS = ['ping','list','orders','services','mutlaa-list','mutlaa-config','sections','reception-list','team','center','students','attend-get','attend-student','inv-list','inv-get'];
+const READ_ACTIONS = ['ping','list','orders','services','mutlaa-list','mutlaa-config','sections','reception-list','reception-cust','rf-list','team','center','students','attend-get','attend-student','inv-list','inv-get'];
 
 function call(params){
   const act=String(params.action||'');
@@ -549,6 +718,7 @@ async function refresh(){
     if(r.states&&r.states.length) STATES=r.states;
     if(r.types&&r.types.length)  TYPES=r.types;
     buildForm(); paintStats(); paintChips(); paint();
+    if(!rfLoaded) loadRf();          /* عدّاد الطلبات المعلّقة بالتبويب */
   }catch(e){ toast(e.message,true); }
   document.getElementById('loading').style.display='none';
 }
@@ -603,8 +773,13 @@ function tgSub(i){
 /* حساب حِمل كل شعبة */
 const splitSecs = v => String(v||'').split(/\s*[·,،]\s*/).map(x=>x.trim()).filter(Boolean);
 function loadOf(name){
-  return REGS.filter(r=>r.status!=='موقوف' && r.status!=='منتهي'
-    && splitSecs(r.section).indexOf(name)>-1).length;
+  const seen=new Set();
+  REGS.forEach(r=>{
+    if(r.status==='موقوف' || r.status==='منتهي') return;
+    if(splitSecs(r.section).indexOf(name)===-1) return;
+    seen.add(r.code || r.phone || r.name);
+  });
+  return seen.size;
 }
 
 function paintSecs(){
@@ -705,11 +880,12 @@ function clearSig(){
 
 /* ══════════ التبويب ══════════ */
 function go(v){
-  const A=v==='a';
-  document.getElementById('viewA').classList.toggle('hide',!A);
-  document.getElementById('viewB').classList.toggle('hide',A);
-  document.getElementById('tabA').classList.toggle('on',A);
-  document.getElementById('tabB').classList.toggle('on',!A);
+  ['a','b','c','d'].forEach(k=>{
+    document.getElementById('view'+k.toUpperCase()).classList.toggle('hide',k!==v);
+    document.getElementById('tab'+k.toUpperCase()).classList.toggle('on',k===v);
+  });
+  if(v==='c' && !CUSTS.length) loadCusts();
+  if(v==='d' && !rfLoaded) loadRf();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -744,12 +920,15 @@ function card(r){
   return '<div class="row '+(r.status==='منتهي'||r.status==='موقوف'?'off ':'')+(openRows.has(r.row)?'open':'')+'" id="r'+r.row+'">'+
     '<div class="rhead" onclick="tg('+r.row+')">'+
       '<div class="av">'+esc((r.name||'ط').charAt(0))+'</div>'+
-      '<div class="rmain"><div class="rname">'+esc(r.name)+' '+sTag(r.status)+'</div>'+
+      '<div class="rmain"><div class="rname">'+esc(r.name)+' '+sTag(r.status)+
+        (r.kind&&r.kind!=='تسجيل جديد'?' '+kTag(r.kind):'')+'</div>'+
       '<div class="rsub">'+esc(r.id)+' · '+esc(sub)+'</div></div>'+
       '<div class="rtot">'+kd(r.fee)+'<small>'+esc(r.date||'')+'</small></div>'+
     '</div>'+
     '<div class="rbody">'+
       '<dl class="kv">'+
+        '<dt>ملف العميل</dt><dd class="ltr">'+esc(r.code||'—')+
+          (r.seq>1?' <span style="direction:rtl;display:inline-block">· الاشتراك '+esc(r.seq)+'</span>':'')+'</dd>'+
         '<dt>رقم التواصل</dt><dd class="ltr">'+esc(r.phone||'—')+'</dd>'+
         '<dt>الواتساب</dt><dd class="ltr">'+esc(r.wa||'—')+'</dd>'+
         '<dt>المدرسة</dt><dd>'+esc(r.school||'—')+(r.schoolSocial?' · '+esc(r.schoolSocial):'')+'</dd>'+
@@ -771,6 +950,8 @@ function card(r){
         '<button class="btn sm" onclick="printRow('+r.row+')">طباعة الفورمة</button>'+
         '<button class="btn sm gh" onclick="tgEdit('+r.row+')">تعديل البيانات</button>'+
         '<button class="btn sm gh" onclick="tgInv('+r.row+')">أرسل فاتورة</button>'+
+        '<button class="btn sm gh" onclick="openCustBy(\''+J(r.phone||'')+'\')">ملف العميل</button>'+
+        '<button class="btn sm gh" onclick="rfFor('+r.row+')">طلب استرجاع</button>'+
         (r.wa?'<a class="btn sm gh" style="text-decoration:none" target="_blank" href="https://wa.me/965'+esc(r.wa)+'">واتساب</a>':'')+
       '</div>'+
 
@@ -1073,6 +1254,15 @@ async function save(force){
   try{
     const r=await call(payload);
     if(!r||!r.ok){
+      if(r&&r.dup){
+        err(r.msg);
+        b.disabled=false;
+        document.getElementById('saveSpin').style.display='none';
+        if(confirm(r.msg+'\n\nتبي نفتح ملف العميل وتضيف له الاشتراك من هناك؟')){
+          openCustBy(phone);
+        }
+        return;
+      }
       if(r&&r.full && !force){
         if(confirm(r.msg)){ b.disabled=false;
           document.getElementById('saveSpin').style.display='none';
@@ -1113,8 +1303,577 @@ function printRow(row){
     lastGrade:r.lastGrade, school:r.school, schoolSocial:r.schoolSocial, family:r.family,
     type:r.type, subjects:r.subjects, from:r.from, to:r.to, section:r.section, fee:r.fee,
     parent:r.parent, relation:r.relation, q1:r.q1, q2:r.q2, q3:r.q3, q4:r.q4,
-    alt:r.alt, altRel:r.altRel, by:r.by, note:r.note, sigImg:''
+    alt:r.alt, altRel:r.altRel, by:r.by, note:r.note, sigImg:'',
+    kind:r.kind, seq:r.seq, code:r.code
   });
+}
+
+/* ══════════ طلبات الاسترجاع ══════════ */
+let RF=[], rfF='الكل', rfMethod='', rfAdmin=false, rfLoaded=false;
+const RF_STATES=['قيد المراجعة','مقبول','مرفوض'];
+let RF_BANKS=['بنك الكويت الوطني','بيت التمويل الكويتي','بنك بوبيان','البنك التجاري الكويتي',
+  'بنك الخليج','البنك الأهلي الكويتي','بنك برقان','بنك وربة','البنك الأهلي المتحد',
+  'بنك الكويت الدولي','أخرى'];
+
+function rfCls(st){ return st==='مقبول'?'a':(st==='مرفوض'?'r':'p'); }
+
+function rfTab(v){
+  document.getElementById('rfNew').classList.toggle('hide', v!=='new');
+  document.getElementById('rfList').classList.toggle('hide', v!=='list');
+  document.getElementById('rfT1').classList.toggle('on', v==='new');
+  document.getElementById('rfT2').classList.toggle('on', v==='list');
+  if(v==='list') rfPaint();
+}
+
+function rfBuild(){
+  document.getElementById('xMethods').innerHTML=
+    '<div class="m '+(rfMethod==='رابط'?'on':'')+'" onclick="setMethod(\'رابط\')">'+
+      '<b>على نفس البطاقة</b><small>يرجع المبلغ على وسيلة الدفع نفسها</small></div>'+
+    '<div class="m '+(rfMethod==='آيبان'?'on':'')+'" onclick="setMethod(\'آيبان\')">'+
+      '<b>تحويل بنكي — آيبان</b><small>تحويل لحساب العميل البنكي</small></div>';
+  const b=document.getElementById('xBank');
+  if(b && !b.options.length)
+    b.innerHTML='<option value="">— اختر البنك —</option>'+
+      RF_BANKS.map(x=>'<option>'+esc(x)+'</option>').join('');
+}
+
+function setMethod(m){
+  rfMethod=m; rfBuild();
+  document.getElementById('xIbanBox').style.display = m==='آيبان'?'':'none';
+  document.getElementById('xRefBox').style.display  = m==='رابط'?'':'none';
+}
+
+/* تنسيق الآيبان مجموعات من ٤ */
+function ibanFmt(el){
+  const v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,30);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+async function loadRf(){
+  document.getElementById('rfLoad').style.display='block';
+  try{
+    const r=await call({action:'rf-list'});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر جلب الطلبات');
+    RF=r.rows||[]; rfAdmin=!!r.admin; rfLoaded=true;
+    if(r.banks&&r.banks.length) RF_BANKS=r.banks;
+    rfBuild(); rfStats(); rfChips(); rfPaint();
+  }catch(e){ toast(e.message,true); }
+  document.getElementById('rfLoad').style.display='none';
+}
+
+function rfStats(){
+  const c={p:0,a:0,r:0}; RF.forEach(x=>c[rfCls(x.status)]++);
+  const due=RF.filter(x=>x.status==='مقبول').reduce((a,x)=>a+(x.amount||0),0);
+  document.getElementById('rfStats').innerHTML=
+    st(c.p,'قيد المراجعة',c.p?'warn':'')+st(c.a,'مقبول','acc')+
+    st(c.r,'مرفوض')+st(kd(due),'مبالغ مقبولة');
+  const dot=document.getElementById('rfDot');
+  if(dot) dot.textContent=c.p?' ('+c.p+')':'';
+}
+
+function rfChips(){
+  const c={}; RF.forEach(x=>{ c[x.status]=(c[x.status]||0)+1; });
+  let h='<div class="chip '+(rfF==='الكل'?'on':'')+'" onclick="rfSetF(\'الكل\')">الكل ('+RF.length+')</div>';
+  RF_STATES.forEach(x=>{ h+='<div class="chip '+(rfF===x?'on':'')+'" onclick="rfSetF(\''+J(x)+'\')">'+
+    esc(x)+' ('+(c[x]||0)+')</div>'; });
+  document.getElementById('rfChips').innerHTML=h;
+}
+function rfSetF(f){ rfF=f; rfChips(); rfPaint(); }
+
+function rfPaint(){
+  const q=(document.getElementById('rfQ').value||'').trim().toLowerCase();
+  const data=RF.filter(x=>{
+    if(rfF!=='الكل' && x.status!==rfF) return false;
+    if(!q) return true;
+    return [x.name,x.phone,x.id,x.subject,x.staff].join(' ').toLowerCase().indexOf(q)>-1;
+  });
+  const B=document.getElementById('rfBody');
+  if(!data.length){ B.innerHTML='<div class="empty">ما في طلبات'+(rfF!=='الكل'?' «'+esc(rfF)+'»':'')+'</div>'; return; }
+  B.innerHTML=data.map(rfCard).join('');
+}
+
+function rfCard(x){
+  const k=rfCls(x.status);
+  const acc = x.method==='آيبان'
+    ? '<br>الآيبان: <b style="direction:ltr;display:inline-block">'+esc(x.account||'—')+'</b>'+
+      (x.holder?' · '+esc(x.holder):'')+(x.bank?' · '+esc(x.bank):'')
+    : (x.account?'<br>المرجع: <b>'+esc(x.account)+'</b>':'');
+
+  return '<div class="rfc">'+
+    '<div class="top"><div><div class="rid">'+esc(x.id)+'</div>'+
+      '<div class="rnm">'+esc(x.name)+'</div></div>'+
+      '<span class="rfst '+k+'">'+esc(x.status)+'</span></div>'+
+    '<div class="rmt">'+
+      'الرقم: <b style="direction:ltr;display:inline-block">'+esc(x.phone)+'</b>'+
+      ' · الموضوع: <b>'+esc(x.subject)+'</b>'+
+      (x.amount?' · المبلغ: <b>'+kd(x.amount)+'</b>':'')+
+      '<br>الطريقة: <b>'+esc(x.method)+'</b>'+acc+
+      '<br>رفعه: <b>'+esc(x.staff||'—')+'</b> · '+esc(x.date||'')+
+    '</div>'+
+    '<div class="rsn">'+esc(x.reason)+'</div>'+
+
+    (k!=='p'
+      ? '<div class="rfdec '+k+'">'+(k==='a'?'تم قبول الطلب':'تم رفض الطلب')+
+          (x.by?' — '+esc(x.by):'')+(x.decided?' · '+esc(x.decided):'')+
+          (x.note?'<br>ملاحظة الإدارة: '+esc(x.note):'')+'</div>'+
+        '<div class="racts">'+
+          '<button class="btn sm gh" onclick="rfMsg('+x.row+')">نسخ رسالة العميل</button>'+
+          '<a class="btn sm gh" style="text-decoration:none" target="_blank" '+
+            'href="https://wa.me/965'+esc(x.phone)+'?text='+encodeURIComponent(rfText(x))+'">واتساب</a>'+
+        '</div>'
+      : (rfAdmin
+          ? '<div class="rfadm"><div class="lb">قرار الإدارة</div>'+
+              '<input id="rn'+x.row+'" placeholder="ملاحظة للعميل — إلزامية عند الرفض">'+
+              '<div class="racts" style="margin:0">'+
+                '<button class="btn sm" onclick="rfDecide('+x.row+',\'مقبول\')">قبول الطلب</button>'+
+                '<button class="btn sm dg" onclick="rfDecide('+x.row+',\'مرفوض\')">رفض الطلب</button>'+
+              '</div></div>'
+          : '<div class="rfdec p" style="background:rgba(255,255,255,.04);border:1px dashed var(--bd);color:var(--muted2)">'+
+              'بانتظار قرار الإدارة</div>'))+
+  '</div>';
+}
+
+function rfText(x){
+  return x.status==='مقبول'
+    ? 'أهلاً '+x.name+'\n'+
+      'تمت الموافقة على طلب الاسترجاع رقم '+x.id+' الخاص بـ «'+x.subject+'»'+
+      (x.amount?' بمبلغ '+kd(x.amount):'')+'.\n'+
+      (x.method==='آيبان'
+        ? 'راح يتحول المبلغ على حسابك البنكي خلال أيام العمل القادمة.'
+        : 'راح يرجع المبلغ على نفس وسيلة الدفع خلال أيام العمل القادمة.')+'\n'+
+      'شاكرين تفهمك — '+(CENTER.name||BRAND.org)+'.'
+    : 'أهلاً '+x.name+'\n'+
+      'نعتذر، ما تمت الموافقة على طلب الاسترجاع رقم '+x.id+' الخاص بـ «'+x.subject+'».'+
+      (x.note?'\nالسبب: '+x.note:'')+'\n'+
+      'لأي استفسار تواصل معنا على '+BRAND.phone+'.\n'+(CENTER.name||BRAND.org)+'.';
+}
+
+function rfMsg(row){
+  const x=RF.find(v=>v.row===row); if(!x) return;
+  copyTxt(rfText(x));
+}
+
+async function rfDecide(row,st){
+  const note=(document.getElementById('rn'+row)||{}).value||'';
+  if(st==='مرفوض' && note.trim().length<3) return toast('اكتب سبب الرفض — يوصل للعميل',true);
+  if(!confirm(st==='مقبول'
+      ? 'تأكيد قبول الطلب؟ المبلغ يصير مستحق الاسترجاع.'
+      : 'تأكيد رفض الطلب؟')) return;
+  try{
+    const r=await call({action:'rf-set', row:row, status:st, note:note});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'ما تم التعديل');
+    toast(r.msg||('الطلب → '+st));
+    await loadRf();
+  }catch(e){ toast(e.message,true); }
+}
+
+async function rfSubmit(force){
+  const E=m=>{ document.getElementById('xErr').textContent=m||''; return false; };
+  E('');
+  const v=id=>(document.getElementById(id).value||'').trim();
+  const name=v('xName'), subject=v('xSubject'), reason=v('xReason');
+  if(name.length<3)    return E('اكتب اسم العميل');
+  const phone=normPhone(v('xPhone'));
+  if(!phone)           return E('رقم العميل لازم يكون ٨ أرقام');
+  if(!subject)         return E('اكتب موضوع الطلب');
+  if(reason.length<10) return E('اكتب سبب الإلغاء والاسترجاع بالتفصيل');
+  if(!rfMethod)        return E('اختر طريقة الاسترجاع');
+
+  let account='', holder='', bank='';
+  if(rfMethod==='آيبان'){
+    account=v('xIban').replace(/\s/g,'').toUpperCase();
+    if(!/^KW\d{2}[A-Z]{4}[A-Z0-9]{22}$/.test(account))
+      return E('الآيبان غير صحيح — يبدأ بـ KW ويكون ٣٠ خانة');
+    holder=v('xHolder');
+    if(holder.length<3) return E('اكتب اسم صاحب الحساب');
+    bank=document.getElementById('xBank').value;
+  } else account=v('xRef');
+
+  const b=document.getElementById('xBtn');
+  b.disabled=true;
+  document.getElementById('xSpin').style.display='block';
+  document.getElementById('xBtnTxt').textContent='جاري الإرسال...';
+
+  try{
+    const r=await call({ action:'rf-add', name:name, phone:phone, sid:v('xSid'),
+      subject:subject, amount:v('xAmount')||0, reason:reason,
+      method:rfMethod, account:account, holder:holder, bank:bank, force:force?1:0 });
+
+    if(!r||!r.ok){
+      if(r&&r.dup&&!force){
+        if(confirm(r.msg+'\n\nترفع طلب ثاني برضه؟')){
+          b.disabled=false;
+          document.getElementById('xSpin').style.display='none';
+          document.getElementById('xBtnTxt').textContent='إرسال الطلب للمراجعة';
+          return rfSubmit(1);
+        }
+        E(r.msg);
+      } else E((r&&r.msg)?r.msg:'ما تم الإرسال');
+    }else{
+      toast(r.msg||'تم رفع الطلب');
+      rfReset();
+      await loadRf();
+      rfTab('list');
+    }
+  }catch(e){ E(e.message); }
+
+  b.disabled=false;
+  document.getElementById('xSpin').style.display='none';
+  document.getElementById('xBtnTxt').textContent='إرسال الطلب للمراجعة';
+}
+
+function rfReset(){
+  ['xName','xPhone','xSubject','xAmount','xReason','xIban','xHolder','xRef','xSid']
+    .forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  const bk=document.getElementById('xBank'); if(bk) bk.value='';
+  rfMethod=''; setMethod('');
+  document.getElementById('xErr').textContent='';
+}
+
+/* يفتح التبويب معبّى من بطاقة الطالب */
+function rfFor(row){
+  const r=REGS.find(v=>v.row===row);
+  go('d'); rfTab('new'); rfReset();
+  if(r){
+    document.getElementById('xName').value=r.name||'';
+    document.getElementById('xPhone').value=r.wa||r.phone||'';
+    document.getElementById('xSid').value=r.id||'';
+    document.getElementById('xSubject').value=[r.type,r.stage].filter(Boolean).join(' ')||'اشتراك';
+    document.getElementById('xAmount').value=r.fee||'';
+    document.getElementById('xReason').focus();
+  }
+}
+
+/* ══════════ ملفات العملاء — عميل واحد · أكثر من اشتراك ══════════ */
+let CUSTS=[], openC=new Set(), NS={}, cqT=null;
+
+function cqType(){ clearTimeout(cqT); cqT=setTimeout(loadCusts,420); }
+
+async function loadCusts(){
+  const ld=document.getElementById('cload'); ld.style.display='block';
+  try{
+    const q=document.getElementById('cq').value.trim();
+    const r=await call({action:'reception-cust', q:q});
+    if(!r||!r.ok) throw new Error(r&&r.msg?r.msg:'تعذّر جلب ملفات العملاء');
+    CUSTS=r.custs||[];
+    if(r.sections&&r.sections.length) SECS=r.sections;
+    if(r.types&&r.types.length) TYPES=r.types;
+    paintCusts();
+  }catch(e){ toast(e.message,true); }
+  ld.style.display='none';
+}
+
+/* يفتح التبويب على عميل معيّن */
+function openCustBy(q){
+  document.getElementById('cq').value=q||'';
+  go('c'); loadCusts();
+}
+
+function nsOf(c){
+  if(!NS[c.code]) NS[c.code]={
+    kind:'خدمة إضافية', type:(c.subs[0]&&c.subs[0].type)||TYPES[0]||'شهري',
+    subs:[], picked:[], all:false
+  };
+  return NS[c.code];
+}
+
+function kTag(k){
+  const i = k==='تجديد' ? 1 : (k==='خدمة إضافية' ? 2 : 0);
+  return '<span class="kt k'+i+'">'+esc(k)+'</span>';
+}
+
+function paintCusts(){
+  const L=document.getElementById('clist');
+  if(!CUSTS.length){
+    L.innerHTML='<div class="empty">ما في عميل مطابق — سجّله من تبويب «+ تسجيل جديد»</div>';
+    return;
+  }
+  L.innerHTML=CUSTS.map(custCard).join('');
+}
+
+function custCard(c,i){
+  const live=c.subs.filter(s=>s.status!=='منتهي'&&s.status!=='موقوف');
+  const head=[c.stage,c.grade].filter(Boolean).join(' · ');
+  return '<div class="cf '+(openC.has(c.code)?'open':'')+'" id="cf'+i+'">'+
+    '<div class="cfh" onclick="tgC('+i+')">'+
+      '<div class="av">'+esc((c.name||'ع').charAt(0))+'</div>'+
+      '<div class="rmain">'+
+        '<div class="rname">'+esc(c.name)+' <span class="code">'+esc(c.code)+'</span></div>'+
+        '<div class="rsub">'+esc(head||'—')+' · '+c.n+' اشتراك'+
+          (live.length?' · '+live.length+' ساري':' · ما في اشتراك ساري')+'</div>'+
+      '</div>'+
+      '<div class="rtot">'+kd(c.paid)+'<small>إجمالي الرسوم</small></div>'+
+    '</div>'+
+    '<div class="cfb">'+
+      '<dl class="kv">'+
+        '<dt>رقم التواصل</dt><dd class="ltr">'+esc(c.phone||'—')+'</dd>'+
+        '<dt>الواتساب</dt><dd class="ltr">'+esc(c.wa||'—')+'</dd>'+
+        '<dt>المدرسة</dt><dd>'+esc(c.school||'—')+'</dd>'+
+        '<dt>ولي الأمر</dt><dd>'+esc(c.parent||'—')+(c.relation?' ('+esc(c.relation)+')':'')+'</dd>'+
+        '<dt>الاستلام</dt><dd>'+esc(c.q4||'—')+'</dd>'+
+        '<dt>أول تسجيل</dt><dd class="ltr">'+esc(c.first||'—')+'</dd>'+
+      '</dl>'+
+
+      '<div class="slog">'+c.subs.map((s,j)=>subLine(c,s,i,j)).join('')+'</div>'+
+
+      '<div class="racts">'+
+        '<button class="btn sm" onclick="tgNS('+i+')">+ اشتراك أو خدمة جديدة</button>'+
+        (c.wa?'<a class="btn sm gh" style="text-decoration:none" target="_blank" '+
+          'href="https://wa.me/965'+esc(c.wa)+'">واتساب</a>':'')+
+      '</div>'+
+
+      '<div class="nsb" id="ns'+i+'"></div>'+
+    '</div></div>';
+}
+
+function subLine(c,s,i,j){
+  const dead=s.status==='منتهي'||s.status==='موقوف';
+  const per=[s.from,s.to].filter(Boolean).join(' → ');
+  return '<div class="sline '+(dead?'dead':'')+'">'+
+    '<div class="sno">'+(s.seq||(j+1))+'</div>'+
+    '<div class="sbd"><b>'+esc(s.type||'—')+' '+kTag(s.kind||'تسجيل جديد')+' '+sTag(s.status)+'</b>'+
+      '<span>'+esc(s.subjects||'بلا مواد')+
+        (s.section?'<br>الشعب: '+esc(s.section):'')+
+        (per?'<br><span style="direction:ltr;display:inline-block">'+esc(per)+'</span>':'')+
+        '<br>'+esc(s.id)+' · '+esc(s.date||'')+'</span></div>'+
+    '<div class="sfe">'+kd(s.fee)+'</div>'+
+    '<div class="sacts2">'+
+      '<button class="btn sm gh" onclick="printSub('+i+','+j+')">فورمة</button>'+
+      '<button class="btn sm gh" onclick="custInv('+i+','+j+')" id="cib'+i+'_'+j+'">رابط دفع</button>'+
+    '</div>'+
+    '<div id="cid'+i+'_'+j+'" style="width:100%"></div>'+
+  '</div>';
+}
+
+function tgC(i){
+  const c=CUSTS[i]; if(!c) return;
+  if(openC.has(c.code)) openC.delete(c.code); else openC.add(c.code);
+  const el=document.getElementById('cf'+i);
+  if(el) el.classList.toggle('open');
+  if(openC.has(c.code)) renderNS(i);
+}
+
+/* ── لوحة إضافة اشتراك ── */
+function tgNS(i){
+  const b=document.getElementById('ns'+i); if(!b) return;
+  renderNS(i);
+  b.classList.toggle('on');
+  if(b.classList.contains('on')) b.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function subjOf(stage){
+  return SUBJ[stage] || SUBJ['ثانوي'];
+}
+
+function renderNS(i){
+  const c=CUSTS[i]; if(!c) return;
+  const b=document.getElementById('ns'+i); if(!b) return;
+  const n=nsOf(c);
+  const SJ=subjOf(c.stage);
+  const today=new Date();
+  const iso=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+
+            String(today.getDate()).padStart(2,'0');
+
+  const kinds=['تجديد','خدمة إضافية'];
+  const shown=SECS.map((x,k)=>({s:x,k:k}))
+    .filter(o=>o.s.show && (n.all || o.s.stage===c.stage));
+  const other=SECS.filter(x=>x.show && x.stage!==c.stage).length;
+
+  b.innerHTML=
+    '<div class="nsh">اشتراك أو خدمة جديدة — '+esc(c.name)+'</div>'+
+
+    '<div class="nsr"><p class="nsl">نوع السجل</p><div class="opts">'+
+      kinds.map(k=>'<div class="opt sm '+(n.kind===k?'on':'')+'" onclick="nsKind('+i+',\''+J(k)+'\')">'+
+        esc(k)+'</div>').join('')+'</div>'+
+      '<div class="nsn">'+(n.kind==='تجديد'
+        ? 'التجديد يفتح اشتراك جديد بسطر منفصل ويُقفل اشتراكاته السارية — الخدمات الإضافية تبقى شغالة.'
+        : 'الخدمة الإضافية تُحفظ بسطر منفصل وما تمسّ اشتراكاته السارية.')+'</div></div>'+
+
+    '<div class="nsr"><p class="nsl">نوع الاشتراك</p><div class="opts">'+
+      TYPES.map(t=>'<div class="opt sm '+(n.type===t?'on':'')+'" onclick="nsType('+i+',\''+J(t)+'\')">'+
+        esc(t)+'</div>').join('')+'</div></div>'+
+
+    '<div class="nsr"><p class="nsl">المواد</p><div class="opts">'+
+      SJ.map((v,j)=>'<div class="opt sm '+(n.subs.indexOf(v)>-1?'on':'')+
+        '" onclick="nsSub('+i+','+j+')">'+esc(v)+'</div>').join('')+'</div></div>'+
+
+    '<div class="grid3 nsr">'+
+      '<div><p class="nsl">البداية</p><input type="date" id="nf'+i+'" value="'+iso+'"></div>'+
+      '<div><p class="nsl">النهاية</p><input type="date" id="nt'+i+'"></div>'+
+      '<div><p class="nsl">الرسوم (د.ك)</p>'+
+        '<input type="number" step="0.5" min="0" class="ltr" id="nfe'+i+'" placeholder="0"></div>'+
+    '</div>'+
+
+    '<div class="nsr"><p class="nsl">الشعب'+
+      (n.picked.length?' — '+n.picked.length+' مختارة':'')+'</p>'+
+      '<div class="secs">'+
+        (other?'<div class="sbar"><b>'+(n.picked.length?esc(n.picked.join(' · ')):'بدون شعبة')+'</b>'+
+          '<div class="sacts"><button type="button" class="mini '+(n.all?'on':'')+
+          '" onclick="nsAll('+i+')">'+(n.all?'شعب '+esc(c.stage||'')+' فقط':'كل الشعب ('+other+')')+
+          '</button></div></div>':'')+
+        (shown.length ? shown.map(o=>nsSecCard(o.s,o.k,i,n)).join('')
+          : '<div class="nsn">ما في شعب مضافة لمرحلة '+esc(c.stage||'—')+
+            ' — تقدر تحفظ الاشتراك بدون شعبة.</div>')+
+      '</div></div>'+
+
+    '<div class="nsr"><p class="nsl">ملاحظة الموظف</p>'+
+      '<textarea id="nn'+i+'" placeholder="أي تفاصيل عن هذه الخدمة"></textarea></div>'+
+
+    '<div class="racts">'+
+      '<button class="btn sm" id="nb'+i+'" onclick="saveSub('+i+',0)">'+
+        '<span id="nbt'+i+'">حفظ الاشتراك</span><div class="spin" id="nbs'+i+'"></div></button>'+
+      '<button class="btn sm gh" onclick="tgNS('+i+')">إغلاق</button>'+
+    '</div>'+
+    '<div class="nsn">بيانات الطالب وولي الأمر والتوقيع تُنسخ من ملفه — '+
+      'السطر الجديد يُحفظ بمعرّف خاص برقم ملف '+esc(c.code)+'.</div>';
+}
+
+function nsSecCard(s,k,i,n){
+  const on=n.picked.indexOf(s.name)>-1;
+  const ld=loadOf(s.name), full=s.cap>0 && ld>=s.cap;
+  return '<div class="sc '+(on?'on ':'')+(full?'full':'')+'" onclick="nsSec('+i+','+k+')">'+
+    '<div class="ckb '+(on?'on':'')+'">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'+
+    '<div class="t"><b>'+esc(s.name)+
+      (s.stage!==undefined?' <span class="xs">'+esc(s.stage)+'</span>':'')+'</b>'+
+      '<span>'+esc(s.days||'—')+(s.from?' · '+esc(s.from)+'-'+esc(s.to):'')+
+      (s.teacher?' · '+esc(s.teacher):'')+'</span></div>'+
+    '<div class="cap">'+ld+(s.cap>0?'/'+s.cap:'')+'<small>'+(full?'كاملة':'طالب')+'</small></div>'+
+  '</div>';
+}
+
+function nsKind(i,v){ nsOf(CUSTS[i]).kind=v; keepNS(i); }
+function nsType(i,v){ nsOf(CUSTS[i]).type=v; keepNS(i); }
+function nsAll(i){ const n=nsOf(CUSTS[i]); n.all=!n.all; keepNS(i); }
+function nsSub(i,j){
+  const c=CUSTS[i], n=nsOf(c), v=subjOf(c.stage)[j];
+  const x=n.subs.indexOf(v);
+  if(x>-1) n.subs.splice(x,1); else n.subs.push(v);
+  keepNS(i);
+}
+function nsSec(i,k){
+  const n=nsOf(CUSTS[i]), nm=SECS[k].name;
+  const x=n.picked.indexOf(nm);
+  if(x>-1) n.picked.splice(x,1);
+  else{
+    if(n.picked.length>=8) return toast('الحد ٨ شعب للطالب الواحد',true);
+    n.picked.push(nm);
+  }
+  keepNS(i);
+}
+
+/* إعادة رسم اللوحة بدون ما نفقد القيم المكتوبة */
+function keepNS(i){
+  const g=id=>{ const e=document.getElementById(id+i); return e?e.value:''; };
+  const keep={ f:g('nf'), t:g('nt'), fe:g('nfe'), nn:g('nn') };
+  const box=document.getElementById('ns'+i);
+  const was=box && box.classList.contains('on');
+  renderNS(i);
+  if(was) box.classList.add('on');
+  const set=(id,v)=>{ const e=document.getElementById(id+i); if(e&&v) e.value=v; };
+  set('nf',keep.f); set('nt',keep.t); set('nfe',keep.fe); set('nn',keep.nn);
+}
+
+async function saveSub(i,force){
+  const c=CUSTS[i]; if(!c) return;
+  const n=nsOf(c);
+  const base=(c.subs[0]||{}).row;
+  if(!base) return toast('ما لقيت سجل العميل',true);
+  if(!n.subs.length) return toast('اختر المواد',true);
+  const from=(document.getElementById('nf'+i)||{}).value||'';
+  const to=(document.getElementById('nt'+i)||{}).value||'';
+  if(!from) return toast('حدد تاريخ البداية',true);
+  if(to && to<from) return toast('تاريخ النهاية قبل البداية',true);
+
+  const b=document.getElementById('nb'+i);
+  b.disabled=true;
+  document.getElementById('nbs'+i).style.display='block';
+  document.getElementById('nbt'+i).textContent='جاري الحفظ...';
+
+  try{
+    const r=await call({ action:'reception-sub', base:base, kind:n.kind, type:n.type,
+      subjects:n.subs.join(' · '), from:from, to:to,
+      section:n.picked.join(' · '), fee:(document.getElementById('nfe'+i)||{}).value||0,
+      note:(document.getElementById('nn'+i)||{}).value||'', force:force?1:0 });
+
+    if(!r||!r.ok){
+      if(r&&r.full&&!force){
+        if(confirm(r.msg)){
+          b.disabled=false;
+          document.getElementById('nbs'+i).style.display='none';
+          document.getElementById('nbt'+i).textContent='حفظ الاشتراك';
+          return saveSub(i,1);
+        }
+        toast('اختر شعبة ثانية أو أكّد فوق السعة',true);
+      } else toast((r&&r.msg)?r.msg:'ما تم الحفظ',true);
+    }else{
+      toast(r.msg||'تم حفظ الاشتراك');
+      NS[c.code]=null; delete NS[c.code];
+      openC.add(c.code);
+      await Promise.all([loadCusts(), refresh()]);
+    }
+  }catch(e){ toast(e.message,true); }
+
+  const bb=document.getElementById('nb'+i);
+  if(bb){
+    bb.disabled=false;
+    document.getElementById('nbs'+i).style.display='none';
+    document.getElementById('nbt'+i).textContent='حفظ الاشتراك';
+  }
+}
+
+/* طباعة فورمة اشتراك من ملف العميل */
+function printSub(i,j){
+  const c=CUSTS[i]; if(!c) return;
+  const s=c.subs[j]; if(!s) return;
+  printForm({
+    id:s.id, date:s.date, name:c.name, phone:c.phone, wa:c.wa,
+    stage:c.stage, grade:c.grade, lastGrade:c.lastGrade, school:c.school,
+    schoolSocial:c.schoolSocial, family:c.family,
+    type:s.type, subjects:s.subjects, from:s.from, to:s.to, section:s.section, fee:s.fee,
+    parent:c.parent, relation:c.relation, q1:c.q1, q2:c.q2, q3:c.q3, q4:c.q4,
+    alt:c.alt, altRel:c.altRel, by:s.by, note:s.note, sigImg:'',
+    kind:s.kind, seq:s.seq, code:c.code
+  });
+}
+
+/* رابط دفع قصير لاشتراك معيّن */
+async function custInv(i,j){
+  const c=CUSTS[i]; if(!c) return;
+  const s=c.subs[j]; if(!s) return;
+  const to=c.wa||c.phone;
+  if(!to) return toast('ما في رقم واتساب للعميل',true);
+  const amt=Number(s.fee||0);
+  if(amt<=0) return toast('سجل رسوم الاشتراك أول',true);
+
+  const b=document.getElementById('cib'+i+'_'+j);
+  if(b){ b.disabled=true; b.textContent='جاري الإنشاء...'; }
+
+  try{
+    const item=((s.type||'اشتراك')+' '+(c.stage||'')).trim()+' — '+c.name;
+    const res=await call({ action:'inv-add', sid:s.id, name:c.name,
+      parent:c.parent||'', wa:to, item:item, amount:amt });
+    if(!res||!res.ok) throw new Error(res&&res.msg?res.msg:'ما تم إنشاء الفاتورة');
+
+    const link=PAY_PAGE+'?i='+res.code;
+    const msg='السلام عليكم '+(c.parent||'')+'\n'+
+      'فاتورة '+(s.kind==='تجديد'?'تجديد اشتراك':'خدمة')+' '+c.name+' في '+BRAND.name+'\n'+
+      'المبلغ: '+kd(amt)+'\n'+
+      'رقم الفاتورة: '+res.code+'\n'+link;
+
+    const d=document.getElementById('cid'+i+'_'+j);
+    if(d) d.innerHTML='<div class="ivl2">'+esc(link)+'</div>'+
+      '<div class="sacts2">'+
+        '<a class="btn sm" style="text-decoration:none" target="_blank" href="https://wa.me/965'+
+          esc(to)+'?text='+encodeURIComponent(msg)+'">إرسال بالواتساب</a>'+
+        '<button class="btn sm gh" onclick="copyTxt(\''+J(link)+'\')">نسخ</button>'+
+      '</div>';
+    if(b) b.style.display='none';
+    toast(res.msg||('تم إنشاء الفاتورة '+res.code));
+  }catch(e){
+    toast(e.message,true);
+    if(b){ b.disabled=false; b.textContent='رابط دفع'; }
+  }
 }
 
 /* ══════════ الفورمة المطبوعة ══════════ */
@@ -1183,10 +1942,13 @@ function formHtml(d){
     '<div class="hd"><div><div class="brand">'+BRAND.name+'</div>'+
       '<div class="org">'+esc(CENTER.name||BRAND.org)+'</div></div>'+
       '<div class="meta"><div class="oid">'+esc(d.id||'')+'</div>'+
-      '<div class="odate">'+esc(d.date||'')+'</div></div></div>'+
+      '<div class="odate">'+esc(d.date||'')+
+        (d.code?' · ملف '+esc(d.code):'')+'</div></div></div>'+
 
-    '<div class="ttl">استمارة تسجيل طالب</div>'+
-    '<div class="sub">تُعبّأ بمعرفة موظف الاستقبال ويوقّعها ولي الأمر</div>'+
+    '<div class="ttl">'+(d.kind==='تجديد' ? 'استمارة تجديد اشتراك'
+      : (d.kind==='خدمة إضافية' ? 'استمارة خدمة إضافية' : 'استمارة تسجيل طالب'))+'</div>'+
+    '<div class="sub">تُعبّأ بمعرفة موظف الاستقبال ويوقّعها ولي الأمر'+
+      (d.seq&&d.seq>1?' · الاشتراك رقم '+esc(d.seq)+' لنفس العميل':'')+'</div>'+
 
     '<div class="sl">بيانات الطالب<div class="ln"></div></div>'+
     '<div class="gr">'+
@@ -1204,6 +1966,7 @@ function formHtml(d){
     '<div class="sl">تفاصيل الاشتراك<div class="ln"></div></div>'+
     '<div class="gr">'+
       R('نوع الاشتراك', d.type)+
+      R('نوع السجل', d.kind || 'تسجيل جديد')+
       R('الرسوم', d.fee ? kd(d.fee) : '')+
       R('بداية الاشتراك', d.from)+
       R('نهاية الاشتراك', d.to)+
