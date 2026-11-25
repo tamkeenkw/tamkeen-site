@@ -437,17 +437,33 @@ function tkNormName(s) {
     .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-function fetchPublicCourses() {
+var PUBLIC_COURSES_CBS = [];
+function firePublicCB(){ var cbs = PUBLIC_COURSES_CBS.slice(); PUBLIC_COURSES_CBS = []; cbs.forEach(function(fn){ try{ fn(); }catch(e){} }); }
+function onPublicCourses(cb){ if(PUBLIC_COURSES){ cb(); } else { PUBLIC_COURSES_CBS.push(cb); fetchPublicCourses(); } }
+
+function fetchPublicCourses(force) {
   // كاش ١٠ دقائق بالجلسة
-  var cached = tkCacheGet('tkc_public_courses');
-  if (cached) { PUBLIC_COURSES = cached; return; }
-  fetch(COURSES_PUBLIC_URL + '?action=getPublic')
+  if(!force){
+    var cached = tkCacheGet('tkc_public_courses');
+    if (cached && cached.length) { PUBLIC_COURSES = cached; firePublicCB(); return; }
+  }
+  fetch(COURSES_PUBLIC_URL + '?action=getPublic&t=' + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(data){
       PUBLIC_COURSES = (data && data.courses) ? data.courses : [];
-      try { sessionStorage.setItem('tkc_public_courses', JSON.stringify({ t: Date.now(), d: PUBLIC_COURSES })); } catch(e) {}
+      try { if(PUBLIC_COURSES.length) sessionStorage.setItem('tkc_public_courses', JSON.stringify({ t: Date.now(), d: PUBLIC_COURSES })); } catch(e) {}
+      firePublicCB();
     })
-    .catch(function(){ PUBLIC_COURSES = []; });
+    .catch(function(){ PUBLIC_COURSES = []; firePublicCB(); });
+}
+/* تحديث يدوي لقائمة الدورات */
+function cmRefreshCourses(btn){
+  if(btn){ btn.disabled = true; btn.textContent = 'جاري التحديث...'; }
+  PUBLIC_COURSES = null;
+  try{ sessionStorage.removeItem('tkc_public_courses'); }catch(e){}
+  var box = document.getElementById('cmPickBox');
+  if(box) box.innerHTML = '<div class="bk-empty">جاري تحميل الدورات...</div>';
+  onPublicCourses(function(){ cmRenderPicker(); cmRenderLinks(); });
 }
 
 // يبني رابط المشاركة بنفس صيغة صفحة الدورات
@@ -771,8 +787,12 @@ function cmToggle(key){
 function cmRenderPicker(){
   var box = document.getElementById('cmPickBox');
   if(!box) return;
-  if(!PUBLIC_COURSES || !PUBLIC_COURSES.length){
-    box.innerHTML = '<div class="bk-empty">لا توجد دورات منشورة حالياً.</div>'; return;
+  if(PUBLIC_COURSES === null){
+    box.innerHTML = '<div class="bk-empty">جاري تحميل الدورات...</div>'; return;
+  }
+  if(!PUBLIC_COURSES.length){
+    box.innerHTML = '<div class="bk-empty">لا توجد دورات منشورة حالياً.'
+      + '<br><button class="cm-pick-btn" style="margin-top:12px" onclick="cmRefreshCourses(this)">↻ تحديث القائمة</button></div>'; return;
   }
   var sel = cmSelGet();
   var myWant = tkNormName(MY_NAME || '');
@@ -829,8 +849,9 @@ function loadCommission(memberId, myName){
   MY_REF_CODE = memberId || '';
   // الروابط تعتمد على الدورات العامة — نضمن تحميلها ثم نرسم
   MY_NAME = myName || '';
-  if(PUBLIC_COURSES){ cmRenderPicker(); cmRenderLinks(); }
-  else { fetchPublicCourses(); setTimeout(function(){ cmRenderPicker(); cmRenderLinks(); }, 1200); }
+  cmRenderPicker();   // حالة "جاري التحميل" إن لزم
+  cmRenderLinks();
+  onPublicCourses(function(){ cmRenderPicker(); cmRenderLinks(); });
 
   if(!memberId) return;
   fetch(COURSES_PUBLIC_URL + '?action=commission&trainer=' + encodeURIComponent(memberId) + '&t=' + Date.now())
