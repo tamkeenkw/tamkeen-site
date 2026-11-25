@@ -172,6 +172,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .abtn.danger:hover{background:var(--red-bg);}
 .abtn.pub{color:var(--green);border-color:rgba(46,125,50,.25);}
 .abtn.pub:hover{background:var(--green-bg);}
+.abtn.comm{color:var(--crimson);border-color:rgba(92,15,15,.25);}
+.abtn.comm:hover{background:var(--cream);}
+.abtn.comm.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.chip.comm{background:#F3E6E6;color:var(--crimson);font-weight:900;}
 
 .empty{text-align:center;padding:60px 20px;color:var(--muted);}
 .empty-icon{font-size:44px;margin-bottom:12px;}
@@ -886,6 +890,7 @@ function renderPkgs(){
             '<span class="chip price">' + ar(p.price) + ' د.ك</span>' +
             '<span class="chip">📚 ' + ar(p.count) + ' دورات</span>' +
             certChip +
+            (p.commission ? '<span class="chip comm">💰 بالعمولة</span>' : '') +
             '<span class="chip reg">' + ar(p.registered || 0) + ' مسجل</span>' +
             seatChip +
           '</div>' +
@@ -899,6 +904,8 @@ function renderPkgs(){
         '<button class="abtn" onclick="openPkgForm(\'' + p.id + '\')">تعديل</button>' +
         '<button class="abtn pub" onclick="togglePkgPub(\'' + p.id + '\')">' +
           (p.published ? 'إيقاف النشر' : 'نشر') + '</button>' +
+        '<button class="abtn comm' + (p.commission ? ' on' : '') + '" onclick="togglePkgComm(\'' + p.id + '\')">' +
+          (p.commission ? '✓ بالعمولة' : '＋ بيع بالعمولة') + '</button>' +
         '<button class="abtn danger" onclick="delPkg(\'' + p.id + '\')">حذف</button>' +
       '</div>' +
     '</div>';
@@ -1043,6 +1050,16 @@ async function togglePkgPub(id){
   try{
     const r = await post({ type:'togglePkgPublish', pass:PASS, id:id, row:p.row });
     if(r.ok){ toast(r.published ? 'تم النشر' : 'تم إيقاف النشر'); loadCourses(); }
+    else toast(r.error || 'فشل', true);
+  }catch(e){ toast('تعذّر الاتصال', true); }
+}
+
+async function togglePkgComm(id){
+  const p = PKGS.find(function(x){ return x.id === id; });
+  if(!p) return;
+  try{
+    const r = await post({ type:'togglePkgCommission', pass:PASS, id:id, row:p.row });
+    if(r.ok){ toast(r.commission ? 'أُتيحت للبيع بالعمولة' : 'أُلغيت من البيع بالعمولة'); loadCourses(); }
     else toast(r.error || 'فشل', true);
   }catch(e){ toast('تعذّر الاتصال', true); }
 }
