@@ -244,6 +244,11 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
 .cm-pick-btn:hover { background:var(--cream); }
 .cm-pick-btn.on { background:var(--crimson); color:#fff; }
 .cm-empty-links { color:var(--muted); font-weight:600; font-size:13px; text-align:center; padding:16px; background:var(--cream); border-radius:12px; }
+.cm-pkg-card { background:#fff; border-radius:14px; padding:16px 18px; box-shadow:0 5px 20px rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.07); margin-bottom:10px; }
+.cm-pkg-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.cm-pkg-name { font-size:15.5px; font-weight:900; color:var(--text); }
+.cm-pkg-price { font-size:16px; font-weight:900; color:var(--crimson); white-space:nowrap; }
+.cm-pkg-meta { font-size:12.5px; color:var(--muted); font-weight:600; margin-top:4px; }
 @media(max-width:560px){ .cm-stats{ grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
@@ -350,12 +355,12 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
         <div class="cm-bar"><div class="cm-bar-fill" id="cmBarFill"></div></div>
         <div class="cm-prog-note" id="cmProgNote">—</div>
       </div>
-      <div class="cm-links-title">اختر الدورات اللي تبي تبيعها
-        <span class="cm-pick-hint">اضغط «أضف» للدورة لتظهر بروابطك</span>
+      <div class="cm-links-title">رابطك المخصص للبيع بالعمولة</div>
+      <div id="cmLinkBox"><div class="bk-empty">—</div></div>
+      <div class="cm-links-title">الباقات المتاحة للبيع بالعمولة
+        <span class="cm-pick-hint">يحددها قسم مسار — تظهر في صفحتك</span>
       </div>
-      <div id="cmPickBox"><div class="bk-empty">جاري تحميل الدورات...</div></div>
-      <div class="cm-links-title">روابطك الجاهزة للمشاركة</div>
-      <div id="cmLinksBox"></div>
+      <div id="cmPkgBox"><div class="bk-empty">جاري تحميل الباقات...</div></div>
       <div class="cm-links-title">مَن سجّل عن طريقك</div>
       <div id="cmOrdersBox"><div class="bk-empty">—</div></div>
       <div class="cm-how">عمولتك <b>١٠٪</b> من المبلغ المدفوع فعلاً لكل مشترك يسجّل عبر رابطك، وترتفع تلقائياً إلى <b>١٥٪</b> بعد تجاوز <b>١٠٠ مشترك مدفوع</b> خلال السنة. الرابط صالح ٣٠ يوم من فتحه، وتُحتسب العمولة عند إتمام الدفع فقط.</div>
@@ -425,6 +430,7 @@ const EVAL_PAGE = 'Taqeem.html';
 /* ===== مشاركة رابط الدورة (نفس صيغة صفحة الدورات العامة) ===== */
 /* عنوان صفحة الدورات العامة — عدّله لو كان مختلفاً */
 const COURSE_PAGE_URL   = 'https://tamkeenkuw.com/masar';
+const OFFER_PAGE_URL    = 'https://tamkeenkuw.com/masar-offer.html';
 /* نفس سكربت الدورات العامة getPublic المستخدم بصفحة مسار */
 const COURSES_PUBLIC_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
 
@@ -455,15 +461,6 @@ function fetchPublicCourses(force) {
       firePublicCB();
     })
     .catch(function(){ PUBLIC_COURSES = []; firePublicCB(); });
-}
-/* تحديث يدوي لقائمة الدورات */
-function cmRefreshCourses(btn){
-  if(btn){ btn.disabled = true; btn.textContent = 'جاري التحديث...'; }
-  PUBLIC_COURSES = null;
-  try{ sessionStorage.removeItem('tkc_public_courses'); }catch(e){}
-  var box = document.getElementById('cmPickBox');
-  if(box) box.innerHTML = '<div class="bk-empty">جاري تحميل الدورات...</div>';
-  onPublicCourses(function(){ cmRenderPicker(); cmRenderLinks(); });
 }
 
 // يبني رابط المشاركة بنفس صيغة صفحة الدورات
@@ -764,94 +761,53 @@ function cmCopy(btn, url){
     navigator.clipboard.writeText(url).then(done).catch(function(){ prompt('انسخ الرابط:', url); });
   } else { prompt('انسخ الرابط:', url); }
 }
-/* مفتاح فريد للدورة (كود الدورة أو الاسم+التاريخ) */
-function cmKey(item){
-  var code = String(item.code||'').trim();
-  if(code) return 'c:'+code;
-  return 'n:'+ tkNormName(item.name||'') +'|'+ String(item.date||'').trim();
-}
-function cmSelGet(){
-  try{ return JSON.parse(localStorage.getItem('cm_sel_'+MY_REF_CODE)||'[]'); }catch(e){ return []; }
-}
-function cmSelSet(arr){
-  try{ localStorage.setItem('cm_sel_'+MY_REF_CODE, JSON.stringify(arr)); }catch(e){}
-}
-function cmToggle(key){
-  var sel = cmSelGet();
-  var i = sel.indexOf(key);
-  if(i>-1) sel.splice(i,1); else sel.push(key);
-  cmSelSet(sel);
-  cmRenderPicker(); cmRenderLinks();
-}
-/* قائمة كل الدورات المنشورة مع زر أضف/مضافة */
-function cmRenderPicker(){
-  var box = document.getElementById('cmPickBox');
-  if(!box) return;
-  if(PUBLIC_COURSES === null){
-    box.innerHTML = '<div class="bk-empty">جاري تحميل الدورات...</div>'; return;
-  }
-  if(!PUBLIC_COURSES.length){
-    box.innerHTML = '<div class="bk-empty">لا توجد دورات منشورة حالياً.'
-      + '<br><button class="cm-pick-btn" style="margin-top:12px" onclick="cmRefreshCourses(this)">↻ تحديث القائمة</button></div>'; return;
-  }
-  var sel = cmSelGet();
-  var myWant = tkNormName(MY_NAME || '');
-  // دورات المدرب أولاً ثم الباقي
-  var list = PUBLIC_COURSES.slice().sort(function(a,b){
-    var am = (myWant && tkNormName(a.trainer)===myWant)?0:1;
-    var bm = (myWant && tkNormName(b.trainer)===myWant)?0:1;
-    return am-bm;
-  });
-  box.innerHTML = list.map(function(item){
-    var key = cmKey(item);
-    var on  = sel.indexOf(key) > -1;
-    var when = [item.date, item.time].filter(Boolean).join(' · ');
-    var price = Number(item.price||0) <= 0 ? 'مجانية' : item.price + ' د.ك';
-    var mine = (myWant && tkNormName(item.trainer)===myWant) ? '<span class="mine-tag">دورتك</span>' : '';
-    return '<div class="cm-pick'+(on?' on':'')+'">'
-      + '<div class="cm-pick-info"><div class="cm-pick-name">'+ mine + (item.name||'دورة') +'</div>'
-      + '<div class="cm-pick-meta">'+ (when?when+' · ':'') + price +'</div></div>'
-      + '<button class="cm-pick-btn'+(on?' on':'')+'" onclick="cmToggle(\''+key.replace(/'/g,"\\'")+'\')">'
-      + (on?'✓ مضافة':'＋ أضف') +'</button></div>';
-  }).join('');
-}
-/* روابط الدورات المختارة فقط + الرابط العام */
-function cmRenderLinks(){
-  var box = document.getElementById('cmLinksBox');
+/* رابط المدرب المخصص لصفحة العرض */
+function cmRenderLink(){
+  var box = document.getElementById('cmLinkBox');
   if(!box) return;
   var code = MY_REF_CODE;
-  var generic = cmRefUrl(COURSE_PAGE_URL, code);
-  var html = '<div class="cm-link-card generic">'
-    + '<div class="cm-lc-name">🔗 رابطك العام — لكل الدورات</div>'
-    + '<div class="cm-lc-meta">شاركه بأي مكان، وأي تسجيل مدفوع يتم عبره يُحتسب لك.</div>'
-    + '<div class="cm-lc-url">' + generic + '</div>'
-    + '<button class="cm-copy" onclick="cmCopy(this,\''+generic+'\')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>نسخ الرابط العام</button>'
+  if(!code){ box.innerHTML = '<div class="bk-empty">—</div>'; return; }
+  var url = cmRefUrl(OFFER_PAGE_URL, code);
+  box.innerHTML = '<div class="cm-link-card generic">'
+    + '<div class="cm-lc-name">🔗 صفحتك الخاصة للبيع بالعمولة</div>'
+    + '<div class="cm-lc-meta">انشره بالانستقرام أو الواتساب — الزبون يختار باقة ويدفع، والبيع يُحتسب لك تلقائياً.</div>'
+    + '<div class="cm-lc-url">' + url + '</div>'
+    + '<button class="cm-copy" onclick="cmCopy(this,\''+url+'\')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>نسخ رابطك</button>'
+    + '<a href="'+url+'" target="_blank" style="display:block;text-align:center;margin-top:10px;color:var(--crimson);font-weight:800;font-size:13px;text-decoration:none">معاينة صفحتك ↗</a>'
     + '</div>';
-  var sel = cmSelGet();
-  var chosen = (PUBLIC_COURSES||[]).filter(function(c){ return sel.indexOf(cmKey(c)) > -1; });
-  if(!chosen.length){
-    html += '<div class="cm-empty-links">ما اخترت أي دورة بعد — أضف دورات من القائمة فوق عشان تظهر روابطها هنا.</div>';
-  }
-  chosen.forEach(function(item){
-    var url = cmRefUrl(buildShareUrl(item), code);
-    var when = [item.date, item.time].filter(Boolean).join(' · ');
-    var price = Number(item.price||0) <= 0 ? 'مجانية' : item.price + ' د.ك';
-    html += '<div class="cm-link-card">'
-      + '<div class="cm-lc-name">'+ (item.name||'دورة') +'</div>'
-      + '<div class="cm-lc-meta">'+ (when?when+' · ':'') + price +'</div>'
-      + '<div class="cm-lc-url">' + url + '</div>'
-      + '<button class="cm-copy" onclick="cmCopy(this,\''+url+'\')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>نسخ رابط الدورة</button>'
-      + '</div>';
-  });
-  box.innerHTML = html;
+}
+/* الباقات المعتمدة للعمولة (يحددها الأدمن) — للعرض فقط */
+function cmLoadPkgs(){
+  var box = document.getElementById('cmPkgBox');
+  if(!box) return;
+  fetch(COURSES_PUBLIC_URL + '?action=commissionPackages&t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var pkgs = (d && d.packages) ? d.packages : [];
+      if(!pkgs.length){
+        box.innerHTML = '<div class="bk-empty">ما في باقات معتمدة للبيع بالعمولة حالياً — قسم مسار بيضيفها قريباً.</div>';
+        return;
+      }
+      box.innerHTML = pkgs.map(function(p){
+        var price = Number(p.price||0) <= 0 ? 'مجانية' : p.price + ' د.ك';
+        var inc = (p.count && p.count>0) ? ' · تشمل ' + p.count + ' دورة' : '';
+        var desc = p.desc ? '<div class="cm-pkg-meta">'+p.desc+'</div>' : '';
+        return '<div class="cm-pkg-card">'
+          + '<div class="cm-pkg-top"><div class="cm-pkg-name">'+(p.name||'باقة')+'</div>'
+          + '<div class="cm-pkg-price">'+price+'</div></div>'
+          + '<div class="cm-pkg-meta">'+ price + inc +'</div>'
+          + desc + '</div>';
+      }).join('');
+    })
+    .catch(function(){
+      box.innerHTML = '<div class="bk-empty">تعذّر تحميل الباقات — حدّث الصفحة.</div>';
+    });
 }
 function loadCommission(memberId, myName){
   MY_REF_CODE = memberId || '';
-  // الروابط تعتمد على الدورات العامة — نضمن تحميلها ثم نرسم
   MY_NAME = myName || '';
-  cmRenderPicker();   // حالة "جاري التحميل" إن لزم
-  cmRenderLinks();
-  onPublicCourses(function(){ cmRenderPicker(); cmRenderLinks(); });
+  cmRenderLink();
+  cmLoadPkgs();
 
   if(!memberId) return;
   fetch(COURSES_PUBLIC_URL + '?action=commission&trainer=' + encodeURIComponent(memberId) + '&t=' + Date.now())
