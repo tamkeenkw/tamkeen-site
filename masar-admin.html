@@ -1073,7 +1073,7 @@ async function savePkg(){
     price: price,
     certFee: Number(document.getElementById('pCertFee').value) || 0,
     courseIds: (pType === 'عضوية' ? [] : PICKED),
-    type: pType,
+    ptype: pType,
     features: feats,
     image: document.getElementById('pImage').value.trim(),
     seats: Number(document.getElementById('pSeats').value) || 0,
