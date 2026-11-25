@@ -206,6 +206,50 @@ body { font-family:'Tajawal',sans-serif; background:var(--cream); color:var(--te
 footer { background:#3A0808; padding:24px; text-align:center; }
 footer p { font-size:13px; color:rgba(255,255,255,.28); }
 @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+/* ===== البيع بالعمولة ===== */
+.cm-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.cm-stat { background:#fff; border-radius:16px; padding:18px 14px; text-align:center; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); }
+.cm-num { font-size:26px; font-weight:900; color:var(--crimson); line-height:1.1; }
+.cm-lbl { font-size:11.5px; font-weight:700; color:var(--muted); margin-top:6px; }
+.cm-progress-card { background:linear-gradient(135deg,#5C0F0F,#6B1212); color:#fff; border-radius:18px; padding:20px 22px; margin-bottom:20px; box-shadow:0 10px 30px rgba(92,15,15,.22); }
+.cm-prog-top { display:flex; justify-content:space-between; align-items:center; font-size:14px; font-weight:800; margin-bottom:12px; }
+.cm-bar { height:12px; background:rgba(255,255,255,.18); border-radius:100px; overflow:hidden; }
+.cm-bar-fill { height:100%; background:linear-gradient(90deg,#E8C87A,#F5DFA0); border-radius:100px; width:0%; transition:width .6s ease; }
+.cm-prog-note { font-size:12.5px; font-weight:600; opacity:.9; margin-top:10px; }
+.cm-links-title { font-size:14px; font-weight:900; color:var(--text); margin:22px 4px 12px; }
+.cm-link-card { background:#fff; border-radius:16px; padding:16px 18px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:12px; }
+.cm-link-card.generic { border:1.6px dashed rgba(92,15,15,.3); background:#FFFDF9; }
+.cm-lc-name { font-size:15px; font-weight:900; color:var(--text); margin-bottom:4px; }
+.cm-lc-meta { font-size:12.5px; color:var(--muted); font-weight:600; margin-bottom:12px; }
+.cm-lc-url { font-size:12px; color:var(--crimson); background:var(--cream); border-radius:10px; padding:9px 12px; word-break:break-all; font-weight:700; margin-bottom:10px; direction:ltr; text-align:left; }
+.cm-copy { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; background:var(--crimson); color:#fff; border:none; border-radius:12px; padding:12px; font-family:'Tajawal',sans-serif; font-size:14px; font-weight:800; cursor:pointer; transition:all .25s; }
+.cm-copy:hover { background:var(--crimson-2); }
+.cm-copy svg { width:17px; height:17px; fill:none; stroke:#fff; stroke-width:2.5; }
+.cm-copy.copied { background:#1a7a3c; }
+.cm-order-card { background:#fff; border-radius:14px; padding:14px 16px; box-shadow:0 6px 24px rgba(92,15,15,.07); border:1.5px solid rgba(92,15,15,.07); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.cm-oc-name { font-size:14.5px; font-weight:800; color:var(--text); }
+.cm-oc-item { font-size:12px; color:var(--muted); font-weight:600; margin-top:3px; }
+.cm-oc-amount { font-size:15px; font-weight:900; color:var(--crimson); white-space:nowrap; }
+.cm-oc-date { font-size:11px; color:var(--muted); font-weight:600; margin-top:2px; text-align:left; direction:ltr; }
+.cm-how { font-size:12.5px; color:var(--muted); font-weight:600; background:var(--cream); border-radius:12px; padding:13px 16px; margin-top:16px; line-height:1.7; border-right:3px solid var(--crimson); }
+.cm-pick-hint { font-size:11px; font-weight:600; color:var(--muted); margin-right:8px; letter-spacing:0; }
+.cm-pick { display:flex; align-items:center; justify-content:space-between; gap:12px; background:#fff; border-radius:14px; padding:14px 16px; box-shadow:0 5px 20px rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.07); margin-bottom:10px; transition:all .22s; }
+.cm-pick.on { border-color:var(--crimson); background:#FFFDF9; }
+.cm-pick-info { flex:1; min-width:0; }
+.cm-pick-name { font-size:14.5px; font-weight:900; color:var(--text); }
+.cm-pick-name .mine-tag { font-size:10px; font-weight:800; color:#fff; background:var(--crimson); border-radius:100px; padding:2px 8px; margin-right:6px; vertical-align:middle; }
+.cm-pick-meta { font-size:12px; color:var(--muted); font-weight:600; margin-top:3px; }
+.cm-pick-btn { flex-shrink:0; border:1.6px solid var(--crimson); background:#fff; color:var(--crimson); border-radius:100px; padding:8px 18px; font-family:'Tajawal',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all .2s; white-space:nowrap; }
+.cm-pick-btn:hover { background:var(--cream); }
+.cm-pick-btn.on { background:var(--crimson); color:#fff; }
+.cm-empty-links { color:var(--muted); font-weight:600; font-size:13px; text-align:center; padding:16px; background:var(--cream); border-radius:12px; }
+.cm-pkg-card { background:#fff; border-radius:14px; padding:16px 18px; box-shadow:0 5px 20px rgba(92,15,15,.06); border:1.5px solid rgba(92,15,15,.07); margin-bottom:10px; }
+.cm-pkg-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.cm-pkg-name { font-size:15.5px; font-weight:900; color:var(--text); }
+.cm-pkg-price { font-size:16px; font-weight:900; color:var(--crimson); white-space:nowrap; }
+.cm-pkg-meta { font-size:12.5px; color:var(--muted); font-weight:600; margin-top:4px; }
+@media(max-width:560px){ .cm-stats{ grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
 <body>
@@ -298,6 +342,30 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
       </a>
     </div>
 
+    <div class="section-title" style="margin-top:30px;">البيع بالعمولة</div>
+    <div id="commissionBox">
+      <div class="cm-stats">
+        <div class="cm-stat"><div class="cm-num" id="cmMonthComm">—</div><div class="cm-lbl">عمولة هذا الشهر (د.ك)</div></div>
+        <div class="cm-stat"><div class="cm-num" id="cmMonthCount">—</div><div class="cm-lbl">مشترك مدفوع هذا الشهر</div></div>
+        <div class="cm-stat"><div class="cm-num" id="cmRate">—</div><div class="cm-lbl">نسبتك الحالية</div></div>
+        <div class="cm-stat"><div class="cm-num" id="cmYearComm">—</div><div class="cm-lbl">عمولة السنة (د.ك)</div></div>
+      </div>
+      <div class="cm-progress-card">
+        <div class="cm-prog-top"><span>التقدّم نحو نسبة ١٥٪</span><span id="cmProgTxt">—</span></div>
+        <div class="cm-bar"><div class="cm-bar-fill" id="cmBarFill"></div></div>
+        <div class="cm-prog-note" id="cmProgNote">—</div>
+      </div>
+      <div class="cm-links-title">رابطك المخصص للبيع بالعمولة</div>
+      <div id="cmLinkBox"><div class="bk-empty">—</div></div>
+      <div class="cm-links-title">الباقات والعضويات المتاحة للبيع بالعمولة
+        <span class="cm-pick-hint">يحددها قسم مسار — تظهر في صفحتك</span>
+      </div>
+      <div id="cmPkgBox"><div class="bk-empty">جاري تحميل الباقات...</div></div>
+      <div class="cm-links-title">مَن سجّل عن طريقك</div>
+      <div id="cmOrdersBox"><div class="bk-empty">—</div></div>
+      <div class="cm-how">عمولتك <b>١٠٪</b> من المبلغ المدفوع فعلاً لكل مشترك يسجّل عبر رابطك، وترتفع تلقائياً إلى <b>١٥٪</b> بعد تجاوز <b>١٠٠ مشترك مدفوع</b> خلال السنة. الرابط صالح ٣٠ يوم من فتحه، وتُحتسب العمولة عند إتمام الدفع فقط.</div>
+    </div>
+
     <div class="section-title" style="margin-top:30px;">دوراتي
       <span class="count-badge" id="crsMonthLbl" style="display:none;"></span>
     </div>
@@ -362,6 +430,7 @@ const EVAL_PAGE = 'Taqeem.html';
 /* ===== مشاركة رابط الدورة (نفس صيغة صفحة الدورات العامة) ===== */
 /* عنوان صفحة الدورات العامة — عدّله لو كان مختلفاً */
 const COURSE_PAGE_URL   = 'https://tamkeenkuw.com/masar';
+const OFFER_PAGE_URL    = 'https://tamkeenkuw.com/masar-offer.html';
 /* نفس سكربت الدورات العامة getPublic المستخدم بصفحة مسار */
 const COURSES_PUBLIC_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
 
@@ -374,17 +443,24 @@ function tkNormName(s) {
     .replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-function fetchPublicCourses() {
+var PUBLIC_COURSES_CBS = [];
+function firePublicCB(){ var cbs = PUBLIC_COURSES_CBS.slice(); PUBLIC_COURSES_CBS = []; cbs.forEach(function(fn){ try{ fn(); }catch(e){} }); }
+function onPublicCourses(cb){ if(PUBLIC_COURSES){ cb(); } else { PUBLIC_COURSES_CBS.push(cb); fetchPublicCourses(); } }
+
+function fetchPublicCourses(force) {
   // كاش ١٠ دقائق بالجلسة
-  var cached = tkCacheGet('tkc_public_courses');
-  if (cached) { PUBLIC_COURSES = cached; return; }
-  fetch(COURSES_PUBLIC_URL + '?action=getPublic')
+  if(!force){
+    var cached = tkCacheGet('tkc_public_courses');
+    if (cached && cached.length) { PUBLIC_COURSES = cached; firePublicCB(); return; }
+  }
+  fetch(COURSES_PUBLIC_URL + '?action=getPublic&t=' + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(data){
       PUBLIC_COURSES = (data && data.courses) ? data.courses : [];
-      try { sessionStorage.setItem('tkc_public_courses', JSON.stringify({ t: Date.now(), d: PUBLIC_COURSES })); } catch(e) {}
+      try { if(PUBLIC_COURSES.length) sessionStorage.setItem('tkc_public_courses', JSON.stringify({ t: Date.now(), d: PUBLIC_COURSES })); } catch(e) {}
+      firePublicCB();
     })
-    .catch(function(){ PUBLIC_COURSES = []; });
+    .catch(function(){ PUBLIC_COURSES = []; firePublicCB(); });
 }
 
 // يبني رابط المشاركة بنفس صيغة صفحة الدورات
@@ -556,6 +632,7 @@ function showDashboard(m) {
   window.scrollTo(0, 0);
   loadMyBookings(m.memberId || '');
   loadMyCourses(m.name || '');
+  loadCommission(m.memberId || '', m.name || '');
 
   // إعادة ضبط قسم آراء الحضور (يُحمّل عند الضغط فقط)
   reviewsLoaded = false;
@@ -664,6 +741,103 @@ function loadCourseStudents(btn) {
   script.src = MASAR_URL + '?action=getStudents&course=' + encodeURIComponent(course) +
                '&date=' + encodeURIComponent(date) + '&callback=' + cbName + '&t=' + Date.now();
   document.body.appendChild(script);
+}
+
+/* ================= البيع بالعمولة ================= */
+var MY_REF_CODE = '';
+var MY_NAME = '';
+function cmRefUrl(baseUrl, code){
+  if(!code) return baseUrl;
+  return baseUrl + (baseUrl.indexOf('?') > -1 ? '&' : '?') + 'ref=' + encodeURIComponent(code);
+}
+function cmCopy(btn, url){
+  function done(){
+    var orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>تم النسخ ✓';
+    setTimeout(function(){ btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(function(){ prompt('انسخ الرابط:', url); });
+  } else { prompt('انسخ الرابط:', url); }
+}
+/* رابط المدرب المخصص لصفحة العرض */
+function cmRenderLink(){
+  var box = document.getElementById('cmLinkBox');
+  if(!box) return;
+  var code = MY_REF_CODE;
+  if(!code){ box.innerHTML = '<div class="bk-empty">—</div>'; return; }
+  var url = cmRefUrl(OFFER_PAGE_URL, code);
+  box.innerHTML = '<div class="cm-link-card generic">'
+    + '<div class="cm-lc-name">🔗 صفحتك الخاصة للبيع بالعمولة</div>'
+    + '<div class="cm-lc-meta">انشره بالانستقرام أو الواتساب — الزبون يختار باقة ويدفع، والبيع يُحتسب لك تلقائياً.</div>'
+    + '<div class="cm-lc-url">' + url + '</div>'
+    + '<button class="cm-copy" onclick="cmCopy(this,\''+url+'\')"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>نسخ رابطك</button>'
+    + '<a href="'+url+'" target="_blank" style="display:block;text-align:center;margin-top:10px;color:var(--crimson);font-weight:800;font-size:13px;text-decoration:none">معاينة صفحتك ↗</a>'
+    + '</div>';
+}
+/* الباقات المعتمدة للعمولة (يحددها الأدمن) — للعرض فقط */
+function cmLoadPkgs(){
+  var box = document.getElementById('cmPkgBox');
+  if(!box) return;
+  fetch(COURSES_PUBLIC_URL + '?action=commissionPackages&t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var pkgs = (d && d.packages) ? d.packages : [];
+      if(!pkgs.length){
+        box.innerHTML = '<div class="bk-empty">ما في باقات معتمدة للبيع بالعمولة حالياً — قسم مسار بيضيفها قريباً.</div>';
+        return;
+      }
+      box.innerHTML = pkgs.map(function(p){
+        var price = Number(p.price||0) <= 0 ? 'مجانية' : p.price + ' د.ك';
+        var inc = (p.count && p.count>0) ? ' · تشمل ' + p.count + ' دورة' : '';
+        var desc = p.desc ? '<div class="cm-pkg-meta">'+p.desc+'</div>' : '';
+        return '<div class="cm-pkg-card">'
+          + '<div class="cm-pkg-top"><div class="cm-pkg-name">'+((p.type==='عضوية')?'🎫 ':'')+(p.name||'باقة')+'</div>'
+          + '<div class="cm-pkg-price">'+price+'</div></div>'
+          + '<div class="cm-pkg-meta">'+ price + inc +'</div>'
+          + desc + '</div>';
+      }).join('');
+    })
+    .catch(function(){
+      box.innerHTML = '<div class="bk-empty">تعذّر تحميل الباقات — حدّث الصفحة.</div>';
+    });
+}
+function loadCommission(memberId, myName){
+  MY_REF_CODE = memberId || '';
+  MY_NAME = myName || '';
+  cmRenderLink();
+  cmLoadPkgs();
+
+  if(!memberId) return;
+  fetch(COURSES_PUBLIC_URL + '?action=commission&trainer=' + encodeURIComponent(memberId) + '&t=' + Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok) return;
+      document.getElementById('cmMonthComm').textContent  = d.monthCommission;
+      document.getElementById('cmMonthCount').textContent = d.monthCount;
+      document.getElementById('cmRate').textContent       = d.ratePct + '٪';
+      document.getElementById('cmYearComm').textContent   = d.yearCommission;
+      var pct = Math.min(100, Math.round((d.yearCount / d.threshold) * 100));
+      document.getElementById('cmBarFill').style.width = pct + '%';
+      document.getElementById('cmProgTxt').textContent = d.yearCount + ' / ' + d.threshold;
+      var note = document.getElementById('cmProgNote');
+      if(d.ratePct >= 15){ note.textContent = '🎉 وصلت نسبة ١٥٪ — عمولتك الآن ١٥٪ على كل اشتراك.'; }
+      else { note.textContent = 'باقي ' + d.toNext + ' مشترك مدفوع للوصول إلى نسبة ١٥٪.'; }
+      // المسجّلون عن طريقك
+      var ob = document.getElementById('cmOrdersBox');
+      if(d.orders && d.orders.length){
+        ob.innerHTML = d.orders.map(function(o){
+          return '<div class="cm-order-card"><div><div class="cm-oc-name">'+ (o.name||'—') +'</div>'
+               + '<div class="cm-oc-item">'+ (o.items||'') +'</div></div>'
+               + '<div style="text-align:left"><div class="cm-oc-amount">'+ o.total +' د.ك</div>'
+               + '<div class="cm-oc-date">'+ (o.date||'') +'</div></div></div>';
+        }).join('');
+      } else {
+        ob.innerHTML = '<div class="bk-empty">لا يوجد مسجّلين مدفوعين عن طريقك بعد — شارك روابطك وابدأ البيع.</div>';
+      }
+    })
+    .catch(function(){});
 }
 
 function loadMyCourses(trainerName) {
