@@ -225,6 +225,8 @@ let PICK_OPEN = false, PICK_TAB = 'course', PICK_Q = '';
 
 function readCart(){ try{ return JSON.parse(localStorage.getItem(KEY) || '[]'); }catch(e){ return []; } }
 function writeCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){} }
+/* كود المدرب المُحيل (البيع بالعمولة) — صالح ٣٠ يوم */
+function masarRef(){ try{ var o=JSON.parse(localStorage.getItem('masar_ref')||'null'); if(o && o.code && (Date.now()-o.t) < 30*86400000) return String(o.code); }catch(e){} return ''; }
 
 /* ===== بداية ===== */
 (async function init(){
@@ -811,7 +813,7 @@ async function checkout(){
   try{
     const r = await fetch(API, {
       method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({ type:'createOrder', name:name, phone:phone, email:email,
+      body: JSON.stringify({ type:'createOrder', name:name, phone:phone, email:email, ref:masarRef(),
         installments: (PAYMODE === 'split'),
         items: CART.map(function(it){
           return { kind:it.kind, id:it.id, cert:(it.cert === true), extras:(it.extras || []) };

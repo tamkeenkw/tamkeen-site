@@ -566,6 +566,9 @@ document.getElementById('logoFoot').src = LOGO;
 const COURSES_URL = 'https://script.google.com/macros/s/AKfycbzdbbZqhVSENHtXhF366KpzZRDKMazE3hKJlrhxUSzS9h3r945KL7eqtxAAWHYcX-yCMA/exec';
 const MAIN_URL    = 'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec';
 
+/* ===== التقاط كود المدرب المُحيل (البيع بالعمولة) — يُخزَّن ليُرسل من السلة ===== */
+(function(){ try{ var r=(new URLSearchParams(location.search)).get('ref'); if(r){ r=String(r).trim(); if(r) localStorage.setItem('masar_ref', JSON.stringify({code:r,t:Date.now()})); } }catch(e){} })();
+
 let ALL = [], PKGS = [], PLANS = [], CERTP = 15, CART = [], BAN = [], IDX = 0, TMR = null, FILTER = 'all', CUR = null, WANT = 'لا';
 
 /* ===== LOAD ===== */
