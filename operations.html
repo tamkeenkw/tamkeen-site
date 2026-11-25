@@ -298,6 +298,35 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 .fee-in{width:92px;padding:6px 9px;border:1.5px dashed rgba(92,15,15,.25);border-radius:9px;font-family:inherit;font-size:12.5px;font-weight:800;background:var(--cream);color:var(--text);outline:none;}
 .fee-in:focus{border-style:solid;border-color:var(--crimson);background:#fff;}
 
+
+/* ===== نشر القناة ===== */
+.ch-plat{display:flex;gap:8px;margin-bottom:14px}
+.ch-plat button{flex:1;padding:12px;border-radius:13px;border:1.5px solid var(--line);background:#fff;font-family:inherit;font-size:14px;font-weight:900;color:var(--muted);cursor:pointer}
+.ch-plat button.on.wa{background:#1F8F4E;border-color:#1F8F4E;color:#fff}
+.ch-plat button.on.ig{background:linear-gradient(45deg,#C13584,#E1306C,#F77737);border-color:#E1306C;color:#fff}
+.ch-day{margin-bottom:20px}
+.ch-dayh{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cream-2);border-radius:12px;font-weight:900;color:var(--crimson);margin-bottom:10px;flex-wrap:wrap}
+.ch-dayh.today{background:var(--crimson);color:#fff}
+.ch-dayh small{font-weight:800;opacity:.75;font-size:12px}
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.ch-card{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 15px;display:flex;flex-direction:column;gap:9px}
+.ch-card.done{opacity:.55;border-style:dashed}
+.ch-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ch-slot{font-size:12px;font-weight:900;border-radius:99px;padding:4px 11px;white-space:nowrap;background:var(--cream-2);color:var(--crimson)}
+.ch-slot.now{background:var(--crimson);color:#fff} .ch-slot.late{background:#FBE9E9;color:#9B1C1C}
+.ch-title{font-weight:900;font-size:15px;line-height:1.5}
+.ch-meta{font-size:12.5px;color:var(--muted);font-weight:700;line-height:1.8}
+.ch-steps{display:flex;gap:4px}
+.ch-steps i{flex:1;height:5px;border-radius:9px;background:var(--cream-2)}
+.ch-steps i.d{background:#1F8F4E} .ch-steps i.c{background:var(--crimson)}
+.ch-msg{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.8;white-space:pre-wrap;max-height:130px;overflow:hidden;position:relative}
+.ch-msg.open{max-height:none}
+.ch-msg:not(.open)::after{content:'';position:absolute;left:0;right:0;bottom:0;height:40px;background:linear-gradient(transparent,var(--cream))}
+.ch-acts{display:flex;gap:6px;flex-wrap:wrap}
+.ch-acts button,.ch-acts a{font-family:inherit;font-size:12.5px;font-weight:800;border-radius:10px;padding:8px 12px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--crimson);text-decoration:none}
+.ch-acts .main{background:var(--crimson);color:#fff;border-color:var(--crimson);flex:1;text-align:center}
+.ch-acts .main.copied{background:#1F8F4E;border-color:#1F8F4E}
+.ch-acts .dn{border-color:#1F7A45;color:#1F7A45}
 /* ===== طلبات الاسترجاع ===== */
 .rf-wrap{max-width:760px;}
 .rf-f{margin-bottom:14px;}
@@ -497,6 +526,11 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
       <div class="menu-card" onclick="openSection('overview')">
         <div class="mc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></div>
         <div class="mc-title">نظرة عامة</div><div class="mc-desc">ملخص لحظي لكل ما يحتاج متابعتك</div>
+      </div>
+      <div class="menu-card" onclick="openSection('channel')">
+        <span class="mc-badge" id="badge-channel" style="display:none" title="منشورات مطلوبة اليوم">0</span>
+        <div class="mc-ico"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></div>
+        <div class="mc-title">نشر القناة</div><div class="mc-desc">واتساب وإنستقرام · دورات الشهر من الموقع · ٤ منشورات لكل دورة</div>
       </div>
       <div class="menu-card" onclick="openSection('refunds')">
         <span class="mc-badge" id="badge-refunds" style="display:none" title="طلبات استرجاع قيد المراجعة">0</span>
@@ -1166,6 +1200,34 @@ table.dr-tb tr:nth-child(even) td{background:#faf6f2;}
 
   <!-- ===== MEMBERSHIP ===== -->
 
+  <!-- ═══ نشر القناة ═══ -->
+  <div class="panel" id="p-channel">
+    <div class="sec-head">
+      <div><div class="sec-title"><svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>نشر القناة</div>
+      <div class="sec-desc" id="chDesc">دورات الشهر من الجدول المعلن بالموقع — كل دورة تنشر ٤ مرات قبل موعدها</div></div>
+      <button class="btn btn-ghost" onclick="chLoad(true)"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>تحديث</button>
+    </div>
+    <div class="ch-plat">
+      <button class="wa on" data-p="wa" onclick="chPlat('wa')">💬 قناة الواتساب</button>
+      <button class="ig" data-p="ig" onclick="chPlat('ig')">📸 الإنستقرام</button>
+    </div>
+    <div class="mbr-stats">
+      <div class="mbr-stat" style="cursor:pointer" onclick="chSet('today')"><b id="chToday">—</b><small>منشورات اليوم</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="chSet('today')"><b id="chLate" style="color:#9B1C1C">—</b><small>فات وقتها اليوم</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="chSet('next')"><b id="chNext">—</b><small>القادمة</small></div>
+      <div class="mbr-stat" style="cursor:pointer" onclick="chSet('courses')"><b id="chCourses">—</b><small>دورة بالجدول</small></div>
+    </div>
+    <div class="toolbar">
+      <div class="filter" id="chFilter" style="flex-wrap:wrap">
+        <button class="on" data-f="today" onclick="chSet('today')">اليوم</button>
+        <button data-f="next" onclick="chSet('next')">القادمة</button>
+        <button data-f="done" onclick="chSet('done')">تم نشره</button>
+        <button data-f="courses" onclick="chSet('courses')">حسب الدورة</button>
+      </div>
+    </div>
+    <div id="chBody"><div class="loading"><div class="sp"></div>جاري تحميل الجدول...</div></div>
+  </div>
+
   <!-- ═══ طلبات الاسترجاع ═══ -->
   <div class="panel" id="p-refunds">
     <div class="sec-head">
@@ -1472,7 +1534,7 @@ function logout(){ sessionStorage.removeItem('ops_ok'); location.reload(); }
 const SECTION_TITLES = {
   overview:'نظرة عامة', bookings:'طلبات الحجز', materials:'اعتماد المواد',
   attendance:'الراغبون في الحضور', joins:'طلبات الانضمام', schedule:'الجدول التدريبي',
-  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية', certinv:'جرد الشهادات الشهري', pubplan:'خطة النشر', refunds:'طلبات الاسترجاع'
+  designs:'التصاميم والبوسترات', institutional:'الدورات المؤسسية', letters:'الكتب الرسمية', offer:'العرض المالي', nominations:'الترشيحات الحكومية', cv:'السيرة الذاتية للمدرب', memberconsult:'متابعة استشارات الأعضاء', mytasks:'مهامي', dailyreport:'التقرير اليومي', masarops:'مسار اوبريشن', masaradmin:'مسار ادمن', blocks:'إغلاق مواعيد الحجز', trmat:'المواد التدريبية للمدرب', membership:'استعلام وإصدار رقم العضوية', certinv:'جرد الشهادات الشهري', pubplan:'خطة النشر', refunds:'طلبات الاسترجاع', channel:'نشر القناة'
 };
 function openSection(id){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
@@ -1492,6 +1554,7 @@ function openSection(id){
   if(id==='certinv') ciInit();
   if(id==='pubplan') ppRender();
   if(id==='refunds') rfInit();
+  if(id==='channel') chLoad();
   if(id==='trmat') tmInit();
   if(id==='masaradmin'){ const f=document.getElementById('masarAdminFrame'); if(f && !f.getAttribute('src')) f.src=f.dataset.src; }
 }
@@ -5283,6 +5346,195 @@ async function rfSubmit(){
     rfTab(document.querySelector('#rfSeg [data-rf="list"]'),'list');
   }catch(e){ rfErr(e.message); }
   finally{ btn.disabled=false; btn.textContent='إرسال الطلب للمراجعة'; }
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   نشر القناة — واتساب + إنستقرام
+   الدورات من نفس مصدر صفحة الجدول بالموقع (getCourses — مجاني)
+   كل دورة: ٤ منشورات بأوقات متفرقة قبل موعدها
+   ═══════════════════════════════════════════════ */
+const CH_SOURCES = [   // نفس سكربت صفحة masar-free (الأول) + سكربت مسار الرئيسي احتياطي
+  'https://script.google.com/macros/s/AKfycbxsaNkqEv-MIr4gab_ziES2S68Qplvr-ZMQTSHMemAs9gOF_DQmRUvJ2cl0dc-C296W/exec',
+  'https://script.google.com/macros/s/AKfycbzYWuZ_NmulpprbueA0GXuwfi9KO2z55J5v330BfT7E_4jUNvbP5aTklkegjjnZ7a16/exec'
+];
+const CH_PAGE = 'https://tamkeenkuw.com/masar-free.html';   // صفحة الجدول — الرابط يفتح نموذج تسجيل الدورة مباشرة
+const CH_KEY = 'tamkeen_channel_done_v1';
+const CH_SLOTS = [
+  {n:1, before:7, h:10, m:0,  lbl:'إعلان الدورة',   ico:'📣'},
+  {n:2, before:3, h:20, m:0,  lbl:'باقي ٣ أيام',     ico:'⏳'},
+  {n:3, before:1, h:16, m:0,  lbl:'تذكير بكرة',      ico:'⏰'},
+  {n:4, before:0, h:12, m:0,  lbl:'اليوم — آخر فرصة', ico:'🔴'}
+];
+const CH_DAYS=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const CH_MONTHS=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+let CH_COURSES=null, CH_PLAT='wa', CH_F='today', CH_LIST=[], CH_LOADING=false, CH_SRC='';
+
+function chDone(){ try{ return JSON.parse(localStorage.getItem(CH_KEY)||'{}'); }catch(e){ return {}; } }
+function chSaveDone(o){ try{ localStorage.setItem(CH_KEY,JSON.stringify(o)); }catch(e){} }
+function chP2(n){ return n<10?'0'+n:''+n; }
+function chParseDate(s){
+  s=String(s||'').trim(); let m=s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/); if(m) return new Date(+m[3],+m[2]-1,+m[1]);
+  m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  const d=parseDate(s); return d&&!isNaN(d)?d:null;
+}
+function chDayTxt(d){ return CH_DAYS[d.getDay()]+' '+d.getDate()+' '+CH_MONTHS[d.getMonth()]; }
+function chClock(d){ const h=d.getHours(), m=d.getMinutes(); return (h%12||12)+':'+chP2(m)+' '+(h<12?'ص':'م'); }
+/* رابط قصير: التاريخ + بصمة قصيرة لاسم الدورة (نفس الدالة مضافة بصفحة الجدول) */
+function chKey(name){ let h=5381; const s=String(name||'').replace(/\s+/g,' ').trim(); for(let i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))>>>0; } return h.toString(36).slice(-5); }
+function chLink(c,src){ return CH_PAGE+'?d='+encodeURIComponent(c.date)+'&k='+chKey(c.name)+'&src='+src; }
+
+async function chFetch(){
+  let lastErr='';
+  for(const u of CH_SOURCES){
+    try{
+      const r=await fetch(u+'?action=getCourses&type='+encodeURIComponent('مجاني')+'&t='+Date.now());
+      const d=await r.json();
+      if(d && Array.isArray(d.courses)){ CH_SRC=u; return d.courses; }
+      lastErr='رد غير متوقع';
+    }catch(e){ lastErr=e.message; }
+  }
+  throw new Error(lastErr||'تعذّر الاتصال');
+}
+async function chLoad(force){
+  const box=document.getElementById('chBody');
+  if(CH_COURSES && !force){ chRender(); return; }
+  if(CH_LOADING) return; CH_LOADING=true;
+  if(box) box.innerHTML='<div class="loading"><div class="sp"></div>جاري تحميل الجدول...</div>';
+  try{
+    const list=await chFetch();
+    const t0=new Date(); t0.setHours(0,0,0,0);
+    CH_COURSES=list.map(c=>{ const d=chParseDate(c.date); return Object.assign({},c,{_d:d}); })
+      .filter(c=>c._d && c.name && c._d>=t0)
+      .sort((a,b)=>a._d-b._d);
+    chRender();
+  }catch(e){
+    if(box) box.innerHTML='<div class="mbr-note err">تعذّر جلب جدول الدورات من الموقع: '+esc(e.message)+'</div>';
+  }finally{ CH_LOADING=false; }
+}
+
+/* ── الرسالة حسب المنشور والمنصة ── */
+function chMsg(c,slot,plat){
+  const wa=plat==='wa', B=t=>wa?'*'+t+'*':t;
+  const online=c.zoom && /^https?:/i.test(c.zoom);
+  const time=String(c.time||'').trim();
+  const info=[
+    '👤 تقديم: '+(c.trainer||''),
+    '📅 '+chDayTxt(c._d),
+    time?'🕔 الساعة '+time:'',
+    online?'💻 أونلاين':'📍 حضوري'+(c.zoom?' — '+c.zoom:''),
+    '🎁 الحضور مجاني'
+  ].filter(Boolean).join('\n');
+  const link=chLink(c,plat);
+  const reg = wa ? 'سجّل مباشرة من الرابط 👇\n'+link : '🔗 رابط التسجيل المباشر بالستوري والبايو';
+  let head, tail;
+  if(slot.n===1){ head='📣 '+B('دورة جديدة من أكاديمية مسار')+'\n\n'+B(c.name); tail='المقاعد محدودة — احجز مكانك من الحين.'; }
+  else if(slot.n===2){ head='⏳ '+B('باقي ٣ أيام')+' على دورة\n'+B('«'+c.name+'»'); tail='لا تفوّتك — التسجيل مفتوح للحين.'; }
+  else if(slot.n===3){ head='⏰ '+B('بكرة')+' موعدنا مع دورة\n'+B('«'+c.name+'»'); tail='آخر يوم للتسجيل — سجّل الحين ويوصلك رابط الحضور.'; }
+  else { head='🔴 '+B('اليوم'+(time?' الساعة '+time:''))+'\n'+B('«'+c.name+'»'); tail='آخر فرصة للتسجيل 🔥'; }
+  let msg=head+'\n\n'+info+'\n\n'+tail+'\n'+reg+'\n\nللاستفسار: 97999768\nأكاديمية مسار × تمكين';
+  if(!wa) msg+='\n\n#أكاديمية_مسار #تمكين #'+String(c.name).replace(/[«»"'()؟?!.,:،\-–—]/g,' ').trim().split(/\s+/).slice(0,3).join('_')+' #دورات_مجانية '+(online?'#دورات_أونلاين':'#دورات_الكويت')+' #الكويت';
+  return msg;
+}
+
+/* ── كل دورة → ٤ منشورات ── */
+function chBuild(){
+  const now=new Date(), t0=new Date(now); t0.setHours(0,0,0,0);
+  const done=chDone(), out=[];
+  (CH_COURSES||[]).forEach(c=>{
+    CH_SLOTS.forEach(sl=>{
+      const at=new Date(c._d); at.setDate(at.getDate()-sl.before); at.setHours(sl.h,sl.m,0,0);
+      const key=c.name+'|'+c.date+'|'+sl.n+'|'+CH_PLAT;
+      const day=new Date(at); day.setHours(0,0,0,0);
+      let st;
+      if(done[key]) st='done';
+      else if(day<t0) st='missed';
+      else if(+day===+t0) st= at<=now ? 'late' : 'today';
+      else st='next';
+      out.push({c,sl,at,key,st,idx:out.length});
+    });
+  });
+  return out;
+}
+function chPlat(p){ CH_PLAT=p; document.querySelectorAll('.ch-plat button').forEach(b=>b.classList.toggle('on',b.dataset.p===p)); chRender(); }
+function chSet(f){ CH_F=f; document.querySelectorAll('#chFilter button').forEach(b=>b.classList.toggle('on',b.dataset.f===f)); chRender(); }
+
+function chRender(){
+  const box=document.getElementById('chBody'); if(!box||!CH_COURSES) return;
+  CH_LIST=chBuild();
+  const c={today:0,late:0,next:0};
+  CH_LIST.forEach(x=>{ if(c[x.st]!=null) c[x.st]++; });
+  document.getElementById('chToday').textContent=c.today+c.late;
+  document.getElementById('chLate').textContent=c.late;
+  document.getElementById('chNext').textContent=c.next;
+  document.getElementById('chCourses').textContent=CH_COURSES.length;
+  updateBadge('channel', c.today+c.late);
+  document.getElementById('chDesc').textContent='دورات الشهر من الجدول المعلن بالموقع ('+CH_COURSES.length+' دورة) — كل دورة ٤ منشورات: قبل ٧ أيام ١٠ص · قبل ٣ أيام ٨م · قبلها بيوم ٤م · يوم الدورة ١٢ظ';
+  if(!CH_COURSES.length){ box.innerHTML='<div class="empty">ما في دورات قادمة بالجدول المعلن.</div>'; return; }
+
+  if(CH_F==='courses'){ box.innerHTML=chByCourse(); return; }
+  let list = CH_F==='today' ? CH_LIST.filter(x=>x.st==='today'||x.st==='late')
+           : CH_F==='next' ? CH_LIST.filter(x=>x.st==='next')
+           : CH_LIST.filter(x=>x.st==='done');
+  list.sort((a,b)=>a.at-b.at);
+  if(!list.length){ box.innerHTML='<div class="empty">'+(CH_F==='today'?'ما في منشورات مطلوبة اليوم 👌 — شوف «القادمة».':'ما في شي هني.')+'</div>'; return; }
+  const t0=new Date(); t0.setHours(0,0,0,0);
+  const groups={}, order=[];
+  list.forEach(x=>{ const k=x.at.toDateString(); if(!groups[k]){ groups[k]=[]; order.push(k); } groups[k].push(x); });
+  box.innerHTML=order.map(k=>{
+    const d=new Date(k), isT=+d===+t0;
+    return '<div class="ch-day"><div class="ch-dayh'+(isT?' today':'')+'">'+chDayTxt(d)+(isT?' — اليوم':'')+' <small>'+groups[k].length+' منشور</small></div><div class="ch-grid">'+
+      groups[k].map(chCard).join('')+'</div></div>';
+  }).join('');
+}
+function chSteps(x){
+  const done=chDone();
+  return '<div class="ch-steps" title="المنشورات الأربعة">'+CH_SLOTS.map(sl=>{
+    const k=x.c.name+'|'+x.c.date+'|'+sl.n+'|'+CH_PLAT;
+    return '<i class="'+(done[k]?'d':(sl.n===x.sl.n?'c':''))+'"></i>';
+  }).join('')+'</div>';
+}
+function chCard(x){
+  const c=x.c, online=c.zoom && /^https?:/i.test(c.zoom);
+  const cls = x.st==='late'?'late':(x.st==='today'?'now':'');
+  const when = x.st==='late' ? 'فات وقته '+chClock(x.at)+' — انشره الحين' : (x.st==='done'?'✓ تم':chClock(x.at));
+  return '<div class="ch-card'+(x.st==='done'?' done':'')+'">'+
+    '<div class="ch-top"><div><div class="ch-title">'+x.sl.ico+' '+esc(c.name)+'</div>'+
+      '<div class="ch-meta">'+esc(x.sl.lbl)+' · المنشور '+x.sl.n+' من ٤<br>الدورة: <b>'+chDayTxt(c._d)+'</b>'+(c.time?' · '+esc(c.time):'')+' · '+(online?'أونلاين':'حضوري')+' · '+esc(c.trainer||'')+'</div></div>'+
+      '<span class="ch-slot '+cls+'">'+when+'</span></div>'+
+    chSteps(x)+
+    '<div class="ch-msg" id="chMsg'+x.idx+'">'+esc(chMsg(c,x.sl,CH_PLAT))+'</div>'+
+    '<div class="ch-acts">'+
+      '<button class="main" id="chCp'+x.idx+'" onclick="chCopy('+x.idx+')">نسخ '+(CH_PLAT==='wa'?'رسالة الواتساب':'كابشن الإنستقرام')+'</button>'+
+      '<button onclick="chCopyLink('+x.idx+')">نسخ الرابط</button>'+
+      '<a href="'+esc(chLink(c,CH_PLAT))+'" target="_blank" rel="noopener">فتح الرابط</a>'+
+      '<button onclick="var m=document.getElementById(\'chMsg'+x.idx+'\');m.classList.toggle(\'open\')">عرض كامل</button>'+
+      '<button class="dn" onclick="chMark('+x.idx+')">'+(x.st==='done'?'↩ إلغاء':'✓ تم النشر')+'</button>'+
+    '</div></div>';
+}
+function chByCourse(){
+  const done=chDone(), t0=new Date(); t0.setHours(0,0,0,0);
+  return '<div class="mbr-tbl"><table><thead><tr><th>الدورة</th><th>الموعد</th>'+CH_SLOTS.map(s=>'<th style="text-align:center">'+s.ico+' '+s.lbl+'</th>').join('')+'</tr></thead><tbody>'+
+    CH_COURSES.map(c=>'<tr><td><b>'+esc(c.name)+'</b><div style="font-size:11.5px;color:var(--muted)">'+esc(c.trainer||'')+'</div></td><td style="white-space:nowrap">'+chDayTxt(c._d)+'</td>'+
+      CH_SLOTS.map(sl=>{
+        const at=new Date(c._d); at.setDate(at.getDate()-sl.before); at.setHours(sl.h,sl.m,0,0);
+        const k=c.name+'|'+c.date+'|'+sl.n+'|'+CH_PLAT, day=new Date(at); day.setHours(0,0,0,0);
+        const st=done[k]?'<span class="mbr-badge active">✓ تم</span>':(day<t0?'<span class="mbr-badge unknown">فات</span>':(+day===+t0?'<span class="mbr-badge soon">اليوم '+chClock(at)+'</span>':'<span style="font-size:12px;color:var(--muted);font-weight:700">'+CH_DAYS[at.getDay()]+' '+at.getDate()+'/'+(at.getMonth()+1)+' · '+chClock(at)+'</span>'));
+        return '<td style="text-align:center">'+st+'</td>';
+      }).join('')+'</tr>').join('')+'</tbody></table></div>';
+}
+function chCopy(i){
+  const x=CH_LIST[i]; if(!x) return;
+  mbrCopy(chMsg(x.c,x.sl,CH_PLAT));
+  const b=document.getElementById('chCp'+i);
+  if(b){ const t=b.textContent; b.classList.add('copied'); b.textContent='✓ تم النسخ'; setTimeout(()=>{ b.classList.remove('copied'); b.textContent=t; },1800); }
+}
+function chCopyLink(i){ const x=CH_LIST[i]; if(x) mbrCopy(chLink(x.c,CH_PLAT)); }
+function chMark(i){
+  const x=CH_LIST[i]; if(!x) return;
+  const d=chDone(); if(d[x.key]) delete d[x.key]; else d[x.key]=new Date().toISOString();
+  chSaveDone(d); chRender(); toast(d[x.key]?'تم تسجيله كمنشور':'رجع للقائمة');
 }
 </script>
 </body>
