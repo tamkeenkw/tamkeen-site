@@ -46,7 +46,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 <body>
 <div class="hero">
   <div class="brand">أكاديمية مسار<span>MASAR ACADEMY</span></div>
-  <h1>باقات تدريبية معتمدة</h1>
+  <h1>باقات وعضويات معتمدة</h1>
   <div class="by" id="byBox" style="display:none">يقدّمها لك: <b id="byName">—</b></div>
 </div>
 
@@ -129,7 +129,7 @@ function render(pkgs){
     var desc = p.desc ? '<div class="pkg-desc">'+p.desc+'</div>' : '';
     return '<div class="pkg">'+ img +
       '<div class="pkg-body">'+
-        '<div class="pkg-name">'+(p.name||'باقة')+'</div>'+ desc +
+        '<div class="pkg-name">'+((p.type==='عضوية')?'🎫 ':'')+(p.name||'باقة')+'</div>'+ desc +
         '<div class="pkg-price">'+priceHtml+'</div>'+
         feats + inc + cert +
         '<button class="buy" onclick="buy(\''+String(p.id).replace(/'/g,"\\'")+'\','+(p.hasCertFee?'true':'false')+')">'+

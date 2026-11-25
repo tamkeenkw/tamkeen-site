@@ -357,7 +357,7 @@ footer p { font-size:13px; color:rgba(255,255,255,.28); }
       </div>
       <div class="cm-links-title">رابطك المخصص للبيع بالعمولة</div>
       <div id="cmLinkBox"><div class="bk-empty">—</div></div>
-      <div class="cm-links-title">الباقات المتاحة للبيع بالعمولة
+      <div class="cm-links-title">الباقات والعضويات المتاحة للبيع بالعمولة
         <span class="cm-pick-hint">يحددها قسم مسار — تظهر في صفحتك</span>
       </div>
       <div id="cmPkgBox"><div class="bk-empty">جاري تحميل الباقات...</div></div>
@@ -793,7 +793,7 @@ function cmLoadPkgs(){
         var inc = (p.count && p.count>0) ? ' · تشمل ' + p.count + ' دورة' : '';
         var desc = p.desc ? '<div class="cm-pkg-meta">'+p.desc+'</div>' : '';
         return '<div class="cm-pkg-card">'
-          + '<div class="cm-pkg-top"><div class="cm-pkg-name">'+(p.name||'باقة')+'</div>'
+          + '<div class="cm-pkg-top"><div class="cm-pkg-name">'+((p.type==='عضوية')?'🎫 ':'')+(p.name||'باقة')+'</div>'
           + '<div class="cm-pkg-price">'+price+'</div></div>'
           + '<div class="cm-pkg-meta">'+ price + inc +'</div>'
           + desc + '</div>';

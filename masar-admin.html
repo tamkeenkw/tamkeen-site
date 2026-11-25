@@ -175,6 +175,9 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
 .abtn.comm{color:var(--crimson);border-color:rgba(92,15,15,.25);}
 .abtn.comm:hover{background:var(--cream);}
 .abtn.comm.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.pf{border:1.5px solid rgba(92,15,15,.12);background:#fff;color:var(--muted);border-radius:100px;padding:7px 16px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:.2s;}
+.pf.on{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.chip.typ{background:#EDE4F5;color:#6B3FA0;font-weight:900;}
 .chip.comm{background:#F3E6E6;color:var(--crimson);font-weight:900;}
 
 .empty{text-align:center;padding:60px 20px;color:var(--muted);}
@@ -335,9 +338,15 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
         <div class="stat-card"><div class="stat-n" id="pCrs" style="color:var(--blue);">٠</div><div class="stat-l">دورات داخل الباقات</div></div>
       </div>
 
+      <div class="pkg-filters" id="pkgFilters" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <button class="pf on" data-pf="all" onclick="setPkgFilter(this,'all')">الكل</button>
+        <button class="pf" data-pf="باقة" onclick="setPkgFilter(this,'باقة')">📦 الباقات</button>
+        <button class="pf" data-pf="عضوية" onclick="setPkgFilter(this,'عضوية')">🎫 العضويات</button>
+      </div>
       <div class="toolbar">
-        <input type="text" id="pSearchBox" placeholder="ابحث باسم الباقة..." oninput="renderPkgs()">
-        <button class="btn-add" onclick="openPkgForm()">+ إضافة باقة</button>
+        <input type="text" id="pSearchBox" placeholder="ابحث بالاسم..." oninput="renderPkgs()">
+        <button class="btn-add" onclick="openPkgForm('','باقة')">+ إضافة باقة</button>
+        <button class="btn-add" onclick="openPkgForm('','عضوية')" style="background:#7A1515;">+ إضافة عضوية</button>
       </div>
 
       <div class="list" id="pList"></div>
@@ -363,8 +372,16 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
     <input type="hidden" id="pRow">
 
     <div class="f" id="w-pname">
-      <label><span class="req">*</span> اسم الباقة</label>
-      <input type="text" id="pName" placeholder="مثال: باقة فن الإدارة وتمكين القيادي">
+      <label><span class="req">*</span> الاسم</label>
+      <input type="text" id="pName" placeholder="مثال: باقة فن الإدارة / عضوية تمكين الذهبية">
+    </div>
+
+    <div class="f">
+      <label>النوع</label>
+      <select id="pType" onchange="onTypeChange()" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:14px;background:var(--cream);">
+        <option value="باقة">📦 باقة دورات</option>
+        <option value="عضوية">🎫 عضوية</option>
+      </select>
     </div>
 
     <div class="f">
@@ -372,7 +389,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--cream);color:var(--text);
       <textarea id="pDesc" placeholder="نبذة تظهر للجمهور — شنو يستفيد المتدرب من الباقة"></textarea>
     </div>
 
-    <div class="sec">
+    <div class="sec" id="pCoursesSec">
       <div class="sec-h">📚 دورات الباقة</div>
       <div id="pCourseList" style="max-height:250px;overflow-y:auto;"></div>
       <div class="hint" id="pPickHint">لم يتم اختيار أي دورة</div>
@@ -847,15 +864,30 @@ function pkgStats(){
   document.getElementById('pCrs').textContent   = ar(crs);
 }
 
+var PKG_FILTER = 'all';
+function setPkgFilter(btn, val){
+  PKG_FILTER = val;
+  var btns = document.querySelectorAll('#pkgFilters .pf');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+  btn.classList.add('on');
+  renderPkgs();
+}
 function renderPkgs(){
   const q    = document.getElementById('pSearchBox').value.trim();
   const list = document.getElementById('pList');
-  const rows = q ? PKGS.filter(function(p){ return p.name.indexOf(q) > -1; }) : PKGS;
+  var rows = PKGS.filter(function(p){
+    var t = p.type || 'باقة';
+    if(PKG_FILTER === 'باقة' && t !== 'باقة') return false;
+    if(PKG_FILTER === 'عضوية' && t !== 'عضوية') return false;
+    if(q && p.name.indexOf(q) === -1) return false;
+    return true;
+  });
 
   if(rows.length === 0){
+    var lbl = PKG_FILTER === 'عضوية' ? 'عضويات' : (PKG_FILTER === 'باقة' ? 'باقات' : 'باقات أو عضويات');
     list.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>' +
-      '<div class="empty-title">لا توجد باقات</div>' +
-      '<div>اضغط "إضافة باقة" لتجميع عدة دورات بسعر واحد</div></div>';
+      '<div class="empty-title">لا توجد ' + lbl + '</div>' +
+      '<div>اضغط زر الإضافة بالأعلى</div></div>';
     return;
   }
 
@@ -887,8 +919,9 @@ function renderPkgs(){
         '<div style="flex:1;min-width:200px;">' +
           '<div class="ccard-name">' + esc(p.name) + '</div>' +
           '<div class="ccard-meta">' +
+            ((p.type === 'عضوية') ? '<span class="chip typ">🎫 عضوية</span>' : '') +
             '<span class="chip price">' + ar(p.price) + ' د.ك</span>' +
-            '<span class="chip">📚 ' + ar(p.count) + ' دورات</span>' +
+            ((p.type === 'عضوية') ? '' : '<span class="chip">📚 ' + ar(p.count) + ' دورات</span>') +
             certChip +
             (p.commission ? '<span class="chip comm">💰 بالعمولة</span>' : '') +
             '<span class="chip reg">' + ar(p.registered || 0) + ' مسجل</span>' +
@@ -899,7 +932,7 @@ function renderPkgs(){
           (p.published ? '● منشورة' : '○ غير منشورة') + '</span>' +
       '</div>' +
       (p.desc ? '<div class="ccard-desc">' + esc(p.desc) + '</div>' : '') +
-      '<div style="margin-top:12px;background:var(--cream);border-radius:12px;padding:11px 14px;">' + inside + '</div>' +
+      ((p.type === 'عضوية') ? '' : '<div style="margin-top:12px;background:var(--cream);border-radius:12px;padding:11px 14px;">' + inside + '</div>') +
       '<div class="ccard-actions">' +
         '<button class="abtn" onclick="openPkgForm(\'' + p.id + '\')">تعديل</button>' +
         '<button class="abtn pub" onclick="togglePkgPub(\'' + p.id + '\')">' +
@@ -978,9 +1011,18 @@ function clearPicked(){
   buildCoursePicker();
 }
 
-function openPkgForm(id){
+function onTypeChange(){
+  var t = document.getElementById('pType').value;
+  var isMem = (t === 'عضوية');
+  document.getElementById('pCoursesSec').style.display = isMem ? 'none' : '';
+  document.getElementById('pkgTitle').textContent =
+    (document.getElementById('pId').value ? 'تعديل ' : 'إضافة ') + (isMem ? 'عضوية' : 'باقة');
+}
+function openPkgForm(id, presetType){
   const p = id ? PKGS.find(function(x){ return x.id === id; }) : null;
-  document.getElementById('pkgTitle').textContent = p ? 'تعديل الباقة' : 'إضافة باقة جديدة';
+  const typ = p ? (p.type || 'باقة') : (presetType || 'باقة');
+  document.getElementById('pType').value = typ;
+  document.getElementById('pkgTitle').textContent = (p ? 'تعديل ' : 'إضافة ') + (typ === 'عضوية' ? 'عضوية' : 'باقة');
   document.getElementById('pId').value      = p ? p.id : '';
   document.getElementById('pRow').value     = p ? p.row : '';
   document.getElementById('pName').value    = p ? p.name : '';
@@ -997,6 +1039,7 @@ function openPkgForm(id){
 
   document.getElementById('w-pname').classList.remove('bad');
   document.getElementById('w-pprice').classList.remove('bad');
+  onTypeChange();
   document.getElementById('pkgOverlay').classList.add('on');
 }
 
@@ -1012,8 +1055,9 @@ async function savePkg(){
   let bad = false;
   if(!name){ document.getElementById('w-pname').classList.add('bad'); bad = true; }
   if(!(price > 0)){ document.getElementById('w-pprice').classList.add('bad'); bad = true; }
-  if(bad){ toast('عبّي اسم الباقة وسعرها', true); return; }
-  if(PICKED.length === 0){ toast('اختر دورة وحدة على الأقل', true); return; }
+  var pType = document.getElementById('pType').value || 'باقة';
+  if(bad){ toast('عبّي الاسم والسعر', true); return; }
+  if(pType !== 'عضوية' && PICKED.length === 0){ toast('اختر دورة وحدة على الأقل', true); return; }
 
   const feats = document.getElementById('pFeatures').value
     .split('\n').map(function(x){ return x.trim(); }).filter(function(x){ return x !== ''; });
@@ -1028,7 +1072,8 @@ async function savePkg(){
     desc: document.getElementById('pDesc').value.trim(),
     price: price,
     certFee: Number(document.getElementById('pCertFee').value) || 0,
-    courseIds: PICKED,
+    courseIds: (pType === 'عضوية' ? [] : PICKED),
+    type: pType,
     features: feats,
     image: document.getElementById('pImage').value.trim(),
     seats: Number(document.getElementById('pSeats').value) || 0,
